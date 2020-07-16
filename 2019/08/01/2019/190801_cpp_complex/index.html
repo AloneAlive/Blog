@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>C++复合类型之数组、字符串、结构、共用体 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="C++复合类型之数组、字符串、结构、共用体 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/"><meta property="og:locale" content="zh-CN"><meta name="description" content="题外话： 在我眼里，我实习的第一家公司教会了我两件事，一是让自己忙起来，二是代码规范整洁。有时候有所悟会很晚，但终究不迟。序： C++提供了基于整型和浮点类型创建的复合类型。影响最深远的复合类型是类。然而，C++还支持几种普通的复合类型。例如，数组 可以存储多个同类型的值。结构 可以存储多个不同类型的值。指针 则是一种将数据所处位置告诉计算机的类型。 - sunwengang - sunwengang blog"><meta name="keywords" content="cpp"><meta property="article:published_time" content="2019-08-01T13:41:05.000Z"><meta property="article:modified_time" content="2020-03-08T10:11:22.924Z"><meta property="og:updated_time" content="2020-03-08T10:11:22.924Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="cpp"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/"
+    },
+    "headline": "C++复合类型之数组、字符串、结构、共用体 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-08-01T13:41:05.000Z",
+    "dateModified": "2020-03-08T10:11:22.924Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "cpp",
+    "description": "题外话： 在我眼里，我实习的第一家公司教会了我两件事，一是让自己忙起来，二是代码规范整洁。有时候有所悟会很晚，但终究不迟。序： C++提供了基于整型和浮点类型创建的复合类型。影响最深远的复合类型是类。然而，C++还支持几种普通的复合类型。例如，数组 可以存储多个同类型的值。结构 可以存储多个不同类型的值。指针 则是一种将数据所处位置告诉计算机的类型。 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=C++复合类型之数组、字符串、结构、共用体" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=C++复合类型之数组、字符串、结构、共用体&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=C++复合类型之数组、字符串、结构、共用体" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACLUlEQVR42u2aQW7DMAwE8/9Pt5ce2kLmDhUHTcXxJYidWGPApJZLPj7+wfEQUkghhXwDyEdx/PjD1/ffn9/vsbrf6jpdV8i5kMuXdgGxWvwK/Oqe6bdCCrl6kVfnqwBZPUy1OFlXSCE7kOncKlhWDySkkLuQVcJeLVxdq4SGkEKSjZ5CrgItiZbbVJCQx0FWBdErP2+rFoU8CjKaRtAUSKI3BdVTrpqQR0FWL3InsVfJ/soAi4JZyJGQnQCqzFEqKFLBJqSQnUKMJGkiJOhGIORMyCQqEmyV2FMApgJNyNmQsSgKZtSVgKiCpApcIWdDVgCdRlJ6sE6ACTkXkhhIpOF0l5mAVZCQx0KSzX93ECkVY1WSF1JIkmip2CWDJanwE3IuJB04IsV9WVQ1BkiFnA3ZERfUUKUJvNUAFXIMJDUCCExq6pNAElLIynCiYpgMcZJz0cEQcgwkaUx2TK2u6Y8EhpDjINMLT4UEHUBpJ3MhR0HGISIohiuzPpkDQgr5CrFKr1UNACGF3GlSpuCJwgGIFSGFJAK2A5QM2NQIEFLIWKg/UZClwkxIIavA2R2mI0NNdABFyNmQ6dhtKKUGwdX9kWEl5NGQnaZnGv6ggXZLtSjk0ZBUxJLGZ2ombQeOkOMgyYBb9TA7wqISvEIKmUxUIiyqQp8EWUzmQgoJkjBarEjYpUkm5GjIZO4noUEaTqQ4E1LIzsZPhkFocZc2DSHnQr7zIaSQQgr5h8cn3uJWBJcQbw8AAAAASUVORK5CYII=" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">C++复合类型之数组、字符串、结构、共用体</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-08-01</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=C++复合类型之数组、字符串、结构、共用体&url=https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=C++复合类型之数组、字符串、结构、共用体&url=https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACLUlEQVR42u2aQW7DMAwE8/9Pt5ce2kLmDhUHTcXxJYidWGPApJZLPj7+wfEQUkghhXwDyEdx/PjD1/ffn9/vsbrf6jpdV8i5kMuXdgGxWvwK/Oqe6bdCCrl6kVfnqwBZPUy1OFlXSCE7kOncKlhWDySkkLuQVcJeLVxdq4SGkEKSjZ5CrgItiZbbVJCQx0FWBdErP2+rFoU8CjKaRtAUSKI3BdVTrpqQR0FWL3InsVfJ/soAi4JZyJGQnQCqzFEqKFLBJqSQnUKMJGkiJOhGIORMyCQqEmyV2FMApgJNyNmQsSgKZtSVgKiCpApcIWdDVgCdRlJ6sE6ACTkXkhhIpOF0l5mAVZCQx0KSzX93ECkVY1WSF1JIkmip2CWDJanwE3IuJB04IsV9WVQ1BkiFnA3ZERfUUKUJvNUAFXIMJDUCCExq6pNAElLIynCiYpgMcZJz0cEQcgwkaUx2TK2u6Y8EhpDjINMLT4UEHUBpJ3MhR0HGISIohiuzPpkDQgr5CrFKr1UNACGF3GlSpuCJwgGIFSGFJAK2A5QM2NQIEFLIWKg/UZClwkxIIavA2R2mI0NNdABFyNmQ6dhtKKUGwdX9kWEl5NGQnaZnGv6ggXZLtSjk0ZBUxJLGZ2ombQeOkOMgyYBb9TA7wqISvEIKmUxUIiyqQp8EWUzmQgoJkjBarEjYpUkm5GjIZO4noUEaTqQ4E1LIzsZPhkFocZc2DSHnQr7zIaSQQgr5h8cn3uJWBJcQbw8AAAAASUVORK5CYII=" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#数组array"><span class="post-toc-number">1.</span> <span class="post-toc-text">数组array</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#字符串"><span class="post-toc-number">2.</span> <span class="post-toc-text">字符串</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#C-风格字符串-字符数组"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">C-风格字符串(字符数组)</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#string类"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">string类</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#两种字符串书写方式的I-O和字符串长度"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">两种字符串书写方式的I&#x2F;O和字符串长度</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#wchar-t-char16-t-char32-t的初始化"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">wchar_t, char16_t, char32_t的初始化</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#C-11新增的原始字符串raw，以R为前缀"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">C++11新增的原始字符串raw，以R为前缀</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#结构"><span class="post-toc-number">3.</span> <span class="post-toc-text">结构</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#结构声明的位置"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">结构声明的位置</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#C-11的初始化"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">C++11的初始化</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#同时定义结构和和创建变量"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">同时定义结构和和创建变量</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#结构数组"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">结构数组</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#结构中的位字段"><span class="post-toc-number">3.5.</span> <span class="post-toc-text">结构中的位字段</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#共用体union"><span class="post-toc-number">4.</span> <span class="post-toc-text">共用体union</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#匿名共用体"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">匿名共用体</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p><font color=green>题外话： 在我眼里，我实习的第一家公司教会了我两件事，一是让自己忙起来，二是代码规范整洁。有时候有所悟会很晚，但终究不迟。</font><br>序： C++提供了基于整型和浮点类型创建的复合类型。影响最深远的复合类型是<code>类</code>。然而，C++还支持几种普通的复合类型。<br>例如，<strong>数组</strong> 可以存储多个同类型的值。<br><strong>结构</strong> 可以存储多个不同类型的值。<br><strong>指针</strong> 则是一种将数据所处位置告诉计算机的类型。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="数组array"><a href="#数组array" class="headerlink" title="数组array"></a>数组array</h2><ol>
+<li><p>数组声明应指出以下三点：</p>
+<ul>
+<li>存储每个元素中的值的类型</li>
+<li>数组名</li>
+<li>数组的元素数量</li>
+</ul>
+</li>
+<li><p>格式：</p>
+<p> <code>short months[12];</code></p>
+<p> <code>typename arrayname[size];</code></p>
+<p> <strong>size</strong> 必须是整型常数或const值，也可以是常量表达式。他不能是变量。</p>
+</li>
+<li><p>C++11新增初始化的功能</p>
+<ul>
+<li><p>初始化数组可以省略<code>等于号=</code>，例如<code>double ear {1.2e2, 1.6e3, 2.3e4,3.5e10};</code></p>
+</li>
+<li><p>可以不在大括号内包含任何东西，意味着所有元素是<code>0</code></p>
+</li>
+<li><p><strong>列表初始化禁止缩窄转换</strong></p>
+  <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> plifs[] = &#123;<span class="number">23</span>,<span class="number">12</span>,<span class="number">3.0</span>&#125;; <span class="comment">//浮点数转换成长整型是缩窄操作，不能编译通过</span></span><br><span class="line"><span class="keyword">char</span> slifs[] = &#123;<span class="string">'g'</span>,<span class="number">1123456</span>,<span class="string">'\o'</span>&#125;;  <span class="comment">//1123456超过char变量的取值范围，不能编译通过</span></span><br><span class="line"><span class="keyword">char</span> tlifs[] = &#123;<span class="string">'h'</span>,<span class="number">112</span>,<span class="string">'o'</span>&#125;;  <span class="comment">//OK</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>数组的替代品 – 模板类vector</p>
+</li>
+</ol>
+<p>在C++标准模板库STL提供了<strong>vector</strong>，以及C++11增加了模板类<code>array</code>。</p>
+<hr>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><blockquote>
+<p>C++处理字符串的方式有两种，一种来自C语言，常称为<code>C-风格字符串</code>，另一种基于<code>string</code>类库的方法。</p>
+</blockquote>
+<h3 id="C-风格字符串-字符数组"><a href="#C-风格字符串-字符数组" class="headerlink" title="C-风格字符串(字符数组)"></a><code>C-风格字符串(字符数组)</code></h3><ol>
+<li><p><strong>C-风格字符串</strong>以<code>空字符 \0</code> 结尾，其ASCII码是<code>0</code>。</p>
+<p> <code>char dog[3] = {&#39;d&#39;,&#39;o&#39;,&#39;g&#39;};  //not a string</code></p>
+<p> <code>char dog[3] = {&#39;d&#39;,&#39;o&#39;,&#39;g&#39;, &#39;\0&#39;};  //is a string</code></p>
+</li>
+<li><p><strong>字符串常量或者称字符串字面值</strong></p>
+<blockquote>
+<p>使用双引号表示字符串常量，而字符是单引号</p>
+</blockquote>
+<p> <code>char bird[11] = &quot;Mr. cheeps&quot;; //the \0 is hideen,隐式包含结尾的空字符</code></p>
+<p> <code>char fish[] = &quot;buddles&quot;;  //left the complier count</code></p>
+<blockquote>
+<p><code>sizeof()</code>指出整个数组长度，而<code>strlen</code>返回的是存储在数组中字符串的长度，而不是数组本省的长度。<br><code>strlen()</code>只计算可见的字符，不计算空字符<code>\0</code>在内。(只针对<code>char数组</code>，并且需要加入头文件 <code>#include&lt;cstring&gt;</code>)</p>
+</blockquote>
+</li>
+<li><p><strong>读取一行字符串输入</strong></p>
+<blockquote>
+<p>istream中的类（例如<code>cin</code>）提供了一些面向行的成员函数：<code>getline()和get()</code><br>这两个函数都读取一行输入，直到到达换行符<br>随后，<code>getline</code>将丢弃换行符，<code>get()</code>将换行符保留在输入序列。</p>
+</blockquote>
+<p> （1）<code>cin.getline(name,20);</code> 将一行数据读入到一个包含20个元素的name数组。如果这行包含的字符不超过19个（<code>\0</code>）</p>
+ <figure class="highlight c++"><figcaption><span>instr2.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">   <span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line">   <span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> <span class="built_in">size</span> = <span class="number">20</span>;</span><br><span class="line"><span class="keyword">char</span> name[<span class="built_in">size</span>];</span><br><span class="line"><span class="keyword">char</span> group[<span class="built_in">size</span>];</span><br><span class="line"></span><br><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter your name : \n"</span>;</span><br><span class="line"><span class="built_in">cin</span>.getline(name, <span class="built_in">size</span>);  <span class="comment">//read info inline</span></span><br><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter group: \n"</span>;</span><br><span class="line"><span class="built_in">cin</span>.getline(group, <span class="built_in">size</span>);</span><br><span class="line"></span><br><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"name is "</span>&lt;&lt; name &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"><span class="built_in">cout</span> &lt;&lt; <span class="string">"groupf is "</span> &lt;&lt; group &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p> <strong>结果：</strong></p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Enter your name : </span><br><span class="line">abc</span><br><span class="line">Enter group: </span><br><span class="line">def</span><br><span class="line">name is abc</span><br><span class="line">groupf is def</span><br></pre></td></tr></table></figure>
+
+<p> （2）<code>cin.get(name,size)</code>不会换行，而是将换行符读入到下一行开始。可以通过以下两种方式换行：  </p>
+ <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//first</span></span><br><span class="line"><span class="built_in">cin</span>.<span class="built_in">get</span>(name,<span class="built_in">size</span>);</span><br><span class="line"><span class="built_in">cin</span>.<span class="built_in">get</span>();</span><br><span class="line"><span class="built_in">cin</span>.<span class="built_in">get</span>(group,<span class="built_in">size</span>);</span><br><span class="line"><span class="comment">//second</span></span><br><span class="line"><span class="built_in">cin</span>.<span class="built_in">get</span>(name.<span class="built_in">size</span>).<span class="built_in">get</span>();</span><br></pre></td></tr></table></figure>
+
+<p> (3) <strong>读取空行</strong></p>
+<blockquote>
+<p>当get()或者getline()读取空行后将设置<code>失效位 failbit</code>。这意味接下来的输入将被阻断。<br>恢复输入方法： <code>cin.clear();</code></p>
+</blockquote>
+<p> (4) 输入字符串比分配的空间（数组size）长，则getline()和get()将把余下的字符留在输入队列中，<code>getline()</code>还会设置<code>失效位</code>，并关闭后续的输入。</p>
+</li>
+</ol>
+<h3 id="string类"><a href="#string类" class="headerlink" title="string类"></a><code>string</code>类</h3><blockquote>
+<p>string类需要头文件<code>string</code>。并且string位于命名空间<code>std</code>中。</p>
+</blockquote>
+<p><strong>代码示例：</strong></p>
+<figure class="highlight c++"><figcaption><span>strtype1.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">string</span> str1;</span><br><span class="line">	<span class="built_in">string</span> str2 = <span class="string">"cat"</span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter string data:\n"</span>;</span><br><span class="line">	<span class="built_in">cin</span> &gt;&gt; str1;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"str1="</span> &lt;&lt; str1 &lt;&lt;<span class="string">", str2 = "</span>&lt;&lt; str2 &lt;&lt; <span class="string">", str2[2] = "</span>&lt;&lt; str2[<span class="number">2</span>] &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Enter <span class="built_in">string</span> data:</span><br><span class="line">dog</span><br><span class="line">str1=dog, str2 = cat, str2[<span class="number">2</span>] = t</span><br></pre></td></tr></table></figure>
+
+<p><strong>Note:</strong></p>
+<p>类设计让程序能够自动处理<code>string</code>的大小。例如str1声明的时候长度为0，读取到输入后长度是3。</p>
+<hr>
+<ol>
+<li><strong>C++11新增的字符串初始化：</strong></li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> char1[] = &#123;<span class="string">"hello boy"</span>&#125;;</span><br><span class="line"><span class="keyword">char</span> char2[] &#123;<span class="string">"hello girl"</span>&#125;;</span><br><span class="line"></span><br><span class="line"><span class="built_in">string</span> str1 = &#123;<span class="string">"good boy"</span>&#125;;</span><br><span class="line"><span class="built_in">string</span> str2 &#123;<span class="string">"good girl"</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>字符串拼接合并</strong></li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">string</span> str3;</span><br><span class="line">str3 = str1 + str2;</span><br><span class="line">str1 += str2;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><strong><code>cstring头文件</code>的字符数组<code>char[]</code>复制和附加操作</strong></li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">strcpy</span>(char1, char2);  <span class="comment">//将char2数组赋值到char1</span></span><br><span class="line"><span class="built_in">strcat</span>(char1, char2);  <span class="comment">//将char2数组附加到char1末尾</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>对比来说，字符串string的拼接和附加操作更加简单。</p>
+</blockquote>
+<h3 id="两种字符串书写方式的I-O和字符串长度"><a href="#两种字符串书写方式的I-O和字符串长度" class="headerlink" title="两种字符串书写方式的I/O和字符串长度"></a>两种字符串书写方式的<code>I/O</code>和<code>字符串长度</code></h3><p><strong>代码：</strong></p>
+<figure class="highlight c++"><figcaption><span>strtype2.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span> ch[<span class="number">10</span>];</span><br><span class="line">	<span class="built_in">string</span> str;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"length of ch[10] = "</span> &lt;&lt; <span class="built_in">strlen</span>(ch) &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"length of str = "</span> &lt;&lt; str.<span class="built_in">size</span>() &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter a line for ch[10]: \n"</span>;</span><br><span class="line">	<span class="built_in">cin</span>.getline(ch,<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter a line for str:\n"</span>;</span><br><span class="line">	getline(<span class="built_in">cin</span>, str); <span class="comment">//这个getline()不是类方法，他将cin作为参数，指出到哪里去查找输入</span></span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Now length of ch[10] = "</span> &lt;&lt; <span class="built_in">strlen</span>(ch) &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Now length of str = "</span> &lt;&lt; str.<span class="built_in">size</span>() &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">length of ch[<span class="number">10</span>] = <span class="number">0</span></span><br><span class="line">length of str = <span class="number">0</span></span><br><span class="line">Enter a <span class="built_in">line</span> <span class="keyword">for</span> ch[<span class="number">10</span>]:</span><br><span class="line">cat dog</span><br><span class="line">Enter a <span class="built_in">line</span> <span class="keyword">for</span> str:</span><br><span class="line">cat dog2</span><br><span class="line">Now length of ch[<span class="number">10</span>] = <span class="number">7</span></span><br><span class="line">Now length of str = <span class="number">8</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="wchar-t-char16-t-char32-t的初始化"><a href="#wchar-t-char16-t-char32-t的初始化" class="headerlink" title="wchar_t, char16_t, char32_t的初始化"></a><code>wchar_t, char16_t, char32_t</code>的初始化</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">wchar_t</span> title[] = <span class="string">L"Paper"</span>; <span class="comment">//L</span></span><br><span class="line"><span class="keyword">char16_t</span> name[] = <span class="string">u"Nancy"</span>; <span class="comment">//u</span></span><br><span class="line"><span class="keyword">char32_t</span> subject[] = <span class="string">U"math"</span>; <span class="comment">//U</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="C-11新增的原始字符串raw，以R为前缀"><a href="#C-11新增的原始字符串raw，以R为前缀" class="headerlink" title="C++11新增的原始字符串raw，以R为前缀"></a>C++11新增的原始字符串<code>raw</code>，以<code>R</code>为前缀</h3><p><code>cout &lt;&lt; R&quot;(&quot;king&quot; \n and queue)&quot;</code></p>
+<p>结果：</p>
+<p><code>&quot;king&quot; \n and queue</code></p>
+<blockquote>
+<p>原始字符串使用<code>&quot;(</code>和<code>)&quot;</code>作为限定符，换行符<code>\n</code>也只打印两个单独的符号。<br>或者使用<code>&quot;+*(</code>和<code>)*+&quot;</code>作为限定符</p>
+</blockquote>
+<h2 id="结构"><a href="#结构" class="headerlink" title="结构"></a>结构</h2><blockquote>
+<p><strong>结构可以存储多种类型的数据。</strong></p>
+<blockquote>
+<p>结构是用户定义的类型<br>而结构声明定义了这种类型的数据属性<br>定义了类型之后，便可以创建这种类型的变量  </p>
+</blockquote>
+<p><strong>创建结构包含两步：</strong></p>
+<blockquote>
+<ol>
+<li>定义结构描述（它描述并且标记能够存储在结构中的各种数据的类型）</li>
+<li>按照描述创建变量（结构数据变量）</li>
+</ol>
+</blockquote>
+</blockquote>
+<ol>
+<li><strong>例如以下结构描述</strong></li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">inflatable</span>   //结构的关键字`<span class="title">struct</span>`，标识符`<span class="title">inflatable</span>`是这种数据格式的名称</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">char</span> name[<span class="number">20</span>];</span><br><span class="line">    <span class="keyword">float</span> volume;</span><br><span class="line">    <span class="keyword">double</span> price;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>创建这种类型的变量：</strong></li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">inflatable hat;   <span class="comment">//允许省略关键字`struct`，因为结构声明定义了一种新的数据格式</span></span><br><span class="line">inflatable mainframe;</span><br></pre></td></tr></table></figure>
+
+<p>因为<code>hat</code>是数据结构类型，所以允许使用<code>hat.name</code>来访问成员。</p>
+<ol start="3">
+<li><strong>示例代码：</strong></li>
+</ol>
+<figure class="highlight c++"><figcaption><span>strucetype1.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">inflatable</span>   //结构的关键字`<span class="title">struct</span>`，标识符`<span class="title">inflatable</span>`是这种数据格式的名称</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">char</span> name[<span class="number">20</span>];</span><br><span class="line">    <span class="keyword">float</span> volume;</span><br><span class="line">    <span class="keyword">double</span> price;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line">	inflatable hat = &#123;</span><br><span class="line">		<span class="string">"pen"</span>,</span><br><span class="line">		<span class="number">1.88</span>,</span><br><span class="line">		<span class="number">29.99</span></span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	inflatable pal = &#123;</span><br><span class="line">		<span class="string">"pencil"</span>,</span><br><span class="line">		<span class="number">3.13</span>,</span><br><span class="line">		<span class="number">32.99</span></span><br><span class="line">	&#125;;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"List name : "</span> &lt;&lt; hat.name &lt;&lt; <span class="string">" ,and "</span> &lt;&lt; pal.name &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"List volume: "</span> &lt;&lt; hat.volume &lt;&lt; <span class="string">",and "</span>  &lt;&lt; pal.volume &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Total price : "</span> &lt;&lt; hat.price + pal.price &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">List name : pen ,<span class="keyword">and</span> pencil</span><br><span class="line">List volume: <span class="number">1.88</span>,<span class="keyword">and</span> <span class="number">3.13</span></span><br><span class="line">Total price : <span class="number">62.98</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="结构声明的位置"><a href="#结构声明的位置" class="headerlink" title="结构声明的位置"></a>结构声明的位置</h3><blockquote>
+<p>结构声明的位置很重要，可以将声明放在main函数中，紧跟在开始括号的后面<br>也可以选择将声明放在main函数前面  </p>
+<blockquote>
+<p>位于函数外面的声明被成为<code>外部声明</code>，如果类包含两个或更多的函数，外部声明可以被后面的函数使用<br>而内部声明只能当前函数使用</p>
+</blockquote>
+</blockquote>
+<h3 id="C-11的初始化"><a href="#C-11的初始化" class="headerlink" title="C++11的初始化"></a>C++11的初始化</h3><blockquote>
+<p>同字符串和数组，结构也支持<code>列表初始化</code>，即在初始化的时候<code>=等于号</code>是可选的。</p>
+</blockquote>
+<pre><code>`inflatable duck {&quot;Dada&quot;, 0.12, 9.98};`</code></pre><h3 id="同时定义结构和和创建变量"><a href="#同时定义结构和和创建变量" class="headerlink" title="同时定义结构和和创建变量"></a>同时定义结构和和创建变量</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">perks</span> &#123;</span></span><br><span class="line">        <span class="keyword">int</span> keynum;</span><br><span class="line">        <span class="keyword">char</span> car[<span class="number">10</span>];</span><br><span class="line">&#125; mr_smith,ms_jones;   <span class="comment">//定义的两个结构体变量</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//或者同时进行初始化</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">perks</span> &#123;</span></span><br><span class="line">        <span class="keyword">int</span> keynum;</span><br><span class="line">        <span class="keyword">char</span> car[<span class="number">10</span>];</span><br><span class="line">&#125; mr_smith &#123;</span><br><span class="line">    <span class="number">7</span>,</span><br><span class="line">    <span class="string">"Peak"</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//声明一次性没有名称的结构，此时直接使用`position.x`进行访问</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span>    //没有结构体名称</span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> x,</span><br><span class="line">    <span class="keyword">int</span> y</span><br><span class="line">&#125; <span class="built_in">position</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="结构数组"><a href="#结构数组" class="headerlink" title="结构数组"></a>结构数组</h3><blockquote>
+<p>可以创建结构数组，例如<code>inflatable gifts[100];</code>，此时访问成员元素使用<code>gifts[0].name</code><br>此时的<code>gifts</code>不是结构，而是数组<br>‘gifts[0]’是结构</p>
+</blockquote>
+<h3 id="结构中的位字段"><a href="#结构中的位字段" class="headerlink" title="结构中的位字段"></a>结构中的位字段</h3><blockquote>
+<p>C++允许指定占用特定位数的结构成员。这使得创建与某个硬件的寄存器对应的数据结构非常方便。<br>字段的类型应为整型或者枚举，接下来是冒号，冒号后面是数字，它指定了使用的位数<br>每个成员都被称为<code>位字段</code><br><strong>位字段常用于低级编程中</strong></p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">torgle</span> &#123;</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> SN : <span class="number">4</span>;  <span class="comment">//4位给SN变量</span></span><br><span class="line">    <span class="keyword">unsigned</span> <span class="keyword">int</span> : <span class="number">4</span>;   <span class="comment">//不指定的4位</span></span><br><span class="line">    <span class="keyword">bool</span> googin : <span class="number">1</span>;   <span class="comment">//非法输入</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="共用体union"><a href="#共用体union" class="headerlink" title="共用体union"></a>共用体union</h2><blockquote>
+<p>union能够存储不同类型的数据，但是只能同时存储其中的一种类型。  </p>
+</blockquote>
+<p><strong>例如：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">union</span> one4all &#123;</span><br><span class="line">    <span class="keyword">int</span> val;</span><br><span class="line">    <span class="keyword">long</span> val2;</span><br><span class="line">    <span class="keyword">double</span> val3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>可以使用<code>one4all</code>存储不同的类型，存储int，long，或者double</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">one4all pail;</span><br><span class="line">pail.val = <span class="number">10</span>;</span><br><span class="line"><span class="built_in">cout</span> &lt;&lt; pail.val; <span class="comment">//10</span></span><br><span class="line"></span><br><span class="line">pail.val3 = <span class="number">1.35</span>;</span><br><span class="line"><span class="built_in">cout</span> &lt;&lt; pail.val3; <span class="comment">//1.35</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>因此，pail有时候是int类型，有时候也可以使long，double<br>成员名称标识了变量的容量<br><strong>共同体每次只能存储一个值，因此必须有足够的空间来存储里面最大的成员，所以共同体的长度为其最大成员变量的长度</strong><br><font color=red>共同体的用途之一是：</font></p>
+<blockquote>
+<p>当数据项使用两种或者更多的格式，但是不会同时使用时，可以节省时间。</p>
+</blockquote>
+</blockquote>
+<p><strong>例如一些商品的ID是整数，而另一些的ID是字符，则可以定义：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">struce thing &#123;</span><br><span class="line">    <span class="keyword">char</span> name[<span class="number">20</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">union</span> id &#123;</span><br><span class="line">        <span class="keyword">long</span> id_num;  <span class="comment">//整型的ID</span></span><br><span class="line">        <span class="keyword">char</span> id_char[<span class="number">20</span>];  <span class="comment">//字符型的ID</span></span><br><span class="line">    &#125; id_val;    <span class="comment">//id_val是声明在结构体中，可以使用`结构体.id_val.id_num`初始化</span></span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="匿名共用体"><a href="#匿名共用体" class="headerlink" title="匿名共用体"></a>匿名共用体</h3><blockquote>
+<p>匿名共用体没有名称，其成员将成为位于相同地址的变量。<br>每次只有一个成员是当前的成员。</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">struce thing &#123;</span><br><span class="line">    <span class="keyword">char</span> name[<span class="number">20</span>];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> type;</span><br><span class="line">    <span class="keyword">union</span> &#123;      <span class="comment">//匿名</span></span><br><span class="line">        <span class="keyword">long</span> id_num;  <span class="comment">//整型的ID</span></span><br><span class="line">        <span class="keyword">char</span> id_char[<span class="number">20</span>];  <span class="comment">//字符型的ID</span></span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line">thing prize;</span><br><span class="line"><span class="keyword">if</span> (type == <span class="number">1</span>) &#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; prize.id_num;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="built_in">cin</span> &gt;&gt; prize.id_char;   <span class="comment">//此时直接调用匿名共用体的成员</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>因为是匿名共用体，所以<code>id_num</code>和<code>id_char</code>被视为结构体<code>thing</code>的成员，他们的地址相同（相对于结构体来理解），因而不需要中间标识符<code>id_val</code>（即共用体的变量声明）。</p>
+<p><strong>共用体常用于节省内存（例如操作系统数据结构或硬件数据结构）</strong></p>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/">https://alonealive.github.io/Blog/2019/08/01/2019/190801_cpp_complex/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-08-01T13:41:05.000Z" itemprop="datePublished">2019-08-01</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:11:22.924Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/cpp/'>cpp</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/cpp/" rel="tag">#&nbsp;cpp</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/08/12/2019/190812_cpp_complex2/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++复合类型之枚举、指针</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/07/27/2019/190727-linux-zsh-md/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">linux配置zsh终端</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

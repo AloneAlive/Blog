@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android中的makefile（Android.mk） | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android中的makefile（Android.mk） | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/"><meta property="og:locale" content="zh-CN"><meta name="description" content="makefile是和make命令一起使用，在Android中，可以使用mm、mmm、mma进行编译。Makefile可以组织项目中各种库和代码之间的依赖，构建项目，和maven、gradle一样属于构建工具。常用于大型项目。 - sunwengang - sunwengang blog"><meta name="keywords" content="makefile"><meta property="article:published_time" content="2019-08-28T13:52:00.000Z"><meta property="article:modified_time" content="2020-03-08T10:11:22.924Z"><meta property="og:updated_time" content="2020-03-08T10:11:22.924Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="makefile"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/"
+    },
+    "headline": "Android中的makefile（Android.mk） | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-08-28T13:52:00.000Z",
+    "dateModified": "2020-03-08T10:11:22.924Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "makefile",
+    "description": "makefile是和make命令一起使用，在Android中，可以使用mm、mmm、mma进行编译。Makefile可以组织项目中各种库和代码之间的依赖，构建项目，和maven、gradle一样属于构建工具。常用于大型项目。 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android中的makefile（Android.mk）" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android中的makefile（Android.mk）&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android中的makefile（Android.mk）" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMElEQVR42u2a0Y7CMAwE+f+fvnvlqsQ7bkFw9fSlUgnJFMXBu/bj5x9cDyGFFFLIL4B8FNfzmOexq+d/Jj88r+Yq1xVyLORy0y4m3o1Pnx9/ELyukKMhjxuXbP4OdArG5TpCCllA7gBWh/AqWIQU8l2Bs0sQUqJB5hFSSPJHv9v06ZDeBU8rsRFyLGQliN55f5laFPJWkNE0CglCtWAlxF7qqgl5K8hqI+8O2c7zar74UkKOhqxM0Erw0++k4Fm+iJAjIWnw7CDOHPa7ZLlMMIQcA1l9sSoeVYsQc5+YskLOhEywlTC7YiCgFxdyJGRldNLA2gXFlWKpkHMhqSlQBQ4tEKCkomNYCXl7yJ2Ap4I+FaCqQpWQQhJjf5dEEHHfmW978As5GjI1wJ1NOIhQ2xb1hRwL2TWfiJGfhB4pUgk5E5KYpJ0kuHpREkhCCpkmpQZ9x1QlzaRCzoUkBzZNJLqGFU4whBwFmZoyqUgjCQcNOCGFpM3DlYFPxFkqUKF/HCFvD9kxN0mzR6dRpLoLOReSBgQ1pGjBICUdQgpJzFNSgE+mARkrpJC0CIoEPWyqQwEn5GjIVKAkzSSdppN2AVTIMZBXm5hSYT4Voqo5hZwJmTY0FffUhD0txIQcBUmL7KlIRMadDhwhx0GeEVZUqHUa9oQUsguZkg5yqGMjVkghwWFdHcrEACCCTUghqRlPmo46AdgOHCHHQBIjiQi01PBJjAMhhfzmS0ghhRTyg9cvFo115IzqTckAAAAASUVORK5CYII=" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android中的makefile（Android.mk）</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-08-28</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android中的makefile（Android.mk）&url=https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android中的makefile（Android.mk）&url=https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMElEQVR42u2a0Y7CMAwE+f+fvnvlqsQ7bkFw9fSlUgnJFMXBu/bj5x9cDyGFFFLIL4B8FNfzmOexq+d/Jj88r+Yq1xVyLORy0y4m3o1Pnx9/ELyukKMhjxuXbP4OdArG5TpCCllA7gBWh/AqWIQU8l2Bs0sQUqJB5hFSSPJHv9v06ZDeBU8rsRFyLGQliN55f5laFPJWkNE0CglCtWAlxF7qqgl5K8hqI+8O2c7zar74UkKOhqxM0Erw0++k4Fm+iJAjIWnw7CDOHPa7ZLlMMIQcA1l9sSoeVYsQc5+YskLOhEywlTC7YiCgFxdyJGRldNLA2gXFlWKpkHMhqSlQBQ4tEKCkomNYCXl7yJ2Ap4I+FaCqQpWQQhJjf5dEEHHfmW978As5GjI1wJ1NOIhQ2xb1hRwL2TWfiJGfhB4pUgk5E5KYpJ0kuHpREkhCCpkmpQZ9x1QlzaRCzoUkBzZNJLqGFU4whBwFmZoyqUgjCQcNOCGFpM3DlYFPxFkqUKF/HCFvD9kxN0mzR6dRpLoLOReSBgQ1pGjBICUdQgpJzFNSgE+mARkrpJC0CIoEPWyqQwEn5GjIVKAkzSSdppN2AVTIMZBXm5hSYT4Voqo5hZwJmTY0FffUhD0txIQcBUmL7KlIRMadDhwhx0GeEVZUqHUa9oQUsguZkg5yqGMjVkghwWFdHcrEACCCTUghqRlPmo46AdgOHCHHQBIjiQi01PBJjAMhhfzmS0ghhRTyg9cvFo115IzqTckAAAAASUVORK5CYII=" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#基本语法"><span class="post-toc-number">1.</span> <span class="post-toc-text">基本语法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#变量定义-或者"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">变量定义&#x3D;或者:&#x3D;</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#变量值追加"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">变量值追加+&#x3D;</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#makefile在Android中的运用"><span class="post-toc-number">2.</span> <span class="post-toc-text">makefile在Android中的运用</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#引入aidl文件"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">引入aidl文件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#添加jar包（libs和mk同目录）："><span class="post-toc-number">2.2.</span> <span class="post-toc-text">添加jar包（libs和mk同目录）：</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>makefile是和make命令一起使用，在Android中，可以使用<code>mm</code>、<code>mmm</code>、<code>mma</code>进行编译。<br>Makefile可以组织项目中各种库和代码之间的依赖，构建项目，和maven、gradle一样属于构建工具。<br>常用于大型项目。</p>
+</blockquote>
+<a id="more"></a>
+<h2 id="基本语法"><a href="#基本语法" class="headerlink" title="基本语法"></a>基本语法</h2><h3 id="变量定义-或者"><a href="#变量定义-或者" class="headerlink" title="变量定义=或者:="></a>变量定义<code>=或者:=</code></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">OBJS &#x3D; programA.o</span><br><span class="line">&#x2F;&#x2F;或者</span><br><span class="line">OBJS :&#x3D; programA.o</span><br></pre></td></tr></table></figure>
+
+<p>两者区别在于<code>:=</code>只能使用前面定义好的变量，<code>=</code>可以使用后面定义的变量。</p>
+<h3 id="变量值追加"><a href="#变量值追加" class="headerlink" title="变量值追加+="></a>变量值追加<code>+=</code></h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">SRCS :&#x3D; programB.c</span><br><span class="line">SRCS +&#x3D; programC.c</span><br></pre></td></tr></table></figure>
+
+<h2 id="makefile在Android中的运用"><a href="#makefile在Android中的运用" class="headerlink" title="makefile在Android中的运用"></a>makefile在Android中的运用</h2><table>
+<thead>
+<tr>
+<th align="center">name</th>
+<th align="center">note</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">LOCAL_PATH = $(call my-dir)</td>
+<td align="center">调用my-dir函数，返回Android.mk文件所在的目录，放在第一行，地址是当前目录</td>
+</tr>
+<tr>
+<td align="center">include file Makefile</td>
+<td align="center">引入其他的makefile文件</td>
+</tr>
+<tr>
+<td align="center">include $(CLEAR_VARS)</td>
+<td align="center">编译模块时清空LOCAL_MODULE等参数</td>
+</tr>
+<tr>
+<td align="center">LOCAL_MODULE</td>
+<td align="center">模块名称</td>
+</tr>
+<tr>
+<td align="center">LOCAL_SRC_FILES</td>
+<td align="center">编译需要的源文件</td>
+</tr>
+<tr>
+<td align="center">LOCAL_C_INCLUDES</td>
+<td align="center">需要的头文件</td>
+</tr>
+<tr>
+<td align="center">LOCAL_SHARED_LIBRARIES</td>
+<td align="center">编译需要的动态库</td>
+</tr>
+<tr>
+<td align="center">LOCAL_LDLIBS</td>
+<td align="center">链接库</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="引入aidl文件"><a href="#引入aidl文件" class="headerlink" title="引入aidl文件"></a>引入aidl文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">LOCAL_SRC_FILES :&#x3D; $(call all-laidl-files-under, src&#x2F;com&#x2F;srm&#x2F;aidl)</span><br><span class="line"></span><br><span class="line">或者直接如下，但是最后要加上 \ 符号，并且符号之后要回车：</span><br><span class="line">LOCAL_SRC_FILES +&#x3D; $(call all-java-files-under, src) \</span><br><span class="line">src&#x2F;com&#x2F;srm&#x2F;aidl&#x2F;test.aidl \</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加jar包（libs和mk同目录）："><a href="#添加jar包（libs和mk同目录）：" class="headerlink" title="添加jar包（libs和mk同目录）："></a>添加jar包（libs和mk同目录）：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">LOCAL_STATIC_JAVA_LIBRARIES :&#x3D; testjar</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;需要用CLEAR_VARS分割</span><br><span class="line">include $(CLEAR_VARS)</span><br><span class="line">LOCAL_PREBUILT_STATIC_JAVA_LIBRARIES :&#x3D; testjar:libs&#x2F;testjar.jar</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;需要添加</span><br><span class="line">include $(BUILD_MULTI_PREBUILT)</span><br></pre></td></tr></table></figure>
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/">https://alonealive.github.io/Blog/2019/08/28/2019/190828_android_makefile/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-08-28T13:52:00.000Z" itemprop="datePublished">2019-08-28</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:11:22.924Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/makefile/" rel="tag">#&nbsp;makefile</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/08/29/2019/190829_cpp_maohao/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++双冒号、点号、箭头的区别</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/08/26/2019/190826_cpp_inline/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++内联函数、引用变量、函数重载、函数模板</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

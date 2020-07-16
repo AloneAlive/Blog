@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android Graphics 调试技巧（十一月份更新） | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android Graphics 调试技巧（十一月份更新） | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/"><meta property="og:locale" content="zh-CN"><meta name="description" content="更新adb 更新命令：   sudo apt-get install android-tools-adb 查看当前adb指令的目录: which adb 查看版本：adb version - sunwengang - sunwengang blog"><meta name="keywords" content="graphics"><meta property="article:published_time" content="2019-11-23T15:52:00.000Z"><meta property="article:modified_time" content="2020-03-08T10:18:54.698Z"><meta property="og:updated_time" content="2020-03-08T10:18:54.698Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="graphics"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/"
+    },
+    "headline": "Android Graphics 调试技巧（十一月份更新） | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-11-23T15:52:00.000Z",
+    "dateModified": "2020-03-08T10:18:54.698Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "graphics",
+    "description": "更新adb 更新命令：   sudo apt-get install android-tools-adb 查看当前adb指令的目录: which adb 查看版本：adb version - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android Graphics 调试技巧（十一月份更新）" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android Graphics 调试技巧（十一月份更新）&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android Graphics 调试技巧（十一月份更新）" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACK0lEQVR42u3aS07DQBBFUe9/0zBCQi13vVvGgeC6nkQ4iX0SpZv6HR//4DhEihQp8g2QR3F8f359ffXcev7rufXv6r4iZyNPf7QLhIDWx90HI/cVKZLccIfdXYt+oLPzIkWWL4b43XV2H0SkyDsXTtrgtxu0SJEQWf6j37yGBLO/EgWJfBwyJWKverw1WxT5GCQqHIUg9mwDT4nY7VU1kY9BkpufXZgUpaoFkwIckbORKZDd3bB7rnNepMhO0alTFKjOxcRP5Ejk7s00MaNNqpTcxaBX5BgkKX5e/uGHgCN+GSLHIlPjcgdPSVVqoqbriJyJpE1OEhB33lt9ESJFkqGjTiOJFAeqgFmkyFRAquBpgCQlYq3IXOQoZKdoSgc4U4E1FmBFjkWmgJYOenSGTlDhQeRYJG3EVx+GFBfIQhIpslNYSgl+2tTbzXyR45Ek0SKF1ArYKaqKnIukm3Qa+iBNgM71RM5Fkh98lfx3mk2djV3kTGSnAUSC2u6iKgMSkaORV4aIaXEhNflj0CtyJJIOgnQaTd3GPFrdIkcgqw22KhT8JKBIjVKRIrvNd9JY7w7klUGvyDHIdNDFQALhqnmKGqAiRyBJMYkOf5IhUNrIEjkbmYLVFCDToZHuQJ7I2UjamE9FKLq40iCzSJEEeTUgTpv25WxR5EgkvQEpmu4WWBxeEjkSmRKwzlA8bfSnooTIuUiSiHWa82TRpURN5FzkOx8iRYoU+YfHJ+iSdtUdehrQAAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android Graphics 调试技巧（十一月份更新）</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-11-23</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android Graphics 调试技巧（十一月份更新）&url=https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android Graphics 调试技巧（十一月份更新）&url=https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACK0lEQVR42u3aS07DQBBFUe9/0zBCQi13vVvGgeC6nkQ4iX0SpZv6HR//4DhEihQp8g2QR3F8f359ffXcev7rufXv6r4iZyNPf7QLhIDWx90HI/cVKZLccIfdXYt+oLPzIkWWL4b43XV2H0SkyDsXTtrgtxu0SJEQWf6j37yGBLO/EgWJfBwyJWKverw1WxT5GCQqHIUg9mwDT4nY7VU1kY9BkpufXZgUpaoFkwIckbORKZDd3bB7rnNepMhO0alTFKjOxcRP5Ejk7s00MaNNqpTcxaBX5BgkKX5e/uGHgCN+GSLHIlPjcgdPSVVqoqbriJyJpE1OEhB33lt9ESJFkqGjTiOJFAeqgFmkyFRAquBpgCQlYq3IXOQoZKdoSgc4U4E1FmBFjkWmgJYOenSGTlDhQeRYJG3EVx+GFBfIQhIpslNYSgl+2tTbzXyR45Ek0SKF1ArYKaqKnIukm3Qa+iBNgM71RM5Fkh98lfx3mk2djV3kTGSnAUSC2u6iKgMSkaORV4aIaXEhNflj0CtyJJIOgnQaTd3GPFrdIkcgqw22KhT8JKBIjVKRIrvNd9JY7w7klUGvyDHIdNDFQALhqnmKGqAiRyBJMYkOf5IhUNrIEjkbmYLVFCDToZHuQJ7I2UjamE9FKLq40iCzSJEEeTUgTpv25WxR5EgkvQEpmu4WWBxeEjkSmRKwzlA8bfSnooTIuUiSiHWa82TRpURN5FzkOx8iRYoU+YfHJ+iSdtUdehrQAAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#更新adb"><span class="post-toc-number">1.</span> <span class="post-toc-text">更新adb</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#adb-shell相关"><span class="post-toc-number">2.</span> <span class="post-toc-text">adb shell相关</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ps（正在运行的进程）"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">ps（正在运行的进程）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#top（CPU使用率）"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">top（CPU使用率）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#vmstat（显示系统信息的）"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">vmstat（显示系统信息的）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#meminfo（内存系统信息）"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">meminfo（内存系统信息）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#free（显示内存使用情况）"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">free（显示内存使用情况）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#strace（跟踪进程执行时的系统调用和所接收的信号）"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">strace（跟踪进程执行时的系统调用和所接收的信号）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#time（linux命令，ADB通用）"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">time（linux命令，ADB通用）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#size"><span class="post-toc-number">2.8.</span> <span class="post-toc-text">size</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#file（辨识文件类型）"><span class="post-toc-number">2.9.</span> <span class="post-toc-text">file（辨识文件类型）</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#fastboot相关"><span class="post-toc-number">3.</span> <span class="post-toc-text">fastboot相关</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#进入Recovery模式"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">进入Recovery模式</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#部分参数"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">部分参数</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解析so文件addr2line"><span class="post-toc-number">4.</span> <span class="post-toc-text">解析so文件addr2line</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#根据解析结果查询函数"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">根据解析结果查询函数</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#跳过开机向导"><span class="post-toc-number">5.</span> <span class="post-toc-text">跳过开机向导</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Android-10-AOSP源码打开模拟Vsync（Systrace可查看）"><span class="post-toc-number">6.</span> <span class="post-toc-text">Android 10 AOSP源码打开模拟Vsync（Systrace可查看）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#对比文件和文件夹区别（可用于git解决冲突）"><span class="post-toc-number">7.</span> <span class="post-toc-text">对比文件和文件夹区别（可用于git解决冲突）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#repo"><span class="post-toc-number">8.</span> <span class="post-toc-text">repo</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Gerrit"><span class="post-toc-number">8.1.</span> <span class="post-toc-text">Gerrit</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Jenkins"><span class="post-toc-number">8.2.</span> <span class="post-toc-text">Jenkins</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#repo链接指定版本的manifest-xml"><span class="post-toc-number">8.3.</span> <span class="post-toc-text">repo链接指定版本的manifest.xml</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ssh生成publickey（指定邮箱）"><span class="post-toc-number">9.</span> <span class="post-toc-text">ssh生成publickey（指定邮箱）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Git相关命令"><span class="post-toc-number">10.</span> <span class="post-toc-text">Git相关命令</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#git用户设置"><span class="post-toc-number">10.1.</span> <span class="post-toc-text">git用户设置</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#生成补丁"><span class="post-toc-number">10.2.</span> <span class="post-toc-text">生成补丁</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#生成指定某个commit提交的补丁"><span class="post-toc-number">10.3.</span> <span class="post-toc-text">生成指定某个commit提交的补丁</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#获取补丁"><span class="post-toc-number">10.4.</span> <span class="post-toc-text">获取补丁</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#git-add用法"><span class="post-toc-number">10.5.</span> <span class="post-toc-text">git add用法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#从暂存区域移除等其他命令"><span class="post-toc-number">10.6.</span> <span class="post-toc-text">从暂存区域移除等其他命令</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#GDB命令"><span class="post-toc-number">11.</span> <span class="post-toc-text">GDB命令</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Bt"><span class="post-toc-number">11.1.</span> <span class="post-toc-text">Bt</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#mod命令"><span class="post-toc-number">11.2.</span> <span class="post-toc-text">mod命令</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ffmpeg-转换jpg和png格式"><span class="post-toc-number">12.</span> <span class="post-toc-text">ffmpeg 转换jpg和png格式</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#远程服务器使用ssh链接并且映射"><span class="post-toc-number">13.</span> <span class="post-toc-text">远程服务器使用ssh链接并且映射</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#linux下修改图片尺寸（jpg、png…）"><span class="post-toc-number">14.</span> <span class="post-toc-text">linux下修改图片尺寸（jpg、png…）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#查看网络地址情况"><span class="post-toc-number">15.</span> <span class="post-toc-text">查看网络地址情况</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#文件压缩、解压"><span class="post-toc-number">16.</span> <span class="post-toc-text">文件压缩、解压</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ls-命令"><span class="post-toc-number">17.</span> <span class="post-toc-text">ls 命令</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#firefox修改中文"><span class="post-toc-number">18.</span> <span class="post-toc-text">firefox修改中文</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Ubuntu系统log路径-var-log"><span class="post-toc-number">19.</span> <span class="post-toc-text">Ubuntu系统log路径&#x2F;var&#x2F;log</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#hidl接口生成命令"><span class="post-toc-number">20.</span> <span class="post-toc-text">hidl接口生成命令</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="更新adb"><a href="#更新adb" class="headerlink" title="更新adb"></a>更新adb</h2><ul>
+<li>更新命令：   sudo apt-get install android-tools-adb</li>
+<li>查看当前adb指令的目录: which adb</li>
+<li>查看版本：adb version</li>
+</ul>
+<a id="more"></a>
+
+<h2 id="adb-shell相关"><a href="#adb-shell相关" class="headerlink" title="adb shell相关"></a>adb shell相关</h2><h3 id="ps（正在运行的进程）"><a href="#ps（正在运行的进程）" class="headerlink" title="ps（正在运行的进程）"></a>ps（正在运行的进程）</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">USER 	进程当前用户</span><br><span class="line">PID 	进程ID</span><br><span class="line">PPID 	父进程ID</span><br><span class="line">VSZ	进程的虚拟内存大小，以KB为单位</span><br><span class="line">RSS 	实际占用的内存大小，以KB为单位</span><br><span class="line">WCHAN 	进程正在睡眠的内核函数名称；该函数的名称是从&#x2F;root&#x2F;system.map文件中获得的。</span><br><span class="line">PC 			计算机中提供要从[存储器]中取出的下一个指令地址的[寄存器]</span><br><span class="line">NAME 		进程状态及名称</span><br></pre></td></tr></table></figure>
+
+<h3 id="top（CPU使用率）"><a href="#top（CPU使用率）" class="headerlink" title="top（CPU使用率）"></a>top（CPU使用率）</h3><blockquote>
+<p>top命令提供了实时的对系统处理器的状态监视。它将显示系统中CPU最“敏感”的任务列表。该命令可以按CPU使用，内存使用和执行时间对任务进行排序。</p>
+</blockquote>
+<ol>
+<li><code>VIRT</code>：这个内存使用就是一个应用占有的地址空间，只是要应用程序要求的，就全算在这里，而不管它真的用了没有。写程序怕出错，又不在乎占用的时候，多开点内存也是很正常的;</li>
+<li><code>RES</code>：resident memory usage。常驻内存。这个值就是该应用程序真的使用的内存，但还有两个小问题，一是有些东西可能放在交换盘上了（SWAP），二是有些内存可能是共享的;</li>
+<li><code>SHR</code>：shared memory。共享内存。就是说这一块内存空间有可能也被其他应用程序使用着;</li>
+<li><code>DATA</code>：数据占用的内存。这一块是真正的该程序要求的数据空间，是真正在运行中要使用的。</li>
+</ol>
+<h3 id="vmstat（显示系统信息的）"><a href="#vmstat（显示系统信息的）" class="headerlink" title="vmstat（显示系统信息的）"></a>vmstat（显示系统信息的）</h3><p>vmstat是一个显示系统信息的命令。例如，它显示主存储器的可用容量和CPU的操作状态。<br>如果按原样执行vmstat命令，则会显示有关当前进程，内存，交换，设备，中断和CPU的信息。此外，如果附加“ - d”或“ - p”选项，将显示分区和磁盘上的读/写状态等。指定“-f”选项时，从系统启动到命令执行将显示创建进程的次数。</p>
+<p>如果在vmstat之后指定以秒为单位的时间间隔，则每隔指定时间显示一次系统状态。此外，当您指定次数时，会显示指定的信息次数。</p>
+<p>对于容量，可以使用“-S”选项指定单位。指定“-SM”时，容量单位以M字节显示。</p>
+<p>例如：<br>以10秒为间隔显示内存和CPU信息三次： <code>vmstat 10 3</code></p>
+<h3 id="meminfo（内存系统信息）"><a href="#meminfo（内存系统信息）" class="headerlink" title="meminfo（内存系统信息）"></a>meminfo（内存系统信息）</h3><p><code>cat /proc/meminfo</code></p>
+<h3 id="free（显示内存使用情况）"><a href="#free（显示内存使用情况）" class="headerlink" title="free（显示内存使用情况）"></a>free（显示内存使用情况）</h3><blockquote>
+<p>可以知道当前的内存使用情况。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-b	以字节显示容量（默认）</span><br><span class="line">-k	显示容量，以千字节为单位</span><br><span class="line">-m	显示容量，以MB为单位</span><br><span class="line">-h  显示容量单位，包含Ｇ、Ｍ</span><br><span class="line">-t	还显示物理内存和交换内存的总和</span><br></pre></td></tr></table></figure>
+
+<h3 id="strace（跟踪进程执行时的系统调用和所接收的信号）"><a href="#strace（跟踪进程执行时的系统调用和所接收的信号）" class="headerlink" title="strace（跟踪进程执行时的系统调用和所接收的信号）"></a>strace（跟踪进程执行时的系统调用和所接收的信号）</h3><blockquote>
+<p>strace常用来跟踪进程执行时的系统调用和所接收的信号。<br>在Linux世界，进程不能直接访问硬件设备，当进程需要访问硬件设备(比如读取磁盘文件，接收网络数据等等)时，必须由用户态模式切换至内核态模式，通 过系统调用访问硬件设备。strace可以跟踪到一个进程产生的系统调用,包括参数，返回值，执行消耗的时间。</p>
+</blockquote>
+<p>通用的完整用法：<br><code>strace -o output.txt -T -tt -e trace=all -p 12345</code></p>
+<p>上面的含义是跟踪28979进程的所有系统调用（-e trace=all），并统计系统调用的花费时间，以及开始时间（并以可视化的时分秒格式显示），最后将记录结果存在output.txt文件里面。</p>
+<h3 id="time（linux命令，ADB通用）"><a href="#time（linux命令，ADB通用）" class="headerlink" title="time（linux命令，ADB通用）"></a>time（linux命令，ADB通用）</h3><blockquote>
+<p>测量从调用指定命令到结束所花费的时间，用户CPU时间和系统CPU时间。在指定命令的输出结果之后，将测量结果输出到标准错误输出。命令代码实际使用CPU的时间是用户CPU时间。因此，如果将不存在的命令作为time命令的参数，则用户CPU时间变为0。睡眠时间不计算在内。</p>
+</blockquote>
+<p>例如：<br>显示ls命令的执行时间： <code>time ls -a</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">real	0m0.006s</span><br><span class="line">user	0m0.006s</span><br><span class="line">sys	0m0.000s</span><br></pre></td></tr></table></figure>
+
+<h3 id="size"><a href="#size" class="headerlink" title="size"></a>size</h3><blockquote>
+<p>显示一个目标文件或者链接库文件中的目标文件的各个段的大小(可执行文件段的大小,默认为a.out)</p>
+</blockquote>
+<p>例如（linux下）：   <code>size libui.so</code></p>
+<p>text表示正文段大小，data表示包含静态变量和已经初始化（可执行文件包含了初始化的值）的全局变量的数据段大小，bss由可执行文件中不含其初始化值的全局变量组成。</p>
+<h3 id="file（辨识文件类型）"><a href="#file（辨识文件类型）" class="headerlink" title="file（辨识文件类型）"></a>file（辨识文件类型）</h3><blockquote>
+<p>file确定并显示文件类型，例如可执行文件或文本或其他数据。</p>
+</blockquote>
+<p>例如：<br><code>file libui.so</code><br>或者 <code>adb shell file ……</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-b	以简单模式显示</span><br><span class="line">-i	使文件成为mime类型字符串</span><br><span class="line">-z	还要检查压缩文件</span><br><span class="line">-v	显示版本</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="fastboot相关"><a href="#fastboot相关" class="headerlink" title="fastboot相关"></a>fastboot相关</h2><ul>
+<li>重启进入Recovery界面： adb reboot recovery</li>
+<li>重启进入bootloader界面： adb reboot bootloader</li>
+</ul>
+<h3 id="进入Recovery模式"><a href="#进入Recovery模式" class="headerlink" title="进入Recovery模式"></a>进入Recovery模式</h3><ol>
+<li>查看设备： adb devices</li>
+<li>adb root</li>
+<li>adb shell</li>
+<li>进入fastboot： adb reboot fastboot</li>
+<li>fastboot devices </li>
+<li>查看当前使用分区： fastboot getvar current-slot</li>
+<li>接着擦除分区和用户数据，然后flash烧录</li>
+</ol>
+<p>如果不能识别或者没权限，优先检查lsusb添加序列号到<code>/etc/udev/rules.d/</code></p>
+<p>如果出现错误:<code>no permissions fastboot</code></p>
+<p>用fastboot命令查看设备提示无权限，如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">fastboot -l devices</span><br><span class="line">no permissions         fastboot usb:1.2-1</span><br></pre></td></tr></table></figure>
+
+<p>因为权限问题，是fastboot没有权限， 解决步骤：</p>
+<ol>
+<li>将fastboot的所有者属性改成root,用<code>which fastboot</code>命令找到fastboot所在的目录，然后进入此目录</li>
+<li>用命令chown改其属性:<code>sudo chown root:root fastboot</code></li>
+<li>将其权限更改一下：<code>sudo chmod +s fastboot</code></li>
+</ol>
+<p>还存在一种可能性，就是<code>adb</code>版本过低。</p>
+<h3 id="部分参数"><a href="#部分参数" class="headerlink" title="部分参数"></a>部分参数</h3><table>
+<thead>
+<tr>
+<th align="center">fastboot [options]</th>
+<th align="center">Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-w</td>
+<td align="center">清空用户数据分区和缓存分区.相当于recovery中的”wipe data/factoryreset”</td>
+</tr>
+<tr>
+<td align="center">-s &lt;串口号&gt;</td>
+<td align="center">指定要操作的设备的串口号</td>
+</tr>
+<tr>
+<td align="center">-p &lt;产品名&gt;</td>
+<td align="center">指定要操作的设备的产品名.比如hero,bravo,dream…</td>
+</tr>
+<tr>
+<td align="center">-c &lt;命令行&gt;</td>
+<td align="center">用命令行替换系统的启动命令行</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="解析so文件addr2line"><a href="#解析so文件addr2line" class="headerlink" title="解析so文件addr2line"></a>解析so文件addr2line</h2><p><code>addr2line [address] -e test.so -f</code><br>或者<br><code>readelf -a [.so/.bin]</code></p>
+<h3 id="根据解析结果查询函数"><a href="#根据解析结果查询函数" class="headerlink" title="根据解析结果查询函数"></a>根据解析结果查询函数</h3><p>C++在linux系统编译后会变成类似<code>_ZNK...</code>的修饰名。使用<code>c++filt</code>获取函数的原始名称：</p>
+<p><code>c++filt [_ZNK...函数修饰名]</code></p>
+<hr>
+<h2 id="跳过开机向导"><a href="#跳过开机向导" class="headerlink" title="跳过开机向导"></a>跳过开机向导</h2><p><code>adb shell settings put global device_provisioned 1（默认是0）</code></p>
+<h2 id="Android-10-AOSP源码打开模拟Vsync（Systrace可查看）"><a href="#Android-10-AOSP源码打开模拟Vsync（Systrace可查看）" class="headerlink" title="Android 10 AOSP源码打开模拟Vsync（Systrace可查看）"></a>Android 10 AOSP源码打开模拟Vsync（Systrace可查看）</h2><ul>
+<li>源码： Android 10的AOSP</li>
+<li>方法： 修改<code>surfaceflinger/Scheduler/DispSync.cpp</code>的<code>static const bool kEnableZeroPhaseTracer = false;</code>为<code>True</code></li>
+<li>另外在查看<code>ZeroPhaseTracer</code>还需要打开<code>mTraceDetailedInfo</code>，即<code>const bool mTraceDetailedInfo = true;</code></li>
+</ul>
+<h2 id="对比文件和文件夹区别（可用于git解决冲突）"><a href="#对比文件和文件夹区别（可用于git解决冲突）" class="headerlink" title="对比文件和文件夹区别（可用于git解决冲突）"></a>对比文件和文件夹区别（可用于git解决冲突）</h2><p><code>meld 文件/文件夹</code></p>
+<p>比较文件: <code>vimdiff a.txt b.txt</code></p>
+<h2 id="repo"><a href="#repo" class="headerlink" title="repo"></a>repo</h2><blockquote>
+<p>Android代码包含几百个git库，下载和管理都需要一个方便的工具，Google开发了repo用来管理多个git库，通过manifest.xml文件将一个个的git库管理起来,形成一个系统。</p>
+</blockquote>
+<h3 id="Gerrit"><a href="#Gerrit" class="headerlink" title="Gerrit"></a>Gerrit</h3><blockquote>
+<p><code>Gerrit</code>是Google开发的一个代码审核工具。它是一个Web工具,它靠git来存放代码,靠repo这个接口来提交和下载修改。 提交到Gerrit时,每个Git库的修改都会变成一次提交,每个提交可以有一个或多个人来review和verify。当你的修改被批准之后,Gerrit会把修改真正提交到指定的分支中。</p>
+</blockquote>
+<p>Gerrit上代码提交的三种状态：<br><code>Open、Merged、Abandoned</code></p>
+<ol>
+<li><code>Open</code>: 状态的代码需要经过Review,Verify,Submit操作后才会真正入库,即成为Merged状态</li>
+<li><code>Merged</code>: 状态的代码已经入库,不能再Abandoned,只能Revert</li>
+<li><code>Open</code>: 状态的代码由于各种原因不能入库的可以放弃,即Abandoned状态。Abandoned 状态的代码不能再入库,如有需要,可以“Restore”。</li>
+</ol>
+<h3 id="Jenkins"><a href="#Jenkins" class="headerlink" title="Jenkins"></a>Jenkins</h3><p>一个持续集成工具,一个运行任务的平台。能实施编译、监控集成中存在的错误，提供详细的日志文件和提醒功能。能用图表形象地展示项目构建的趋势和稳定性。</p>
+<h3 id="repo链接指定版本的manifest-xml"><a href="#repo链接指定版本的manifest-xml" class="headerlink" title="repo链接指定版本的manifest.xml"></a>repo链接指定版本的<code>manifest.xml</code></h3><p><code>repo init -m manifest_TEST.xml</code><br>然后可以在目录查看结果，再同步代码。</p>
+<h2 id="ssh生成publickey（指定邮箱）"><a href="#ssh生成publickey（指定邮箱）" class="headerlink" title="ssh生成publickey（指定邮箱）"></a>ssh生成publickey（指定邮箱）</h2><p><code>ssh-keygen -t rsa -C ****@mail.com</code></p>
+<hr>
+<h2 id="Git相关命令"><a href="#Git相关命令" class="headerlink" title="Git相关命令"></a>Git相关命令</h2><h3 id="git用户设置"><a href="#git用户设置" class="headerlink" title="git用户设置"></a>git用户设置</h3><ul>
+<li><p><code>git config --global user.name ***</code></p>
+</li>
+<li><p><code>git config --global user.email ****@mail.com</code></p>
+</li>
+<li><p>查看config： <code>git config -l</code></p>
+</li>
+</ul>
+<h3 id="生成补丁"><a href="#生成补丁" class="headerlink" title="生成补丁"></a>生成补丁</h3><p><code>git format-patch -1 [最近的提交CommitID]</code></p>
+<h3 id="生成指定某个commit提交的补丁"><a href="#生成指定某个commit提交的补丁" class="headerlink" title="生成指定某个commit提交的补丁"></a>生成指定某个commit提交的补丁</h3><p><code>git format-patch abc123d^..abc123d</code></p>
+<h3 id="获取补丁"><a href="#获取补丁" class="headerlink" title="获取补丁"></a>获取补丁</h3><ol>
+<li>申请生成在本地，但是没有加入暂存区： <code>git apply [PatchA]</code></li>
+<li>直接申请生成提交： <code>git am [PatchB]</code></li>
+</ol>
+<h3 id="git-add用法"><a href="#git-add用法" class="headerlink" title="git add用法"></a>git add用法</h3><ul>
+<li><code>git add .</code>:提交所有修改的文件,包括新增文件,不包括删除文件</li>
+<li><code>git add -u</code>:提交所有修改文件,包括删除文件,不包括新增文件</li>
+<li><code>git add -A</code>:提交包括新增和删除文件的所有文件</li>
+</ul>
+<h3 id="从暂存区域移除等其他命令"><a href="#从暂存区域移除等其他命令" class="headerlink" title="从暂存区域移除等其他命令"></a>从暂存区域移除等其他命令</h3><table>
+<thead>
+<tr>
+<th align="center">Command</th>
+<th align="center">Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">git rm</td>
+<td align="center">从暂存区域移除,并连带从工作目录中删除指定的文件</td>
+</tr>
+<tr>
+<td align="center">git rm -f</td>
+<td align="center">如果删除之前修改过并且已经放到暂存区域的话,则必须要用强制删除选项<code>-f</code></td>
+</tr>
+<tr>
+<td align="center">git reset HEAD <file>…</td>
+<td align="center">取消对文件的修改,把之前版本的文件复制过来重写此文件。</td>
+</tr>
+<tr>
+<td align="center">git checkout – <file>…</td>
+<td align="center">取消已经暂存的文件</td>
+</tr>
+<tr>
+<td align="center">git clean</td>
+<td align="center">删除未暂存的文件</td>
+</tr>
+<tr>
+<td align="center">git diff</td>
+<td align="center">查看尚未暂存的文件更新了哪些部分(和暂存区中)</td>
+</tr>
+<tr>
+<td align="center">git diff –cached</td>
+<td align="center">看已经暂存起来的文件和上次提交时的快照之间的差异</td>
+</tr>
+<tr>
+<td align="center">git log –graph</td>
+<td align="center">显示图形表示的分支合并历史</td>
+</tr>
+<tr>
+<td align="center">git log –since=2.weeks</td>
+<td align="center">列出所有最近两周内的提交</td>
+</tr>
+<tr>
+<td align="center">git log –p</td>
+<td align="center">以patch形式显示提交</td>
+</tr>
+<tr>
+<td align="center">git log -p -2</td>
+<td align="center">常用 -p 选项展开显示每次提交的内容差异，用 -2 则仅显示最近的两次更新</td>
+</tr>
+<tr>
+<td align="center">git log –stat</td>
+<td align="center">仅显示简要的增改行数统计。</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="GDB命令"><a href="#GDB命令" class="headerlink" title="GDB命令"></a>GDB命令</h2><table>
+<thead>
+<tr>
+<th align="center">Command</th>
+<th align="center">Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">bt</td>
+<td align="center">查看各级函数调用及参数</td>
+</tr>
+<tr>
+<td align="center">bt full</td>
+<td align="center">详细堆栈信息</td>
+</tr>
+<tr>
+<td align="center">bt PID</td>
+<td align="center">查看PID信息</td>
+</tr>
+<tr>
+<td align="center">frame</td>
+<td align="center">选择栈帧</td>
+</tr>
+<tr>
+<td align="center">info locals</td>
+<td align="center">查看当前栈帧局部变量的值</td>
+</tr>
+<tr>
+<td align="center">info registers</td>
+<td align="center">可以看函数入参</td>
+</tr>
+<tr>
+<td align="center">thread n</td>
+<td align="center">切换到线程n</td>
+</tr>
+<tr>
+<td align="center">info threads</td>
+<td align="center">查看线程</td>
+</tr>
+<tr>
+<td align="center">disassemble</td>
+<td align="center">反汇编（默认范围是选择帧的pc附近的函数）</td>
+</tr>
+<tr>
+<td align="center">info frame</td>
+<td align="center">选择堆栈帧</td>
+</tr>
+<tr>
+<td align="center">info args</td>
+<td align="center">显示函数参数和局部变量的内容</td>
+</tr>
+<tr>
+<td align="center">info reg（或者i r）</td>
+<td align="center">查看地址</td>
+</tr>
+<tr>
+<td align="center">disas</td>
+<td align="center">反汇编查看函数（包含地址信息）</td>
+</tr>
+<tr>
+<td align="center">i proc m （info proc mappings 的简写）</td>
+<td align="center">核查零是不是有效地址</td>
+</tr>
+</tbody></table>
+<h3 id="Bt"><a href="#Bt" class="headerlink" title="Bt"></a>Bt</h3><blockquote>
+<p>跟踪堆栈的信息: <code>bt [-a|-g|-r|-t|-T|-l|-e|-E|-f|-F|-o|-O] [-R ref] [-I ip] [-S sp] [pid | task]</code></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Bt 无参数则显示当前任务的堆栈信息</span><br><span class="line">Bt –a 以任务为单位，显示每个任务的堆栈信息</span><br><span class="line">Bt –t 显示当前任务的堆栈中所有的文本标识符</span><br><span class="line">Bt –f 显示当前任务的所有堆栈数据，通过用来检查每个函数的参数传递</span><br></pre></td></tr></table></figure>
+
+<h3 id="mod命令"><a href="#mod命令" class="headerlink" title="mod命令"></a>mod命令</h3><blockquote>
+<p>用来加载调试符号，有时一些结构或者函数的符号信息不在调试版本内核里面，需要用<code>gcc -g</code>选项编译自己的模块，然后用mod命令加载里面的调试信息。这样<code>sym</code>和<code>whatis</code>命令就能正确解释我们自己模块里面自定义的结构等信息。</p>
+</blockquote>
+<hr>
+<h2 id="ffmpeg-转换jpg和png格式"><a href="#ffmpeg-转换jpg和png格式" class="headerlink" title="ffmpeg 转换jpg和png格式"></a>ffmpeg 转换jpg和png格式</h2><p><code>ffmpeg -i test.png test1.jpg</code></p>
+<h2 id="远程服务器使用ssh链接并且映射"><a href="#远程服务器使用ssh链接并且映射" class="headerlink" title="远程服务器使用ssh链接并且映射"></a>远程服务器使用ssh链接并且映射</h2><p>在用户根目录的<code>.bashrc</code>添加：</p>
+<ol>
+<li>链接：<br><code>alias sshTest=&#39;function _ssh() {  echo &quot;提示信息&quot;; ssh -p 端口 服务器用户名@IP; unset -f ssh; }; _ssh&#39;</code></li>
+<li>映射：<br><code>alias sshreferenceTest=&#39;echo &quot;提示信息&quot;;sshfs -p 端口 -o cache=yes,reconnect 服务器用户名@IP:/home/服务器映射目录 /home/user/本地映射目录&#39;</code></li>
+</ol>
+<p>执行<code>source .bashrc</code>生效</p>
+<blockquote>
+<p>如果服务器映射报错<code>bad mount point</code>/mnt/‘: Transport endpoint is not connected`</p>
+</blockquote>
+<p>解决方法：</p>
+<ol>
+<li><code>sudo  umount  --all</code>（或者指定目录）</li>
+<li>重新mount，即<code>sudo mount --all</code></li>
+</ol>
+<h2 id="linux下修改图片尺寸（jpg、png…）"><a href="#linux下修改图片尺寸（jpg、png…）" class="headerlink" title="linux下修改图片尺寸（jpg、png…）"></a>linux下修改图片尺寸（jpg、png…）</h2><ol>
+<li><code>sudo apt-get install imagemagick</code></li>
+<li><code>convert example.png -resize 200×100 example.png //按照原有比例缩放</code></li>
+<li><code>convert example.png -resize 200×100! example.png</code></li>
+</ol>
+<h2 id="查看网络地址情况"><a href="#查看网络地址情况" class="headerlink" title="查看网络地址情况"></a>查看网络地址情况</h2><p><code>route -n</code></p>
+<h2 id="文件压缩、解压"><a href="#文件压缩、解压" class="headerlink" title="文件压缩、解压"></a>文件压缩、解压</h2><ol>
+<li>zip文件：<br><code>zip -r   a.zip  /dir</code></li>
+</ol>
+<p>直接unzip解压</p>
+<ol start="2">
+<li>tar.bz：<br>Linux下压缩比率较tgz大，即压缩后占用更小的空间，使得压缩包看起来更小。<br>但同时在压缩，解压的过程却是非常耗费CPU时间。</li>
+</ol>
+<ul>
+<li><ul>
+<li>打包压缩格式，举例：<br><code>tar -jcvf file.tar.bz2 dir #dir目录</code></li>
+</ul>
+</li>
+<li><ul>
+<li>解压，举例：<br><code>tar -jxvf file.tar.bz2</code><br><code>tar -jxvf file.tar.bz2 -C /temp</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="ls-命令"><a href="#ls-命令" class="headerlink" title="ls 命令"></a>ls 命令</h2><table>
+<thead>
+<tr>
+<th align="center">Command</th>
+<th align="center">Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">ls -a</td>
+<td align="center">列出文件下所有的文件，包括以“.“开头的隐藏文件（Linux下文件隐藏文件是以.开头的，如果存在..代表存在着父目录）。</td>
+</tr>
+<tr>
+<td align="center">ls -l</td>
+<td align="center">列出文件的详细信息，如创建者，创建时间，文件的读写权限列表等等。</td>
+</tr>
+<tr>
+<td align="center">ls -F</td>
+<td align="center">在每一个文件的末尾加上一个字符说明该文件的类型。”@”表示符号链接、”</td>
+</tr>
+<tr>
+<td align="center">ls -s</td>
+<td align="center">在每个文件的后面打印出文件的大小。  size(大小)</td>
+</tr>
+<tr>
+<td align="center">ls -t</td>
+<td align="center">按时间进行文件的排序  Time(时间)</td>
+</tr>
+<tr>
+<td align="center">ls -A</td>
+<td align="center">列出除了”.”和”..”以外的文件。</td>
+</tr>
+<tr>
+<td align="center">ls -R</td>
+<td align="center">将目录下所有的子目录的文件都列出来，相当于我们编程中的“递归”实现</td>
+</tr>
+<tr>
+<td align="center">ls -L</td>
+<td align="center">列出文件的链接名。Link（链接）</td>
+</tr>
+<tr>
+<td align="center">ls -S</td>
+<td align="center">以文件的大小进行排序</td>
+</tr>
+<tr>
+<td align="center">ls -h</td>
+<td align="center">显示文件大小</td>
+</tr>
+</tbody></table>
+<h2 id="firefox修改中文"><a href="#firefox修改中文" class="headerlink" title="firefox修改中文"></a>firefox修改中文</h2><ol>
+<li>打开浏览器，在地址栏中输入<code>about:config</code>，然后按下回车。</li>
+<li>在列表中找到“general.useragent.locale”，然后双击，将内容改为”zh-CH”</li>
+<li>重启之后就会默认为中文了（注：如果想改回英文就改为:  en-US )</li>
+</ol>
+<h2 id="Ubuntu系统log路径-var-log"><a href="#Ubuntu系统log路径-var-log" class="headerlink" title="Ubuntu系统log路径/var/log"></a>Ubuntu系统log路径<code>/var/log</code></h2><p>查看: <code>ls -tl</code></p>
+<h2 id="hidl接口生成命令"><a href="#hidl接口生成命令" class="headerlink" title="hidl接口生成命令"></a>hidl接口生成命令</h2><p><code>hidl-gen</code>是Android架构HIDL编译工具，可以手动将哈希加到<code>current.txt</code>中，也可以使用以下命令添加：<br><code>hidl-gen -L hash -r .../interfaces -r android.hidl:...</code></p>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/">https://alonealive.github.io/Blog/2019/11/23/2019/191121_android_debug2/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-11-23T15:52:00.000Z" itemprop="datePublished">2019-11-23</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:18:54.698Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/graphics/" rel="tag">#&nbsp;graphics</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/11/24/2019/191124_android_binder_example/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android Binder实例</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/11/03/2019/191103_android_hideDoc/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android @hide接口注释</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

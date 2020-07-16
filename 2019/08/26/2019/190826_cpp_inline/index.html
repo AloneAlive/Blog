@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>C++内联函数、引用变量、函数重载、函数模板 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="C++内联函数、引用变量、函数重载、函数模板 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/"><meta property="og:locale" content="zh-CN"><meta name="description" content="内联函数 常规函数调用使程序跳到另一个地址（函数的地址），并在函数结束后返回。来回跳跃并记录跳跃位置意味着一定的开销。内联函数使得编译器将相应的函数代码替换函数调用。程序无需跳到另一个位置处执行代码，再调回来。因而，内联函数运行速度比常规函数快，但是代价是需要占用更多的内存。如果程序在10个不同的地方调用调用同一个内联函数，则该程序将包含该函数代码的10个副本。 - sunwengang - sunwengang blog"><meta name="keywords" content="cpp"><meta property="article:published_time" content="2019-08-26T14:23:05.000Z"><meta property="article:modified_time" content="2020-03-08T10:11:22.924Z"><meta property="og:updated_time" content="2020-03-08T10:11:22.924Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="cpp"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/"
+    },
+    "headline": "C++内联函数、引用变量、函数重载、函数模板 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-08-26T14:23:05.000Z",
+    "dateModified": "2020-03-08T10:11:22.924Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "cpp",
+    "description": "内联函数 常规函数调用使程序跳到另一个地址（函数的地址），并在函数结束后返回。来回跳跃并记录跳跃位置意味着一定的开销。内联函数使得编译器将相应的函数代码替换函数调用。程序无需跳到另一个位置处执行代码，再调回来。因而，内联函数运行速度比常规函数快，但是代价是需要占用更多的内存。如果程序在10个不同的地方调用调用同一个内联函数，则该程序将包含该函数代码的10个副本。 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=C++内联函数、引用变量、函数重载、函数模板" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=C++内联函数、引用变量、函数重载、函数模板&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=C++内联函数、引用变量、函数重载、函数模板" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACLElEQVR42u3aW27DMAwFUe9/0+1vEUi8Q8dFU3H8kz4M+xgQFT58ff2D4xIpUqTID0BexfHznNfP1c+r81+vt/vf8r4ixyKXi3aBXJ2ze6DqfHxfkaORdIFXwApKgkukSIrcXTxh00OKFPkOskKlB+pcT6TI9EVfJQwEcydpESmyKoh+8/OxalHkUUgaFLtmALnZqhB7tKsm8ihktZCf2rR3Ta14P5EjkSnxrBZ8QleFFwkqkTORuyY9uQEdBuwSlxRgImciU/M9bcLV36sASQEmci6yOpks9urGKUjiNUSORZINtxMUdOiUijKRs5G0edp5mWQXjHhjFymymXCQgo0kwu3AEXk8Mi3wFBB0QND5XaTId5oCdDBaNVSXDy5yLJK8IFw1tLpN0jQEFTkbSQok+nJ7ApEkQ6TItOmSwok2W6sARANQkSOQVYMzNa1SMzUNRdsJhsgRyG5DihZlJIFpf+OIHIGkA3WSLNDNvTovFmIiRyFTcNBFTwMnNidEjkamAiydTxLbVOihpFfkCCQZMpGNng6WyJeCSJH0IAPQOw1//EKdyDHI1IiiA0/SfCUDUpFzkSRQ0sCevghVFWithpXIo5FpQZPgaiWyT1SLIo9HpovRxU6a9rcDR+Q4JCmWnkgmyIv3IkV2mvhVs74quKpGQbsQEzkeWQUKSRyqDbtMmkWORtLG1N2AIgnG7aRX5HHI9MVfXTQ1u7oDVpEiP/kQKVKkyD88vgH/d5XE5YZyAwAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">C++内联函数、引用变量、函数重载、函数模板</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-08-26</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=C++内联函数、引用变量、函数重载、函数模板&url=https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=C++内联函数、引用变量、函数重载、函数模板&url=https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACLElEQVR42u3aW27DMAwFUe9/0+1vEUi8Q8dFU3H8kz4M+xgQFT58ff2D4xIpUqTID0BexfHznNfP1c+r81+vt/vf8r4ixyKXi3aBXJ2ze6DqfHxfkaORdIFXwApKgkukSIrcXTxh00OKFPkOskKlB+pcT6TI9EVfJQwEcydpESmyKoh+8/OxalHkUUgaFLtmALnZqhB7tKsm8ihktZCf2rR3Ta14P5EjkSnxrBZ8QleFFwkqkTORuyY9uQEdBuwSlxRgImciU/M9bcLV36sASQEmci6yOpks9urGKUjiNUSORZINtxMUdOiUijKRs5G0edp5mWQXjHhjFymymXCQgo0kwu3AEXk8Mi3wFBB0QND5XaTId5oCdDBaNVSXDy5yLJK8IFw1tLpN0jQEFTkbSQok+nJ7ApEkQ6TItOmSwok2W6sARANQkSOQVYMzNa1SMzUNRdsJhsgRyG5DihZlJIFpf+OIHIGkA3WSLNDNvTovFmIiRyFTcNBFTwMnNidEjkamAiydTxLbVOihpFfkCCQZMpGNng6WyJeCSJH0IAPQOw1//EKdyDHI1IiiA0/SfCUDUpFzkSRQ0sCevghVFWithpXIo5FpQZPgaiWyT1SLIo9HpovRxU6a9rcDR+Q4JCmWnkgmyIv3IkV2mvhVs74quKpGQbsQEzkeWQUKSRyqDbtMmkWORtLG1N2AIgnG7aRX5HHI9MVfXTQ1u7oDVpEiP/kQKVKkyD88vgH/d5XE5YZyAwAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#内联函数"><span class="post-toc-number">1.</span> <span class="post-toc-text">内联函数</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#引用变量标识符-amp"><span class="post-toc-number">2.</span> <span class="post-toc-text">引用变量标识符&amp;</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#创建引用变量"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">创建引用变量</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#将引用用作函数参数"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">将引用用作函数参数</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#合适使用引用参数"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">合适使用引用参数</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#默认参数"><span class="post-toc-number">3.</span> <span class="post-toc-text">默认参数</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#函数重载"><span class="post-toc-number">4.</span> <span class="post-toc-text">函数重载</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#名称修饰（或名称矫正）"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">名称修饰（或名称矫正）</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#函数模板"><span class="post-toc-number">5.</span> <span class="post-toc-text">函数模板</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#重载的函数模板"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">重载的函数模板</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#局限性"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">局限性</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#显示具体化"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">显示具体化</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#关键字decltype-c-11"><span class="post-toc-number">5.4.</span> <span class="post-toc-text">关键字decltype(c++11)</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#C-11后置返回类型声明语法"><span class="post-toc-number">5.5.</span> <span class="post-toc-text">C++11后置返回类型声明语法</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="内联函数"><a href="#内联函数" class="headerlink" title="内联函数"></a>内联函数</h2><blockquote>
+<p>常规函数调用使程序跳到另一个地址（函数的地址），并在函数结束后返回。来回跳跃并记录跳跃位置意味着一定的开销。<br>内联函数使得编译器将相应的函数代码替换函数调用。程序无需跳到另一个位置处执行代码，再调回来。<br>因而，内联函数运行速度比常规函数快，但是代价是需要占用更多的内存。如果程序在10个不同的地方调用调用同一个内联函数，则该程序将包含该函数代码的10个副本。</p>
+</blockquote>
+<a id="more"></a>
+<p>使用内联函数：</p>
+<ul>
+<li>在函数声明前加上关键字<code>inline</code></li>
+<li>在函数定义前加上关键字<code>inline</code></li>
+</ul>
+<p>通常的做法是省略原型，将整个定义（即函数头和所有函数代码）放在本应提供原型的地方。</p>
+<p><strong>示例代码：</strong></p>
+<figure class="highlight c++"><figcaption><span>inline.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">inline</span> <span class="keyword">double</span> <span class="title">square</span><span class="params">(<span class="keyword">double</span> x)</span> </span>&#123;<span class="keyword">return</span> x * x;&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">double</span> a, b;</span><br><span class="line"></span><br><span class="line">	a = square(<span class="number">5.0</span>);</span><br><span class="line">	b = square(<span class="number">4.5</span> + <span class="number">7.5</span>);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"a = "</span> &lt;&lt; a &lt;&lt; <span class="string">", b = "</span> &lt;&lt; b &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行结果：</strong> <code>a = 25, b = 144</code></p>
+<p><strong>NOTE：</strong><br>C语言使用预处理语句<code>**#define</code>提供宏（内联代码的原始实现），比如：<code>#define SQUARE(X) X*X</code><br>这是通过文本替换来实现的。</p>
+<hr>
+<h2 id="引用变量标识符-amp"><a href="#引用变量标识符-amp" class="headerlink" title="引用变量标识符&amp;"></a>引用变量<code>标识符&amp;</code></h2><blockquote>
+<p>引用变量的主要用途是用作函数的形参。通过将引用变量用作参数，函数将使用原始数据，而不是副本。这样除了指针以外，引用也为函数处理大型结构提供了方便的途径。</p>
+</blockquote>
+<h3 id="创建引用变量"><a href="#创建引用变量" class="headerlink" title="创建引用变量"></a>创建引用变量</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> rats;</span><br><span class="line"><span class="keyword">int</span> &amp; rodents = rats;  <span class="comment">//此处的&amp;不是地址运算符，而是类型标识符的一部分。int&amp;是指向int的引用。</span></span><br></pre></td></tr></table></figure>
+
+<p>上述的引用声明允许将rats和rodents互换，<code>他们指向相同的值和内存单元</code>。<br><strong>示例代码：</strong></p>
+<figure class="highlight c++"><figcaption><span>firstref.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> rats = <span class="number">101</span>;</span><br><span class="line">	<span class="keyword">int</span> &amp; rodents = rats;   <span class="comment">//必须在声明引用时初始化，不可以分成两句</span></span><br><span class="line">    <span class="comment">//上一句等价于  int * const pr = &amp;rats;</span></span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"rats = "</span> &lt;&lt; rats &lt;&lt; <span class="string">", rodents = "</span> &lt;&lt; rodents &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	rodents++;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"After rodents++, rats = "</span> &lt;&lt; rats &lt;&lt; <span class="string">", rodents = "</span> &lt;&lt; rodents &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Address &amp;rats = "</span> &lt;&lt; &amp;rats &lt;&lt; <span class="string">", &amp;rodents = "</span> &lt;&lt; &amp;rodents &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rats = <span class="number">101</span>, rodents = <span class="number">101</span></span><br><span class="line">After rodents++, rats = <span class="number">102</span>, rodents = <span class="number">102</span></span><br><span class="line">Address &amp;rats = <span class="number">0x7ffe8c156f1c</span>, &amp;rodents = <span class="number">0x7ffe8c156f1c</span>  <span class="comment">//相同的地址和值</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="将引用用作函数参数"><a href="#将引用用作函数参数" class="headerlink" title="将引用用作函数参数"></a>将引用用作函数参数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;按值传递</span><br><span class="line">void lazy(int x);</span><br><span class="line">int main() &#123;</span><br><span class="line">    int times &#x3D; 20;</span><br><span class="line">    lazy(times);</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void lazy(int x) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;按引用传递</span><br><span class="line">void work(int &amp;x);</span><br><span class="line">int main() &#123;</span><br><span class="line">    int times &#x3D; 20;</span><br><span class="line">    work(times);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">void work(int &amp;x) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果让函数使用传递给她的信息，而不对信息进行修改，同时又箱使用引用，则应使用<code>常量引用</code>，即使用const。</p>
+<p><code>double refcube(const double &amp;ra);</code></p>
+<p>将引用参数声明为常量数据的引用的理由三个：</p>
+<ul>
+<li>使用const可以避免无意中修改数据的编程错误</li>
+<li>使用const使函数能够处理const和非const实参，否则将只能接受非cosnt数据</li>
+<li>使用const引用使函数能够正确生成并使用临时变量</li>
+</ul>
+<p>C++11新增了另一种引用 – <code>右值引用</code>，这种引用可以指向右值，是使用<code>&amp;&amp;</code>声明的。目的用来实现移动语义。而’&amp;’引用是左值引用。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> &amp;&amp; rref = <span class="built_in">std</span>::<span class="built_in">sqrt</span>(<span class="number">36.00</span>);  <span class="comment">//6</span></span><br><span class="line"><span class="keyword">double</span> j = <span class="number">15.0</span>;</span><br><span class="line">douvle &amp;&amp; jref = <span class="number">2.0</span> * j + <span class="number">18.5</span>;   <span class="comment">//48.5</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="合适使用引用参数"><a href="#合适使用引用参数" class="headerlink" title="合适使用引用参数"></a>合适使用引用参数</h3><p>使用引用参数的主要原因有两个：</p>
+<ul>
+<li>能够修改调用函数中的数据对象</li>
+<li>通过传递引用而不是整个数据对象，提高程序运行速度</li>
+</ul>
+<p>对于使用传递的值而不做修改的函数：</p>
+<ul>
+<li>如果数据对象很小，如内置数据类型或小型数据。则按值传递</li>
+<li>如果数据对象是数组，则使用指针，并将指针声明为指向const的指针</li>
+<li>如果数据对象是较大的结构，则使用const指针或const引用，提高效率，节省复制结构所需的时间和空间</li>
+<li>如果数据对象是类对象，则使用const引用，传递类对象参数的标准方式是按引用传递</li>
+</ul>
+<p>对于修改函数中数据的函数：</p>
+<ul>
+<li>如果数据对象是内置数据类型，则使用指针。例如调用fixit(&amp;x)这样的函数，则很明显要修改x</li>
+<li>如果数据对象是数组，则只能使用指针</li>
+<li>如果数据对象是结构，则使用引用或者指针</li>
+<li>如果数据对象是类对象，则使用引用</li>
+</ul>
+<h2 id="默认参数"><a href="#默认参数" class="headerlink" title="默认参数"></a>默认参数</h2><blockquote>
+<p><code>默认参数</code>指的是当函数调用中省略了实参时自动调用的一个值。例如将<code>void wow(int n)</code>设置成n有默认值是1，则函数调用<code>wow()</code>就等价于<code>wow(1)</code></p>
+</blockquote>
+<p>通过函数原型设置默认值：<code>char * left(const char *str, int n = 1);</code></p>
+<hr>
+<h2 id="函数重载"><a href="#函数重载" class="headerlink" title="函数重载"></a>函数重载</h2><blockquote>
+<p>同名的函数使用不同的参数列表。<br>因而关键是参数列表，也称作<code>函数特征标</code>。如果两个函数的参数数目和类型相同，同时参数的排列顺序相同，则他们的<code>特征标相同</code>。<br><code>返回类型可以不同，但是特征标也必须不同</code></p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str, <span class="keyword">int</span> <span class="built_in">width</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">double</span> d, <span class="keyword">int</span> <span class="built_in">width</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">long</span> l, <span class="keyword">int</span> <span class="built_in">width</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> <span class="built_in">width</span>)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//返回类型不同</span></span><br><span class="line"><span class="function"><span class="keyword">long</span> <span class="title">gronk</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">float</span> m)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">gronk</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">float</span>)</span></span>;   <span class="comment">//互斥，不允许重载</span></span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">gronk</span><span class="params">(<span class="keyword">float</span> n, <span class="keyword">float</span> m)</span></span>;   <span class="comment">//可以重载</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>因而在使用<code>print()</code>函数时，编译器根据采取的用法使用有相应特征标的函数原型。</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="number">1999.0</span>, <span class="number">10</span>);</span><br><span class="line"><span class="built_in">print</span>(<span class="number">1999L</span>, <span class="number">15</span>);</span><br><span class="line"><span class="built_in">print</span>(<span class="string">"pen"</span>, <span class="number">12</span>);</span><br></pre></td></tr></table></figure>
+
+<p>当函数基本上执行相同的人物，但使用不同形式的数据时，才应采用函数重载。</p>
+<h3 id="名称修饰（或名称矫正）"><a href="#名称修饰（或名称矫正）" class="headerlink" title="名称修饰（或名称矫正）"></a>名称修饰（或名称矫正）</h3><p>根据函数原型中指定的形参类型对每个函数名进行加密。<br><code>long MyFun(int, float);</code><br>编译器将其转化为内部表示来描述接口：<br><code>?MyFun@@YAXH</code></p>
+<hr>
+<h2 id="函数模板"><a href="#函数模板" class="headerlink" title="函数模板"></a>函数模板</h2><blockquote>
+<p>函数模板是通用的函数描述，使用泛型来定义函数，其中泛型可以用具体的类型（如int或double）替换。<br>通过将类型作为参数传递给模板，可以使编译器生成该类型的函数<br>由于模板允许以泛型的方式编写程序，因此也称作<code>通用编程</code><br>由于类型是用参数表示的，因此模板特性有时也称作<code>参数化类型</code></p>
+</blockquote>
+<p>函数模板允许以任意类型的方式来定义函数。例如，可以建立一个交换模板：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> AnyType&gt;</span><br><span class="line"><span class="comment">//template &lt;class T&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">swap</span><span class="params">(AnyType &amp;a, AnyType &amp;b)</span> </span>&#123;</span><br><span class="line">	AnyType temp;</span><br><span class="line">	temp = a;</span><br><span class="line">	a = b;</span><br><span class="line">	b = temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>第一行建立一个模板，将类型命名为AnyType，关键字<code>template</code>和<code>typename</code>是必需的，除非使用另一个关键字<code>class</code>代替<code>typename</code>(这两个关键字等价的)。另外，必须使用尖括号。<br>类型名可以任意选择（此处是AnyType），常用<code>T</code></p>
+<blockquote>
+<p>如果需要多个将同一个算法用于不同类型的函数，请使用函数模板。如果不考虑向后兼容的问题，并愿意键入较长的单词，则声明类型参数时，应使用关键字typename而不使用class。</p>
+</blockquote>
+<p><strong>Example:</strong></p>
+<figure class="highlight c++"><figcaption><span>funtemp.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="comment">//or class T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Swap</span><span class="params">(T &amp;a, T &amp;b)</span></span>;  <span class="comment">//函数原型、函数模板使用、引用变量</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//函数模板定义</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt; <span class="comment">//or class T</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Swap</span><span class="params">(T &amp;a, T &amp;b)</span> </span>&#123;</span><br><span class="line">	T temp;</span><br><span class="line">	temp = a;</span><br><span class="line">	a = b;</span><br><span class="line">	b = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">10</span>;</span><br><span class="line">	<span class="keyword">int</span> j = <span class="number">20</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Before swap, i = "</span> &lt;&lt; i &lt;&lt; <span class="string">",j = "</span> &lt;&lt; j &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	Swap(i, j);</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"After  swap, i = "</span> &lt;&lt; i &lt;&lt; <span class="string">",j = "</span> &lt;&lt; j &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">double</span> x = <span class="number">24.45</span>;</span><br><span class="line">	<span class="keyword">double</span> y = <span class="number">45.2</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Before swap, x = "</span> &lt;&lt; x &lt;&lt; <span class="string">",y = "</span> &lt;&lt; y &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        Swap(x, y);</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"After  swap, x = "</span> &lt;&lt; x &lt;&lt; <span class="string">",y = "</span> &lt;&lt; y &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Result:</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Before swap, i = <span class="number">10</span>,j = <span class="number">20</span>   <span class="comment">//当接收两个int参数，则会用int代替T</span></span><br><span class="line">After  swap, i = <span class="number">20</span>,j = <span class="number">10</span></span><br><span class="line">Before swap, x = <span class="number">24.45</span>,y = <span class="number">45.2</span></span><br><span class="line">After  swap, x = <span class="number">45.2</span>,y = <span class="number">24.45</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Note:</strong><br>函数模板不能缩短可执行程序，最终仍将由独立的函数定义，最终的代码不包含任何函数模板，而只包含了为程序生成的实际函数。</p>
+<p>使用函数模板的好处是使得多个函数定义更简单可靠。</p>
+<h3 id="重载的函数模板"><a href="#重载的函数模板" class="headerlink" title="重载的函数模板"></a>重载的函数模板</h3><blockquote>
+<p>可以像重载常规函数定义一样重载函数模板定义。保证被重载的函数模板<code>特征标</code>必须不同</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Swap</span><span class="params">(T &amp;a, T &amp;b)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Swap</span><span class="params">(T *a, T *b, <span class="keyword">int</span> n)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//实现第二个</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Swap</span><span class="params">(T a[], T b[], <span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	T temp;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">		temp = a[i];</span><br><span class="line">		a[i] = b[i];</span><br><span class="line">		b[i] = temp;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="局限性"><a href="#局限性" class="headerlink" title="局限性"></a>局限性</h3><blockquote>
+<p>模板函数可能无法处理某些类型。例如数组、指针、结构的某些运算。<br>一种解决方案是C++允许你重载运算符+，以便能够将其用于特定的结构或类；<br>另一种是为特定类型提供具体化的模板定义。</p>
+</blockquote>
+<h3 id="显示具体化"><a href="#显示具体化" class="headerlink" title="显示具体化"></a>显示具体化</h3><p>C++98标准选择了以下的方法实现第三代具体化：</p>
+<ul>
+<li>对于给定的函数名，可以有非模板函数、模板函数、显示具体化模板函数、以及他们的重载版本</li>
+<li>显示具体化的原型和定义应该以<code>template &lt;&gt;</code>开头，并通过名称指出类型</li>
+<li>优先级： 非模板函数 &gt; 显示具体化模板函数 &gt; 常规模板函数</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">job</span> &#123;</span></span><br><span class="line">	<span class="keyword">char</span> name[<span class="number">40</span>];</span><br><span class="line">	<span class="keyword">double</span> salary;</span><br><span class="line">	<span class="keyword">int</span> <span class="built_in">floor</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//非模板函数(首先调用)</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Swap</span><span class="params">(job &amp;, job &amp;)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//显示具体化模板函数（其次调用）</span></span><br><span class="line"><span class="keyword">template</span> &lt;&gt; <span class="keyword">void</span> Swap&lt;job&gt;(job &amp; ,job &amp;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//常规模板函数</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Swap</span><span class="params">(T &amp;, T &amp;)</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p><code>Swap&lt;job&gt;</code>的<code>&lt;job&gt;</code>是可选的，因为函数的参数类型声明，这是job的一个具体化。因此，该原型也可以写作：<br><code>template &lt;&gt; void Swap(job &amp;, job &amp;);</code></p>
+<p><strong>Example:</strong></p>
+<figure class="highlight c++"><figcaption><span>twoswap.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Swap</span><span class="params">(T &amp;a, T &amp;b)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">job</span>&#123;</span></span><br><span class="line">	<span class="keyword">char</span> name[<span class="number">40</span>];</span><br><span class="line">	<span class="keyword">double</span> salary;</span><br><span class="line">	<span class="keyword">int</span> <span class="built_in">floor</span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;&gt; <span class="keyword">void</span> Swap&lt;job&gt;(job &amp;j1, job &amp;j2);</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Show</span><span class="params">(job &amp;j)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Swap</span><span class="params">(T &amp;a, T &amp;b)</span> </span>&#123;</span><br><span class="line">	T temp;</span><br><span class="line">	temp = a;</span><br><span class="line">	a = b;</span><br><span class="line">	b = temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span> &lt;&gt; <span class="keyword">void</span> Swap&lt;job&gt;(job &amp;j1, job &amp;j2) &#123;</span><br><span class="line">	<span class="keyword">double</span> t1;</span><br><span class="line">	<span class="keyword">int</span> t2;</span><br><span class="line">	t1 = j1.salary;</span><br><span class="line">	j1.salary = j2.salary;</span><br><span class="line">	j2.salary = t1;</span><br><span class="line"></span><br><span class="line">	t2 = j1.<span class="built_in">floor</span>;</span><br><span class="line">	j1.<span class="built_in">floor</span> = j2.<span class="built_in">floor</span>;</span><br><span class="line">	j2.<span class="built_in">floor</span> = t2;	</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Show</span><span class="params">(job &amp;j)</span> </span>&#123;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; j.name &lt;&lt; <span class="string">" : $"</span> &lt;&lt; j.salary &lt;&lt; <span class="string">" on floor "</span> &lt;&lt; j.<span class="built_in">floor</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="built_in">cout</span>.precision(<span class="number">2</span>);</span><br><span class="line">	<span class="built_in">cout</span>.setf(ios::fixed, ios::floatfield);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">10</span>, j = <span class="number">20</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Before swap, i = "</span> &lt;&lt; i &lt;&lt; <span class="string">",j = "</span> &lt;&lt; j &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	Swap(i, j);</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"After  swap, i = "</span> &lt;&lt; i &lt;&lt; <span class="string">",j = "</span> &lt;&lt; j &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	job sue = &#123;<span class="string">"Susan"</span>, <span class="number">7300.60</span>, <span class="number">7</span>&#125;;</span><br><span class="line">	job sidney = &#123;<span class="string">"Sidney Taffee"</span>, <span class="number">78060.72</span>, <span class="number">9</span>&#125;;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Before job swap,\n"</span>;</span><br><span class="line">	Show(sue);</span><br><span class="line">	Show(sidney);</span><br><span class="line">	Swap(sue, sidney);</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"After  job swap,\n"</span>;</span><br><span class="line">        Show(sue);</span><br><span class="line">        Show(sidney);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Results:</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Before swap, i = <span class="number">10</span>,j = <span class="number">20</span></span><br><span class="line">After  swap, i = <span class="number">20</span>,j = <span class="number">10</span></span><br><span class="line">Before job swap,</span><br><span class="line">Susan : $<span class="number">7300.60</span> on <span class="built_in">floor</span> <span class="number">7</span></span><br><span class="line">Sidney Taffee : $<span class="number">78060.72</span> on <span class="built_in">floor</span> <span class="number">9</span></span><br><span class="line">After  job swap,</span><br><span class="line">Susan : $<span class="number">78060.72</span> on <span class="built_in">floor</span> <span class="number">9</span></span><br><span class="line">Sidney Taffee : $<span class="number">7300.60</span> on <span class="built_in">floor</span> <span class="number">7</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="关键字decltype-c-11"><a href="#关键字decltype-c-11" class="headerlink" title="关键字decltype(c++11)"></a>关键字decltype(c++11)</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">T1</span>, <span class="title">class</span> <span class="title">T2</span>&gt;</span></span><br><span class="line"><span class="class"><span class="title">void</span> <span class="title">ft</span>(<span class="title">T1</span> <span class="title">x</span>, <span class="title">T2</span> <span class="title">y</span>) &#123;</span></span><br><span class="line">	...</span><br><span class="line">	?type? xpy = x + y;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此处的xpy不知道如何确定类型，在C++11中提供关键字<code>decltype</code>，使用方法：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x;</span><br><span class="line"><span class="keyword">decltype</span>(x) y;</span><br><span class="line"></span><br><span class="line"><span class="keyword">decltype</span>(x+y) xpy;</span><br><span class="line">xpy = x + y;</span><br><span class="line"></span><br><span class="line"><span class="comment">//或者合并成一句</span></span><br><span class="line"><span class="keyword">decltype</span>(x+y) xpy = x + y;</span><br><span class="line"></span><br><span class="line"><span class="comment">//举例</span></span><br><span class="line"><span class="keyword">decltype</span>(<span class="keyword">auto</span>) a;</span><br><span class="line"></span><br><span class="line"><span class="comment">//完善上述的模板函数</span></span><br><span class="line"><span class="keyword">template</span> &lt;<span class="class"><span class="keyword">class</span> <span class="title">T1</span>, <span class="title">class</span> <span class="title">T2</span>&gt;</span></span><br><span class="line"><span class="class"><span class="title">void</span> <span class="title">ft</span>(<span class="title">T1</span> <span class="title">x</span>, <span class="title">T2</span> <span class="title">y</span>) &#123;</span></span><br><span class="line">	...</span><br><span class="line">	<span class="keyword">decltype</span>(x+y) xpy = x + y;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="C-11后置返回类型声明语法"><a href="#C-11后置返回类型声明语法" class="headerlink" title="C++11后置返回类型声明语法"></a>C++11后置返回类型声明语法</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">T1</span>, <span class="title">class</span> <span class="title">T2</span>&gt;</span></span><br><span class="line"><span class="class">?<span class="title">type</span>? <span class="title">gt</span>(<span class="title">T1</span> <span class="title">x</span>, <span class="title">T2</span> <span class="title">y</span>) &#123;</span></span><br><span class="line">	<span class="keyword">return</span> x + y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此处无法确定返回的类型，因为未声明参数x和y，所以他们不再作用域呢，无法使用decltype关键字（必须声明参数后使用）。C++11新增了一种语法：</p>
+<p><code>double h(int x, float y);</code><br>使用新增的语法后可以这样编写：</p>
+<p><code>auto h(int x, float y) -&gt; double;</code></p>
+<p>这样将返回类型已到了参数声明之后，<code>-&gt;double</code>被称为<code>后置返回类型</code>。</p>
+<p>因而使用这种方法声明模板函数：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="class"><span class="keyword">class</span> <span class="title">T1</span>, <span class="title">class</span> <span class="title">T2</span>&gt;</span></span><br><span class="line"><span class="class"><span class="title">auto</span> <span class="title">gt</span>(<span class="title">T1</span> <span class="title">x</span>, <span class="title">T2</span> <span class="title">y</span>) -&gt; <span class="title">decltype</span>(<span class="title">x</span>+<span class="title">y</span>) &#123;</span></span><br><span class="line">	<span class="keyword">return</span> x + y;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/">https://alonealive.github.io/Blog/2019/08/26/2019/190826_cpp_inline/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-08-26T14:23:05.000Z" itemprop="datePublished">2019-08-26</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:11:22.924Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/cpp/'>cpp</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/cpp/" rel="tag">#&nbsp;cpp</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/08/28/2019/190828_android_makefile/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android中的makefile（Android.mk）</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/08/21/2019/190821_cpp_function/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++函数模块（函数指针、递归）</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

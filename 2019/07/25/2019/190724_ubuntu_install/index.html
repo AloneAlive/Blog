@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Ubuntu18系统安装（无需制作启动盘） | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Ubuntu18系统安装（无需制作启动盘） | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/"><meta property="og:locale" content="zh-CN"><meta name="description" content="数据备份准备工具 Ubuntu系统（官网选择版本下载ISO文件） U盘（之前有一个U盘是做了window10的启动盘）  安装步骤 移除备份好的机械硬盘  制作一个启动盘(win10系统不需要用软碟通UltraISO作启动盘) - sunwengang - sunwengang blog"><meta name="keywords" content="linux"><meta property="article:published_time" content="2019-07-25T13:31:37.000Z"><meta property="article:modified_time" content="2020-03-08T10:02:13.950Z"><meta property="og:updated_time" content="2020-03-08T10:02:13.950Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="linux"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/"
+    },
+    "headline": "Ubuntu18系统安装（无需制作启动盘） | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-07-25T13:31:37.000Z",
+    "dateModified": "2020-03-08T10:02:13.950Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "linux",
+    "description": "数据备份准备工具 Ubuntu系统（官网选择版本下载ISO文件） U盘（之前有一个U盘是做了window10的启动盘）  安装步骤 移除备份好的机械硬盘  制作一个启动盘(win10系统不需要用软碟通UltraISO作启动盘) - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Ubuntu18系统安装（无需制作启动盘）" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Ubuntu18系统安装（无需制作启动盘）&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Ubuntu18系统安装（无需制作启动盘）" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACNklEQVR42u2ay3ICMQwE9/9/OrnmgTQth1TIqn2hgLW3Ta3MaKTr7R+MS0ghhRTyBSCvZnya0Lx/9N3HNR5dS+4r5F7Ihw9t+LyCrOZ9BKP3FXI3ZPWwp4c/bYSsXwaZkEI2i1QH8NdrqmD5dlALKeSTAodek4JNSCFPBUa3aAXTBclE2Ai5F7JLiH7z9WnZopC3goymUSMeupudrHXsqgl5K8gkaH9qInSiJG1MyJ2QKWGaGlXk+2r9bz+MkGshyaTOvKfJf2coRIEh5DrIJAy6A5okaCRRKxMxIVdB0gd/Ys5X86jgEHI3JBGspLiZDNGj9YRcCUkEABGqXZCk4Bof5kLeGpIU1dMGiMjoCqmlaBFyJSQRGMmEqg7yVDDo3gsp5KQZjiRvyVBIiZ6QeyFpYj8xWadiBBVAhVwFmUz4ZKZOi0vkT0TI3ZBUpE4PaCqASyNByNWQnbCdNMydNNJhgSHkCkhiUk2ahZMRcHSYC7kWkpqndHNkTpvICbkSkjSGJMOUCudJQ7OQeyFJM2cSEElM0GSujW4h10NSA4pugAbNKHCEvD0kEaapYT6ZraRoJaSQtFBExQO5DjU6CbkSMg3S0EGCoJrXmgxCroRMD3QSr6RRniReMRETchVkd5jTYhE18o8DR8h1kKRYOREkJwJDSCEp5KQYSoQKNhWEFPKg6S0JiHRgt6JZyNWQx6bSdcXG+vRjPMWwEvJWkJM/fnKoEyM2wQu5F/KVh5BCCinkH453D1WVxGkV4t8AAAAASUVORK5CYII=" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Ubuntu18系统安装（无需制作启动盘）</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-07-25</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/linux/">linux</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Ubuntu18系统安装（无需制作启动盘）&url=https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Ubuntu18系统安装（无需制作启动盘）&url=https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACNklEQVR42u2ay3ICMQwE9/9/OrnmgTQth1TIqn2hgLW3Ta3MaKTr7R+MS0ghhRTyBSCvZnya0Lx/9N3HNR5dS+4r5F7Ihw9t+LyCrOZ9BKP3FXI3ZPWwp4c/bYSsXwaZkEI2i1QH8NdrqmD5dlALKeSTAodek4JNSCFPBUa3aAXTBclE2Ai5F7JLiH7z9WnZopC3goymUSMeupudrHXsqgl5K8gkaH9qInSiJG1MyJ2QKWGaGlXk+2r9bz+MkGshyaTOvKfJf2coRIEh5DrIJAy6A5okaCRRKxMxIVdB0gd/Ys5X86jgEHI3JBGspLiZDNGj9YRcCUkEABGqXZCk4Bof5kLeGpIU1dMGiMjoCqmlaBFyJSQRGMmEqg7yVDDo3gsp5KQZjiRvyVBIiZ6QeyFpYj8xWadiBBVAhVwFmUz4ZKZOi0vkT0TI3ZBUpE4PaCqASyNByNWQnbCdNMydNNJhgSHkCkhiUk2ahZMRcHSYC7kWkpqndHNkTpvICbkSkjSGJMOUCudJQ7OQeyFJM2cSEElM0GSujW4h10NSA4pugAbNKHCEvD0kEaapYT6ZraRoJaSQtFBExQO5DjU6CbkSMg3S0EGCoJrXmgxCroRMD3QSr6RRniReMRETchVkd5jTYhE18o8DR8h1kKRYOREkJwJDSCEp5KQYSoQKNhWEFPKg6S0JiHRgt6JZyNWQx6bSdcXG+vRjPMWwEvJWkJM/fnKoEyM2wQu5F/KVh5BCCinkH453D1WVxGkV4t8AAAAASUVORK5CYII=" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#数据备份"><span class="post-toc-number">1.</span> <span class="post-toc-text">数据备份</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#准备工具"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">准备工具</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#安装步骤"><span class="post-toc-number">2.</span> <span class="post-toc-text">安装步骤</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Ubuntu桌面主题修改"><span class="post-toc-number">3.</span> <span class="post-toc-text">Ubuntu桌面主题修改</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Gnome桌面环境查看"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">Gnome桌面环境查看</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#修改主题-只在当前的登录用户"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">修改主题(只在当前的登录用户)</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#图标和指针的主题"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">图标和指针的主题</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ibus输入法有些软件不能输入中文"><span class="post-toc-number">4.</span> <span class="post-toc-text">ibus输入法有些软件不能输入中文</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#终端主题zsh修改"><span class="post-toc-number">5.</span> <span class="post-toc-text">终端主题zsh修改</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#添加开机启动程序的自定义命令"><span class="post-toc-number">6.</span> <span class="post-toc-text">添加开机启动程序的自定义命令</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#查看CPU使用情况"><span class="post-toc-number">7.</span> <span class="post-toc-text">查看CPU使用情况</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#查看磁盘内存使用情况"><span class="post-toc-number">8.</span> <span class="post-toc-text">查看磁盘内存使用情况</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="数据备份"><a href="#数据备份" class="headerlink" title="数据备份"></a>数据备份</h2><h3 id="准备工具"><a href="#准备工具" class="headerlink" title="准备工具"></a>准备工具</h3><ol>
+<li>Ubuntu系统（官网选择版本下载ISO文件）</li>
+<li>U盘（之前有一个U盘是做了window10的启动盘）</li>
+</ol>
+<h2 id="安装步骤"><a href="#安装步骤" class="headerlink" title="安装步骤"></a>安装步骤</h2><ol>
+<li><p>移除备份好的机械硬盘</p>
+</li>
+<li><p>制作一个启动盘(win10系统不需要用软碟通UltraISO作启动盘)</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">（1）U盘最好是16g，USB3.0</span><br><span class="line"></span><br><span class="line">（2）清空U盘（格式化）</span><br><span class="line"></span><br><span class="line">（3）将ISO文件双击然后选中所有的文件将其复制到U盘（win10好像是不需要启动装置软件）</span><br><span class="line"></span><br><span class="line">（4）U盘保持插到电脑上</span><br><span class="line"></span><br><span class="line">（5）win10关闭快速启动选项，“电源选项”-》“选择电源按钮的功能”-》点击“更改当前不可用的设置”-》取消“启动快速启动”选项</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改启动项（保持U盘插到电脑上！）</p>
+</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">（1） 重启电脑，一直按F2（或者F1），进入BIOS</span><br><span class="line"></span><br><span class="line">（2） 点击方向箭头移动到Security，再向下移动到Secure Boot点击回车键，选择Disable</span><br><span class="line"></span><br><span class="line">（3） 点击方向箭头移动到boot,查看USB Boot是否是Enalbed（有的电脑没有USB Boot，在Devices模块的USB Setup选项修改）</span><br><span class="line"></span><br><span class="line">（4） 按F10保存退出</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>安装</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">（1）上一个步骤保存后还是会进入windows，再重启一遍（U盘不要拔出来，如果光驱位有机械硬盘记得拔出来）</span><br><span class="line"></span><br><span class="line">（2）重启一直按F12，进入Boot Option Menu开机选择界面</span><br><span class="line"></span><br><span class="line">（3）选择U盘（USB3.0&#x2F;2.0这种标识）</span><br><span class="line"></span><br><span class="line">（4）等待一会进入启动选项，先选择&quot;try ubuntu without install&quot;,查看ubuntu是否可以安装在电脑上。</span><br><span class="line"></span><br><span class="line">（5）然后会进入Ubuntu桌面，如果觉得正常，可以安装，就点击左上角的&quot;install ubuntu 18.04LTS&quot;（版本选择最新的稳定版本）</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li>安装Ubuntu预配置</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">（1）选择语言（建议中文或者英文，进入系统后可以切换语言）</span><br><span class="line"></span><br><span class="line">（2）键盘布局（建议选择汉语）</span><br><span class="line"></span><br><span class="line">（3）无线选项，暂时不连接wifi</span><br><span class="line"></span><br><span class="line">（4）更新和其他软件选项，选择“最小安装”（避免系统自动安装多余软件，加快速度）</span><br><span class="line"></span><br><span class="line">（5）安装类型选项，此处会选择是否删除之前的系统和硬盘所有的文件！</span><br><span class="line">    --- 如果避免出现问题，可以选择“其他选项”；</span><br><span class="line">    --- 如果需要全新的安装，就选择删除之前的系统的选项；（我选择的这一项，然后系统会默认分区，就不需要之后两步）</span><br><span class="line"></span><br><span class="line">（6）开始分区，重新分区或者分一块空闲盘的内存（建议不少于20G）</span><br><span class="line">    --- EFI分区，存放系统引导文件的引导分区（可以默认选择，或者512MB）</span><br><span class="line">    --- 交换分区swap，逻辑分区，建议和电脑内存大小相同（例如我的是8G）</span><br><span class="line">    --- 根分区“&#x2F;”，存放apt-get安装的软件，这个大小自己分配（建议内存大一点，以便安装软件有足够的空间）</span><br><span class="line">    --- &quot;&#x2F;home&quot;分区，存放个人文件，剩余的磁盘空间可以都给它</span><br><span class="line">    （这样分区的话，如果重装Linux系统只需要格式化根分区，而保留“&#x2F;home”分区）</span><br><span class="line"></span><br><span class="line">（7）接着在安装类型选项界面下侧，有一个“安装启动引导器的设备”，选择刚刚分配好的EFI分区</span><br><span class="line"></span><br><span class="line">（8）选择“安装”</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>安装进行时</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">（1）选择时区</span><br><span class="line">（2）设置用户名、密码</span><br></pre></td></tr></table></figure>
+
+<ol start="7">
+<li>安装后善后</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">（1）如果安装后无法关机，直接长按电源键强制关机，然后再次重启，查看是否正常；</span><br><span class="line"></span><br><span class="line">（2）开机一直按F12进入开机选择界面选择Ubuntu&#x2F;或者一直按F2进入启动项修改第一启动项为Ubuntu</span><br><span class="line"></span><br><span class="line">（3）如果内存大于等于8G，交换分区swap分不分配也没有问题</span><br><span class="line"></span><br><span class="line">（4）显卡驱动不生效：开机按F2进入启动项，进入BIOS中关闭，再重启，显卡驱动就会生效了（这个应该是内核或者驱动和电脑的安全模式启动冲突了）</span><br><span class="line"></span><br><span class="line">（5）如果安装的时候一直卡在语言包下载，则点击右侧的skip跳过</span><br><span class="line"></span><br><span class="line">（6）如果vi编辑器输入错乱，编辑&#x2F;etc&#x2F;vim&#x2F;vimrc.tiny,将&#39;compatiable&#39;修改成</span><br><span class="line"></span><br><span class="line">&#39;nocompatiable&#39;,然后加入一行&#39;set backspace&#x3D;2&#39;,保存退出（可以sudo使用vim编辑，或者root权限使用gedit编辑）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Ubuntu桌面主题修改"><a href="#Ubuntu桌面主题修改" class="headerlink" title="Ubuntu桌面主题修改"></a>Ubuntu桌面主题修改</h2><h3 id="Gnome桌面环境查看"><a href="#Gnome桌面环境查看" class="headerlink" title="Gnome桌面环境查看"></a>Gnome桌面环境查看</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">在登录界面的右上角查看小图标，选择GNOME图标</span><br><span class="line"></span><br><span class="line">或者安装：</span><br><span class="line">** sudo apt-get install gnome-shell  （窗口管理程序）</span><br><span class="line">** sudo apt-get install gnome-tweak-tool</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改主题-只在当前的登录用户"><a href="#修改主题-只在当前的登录用户" class="headerlink" title="修改主题(只在当前的登录用户)"></a>修改主题(只在当前的登录用户)</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">（1）打开文件目录tweek tool，查看到Extensions</span><br><span class="line">（2）查看插件选项是否有User themes插件</span><br><span class="line">    --- 如果没有tweek tool, 执行sudo apt-get install gnome-tweek-tool</span><br><span class="line">    --- 如果没有use themes, 执行sudo apt-get gnome-shell-extensions</span><br><span class="line"></span><br><span class="line">（3）登录GNOME主题官网(https:&#x2F;&#x2F;www.gnome-look.org)，选择主题下载</span><br><span class="line">（4）下载后解压放到“~&#x2F;.themes”目录，如果没有，自己创建</span><br><span class="line">（5）重新启动tweak tool（可能是重启窗口），然后在Appearance中选择“Shell theme”，修改即可</span><br><span class="line">（6）按”alt+F12“弹出命令窗口，输入“r”，重启Gnome桌面环境，查看修改后的主题</span><br></pre></td></tr></table></figure>
+
+<h3 id="图标和指针的主题"><a href="#图标和指针的主题" class="headerlink" title="图标和指针的主题"></a>图标和指针的主题</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">修改方式和上面一样，但是下载解压后的文件夹放置位置不同。</span><br><span class="line">图标： &#x2F;usr&#x2F;share&#x2F;icons&#x2F;   （全局修改）</span><br><span class="line">指针： ~&#x2F;.icons&#x2F;        （只限当前用户，即&#x2F;home&#x2F;account&#x2F;）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="ibus输入法有些软件不能输入中文"><a href="#ibus输入法有些软件不能输入中文" class="headerlink" title="ibus输入法有些软件不能输入中文"></a>ibus输入法有些软件不能输入中文</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ibus-daemon -drx</span><br><span class="line"></span><br><span class="line">此时终端不能编辑，重启终端</span><br><span class="line"></span><br><span class="line">之后就可以输入中文。</span><br></pre></td></tr></table></figure>
+
+<h2 id="终端主题zsh修改"><a href="#终端主题zsh修改" class="headerlink" title="终端主题zsh修改"></a>终端主题zsh修改</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">1. 查看当前shell主题</span><br><span class="line"></span><br><span class="line">echo $SHELL</span><br><span class="line"></span><br><span class="line">2. 查看shell列表</span><br><span class="line">cat &#x2F;etc&#x2F;shell</span><br><span class="line"></span><br><span class="line">3. 安装zsh</span><br><span class="line">再次查看列表会有zsh的存在</span><br><span class="line"></span><br><span class="line">4. 切换shell</span><br><span class="line">chsh -s &#x2F;bin&#x2F;shells</span><br><span class="line"></span><br><span class="line">5. 重启服务器</span><br></pre></td></tr></table></figure>
+
+<h2 id="添加开机启动程序的自定义命令"><a href="#添加开机启动程序的自定义命令" class="headerlink" title="添加开机启动程序的自定义命令"></a>添加开机启动程序的自定义命令</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/rc.local</span><br><span class="line"></span><br><span class="line">例如ibus输入中文： ibus-daemon</span><br><span class="line"></span><br><span class="line">ibus-daemon -dxr 重启ibus</span><br></pre></td></tr></table></figure>
+
+<h2 id="查看CPU使用情况"><a href="#查看CPU使用情况" class="headerlink" title="查看CPU使用情况"></a>查看CPU使用情况</h2><blockquote>
+<p>cat /proc/cpuinfo</p>
+</blockquote>
+<h2 id="查看磁盘内存使用情况"><a href="#查看磁盘内存使用情况" class="headerlink" title="查看磁盘内存使用情况"></a>查看磁盘内存使用情况</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">df -h</span><br><span class="line"></span><br><span class="line">df -i 检查inode使用情况</span><br><span class="line"></span><br><span class="line">sudo du / -h --max-depth=1</span><br></pre></td></tr></table></figure>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/">https://alonealive.github.io/Blog/2019/07/25/2019/190724_ubuntu_install/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-07-25T13:31:37.000Z" itemprop="datePublished">2019-07-25</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:02:13.950Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/linux/'>linux</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/linux/" rel="tag">#&nbsp;linux</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/07/25/2019/190725_cpp_operator/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++浮点常量表示、算术运算符、类型转换</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/07/23/2019/190723_cpp_float/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++多字节char、bool、字符常量、浮点数</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

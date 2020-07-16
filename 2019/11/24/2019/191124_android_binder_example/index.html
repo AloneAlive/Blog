@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android Binder实例 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android Binder实例 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/"><meta property="og:locale" content="zh-CN"><meta name="description" content="Binder通信是Android用的比较多的一种通信机制，它是一种client-server的通信结构。Binder通信具有以下特点：   用驱动程序来推进进程间的通信； 可以通过共享内存的方式来提供性能； 可以为进程请求分配每个进程的线程池； 针对系统中的对象引入了引用计数和跨进程的对象引用映射； 可以方便的进行进程同步调用。 - sunwengang - sunwengang blog"><meta name="keywords" content="graphics"><meta property="article:published_time" content="2019-11-24T07:59:40.000Z"><meta property="article:modified_time" content="2020-03-08T10:18:54.622Z"><meta property="og:updated_time" content="2020-03-08T10:18:54.622Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="graphics"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/"
+    },
+    "headline": "Android Binder实例 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-11-24T07:59:40.000Z",
+    "dateModified": "2020-03-08T10:18:54.622Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "graphics",
+    "description": "Binder通信是Android用的比较多的一种通信机制，它是一种client-server的通信结构。Binder通信具有以下特点：   用驱动程序来推进进程间的通信； 可以通过共享内存的方式来提供性能； 可以为进程请求分配每个进程的线程池； 针对系统中的对象引入了引用计数和跨进程的对象引用映射； 可以方便的进行进程同步调用。 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android Binder实例" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android Binder实例&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android Binder实例" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMUlEQVR42u2a247CMAxE+/8/Da+rKpkLFMHWJy9UauucSjiyx3M8/sE6gAQSSCB/APIQ63z/7zsy+On51TtuXyBnQ+42WkGqDzj/rqB3z6x4gJwNqTbcXe8SZvchKv4qLpBAbh9eXB/lWr0PJJBXJo46+OUBDSSQIaQLvEqA9MD/eBUE5O0gXSP2qd9Lu0UgbwMZi0eiIXOCgSuWL1PVgLwF5O7Qdge4Sopd8eFiRIIVkGMhkw9wxbEqSJKkAnIupCtKd0K93CAUr+S+QI6EdAJA0jip4ZITvmSzB+RYSFfEKpB2UFqJW0COhEyKCtVgtUNU9aGRUQTI20O6ZqkJropdlShW2AdyJKQL5AT6VDhQxTCQQLrGqxGX0kFTOqwHEkh1QKfCvSsk3OCgEvaBvC3kOyJpYmJ61UgC5FzIpFlSA9DUoNw2b0AC2VynDb5ryqz4AORoyKYwcIWrAmxEVSBnQrZCVQLamuS3AgOQYyGdGJUkUTLkrJs3IMdDuuYoMdclMdNhAZAzIRNhszGGJIWxEwuABDJNksTEmSRLYr4DcjZkLbgLc2daUCSmEyBnQybJkQ4AnAHFmZKBnA35zh9eiVKN4TgegAI5AjIRk5IkUUNSBSWbOyDHQqrCwpnpnKjlwGVSATka0iVHMmRvzXROjAASyMa05Ewkrw7268ocyHGQ7l4jmiYDASCBTIxtjTCgGrPk4AcSyLQRS5uy1NAUmZCBHAn5ywtIIIEE8ovrCbX31nWsyUu6AAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android Binder实例</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-11-24</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android Binder实例&url=https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android Binder实例&url=https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMUlEQVR42u2a247CMAxE+/8/Da+rKpkLFMHWJy9UauucSjiyx3M8/sE6gAQSSCB/APIQ63z/7zsy+On51TtuXyBnQ+42WkGqDzj/rqB3z6x4gJwNqTbcXe8SZvchKv4qLpBAbh9eXB/lWr0PJJBXJo46+OUBDSSQIaQLvEqA9MD/eBUE5O0gXSP2qd9Lu0UgbwMZi0eiIXOCgSuWL1PVgLwF5O7Qdge4Sopd8eFiRIIVkGMhkw9wxbEqSJKkAnIupCtKd0K93CAUr+S+QI6EdAJA0jip4ZITvmSzB+RYSFfEKpB2UFqJW0COhEyKCtVgtUNU9aGRUQTI20O6ZqkJropdlShW2AdyJKQL5AT6VDhQxTCQQLrGqxGX0kFTOqwHEkh1QKfCvSsk3OCgEvaBvC3kOyJpYmJ61UgC5FzIpFlSA9DUoNw2b0AC2VynDb5ryqz4AORoyKYwcIWrAmxEVSBnQrZCVQLamuS3AgOQYyGdGJUkUTLkrJs3IMdDuuYoMdclMdNhAZAzIRNhszGGJIWxEwuABDJNksTEmSRLYr4DcjZkLbgLc2daUCSmEyBnQybJkQ4AnAHFmZKBnA35zh9eiVKN4TgegAI5AjIRk5IkUUNSBSWbOyDHQqrCwpnpnKjlwGVSATka0iVHMmRvzXROjAASyMa05Ewkrw7268ocyHGQ7l4jmiYDASCBTIxtjTCgGrPk4AcSyLQRS5uy1NAUmZCBHAn5ywtIIIEE8ovrCbX31nWsyUu6AAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#文件目录"><span class="post-toc-number">1.</span> <span class="post-toc-text">文件目录</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#cmds-helloWorld-Android-mk"><span class="post-toc-number">2.</span> <span class="post-toc-text">cmds&#x2F;helloWorld&#x2F;Android.mk</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#cmds-helloWorld-BpHelloWorldService-h"><span class="post-toc-number">3.</span> <span class="post-toc-text">cmds&#x2F;helloWorld&#x2F;BpHelloWorldService.h</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#cmds-helloWorld-BnHelloWorldService-h"><span class="post-toc-number">4.</span> <span class="post-toc-text">cmds&#x2F;helloWorld&#x2F;BnHelloWorldService.h</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#cmds-helloWorld-HelloWorldService-h"><span class="post-toc-number">5.</span> <span class="post-toc-text">cmds&#x2F;helloWorld&#x2F;HelloWorldService.h</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#cmds-helloWorld-IHelloWorldService-h"><span class="post-toc-number">6.</span> <span class="post-toc-text">cmds&#x2F;helloWorld&#x2F;IHelloWorldService.h</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#cmds-helloWorld-main-helloworldclient-cpp"><span class="post-toc-number">7.</span> <span class="post-toc-text">cmds&#x2F;helloWorld&#x2F;main_helloworldclient.cpp</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#cmds-helloWorld-main-helloworldservice-cpp"><span class="post-toc-number">8.</span> <span class="post-toc-text">cmds&#x2F;helloWorld&#x2F;main_helloworldservice.cpp</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#libs-helloWorld-Android-bp"><span class="post-toc-number">9.</span> <span class="post-toc-text">libs&#x2F;helloWorld&#x2F;Android.bp</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#libs-helloWorld-BnHelloWorldService-h"><span class="post-toc-number">10.</span> <span class="post-toc-text">libs&#x2F;helloWorld&#x2F;BnHelloWorldService.h</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#libs-helloWorld-BnHelloWorldService-cpp"><span class="post-toc-number">11.</span> <span class="post-toc-text">libs&#x2F;helloWorld&#x2F;BnHelloWorldService.cpp</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#libs-helloWorld-BpHelloWorldService-h"><span class="post-toc-number">12.</span> <span class="post-toc-text">libs&#x2F;helloWorld&#x2F;BpHelloWorldService.h</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#libs-helloWorld-BpHelloWorldService-cpp"><span class="post-toc-number">13.</span> <span class="post-toc-text">libs&#x2F;helloWorld&#x2F;BpHelloWorldService.cpp</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#libs-helloWorld-HelloWorldService-h"><span class="post-toc-number">14.</span> <span class="post-toc-text">libs&#x2F;helloWorld&#x2F;HelloWorldService.h</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#libs-helloWorld-HelloWorldService-cpp"><span class="post-toc-number">15.</span> <span class="post-toc-text">libs&#x2F;helloWorld&#x2F;HelloWorldService.cpp</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#libs-helloWorld-IHelloWorldService-h"><span class="post-toc-number">16.</span> <span class="post-toc-text">libs&#x2F;helloWorld&#x2F;IHelloWorldService.h</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#libs-helloWorld-IHelloWorldService-cpp"><span class="post-toc-number">17.</span> <span class="post-toc-text">libs&#x2F;helloWorld&#x2F;IHelloWorldService.cpp</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>Binder通信是Android用的比较多的一种通信机制，它是一种client-server的通信结构。Binder通信具有以下特点：</p>
+</blockquote>
+<ol>
+<li>用驱动程序来推进进程间的通信；</li>
+<li>可以通过共享内存的方式来提供性能；</li>
+<li>可以为进程请求分配每个进程的线程池；</li>
+<li>针对系统中的对象引入了引用计数和跨进程的对象引用映射；</li>
+<li>可以方便的进行进程同步调用。</li>
+</ol>
+<a id="more"></a>
+
+<blockquote>
+<p>以下简单的Binder实例参考一位大佬。</p>
+</blockquote>
+<h2 id="文件目录"><a href="#文件目录" class="headerlink" title="文件目录"></a>文件目录</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">cmds&#x2F;helloWorld&#x2F;Android.mk                 | 29 +++++++++++++++++++++++</span><br><span class="line">cmds&#x2F;helloWorld&#x2F;BnHelloWorldService.h      | 16 +++++++++++++</span><br><span class="line">cmds&#x2F;helloWorld&#x2F;BpHelloWorldService.h      | 12 ++++++++++</span><br><span class="line">cmds&#x2F;helloWorld&#x2F;HelloWorldService.h        | 17 +++++++++++++</span><br><span class="line">cmds&#x2F;helloWorld&#x2F;IHelloWorldService.h       | 21 +++++++++++++++++</span><br><span class="line">cmds&#x2F;helloWorld&#x2F;main_helloworldclient.cpp  | 36 ++++++++++++++++++++++++++++</span><br><span class="line">cmds&#x2F;helloWorld&#x2F;main_helloworldservice.cpp | 22 +++++++++++++++++</span><br><span class="line">libs&#x2F;helloWorld&#x2F;Android.bp                 | 38 ++++++++++++++++++++++++++++++</span><br><span class="line">libs&#x2F;helloWorld&#x2F;BnHelloWorldService.cpp    | 24 +++++++++++++++++++</span><br><span class="line">libs&#x2F;helloWorld&#x2F;BnHelloWorldService.h      | 16 +++++++++++++</span><br><span class="line">libs&#x2F;helloWorld&#x2F;BpHelloWorldService.cpp    | 25 ++++++++++++++++++++</span><br><span class="line">libs&#x2F;helloWorld&#x2F;BpHelloWorldService.h      | 12 ++++++++++</span><br><span class="line">libs&#x2F;helloWorld&#x2F;HelloWorldService.cpp      | 33 ++++++++++++++++++++++++++</span><br><span class="line">libs&#x2F;helloWorld&#x2F;HelloWorldService.h        | 17 +++++++++++++</span><br><span class="line">libs&#x2F;helloWorld&#x2F;IHelloWorldService.cpp     |  8 +++++++</span><br><span class="line">libs&#x2F;helloWorld&#x2F;IHelloWorldService.h       | 21 +++++++++++++++++</span><br></pre></td></tr></table></figure>
+
+<h2 id="cmds-helloWorld-Android-mk"><a href="#cmds-helloWorld-Android-mk" class="headerlink" title="cmds/helloWorld/Android.mk"></a><code>cmds/helloWorld/Android.mk</code></h2><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Copyright 2019 The Android Open Source Project</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">LOCAL_PATH:= <span class="variable">$(<span class="built_in">call</span> my-<span class="built_in">dir</span>)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="variable">$(CLEAR_VARS)</span></span><br><span class="line">LOCAL_SRC_FILES := main_helloworldservice.cpp</span><br><span class="line"></span><br><span class="line">LOCAL_SHARED_LIBRARIES :=\</span><br><span class="line">	libutils \</span><br><span class="line">	libbinder \</span><br><span class="line">	libhelloworld</span><br><span class="line"></span><br><span class="line">base := <span class="variable">$(LOCAL_PATH)</span>/../../libs/helloWorld</span><br><span class="line"></span><br><span class="line">LOCAL_MODULE := helloworldservice</span><br><span class="line"><span class="keyword">include</span> <span class="variable">$(BUILD_EXECUTABLE)</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">include</span> <span class="variable">$(CLEAR_VARS)</span></span><br><span class="line">LOCAL_SRC_FILES := main_helloworldclient.cpp</span><br><span class="line"></span><br><span class="line">LOCAL_SHARED_LIBRARIES :=\</span><br><span class="line">	libutils \</span><br><span class="line">	libbinder \</span><br><span class="line">	libhelloworld</span><br><span class="line"></span><br><span class="line">base := <span class="variable">$(LOCAL_PATH)</span>/../../libs/helloWorld</span><br><span class="line"></span><br><span class="line">LOCAL_MODULE := helloworldclient  //编译结果so文件</span><br><span class="line"><span class="keyword">include</span> <span class="variable">$(BUILD_EXECUTABLE)</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="cmds-helloWorld-BpHelloWorldService-h"><a href="#cmds-helloWorld-BpHelloWorldService-h" class="headerlink" title="cmds/helloWorld/BpHelloWorldService.h"></a><code>cmds/helloWorld/BpHelloWorldService.h</code></h2><blockquote>
+<p>客户端Service头文件，声明<code>BpHelloWorldService</code>函数</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/Parcel.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;IHelloWorldService.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> android&#123;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BpHelloWorldService</span>:</span> <span class="keyword">public</span> BpInterface&lt;IHelloWorldService&gt;</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    BpHelloWorldService (<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; impl);</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">status_t</span> <span class="title">helloWorld</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str)</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="cmds-helloWorld-BnHelloWorldService-h"><a href="#cmds-helloWorld-BnHelloWorldService-h" class="headerlink" title="cmds/helloWorld/BnHelloWorldService.h"></a><code>cmds/helloWorld/BnHelloWorldService.h</code></h2><blockquote>
+<p>Bn服务端Service头文件，声明<code>onTranscat</code>接口</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> ANDROID_BNHELLOWORLD_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ANDROID_BNHELLOWORLD_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/Parcel.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;IHelloWorldService.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> android &#123;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BnHelloWorldService</span> :</span> <span class="keyword">public</span> BnInterface&lt;IHelloWorldService&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">status_t</span> <span class="title">onTransact</span> <span class="params">( <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, <span class="keyword">uint32_t</span> flags = <span class="number">0</span> )</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="cmds-helloWorld-HelloWorldService-h"><a href="#cmds-helloWorld-HelloWorldService-h" class="headerlink" title="cmds/helloWorld/HelloWorldService.h"></a><code>cmds/helloWorld/HelloWorldService.h</code></h2><blockquote>
+<p>Bn服务端实现类的头文件，声明<code>helloworld</code>和<code>onTransact</code>函数，和私有类构造函数和析构函数<br>和另一个库的文件同名，继承Bn服务端接口</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;BnHelloWorldService.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utils/Log.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> android &#123;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HelloWorldService</span> :</span> <span class="keyword">public</span> BnHelloWorldService</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">instantiate</span><span class="params">()</span></span>;</span><br><span class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">status_t</span> <span class="title">helloWorld</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str)</span></span>;</span><br><span class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">status_t</span> <span class="title">onTransact</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">              <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, <span class="keyword">uint32_t</span> flags)</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    HelloWorldService();</span><br><span class="line">    <span class="keyword">virtual</span> ~HelloWorldService();</span><br><span class="line">&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="cmds-helloWorld-IHelloWorldService-h"><a href="#cmds-helloWorld-IHelloWorldService-h" class="headerlink" title="cmds/helloWorld/IHelloWorldService.h"></a><code>cmds/helloWorld/IHelloWorldService.h</code></h2><blockquote>
+<p>Bp和Bn端的中间接口头文件</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> ANDROID_HELLOWORLD_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ANDROID_HELLOWORLD_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/IInterface.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> android &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> &#123;</span><br><span class="line">    HW_HELLOWORLD = IBinder::FIRST_CALL_TRANSACTION,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IHelloWorldService</span>:</span> <span class="keyword">public</span> IInterface &#123; </span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    DECLARE_META_INTERFACE(HelloWorldService);</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">status_t</span> <span class="title">helloWorld</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str)</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="cmds-helloWorld-main-helloworldclient-cpp"><a href="#cmds-helloWorld-main-helloworldclient-cpp" class="headerlink" title="cmds/helloWorld/main_helloworldclient.cpp"></a><code>cmds/helloWorld/main_helloworldclient.cpp</code></h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> LOG_TAG <span class="meta-string">"main_helloworldclient"</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/IPCThreadState.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/ProcessState.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/IServiceManager.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utils/Log.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utils/RefBase.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;IHelloWorldService.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> android;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unused(x) x=x</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"><span class="comment">//ALOGI("HelloWorldService client is now starting");</span></span><br><span class="line">unused(argc);</span><br><span class="line">unused(argv);</span><br><span class="line"></span><br><span class="line">sp&lt;IServiceManager&gt; sm = defaultServiceManager();</span><br><span class="line">sp&lt;IBinder&gt; b;</span><br><span class="line">sp&lt;IHelloWorldService&gt; sHelloWorldService;</span><br><span class="line"></span><br><span class="line"><span class="keyword">do</span> &#123;</span><br><span class="line">    b = sm-&gt;getService(String16(</span><br><span class="line"><span class="string">"android.apps.IHelloWorldService"</span>));</span><br><span class="line">    <span class="keyword">if</span> (b!=<span class="number">0</span>)</span><br><span class="line">    <span class="keyword">break</span>;</span><br><span class="line">    <span class="comment">//ALOGI("helloworldservice is not working, waiting ...");</span></span><br><span class="line">    usleep(<span class="number">500000</span>);</span><br><span class="line">&#125; <span class="keyword">while</span>(<span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line">sHelloWorldService = interface_cast&lt;IHelloWorldService&gt;(b);</span><br><span class="line">sHelloWorldService -&gt; helloWorld(<span class="string">"hello, world"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">return</span>(<span class="number">0</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="cmds-helloWorld-main-helloworldservice-cpp"><a href="#cmds-helloWorld-main-helloworldservice-cpp" class="headerlink" title="cmds/helloWorld/main_helloworldservice.cpp"></a><code>cmds/helloWorld/main_helloworldservice.cpp</code></h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/IPCThreadState.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/ProcessState.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/IServiceManager.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utils/Log.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;IHelloWorldService.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;HelloWorldService.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> android;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unused(x) x=x</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">   unused(argc);</span><br><span class="line">   unused(argv);</span><br><span class="line">    HelloWorldService::instantiate();</span><br><span class="line">    ProcessState::self()-&gt;startThreadPool();</span><br><span class="line">    <span class="comment">//ALOGI("HelloWorldService is starting now");</span></span><br><span class="line">    <span class="comment">//ALOGI("HelloWorldService is starting now   tempChar = %s", tempChar);</span></span><br><span class="line">    IPCThreadState::self()-&gt;joinThreadPool();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="libs-helloWorld-Android-bp"><a href="#libs-helloWorld-Android-bp" class="headerlink" title="libs/helloWorld/Android.bp"></a><code>libs/helloWorld/Android.bp</code></h2><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">// Copyright (C) 2010 The Android Open Source Project</span><br><span class="line">//</span><br><span class="line">// Licensed under the Apache License, Version 2.0 (the <span class="string">"License"</span>);</span><br><span class="line">// you may not use this file except in compliance with the License.</span><br><span class="line">// You may obtain a copy of the License at</span><br><span class="line">//</span><br><span class="line">//      http://www.apache.org/licenses/LICENSE-2.0</span><br><span class="line">//</span><br><span class="line">// Unless required by applicable law or agreed to in writing, software</span><br><span class="line">// distributed under the License is distributed on an <span class="string">"AS IS"</span> BASIS,</span><br><span class="line">// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span><br><span class="line">// See the License for the specific language governing permissions and</span><br><span class="line">// limitations under the License.</span><br><span class="line">cc_library_shared &#123;</span><br><span class="line">    name: <span class="string">"libhelloworld"</span>,</span><br><span class="line">    srcs: [</span><br><span class="line">        <span class="string">"BnHelloWorldService.cpp"</span>,</span><br><span class="line">        <span class="string">"BpHelloWorldService.cpp"</span>,</span><br><span class="line">        <span class="string">"HelloWorldService.cpp"</span>,</span><br><span class="line">        <span class="string">"IHelloWorldService.cpp"</span>,</span><br><span class="line">    ],</span><br><span class="line"></span><br><span class="line">    shared_libs: [</span><br><span class="line">        <span class="string">"libcutils"</span>,</span><br><span class="line">        <span class="string">"liblog"</span>,</span><br><span class="line">        <span class="string">"libutils"</span>,</span><br><span class="line">        <span class="string">"libbinder"</span>,</span><br><span class="line">    ],</span><br><span class="line"></span><br><span class="line">    include_dirs: [<span class="string">"frameworks/base/cmds"</span>], //上面创建的库</span><br><span class="line"></span><br><span class="line">    cflags: [</span><br><span class="line">        <span class="string">"-Wall"</span>,</span><br><span class="line">        <span class="string">"-Wextra"</span>,</span><br><span class="line">        <span class="string">"-Werror"</span>,</span><br><span class="line">    ],</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="libs-helloWorld-BnHelloWorldService-h"><a href="#libs-helloWorld-BnHelloWorldService-h" class="headerlink" title="libs/helloWorld/BnHelloWorldService.h"></a><code>libs/helloWorld/BnHelloWorldService.h</code></h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> ANDROID_BNHELLOWORLD_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ANDROID_BNHELLOWORLD_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/Parcel.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;IHelloWorldService.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> android &#123;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BnHelloWorldService</span> :</span> <span class="keyword">public</span> BnInterface&lt;IHelloWorldService&gt;</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">status_t</span> <span class="title">onTransact</span> <span class="params">( <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, <span class="keyword">uint32_t</span> flags = <span class="number">0</span> )</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="libs-helloWorld-BnHelloWorldService-cpp"><a href="#libs-helloWorld-BnHelloWorldService-cpp" class="headerlink" title="libs/helloWorld/BnHelloWorldService.cpp"></a><code>libs/helloWorld/BnHelloWorldService.cpp</code></h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;BnHelloWorldService.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/Parcel.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> android &#123;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">BnHelloWorldService::onTransact</span><span class="params">(<span class="keyword">uint32_t</span> code,</span></span></span><br><span class="line"><span class="function"><span class="params">                              <span class="keyword">const</span> Parcel &amp;data,</span></span></span><br><span class="line"><span class="function"><span class="params">                              Parcel *reply,</span></span></span><br><span class="line"><span class="function"><span class="params">                              <span class="keyword">uint32_t</span> flags)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">switch</span>(code) &#123;</span><br><span class="line">    <span class="keyword">case</span> HW_HELLOWORLD: &#123;</span><br><span class="line">        CHECK_INTERFACE(IHelloWorldService, data, reply);   <span class="comment">//检查接口</span></span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">char</span> *str;</span><br><span class="line">        str = data.readCString(); <span class="comment">//读取数据</span></span><br><span class="line">        reply-&gt; writeInt32(helloWorld(str)); <span class="comment">//写入数据</span></span><br><span class="line">        <span class="keyword">return</span> NO_ERROR;</span><br><span class="line">    &#125; <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">       <span class="keyword">return</span> BBinder::onTransact(code, data, reply, flags); <span class="comment">//服务端接口接收数据</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="libs-helloWorld-BpHelloWorldService-h"><a href="#libs-helloWorld-BpHelloWorldService-h" class="headerlink" title="libs/helloWorld/BpHelloWorldService.h"></a><code>libs/helloWorld/BpHelloWorldService.h</code></h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/Parcel.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;IHelloWorldService.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> android&#123;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">BpHelloWorldService</span>:</span> <span class="keyword">public</span> BpInterface&lt;IHelloWorldService&gt;</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    BpHelloWorldService (<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; impl);</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">status_t</span> <span class="title">helloWorld</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str)</span></span>;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="libs-helloWorld-BpHelloWorldService-cpp"><a href="#libs-helloWorld-BpHelloWorldService-cpp" class="headerlink" title="libs/helloWorld/BpHelloWorldService.cpp"></a><code>libs/helloWorld/BpHelloWorldService.cpp</code></h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/Parcel.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;BpHelloWorldService.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utils/Log.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> android&#123;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">BpHelloWorldService::helloWorld</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str)</span> </span>&#123;</span><br><span class="line">    Parcel data, reply;</span><br><span class="line">    data.writeInterfaceToken(</span><br><span class="line">	IHelloWorldService::getInterfaceDescriptor());</span><br><span class="line">    data.writeCString(str);  <span class="comment">//写入数据</span></span><br><span class="line">    <span class="keyword">status_t</span> status = remote()-&gt;transact(HW_HELLOWORLD, data, &amp;reply); <span class="comment">//远程传输数据</span></span><br><span class="line">    <span class="keyword">if</span> (status != NO_ERROR) &#123;</span><br><span class="line">        ALOGI(<span class="string">"print helloworld error : %s"</span>, strerror(-status));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        status = reply.readInt32();  <span class="comment">//读取数据</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> status;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">BpHelloWorldService::BpHelloWorldService (<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; impl)</span><br><span class="line">	: BpInterface&lt;IHelloWorldService&gt;(impl)</span><br><span class="line">&#123;&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="libs-helloWorld-HelloWorldService-h"><a href="#libs-helloWorld-HelloWorldService-h" class="headerlink" title="libs/helloWorld/HelloWorldService.h"></a><code>libs/helloWorld/HelloWorldService.h</code></h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;BnHelloWorldService.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utils/Log.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> android &#123;</span><br><span class="line"><span class="comment">//继承Bn服务端</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HelloWorldService</span> :</span> <span class="keyword">public</span> BnHelloWorldService</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">        <span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">instantiate</span><span class="params">()</span></span>;</span><br><span class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">status_t</span> <span class="title">helloWorld</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str)</span></span>;</span><br><span class="line">        <span class="function"><span class="keyword">virtual</span> <span class="keyword">status_t</span> <span class="title">onTransact</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">              <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, <span class="keyword">uint32_t</span> flags)</span></span>;</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    HelloWorldService();</span><br><span class="line">    <span class="keyword">virtual</span> ~HelloWorldService();</span><br><span class="line">&#125;;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="libs-helloWorld-HelloWorldService-cpp"><a href="#libs-helloWorld-HelloWorldService-cpp" class="headerlink" title="libs/helloWorld/HelloWorldService.cpp"></a><code>libs/helloWorld/HelloWorldService.cpp</code></h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/IServiceManager.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/IPCThreadState.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;BnHelloWorldService.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;HelloWorldService.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;utils/Log.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> android &#123;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">HelloWorldService::instantiate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    defaultServiceManager()-&gt;addService(</span><br><span class="line">            String16(<span class="string">"android.apps.IHelloWorldService"</span>), <span class="keyword">new</span> HelloWorldService());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">HelloWorldService::helloWorld</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span>* str)</span> </span>&#123;</span><br><span class="line">    ALOGI(<span class="string">"%s\n"</span>, str);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"%s\n"</span>, str);</span><br><span class="line">    <span class="keyword">return</span> NO_ERROR;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">HelloWorldService::HelloWorldService()&#123;</span><br><span class="line">    ALOGI(<span class="string">"HelloWorldService is created"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">HelloWorldService::~HelloWorldService()&#123;</span><br><span class="line">    ALOGI(<span class="string">"HelloWorldService is destroyed"</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">HelloWorldService::onTransact</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">              <span class="keyword">uint32_t</span> code, <span class="keyword">const</span> Parcel&amp; data, Parcel* reply, <span class="keyword">uint32_t</span> flags)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> BnHelloWorldService::onTransact(code, data, reply, flags);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="libs-helloWorld-IHelloWorldService-h"><a href="#libs-helloWorld-IHelloWorldService-h" class="headerlink" title="libs/helloWorld/IHelloWorldService.h"></a><code>libs/helloWorld/IHelloWorldService.h</code></h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> ANDROID_HELLOWORLD_H</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> ANDROID_HELLOWORLD_H</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;binder/IInterface.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> android &#123;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum</span> &#123;</span><br><span class="line">    HW_HELLOWORLD = IBinder::FIRST_CALL_TRANSACTION,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">IHelloWorldService</span>:</span> <span class="keyword">public</span> IInterface &#123; </span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">    DECLARE_META_INTERFACE(HelloWorldService);</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">status_t</span> <span class="title">helloWorld</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *str)</span> </span>= <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<h2 id="libs-helloWorld-IHelloWorldService-cpp"><a href="#libs-helloWorld-IHelloWorldService-cpp" class="headerlink" title="libs/helloWorld/IHelloWorldService.cpp"></a><code>libs/helloWorld/IHelloWorldService.cpp</code></h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;IHelloWorldService.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;BpHelloWorldService.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> android &#123;</span><br><span class="line"></span><br><span class="line">IMPLEMENT_META_INTERFACE(HelloWorldService, <span class="string">"android.apps.IHelloWorldService"</span>);</span><br><span class="line"></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/">https://alonealive.github.io/Blog/2019/11/24/2019/191124_android_binder_example/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-11-24T07:59:40.000Z" itemprop="datePublished">2019-11-24</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:18:54.622Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/graphics/" rel="tag">#&nbsp;graphics</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/12/22/2019/191222_android_HWC2/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android SurfaceFlinger和HWC2概述</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/11/23/2019/191121_android_debug2/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android Graphics 调试技巧（十一月份更新）</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

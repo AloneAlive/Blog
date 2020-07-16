@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android色彩空间（ColorSpace） | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android色彩空间（ColorSpace） | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/"><meta property="og:locale" content="zh-CN"><meta name="description" content="色彩空间Color Space广色域WCGWCG（Wide Color Gamut），是Adobe System开发的一种RGB色彩空间，使用纯光谱原色提供较大的色域。与Adove RGB和sRGB相比，能够存储更大范围的颜色值。相比之下，WCG包含CIELAB色彩空间可见颜色的77.6%，而Adobe RGB色彩空间仅覆盖52.1%，sRGB仅覆盖35.9%。 - sunwengang - sunwengang blog"><meta name="keywords" content="android"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/colorspace.jpeg"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/WCG_ColorSpace.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/sRGB_ColorSpace.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/AdobeRGB_ColorSpace.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/ProPhotoRGB_ColorSpace.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/DCIP3_ColorSpace.png"><meta property="article:published_time" content="2019-10-21T15:52:00.000Z"><meta property="article:modified_time" content="2020-04-01T13:00:04.937Z"><meta property="og:updated_time" content="2020-04-01T13:00:04.937Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/colorspace.jpeg">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/"
+    },
+    "headline": "Android色彩空间（ColorSpace） | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/colorspace.jpeg"
+    },
+    
+    "datePublished": "2019-10-21T15:52:00.000Z",
+    "dateModified": "2020-04-01T13:00:04.937Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android",
+    "description": "色彩空间Color Space广色域WCGWCG（Wide Color Gamut），是Adobe System开发的一种RGB色彩空间，使用纯光谱原色提供较大的色域。与Adove RGB和sRGB相比，能够存储更大范围的颜色值。相比之下，WCG包含CIELAB色彩空间可见颜色的77.6%，而Adobe RGB色彩空间仅覆盖52.1%，sRGB仅覆盖35.9%。 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/colorspace.jpeg&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android色彩空间（ColorSpace）" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android色彩空间（ColorSpace）&summary=&pics=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/colorspace.jpeg&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android色彩空间（ColorSpace）" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACOUlEQVR42u3c0U6EUAxFUf7/p/XVTGjP7nWMSjcvjhMCC0Oht228Pv7BdokUKVLkH0BezfZ1n/JAL/vfHePuWOi8Itciq5O/Ql4/3524DYQCXp5X5GpkdbNXgXEH7oIufX8bZCJFFsjuJBWuelmIFPmuwKke3tWJq/1IYIoU2b3oabB0icMkkRYpMi2IfvLn21aLIh+FjEUjmIB0ycTdQuytVTWRj0J2N3JXLEjfVRfXBaxIkSkhJYXTVGClwXN7ISJFNp/piUkigYtdIlcjUyB0hf7UUJosykSKJAeJD12QkJCLxA1QkWuQJFk4Kaqm5BkvxESuQJ40QtMgCGkqoQe7yLXI7mbuEuKTC0hNUZEiJwnG6KYHDYOYPItciaTN9JOGPC36V4UykTuRaVFPhpK6AleHPBo8FrkCSYc4J4ERkwcweC9yJ5ImD6l5SRBkwA4VB0Q+GpmG5EgQpCE70hQdJRgiVyJpAyo18tOLAr9xRK5BpiJ7Kqam4CEvgXFhX+SjkaeL/UlScjLQLFIkefim5hEdrEu/ixRJE43pQ/8kaGJ0i1yDpEkFXVjRgeTuDyBSZHqgpwJCh5o2REXuRU6SA5IgnyTOqEsrcg2SFum7hhMdKiELMDyxL/LRyEmhatJsT4hvJRgiH4+ki6XUIOoWYSTBECmSIElwdYPGNMhwpVfkeiRNHNIQcvfywFU1kWuQtBjfJgQHTaXx5IDIFcjxi/9i/9yVLO5wVU3kGuRf3kSKFCnyF7dPUKl15JctR3wAAAAASUVORK5CYII=" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+            <div class="card-image lazyload" data-bg="url('https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/colorspace.jpeg')"></div>
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android色彩空间（ColorSpace）</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-10-21</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android色彩空间（ColorSpace）&url=https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/&pic=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/colorspace.jpeg&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android色彩空间（ColorSpace）&url=https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/colorspace.jpeg&url=https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACOUlEQVR42u3c0U6EUAxFUf7/p/XVTGjP7nWMSjcvjhMCC0Oht228Pv7BdokUKVLkH0BezfZ1n/JAL/vfHePuWOi8Itciq5O/Ql4/3524DYQCXp5X5GpkdbNXgXEH7oIufX8bZCJFFsjuJBWuelmIFPmuwKke3tWJq/1IYIoU2b3oabB0icMkkRYpMi2IfvLn21aLIh+FjEUjmIB0ycTdQuytVTWRj0J2N3JXLEjfVRfXBaxIkSkhJYXTVGClwXN7ISJFNp/piUkigYtdIlcjUyB0hf7UUJosykSKJAeJD12QkJCLxA1QkWuQJFk4Kaqm5BkvxESuQJ40QtMgCGkqoQe7yLXI7mbuEuKTC0hNUZEiJwnG6KYHDYOYPItciaTN9JOGPC36V4UykTuRaVFPhpK6AleHPBo8FrkCSYc4J4ERkwcweC9yJ5ImD6l5SRBkwA4VB0Q+GpmG5EgQpCE70hQdJRgiVyJpAyo18tOLAr9xRK5BpiJ7Kqam4CEvgXFhX+SjkaeL/UlScjLQLFIkefim5hEdrEu/ixRJE43pQ/8kaGJ0i1yDpEkFXVjRgeTuDyBSZHqgpwJCh5o2REXuRU6SA5IgnyTOqEsrcg2SFum7hhMdKiELMDyxL/LRyEmhatJsT4hvJRgiH4+ki6XUIOoWYSTBECmSIElwdYPGNMhwpVfkeiRNHNIQcvfywFU1kWuQtBjfJgQHTaXx5IDIFcjxi/9i/9yVLO5wVU3kGuRf3kSKFCnyF7dPUKl15JctR3wAAAAASUVORK5CYII=" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#色彩空间Color-Space"><span class="post-toc-number">1.</span> <span class="post-toc-text">色彩空间Color Space</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#广色域WCG"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">广色域WCG</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#sRGB色彩空间"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">sRGB色彩空间</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Adobe-RGB色彩空间"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">Adobe RGB色彩空间</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ProPhoto-RGB色彩空间"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">ProPhoto RGB色彩空间</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#DCI-P3色彩空间"><span class="post-toc-number">1.5.</span> <span class="post-toc-text">DCI-P3色彩空间</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Display-P3色彩空间"><span class="post-toc-number">1.6.</span> <span class="post-toc-text">Display P3色彩空间</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Android中启用-禁止WCG功能"><span class="post-toc-number">2.</span> <span class="post-toc-text">Android中启用&#x2F;禁止WCG功能</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#APP获取设备是否支持WCG"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">APP获取设备是否支持WCG</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h1 id="色彩空间Color-Space"><a href="#色彩空间Color-Space" class="headerlink" title="色彩空间Color Space"></a>色彩空间<code>Color Space</code></h1><h2 id="广色域WCG"><a href="#广色域WCG" class="headerlink" title="广色域WCG"></a>广色域<code>WCG</code></h2><p>WCG（Wide Color Gamut），是Adobe System开发的一种RGB色彩空间，使用纯光谱原色提供较大的色域。与Adove RGB和sRGB相比，能够存储更大范围的颜色值。<strong>相比之下，WCG包含<code>CIELAB色彩空间</code>可见颜色的77.6%，而Adobe RGB色彩空间仅覆盖52.1%，sRGB仅覆盖35.9%。</strong></p>
+<a id="more"></a>
+
+<p><img src="WCG_ColorSpace.png" alt="WCG色彩空间"></p>
+<p><strong>Note：</strong><br><code>CIELAB色彩空间</code>（也称为CIE L<em>a</em>b，抑或Lab色彩空间），是国际照明委员会（CIE）于1976年定义的色彩空间。它将色彩表示为三个值：</p>
+<table>
+<thead>
+<tr>
+<th align="center">符号</th>
+<th align="center">释义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>L*</code></td>
+<td align="center">为从黑色（0）到白色（100）的亮度</td>
+</tr>
+<tr>
+<td align="center"><code>a*</code></td>
+<td align="center">为从绿色（-）到红色（+）的亮度</td>
+</tr>
+<tr>
+<td align="center"><code>b*</code></td>
+<td align="center">为从蓝色（-）到黄色（+）的亮度</td>
+</tr>
+</tbody></table>
+<p>CIELAB被设计为从这些值中相同数量的数字变化对应于大致相同数量的视觉感知变化。</p>
+<hr>
+<h2 id="sRGB色彩空间"><a href="#sRGB色彩空间" class="headerlink" title="sRGB色彩空间"></a>sRGB色彩空间</h2><p>sRG色彩空间是惠普和微软于1996年一起开发的用于显示器、打印机、因特网的一种标准RGB色彩空间。最初的目的是作为生成在因特网以及万维网上浏览的图像的通用色彩空间，最后选择的是使用<code>Gamma校准</code>（伽马）系数为2.2的色彩空间，即CRT显示器在这种情况下的平均线性电压响应。</p>
+<p>sRGB定义了红色、绿色、蓝色三原色的颜色（又称三基色，用于电视机、投影仪等显示设备，对应RGB），即在其他两种颜色值都为零时该颜色的最大值。在<code>CIE xy</code>（Lab色彩空间）坐标系中坐标如下表。对于任何RGB色彩空间来说，非负的R、G、B都不可能表示超出原色定义的三角形即色域范围，它刚好在人眼的色彩感知范围之内。</p>
+<table>
+<thead>
+<tr>
+<th align="center">颜色</th>
+<th align="center">X</th>
+<th align="center">Y</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">红色</td>
+<td align="center">0.6400</td>
+<td align="center">0.3300</td>
+</tr>
+<tr>
+<td align="center">绿色</td>
+<td align="center">0.3000</td>
+<td align="center">0.6000</td>
+</tr>
+<tr>
+<td align="center">蓝色</td>
+<td align="center">0.1500</td>
+<td align="center">0.0600</td>
+</tr>
+<tr>
+<td align="center">白色（D65）</td>
+<td align="center">0.3127</td>
+<td align="center">0.3290</td>
+</tr>
+</tbody></table>
+<p>sRGB定义了原色强度与实际保存的数值之间的非线性变化，曲线类似于CRT显示器的伽马响应。这个非线性变化意味着sRGB非常搞笑的使图像文件中的整数值标识了人眼可以分辨的颜色。</p>
+<p>但是由于它的色域不够大，尤其是蓝绿颜色色域无法表示SMYK印刷中的所有颜色。所以印刷行业的经常使用的是Adobe RGB色彩空间。</p>
+<p><img src="sRGB_ColorSpace.png" alt="sRGB色彩空间"></p>
+<p><strong>Note:</strong><br>伽马校正（伽马非线性变化、伽马编码），是用来正对影片或者影像系统里对于管线的辉度或者三色刺激值所进行非线性的运算或反运算。</p>
+<hr>
+<h2 id="Adobe-RGB色彩空间"><a href="#Adobe-RGB色彩空间" class="headerlink" title="Adobe RGB色彩空间"></a>Adobe RGB色彩空间</h2><p>Adobe RGB色彩空间是一种由Adobe System于1998年开发的色彩空间。开发的目的是为了尽可能在<code>CMYK彩色印刷</code>中利用计算机显示器等设备的RGB颜色模式上囊括的更多的颜色。</p>
+<p>在Adobe RGB标准中，色彩被指定为<code>（R,G,B）</code>三个组员，其中R，G，B每个的值介于0和1之间。但在显示器显示出来时，白色点(1,1,1)，黑色点（0,0,0），原色点（1,0,0）的准确值会被指定。</p>
+<p>与sRGB相比，Adobe RGB中的RGB色彩分量和亮度并不是呈线性关系，他的伽马值是<code>563/256结果是2.19921875</code>。并且三原色点坐标只有绿色坐标不同。</p>
+<table>
+<thead>
+<tr>
+<th align="center">颜色</th>
+<th align="center">X</th>
+<th align="center">Y</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">红色</td>
+<td align="center">0.6400</td>
+<td align="center">0.3300</td>
+</tr>
+<tr>
+<td align="center">绿色</td>
+<td align="center">0.2100</td>
+<td align="center">0.7100</td>
+</tr>
+<tr>
+<td align="center">蓝色</td>
+<td align="center">0.1500</td>
+<td align="center">0.0600</td>
+</tr>
+<tr>
+<td align="center">白色（D65）</td>
+<td align="center">0.3127</td>
+<td align="center">0.3290</td>
+</tr>
+</tbody></table>
+<p><img src="AdobeRGB_ColorSpace.png" alt="Adobe RGB色彩空间"></p>
+<hr>
+<h2 id="ProPhoto-RGB色彩空间"><a href="#ProPhoto-RGB色彩空间" class="headerlink" title="ProPhoto RGB色彩空间"></a>ProPhoto RGB色彩空间</h2><p>ProPhoto RGB色彩空间（抑或ROMM RGB色彩空间），专为摄影输出所开发设计。该色彩空间的色域十分宽裕，甚至包含<code>CIE Lab色彩空间</code>中90%以上的表面色彩和1980年Poniter所记录的可能出现的表面色彩。<strong>该色域的表现范围甚至比WCG色彩空间还要大</strong></p>
+<p>标准参考白点由<code>CIE标准光源D50</code>的色度决定。</p>
+<table>
+<thead>
+<tr>
+<th align="center">颜色</th>
+<th align="center">X</th>
+<th align="center">Y</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">红色</td>
+<td align="center">0.7347</td>
+<td align="center">0.2653</td>
+</tr>
+<tr>
+<td align="center">绿色</td>
+<td align="center">0.1596</td>
+<td align="center">0.8404</td>
+</tr>
+<tr>
+<td align="center">蓝色</td>
+<td align="center">0.0366</td>
+<td align="center">0.0001</td>
+</tr>
+<tr>
+<td align="center">白色（D50）</td>
+<td align="center">0.3457</td>
+<td align="center">0.3585</td>
+</tr>
+</tbody></table>
+<p><img src="ProPhotoRGB_ColorSpace.png" alt="ProPhoto RGB色彩空间"></p>
+<p>缺点是该色彩空间包含大约13%的通常不存在色彩。</p>
+<hr>
+<h2 id="DCI-P3色彩空间"><a href="#DCI-P3色彩空间" class="headerlink" title="DCI-P3色彩空间"></a>DCI-P3色彩空间</h2><p>DCI-P3（抑或DCI/P3）是美国电影行业推出的一种色彩空间。在CIE 1931xy色彩空间中，覆盖了45.5%的全色于和86.9%的常见色域。在CIE 1976uv色度图覆盖率分别是41.7%和85.5%。</p>
+<p>DCI-P3将来应该会在电视系统和家庭影院领域有更广泛的应用。</p>
+<table>
+<thead>
+<tr>
+<th align="center">颜色</th>
+<th align="center">X</th>
+<th align="center">Y</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">红色</td>
+<td align="center">0.6800</td>
+<td align="center">0.3200</td>
+</tr>
+<tr>
+<td align="center">绿色</td>
+<td align="center">0.2650</td>
+<td align="center">0.6900</td>
+</tr>
+<tr>
+<td align="center">蓝色</td>
+<td align="center">0.1500</td>
+<td align="center">0.0600</td>
+</tr>
+<tr>
+<td align="center">白色（D65）</td>
+<td align="center">0.3127</td>
+<td align="center">0.3290</td>
+</tr>
+</tbody></table>
+<p><img src="DCIP3_ColorSpace.png" alt="DCI-P3色彩空间"></p>
+<hr>
+<h2 id="Display-P3色彩空间"><a href="#Display-P3色彩空间" class="headerlink" title="Display P3色彩空间"></a>Display P3色彩空间</h2><p>Display P3使用DCI-P3的原色，但是使用D65白点，这在计算机显示色彩空间中（sRGB,AdobeRGB都使用D65）更为常见。和DCI-P3的纯伽马曲线不同。Display-P3使用sRGB曲线。</p>
+<hr>
+<h1 id="Android中启用-禁止WCG功能"><a href="#Android中启用-禁止WCG功能" class="headerlink" title="Android中启用/禁止WCG功能"></a>Android中启用/禁止WCG功能</h1><h2 id="APP获取设备是否支持WCG"><a href="#APP获取设备是否支持WCG" class="headerlink" title="APP获取设备是否支持WCG"></a>APP获取设备是否支持WCG</h2><p>APP通过以下两种API来决定设备是否支持WCG：</p>
+<ol>
+<li><code>android.content.res.Configuration::isScreenWideColorGamut</code>：如果display和设备能够支持WCG则返回true。</li>
+<li><code>android.view.Display::isWideColorGamut()</code>：返回显示display设备是否可用于WCG显示。这个并不意味着设备自己可以渲染WCG内容。</li>
+</ol>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/">https://alonealive.github.io/Blog/2019/10/21/2019/191021_android_basis/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-04-01");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-10-21T15:52:00.000Z" itemprop="datePublished">2019-10-21</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-04-01T13:00:04.937Z" itemprop="dateModified">2020-04-01</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/10/23/2019/191023_android_shell/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android Shell脚本应用</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/10/20/2019/191020_cpp_singletonMode/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++ 单例模式</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

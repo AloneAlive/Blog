@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android Systrace如何抓取分析问题 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android Systrace如何抓取分析问题 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/"><meta property="og:locale" content="zh-CN"><meta name="description" content="UI流畅平滑的systraceSystrace获取：Android\Sdk\platform-tools\systrace systrace.py：python systrace.py --time&#x3D;10 -o trace.html gfx input view webview wm am sm audio video hal  res dalvik bionic power pm ss pdx  - sunwengang - sunwengang blog"><meta name="keywords" content="graphics"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace1.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace2.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace3.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace4.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace5.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace6.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace7.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace8.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace9.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace10.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace11.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace12.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace13.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace14.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace15.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace16.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace17.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace18.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace19.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace20.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace21.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/systrace22.png"><meta property="article:published_time" content="2020-02-22T12:32:00.000Z"><meta property="article:modified_time" content="2020-03-08T10:26:39.717Z"><meta property="og:updated_time" content="2020-03-08T10:26:39.717Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="graphics"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/"
+    },
+    "headline": "Android Systrace如何抓取分析问题 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-02-22T12:32:00.000Z",
+    "dateModified": "2020-03-08T10:26:39.717Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "graphics",
+    "description": "UI流畅平滑的systraceSystrace获取：Android\Sdk\platform-tools\systrace systrace.py：python systrace.py --time=10 -o trace.html gfx input view webview wm am sm audio video hal  res dalvik bionic power pm ss pdx  - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android Systrace如何抓取分析问题" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android Systrace如何抓取分析问题&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android Systrace如何抓取分析问题" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACKElEQVR42u3aQXKEMAwFUe5/6WSbha3fMqQyQc1mKhPAj6qxkWRdX//guESKFCnyA5BXcSwvLM6tvv95PR1X5FzkDlOdk/5fPSAeV+Ro5O7HvpoYq/NXkN19yLgiRSbkbuFeAaqFX6TIp5FkUU+TT6RIgtwNXi3eCb2aQK3ARuRYZEqufuvzsWxR5KuQJHnaLbq7gDcFHI9X1US+CpmC2zRAFcxW15ICmciZyDuFqBWEJmfke5EzkbuAtBqwStKqidNJyETORaaFmSZiqQBLkzKRIjvJfKeIWgUYqTAmUiTZaKqC2upBbgUwIkcidxfQgj2FpqYS9MYROQJJigJpoceDFi+H1uwW+Wok2ewkm/K0qYRsuIqcjaTFeFpArQoKaXKigpXIEcg7G6G7+1QPlMYUORtZDUIb4tCAJwGJyLHIatElC3AnKKkmEQp6Rb4eSX/gpPDULVi1oyCRo5Bk8pwURDvJGUrERI5ApmY3mlCR+1SbS7jDSuTrkSmA7SRtdxpF4uwWOQq5u3m3wYMEFelvkSJPPk8a5brFLpGzkSkAJhuaOHAADQAiRVYwAkqo7saByLnIdKQFmBSsSCNyWbASOQpJCvndDXsCOU7ERI5ApgmTCv9pEzVNQNwoInIUsltQ6jSD0gBDpMgOMjV5nDaHlE14IkXCZmLSqFk1f5KHFimyW4xPQUXnpdCqqokcgaQbmbTBiTblpeKryJnITz5EihQp8g+Pb4Tv1nX1o++7AAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android Systrace如何抓取分析问题</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-02-22</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android Systrace如何抓取分析问题&url=https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android Systrace如何抓取分析问题&url=https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACKElEQVR42u3aQXKEMAwFUe5/6WSbha3fMqQyQc1mKhPAj6qxkWRdX//guESKFCnyA5BXcSwvLM6tvv95PR1X5FzkDlOdk/5fPSAeV+Ro5O7HvpoYq/NXkN19yLgiRSbkbuFeAaqFX6TIp5FkUU+TT6RIgtwNXi3eCb2aQK3ARuRYZEqufuvzsWxR5KuQJHnaLbq7gDcFHI9X1US+CpmC2zRAFcxW15ICmciZyDuFqBWEJmfke5EzkbuAtBqwStKqidNJyETORaaFmSZiqQBLkzKRIjvJfKeIWgUYqTAmUiTZaKqC2upBbgUwIkcidxfQgj2FpqYS9MYROQJJigJpoceDFi+H1uwW+Wok2ewkm/K0qYRsuIqcjaTFeFpArQoKaXKigpXIEcg7G6G7+1QPlMYUORtZDUIb4tCAJwGJyLHIatElC3AnKKkmEQp6Rb4eSX/gpPDULVi1oyCRo5Bk8pwURDvJGUrERI5ApmY3mlCR+1SbS7jDSuTrkSmA7SRtdxpF4uwWOQq5u3m3wYMEFelvkSJPPk8a5brFLpGzkSkAJhuaOHAADQAiRVYwAkqo7saByLnIdKQFmBSsSCNyWbASOQpJCvndDXsCOU7ERI5ApgmTCv9pEzVNQNwoInIUsltQ6jSD0gBDpMgOMjV5nDaHlE14IkXCZmLSqFk1f5KHFimyW4xPQUXnpdCqqokcgaQbmbTBiTblpeKryJnITz5EihQp8g+Pb4Tv1nX1o++7AAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#UI流畅平滑的systrace"><span class="post-toc-number">1.</span> <span class="post-toc-text">UI流畅平滑的systrace</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Systrace获取："><span class="post-toc-number">1.1.</span> <span class="post-toc-text">Systrace获取：</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#需要开的Tag"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">需要开的Tag</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#time和buffer-size"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">time和buffer size</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#视频获取"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">视频获取</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#systrace查看绘制过程是否有问题（FPS）"><span class="post-toc-number">2.</span> <span class="post-toc-text">systrace查看绘制过程是否有问题（FPS）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#上层到底层的模块图-Buffer流程"><span class="post-toc-number">3.</span> <span class="post-toc-text">上层到底层的模块图(Buffer流程)</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#FPS问题关注点"><span class="post-toc-number">4.</span> <span class="post-toc-text">FPS问题关注点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Vsync周期是否正常"><span class="post-toc-number">5.</span> <span class="post-toc-text">Vsync周期是否正常</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#底层硬件的FPS是否正常"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">底层硬件的FPS是否正常</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#查看queuebuffer周期是否规律"><span class="post-toc-number">6.</span> <span class="post-toc-text">查看queuebuffer周期是否规律</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#硬件绘制和软件绘制如何查看"><span class="post-toc-number">7.</span> <span class="post-toc-text">硬件绘制和软件绘制如何查看</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#硬件绘制"><span class="post-toc-number">7.1.</span> <span class="post-toc-text">硬件绘制</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#软件绘制"><span class="post-toc-number">7.2.</span> <span class="post-toc-text">软件绘制</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#view耗时太久"><span class="post-toc-number">8.</span> <span class="post-toc-text">view耗时太久</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Draw绘制太长"><span class="post-toc-number">9.</span> <span class="post-toc-text">Draw绘制太长</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DrawFrame耗时"><span class="post-toc-number">9.1.</span> <span class="post-toc-text">DrawFrame耗时</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#OpenGL-API绘制是否正常"><span class="post-toc-number">10.</span> <span class="post-toc-text">OpenGL API绘制是否正常</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#查看systrace的进程状态"><span class="post-toc-number">11.</span> <span class="post-toc-text">查看systrace的进程状态</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#选中一个函数的区域（使用箭头）查看进程状态"><span class="post-toc-number">11.1.</span> <span class="post-toc-text">选中一个函数的区域（使用箭头）查看进程状态</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#APP-Owner（view模块异常）"><span class="post-toc-number">12.</span> <span class="post-toc-text">APP Owner（view模块异常）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#APP-Owner（HWUI模块异常）"><span class="post-toc-number">13.</span> <span class="post-toc-text">APP Owner（HWUI模块异常）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#App-owner-Consult-SS"><span class="post-toc-number">14.</span> <span class="post-toc-text">App owner (Consult SS)</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#App-owner-Consult-SF合成"><span class="post-toc-number">15.</span> <span class="post-toc-text">App owner (Consult SF合成)</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Buffer是新的，但是内容还是和上一帧相同"><span class="post-toc-number">15.1.</span> <span class="post-toc-text">Buffer是新的，但是内容还是和上一帧相同</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#检查buffer-fence-time同步时间"><span class="post-toc-number">15.2.</span> <span class="post-toc-text">检查buffer fence time同步时间</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#强制GPU合成检查"><span class="post-toc-number">15.3.</span> <span class="post-toc-text">强制GPU合成检查</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="UI流畅平滑的systrace"><a href="#UI流畅平滑的systrace" class="headerlink" title="UI流畅平滑的systrace"></a>UI流畅平滑的systrace</h2><h3 id="Systrace获取："><a href="#Systrace获取：" class="headerlink" title="Systrace获取："></a>Systrace获取：</h3><p>Android\Sdk\platform-tools\systrace</p>
+<p>systrace.py：<br><code>python systrace.py --time=10 -o trace.html gfx input view webview wm am sm audio video hal  res dalvik bionic power pm ss pdx sched freq idle load  binder_driver binder_lock</code></p>
+<p>默认Tag with: <code>sched freq idle res ss gfx input view am</code></p>
+<a id="more"></a>
+<p>常用：<br><code>./systrace -t 3 -b 10240 -o test.html sched freq idle res ss gfx input view am hal power wm</code></p>
+<h3 id="需要开的Tag"><a href="#需要开的Tag" class="headerlink" title="需要开的Tag"></a>需要开的Tag</h3><table>
+<thead>
+<tr>
+<th align="center">需求</th>
+<th align="center">tags</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">cpu信息</td>
+<td align="center">sched/freq/idle</td>
+</tr>
+<tr>
+<td align="center">测试列表滑动，桌面滑动等流畅性问题</td>
+<td align="center">gfx/view/input/hwui</td>
+</tr>
+<tr>
+<td align="center">测试app launch，点击某个应用，点击进入某个界面</td>
+<td align="center">gfx/view/input/dalvik/disk</td>
+</tr>
+<tr>
+<td align="center">怀疑有power问题（亮灭屏，电量相关）</td>
+<td align="center">gfx/view/input/res/am/wm/power</td>
+</tr>
+</tbody></table>
+<h3 id="time和buffer-size"><a href="#time和buffer-size" class="headerlink" title="time和buffer size"></a>time和buffer size</h3><p>一般我给的是<code>-t 3 -b 8000</code></p>
+<ul>
+<li>如果抓5s，-b可以给20480（kb）</li>
+<li>如果时间再长，-b可以给30720（kb）</li>
+</ul>
+<h3 id="视频获取"><a href="#视频获取" class="headerlink" title="视频获取"></a>视频获取</h3><p><code>动画过程</code>:指手机画面开始动的前一帧到画面停止动(完全显示，最后一帧)的过程，所以动画过程时间，依据动画不同，记录的时间也会不同。<br>在播放高清视频时，影格数就表示画面所更新的次数，需要仔细观察视频画面。其中一影格就是手机更新画面时动一次，一般在fps为60的平台上，通常是一帧画面就会动一次，也就是一影格，而对于fps为30的平台，通常是两帧表示一影格。</p>
+<p><code>FPS</code>:表示每秒刷新的帧数，是画面流畅性的一个重要指标,那它是如何计算出来的呢（影格数除以动画时间）</p>
+<p><code>FPS</code>:特定的区段时间内,每秒平均更新画面的次数。</p>
+<ul>
+<li>数值的高低不能代表画面的流畅度</li>
+<li>流畅度还是会跟画面的内容有关系（例如分辨率）</li>
+</ul>
+<p><strong>目前常用的FPS计算方法：</strong></p>
+<ul>
+<li>systrace所录到的<code>queuebuffer</code>个数计算区段时间内的刷新次数</li>
+<li>高速摄影机在区段时间内的刷新次数</li>
+</ul>
+<p>从绘图流程的角度来看,这些FPS的意义是类似的：<br>如果只有单一图层更新的情况,表示从<code>APP画图</code>到<code>display显示</code>的频率。</p>
+<p>常见<code>FPS TestCase</code>：</p>
+<ol>
+<li>App 界面滑动换页的流畅性</li>
+<li>browser浏览网页的流畅性</li>
+<li>包含列表控件(list menu)界面卷动的流畅性</li>
+<li>Contact list界面卷动的流畅性</li>
+<li>Launch app 过场动画流畅性</li>
+<li>Status bar下拉的流畅性</li>
+</ol>
+<h2 id="systrace查看绘制过程是否有问题（FPS）"><a href="#systrace查看绘制过程是否有问题（FPS）" class="headerlink" title="systrace查看绘制过程是否有问题（FPS）"></a>systrace查看绘制过程是否有问题（FPS）</h2><p>如图：<br><img src="systrace1.png" alt="systrace查看绘制"></p>
+<ol>
+<li>首先查看VSYNC周期是否正常，是否有进行vsync tunning；</li>
+<li>查看是否queuebuffer成功？ 绘制之前调用dequeuebufffer从BufferQueue获取一个buffer，绘制完成会调用queuebuffer放回BufferQueue。</li>
+</ol>
+<ul>
+<li>如果正常queuebufffer,则查看SF合成</li>
+<li>如果queuebufffer不正常，则查看是否是queuebuffer阻塞？</li>
+<li><ul>
+<li>如果queuebuffer阻塞，则看GPU</li>
+</ul>
+</li>
+<li><ul>
+<li>若不是，查看HWUI绘制是否成功？</li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>如果HWUI没有绘制，则检查UIThread（UI线程）</li>
+</ol>
+<ul>
+<li>如果UIThread调用了runnable，则查看SS（不清楚具体表示什么？）</li>
+<li>如果skia耗费太长时间，则查看skia的代码（绘制API）</li>
+<li>如果是view耗费太长时间，则查看view模块的代码</li>
+<li>如果UI线程状态正常，则查看第三方APP是否有问题？</li>
+</ul>
+<ol start="4">
+<li>如果HWUI绘制了，则检查UIThread和RenderThread（绘制线程）</li>
+</ol>
+<ul>
+<li>UIThread同上</li>
+<li>如果HWUI耗时过长，检查是否阻塞在GL？（openGL）</li>
+<li><ul>
+<li>如果是，则检查GPU</li>
+</ul>
+</li>
+<li><ul>
+<li>如果不是，则检查HWUI模块</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="上层到底层的模块图-Buffer流程"><a href="#上层到底层的模块图-Buffer流程" class="headerlink" title="上层到底层的模块图(Buffer流程)"></a>上层到底层的模块图(Buffer流程)</h2><p>如图：<br><img src="systrace2.png" alt="上层APP到底层Driver顺序模块"></p>
+<p>从APP开始  –》  然后到View（触发setView，测量布局绘制等操作） –》  然后到绘制，如果是软件绘制就是skia，如果是硬件绘制就是到HWUI，再到OpenGL  –》  接着绘制完成，通过BufferQueue，调用queuebuffer函数  –》  触发SF合成  –》 查看合成方式，如果是GPU合成还是观察OpenGL，然后两种合成方式再调用到HWC模块  –》  然后到底层驱动Display Driver模块  –》  然后到硬件LCD Panel屏幕</p>
+<p><strong>Note:</strong> queubuffer的查看可以分两部分分析：  </p>
+<ol>
+<li>Queue的速度有没有达到预期值？是否时间太长，一直在Queue？</li>
+<li>时间点是否正确，是否绘制完成？是否下一个时间点开始触发SF模块合成流程？</li>
+</ol>
+<hr>
+<h2 id="FPS问题关注点"><a href="#FPS问题关注点" class="headerlink" title="FPS问题关注点"></a>FPS问题关注点</h2><p>如图：<br><img src="systrace3.png" alt="systrace截图分析"></p>
+<ol>
+<li>APP在收到SW Vsync之后，开始产生新的frame</li>
+<li>查看抓取APP的UIThread， 首先是<code>Choreographer#doFrame</code>进行绘制之前的测量、布局，以及reDraw重绘的判断，然后触发HWUI绘制；</li>
+<li>查看DrawFrame部分，开始调用<code>dequeubuffer</code>获取buffer，以及其他GL Function；</li>
+<li>绘制完成后调用<code>eglSwapBuffers</code>，然后再调用<code>queuebuffer</code>将Buffer放回<code>bufferqueue</code>；</li>
+<li>SF在收到下一个SW Vsync之后，从<code>bufferqueue</code>取出buffer，调用onMessageReceived，然后在函数<code>latchBuffer</code>到更新纹理<code>updateTextImage</code>（纹理数据可以通过<code>GAPID</code>工具抓取trace查看），再到<code>acquireBuffer</code>取Buffer；</li>
+<li>合成完成后，HWC将SF传下来的工作排进内部thread（可以查看Dispatcher_0和DispSync）</li>
+<li>HWC处理合成之后，传到底层驱动display driver，然后触发驱动driver（可以查看OverlayEngine_0）</li>
+<li>然后查看当前的<code>DispSync</code>，在当前的<code>sen_sw_sync</code>结束后将frame送到<code>LCD</code></li>
+</ol>
+<h2 id="Vsync周期是否正常"><a href="#Vsync周期是否正常" class="headerlink" title="Vsync周期是否正常"></a>Vsync周期是否正常</h2><p>如图：<br><img src="systrace4.png" alt="systrace截图分析"></p>
+<ol>
+<li>如果是标准60fps刷新率，查看VSYNC的周期是否是<code>16.6ms</code>，绘制是否在这个周期内完成？</li>
+<li>绘制queuebuffer和下一帧合成的时间是否正常？</li>
+</ol>
+<h3 id="底层硬件的FPS是否正常"><a href="#底层硬件的FPS是否正常" class="headerlink" title="底层硬件的FPS是否正常"></a>底层硬件的FPS是否正常</h3><p>如图：<br><img src="systrace5.png" alt="systrace截图分析"></p>
+<p>如果是标准60fps刷新率，查看底层的FPS（HW_VSYNC）是否是16.6ms正常的周期？</p>
+<h2 id="查看queuebuffer周期是否规律"><a href="#查看queuebuffer周期是否规律" class="headerlink" title="查看queuebuffer周期是否规律"></a>查看queuebuffer周期是否规律</h2><p>如图：<br><img src="systrace6.png" alt="systrace截图分析"></p>
+<p><code>hasClientComposition</code>对比<code>hasDeviceComposition</code>两种合成方式。</p>
+<hr>
+<h2 id="硬件绘制和软件绘制如何查看"><a href="#硬件绘制和软件绘制如何查看" class="headerlink" title="硬件绘制和软件绘制如何查看"></a>硬件绘制和软件绘制如何查看</h2><h3 id="硬件绘制"><a href="#硬件绘制" class="headerlink" title="硬件绘制"></a>硬件绘制</h3><blockquote>
+<p><code>HWUI draw</code>会有<code>Record View#draw()</code></p>
+</blockquote>
+<p>如图：<br><img src="systrace7.png" alt="systrace截图分析"></p>
+<h3 id="软件绘制"><a href="#软件绘制" class="headerlink" title="软件绘制"></a>软件绘制</h3><blockquote>
+<p><code>SWUI draw</code>会有<code>drawSoftware lockCanvas</code></p>
+</blockquote>
+<p>如图：<br><img src="systrace8.png" alt="systrace截图分析"></p>
+<hr>
+<h2 id="view耗时太久"><a href="#view耗时太久" class="headerlink" title="view耗时太久"></a><code>view</code>耗时太久</h2><p>如图：<br><img src="systrace9.png" alt="systrace截图分析"></p>
+<p>可以分别查看测量、布局、以及软件/硬件绘制的过程。</p>
+<hr>
+<h2 id="Draw绘制太长"><a href="#Draw绘制太长" class="headerlink" title="Draw绘制太长"></a>Draw绘制太长</h2><blockquote>
+<p><code>注意</code>：systrace (don’t turn on <code>hwui/gfx tag</code>)</p>
+</blockquote>
+<p>如图：<br><img src="systrace10.png" alt="systrace截图分析"></p>
+<p>查看<code>Choreographer#doFrame</code>时长。</p>
+<p>如图：<br><img src="systrace11.png" alt="systrace截图分析"></p>
+<p>然后查看<code>draw</code>的耗时（注意是软件绘制SWUI）</p>
+<h3 id="DrawFrame耗时"><a href="#DrawFrame耗时" class="headerlink" title="DrawFrame耗时"></a><code>DrawFrame</code>耗时</h3><blockquote>
+<p><code>注意</code>：systrace (don’t turn on <code>hwui/gfx tag</code>)</p>
+</blockquote>
+<p>如图：<br><img src="systrace12.png" alt="systrace截图分析"></p>
+<p>如果是标准60FPS帧率，则该函数耗时不要超过16.6ms</p>
+<hr>
+<h2 id="OpenGL-API绘制是否正常"><a href="#OpenGL-API绘制是否正常" class="headerlink" title="OpenGL API绘制是否正常"></a>OpenGL API绘制是否正常</h2><p>需要以下的函数被systrace抓取到，则需要开启<code>GL trace</code>开关：</p>
+<ol>
+<li>adb shell setprop debug.egl.trace systrace</li>
+<li>adb shell stop</li>
+<li>adb shell start (or make sure your app restart)</li>
+<li>Run systrace (<code>需要加上tag：view,input,freq,res,hwui/gfx</code>)</li>
+</ol>
+<p>如图：<br><img src="systrace13.png" alt="systrace截图分析"></p>
+<hr>
+<h2 id="查看systrace的进程状态"><a href="#查看systrace的进程状态" class="headerlink" title="查看systrace的进程状态"></a>查看systrace的进程状态</h2><p>如图：<br><img src="systrace14.png" alt="systrace截图分析"></p>
+<h3 id="选中一个函数的区域（使用箭头）查看进程状态"><a href="#选中一个函数的区域（使用箭头）查看进程状态" class="headerlink" title="选中一个函数的区域（使用箭头）查看进程状态"></a>选中一个函数的区域（使用箭头）查看进程状态</h3><p>如图：<br><img src="systrace15.png" alt="systrace截图分析"></p>
+<blockquote>
+<p>可以选择整个function的process state并确认统计信息,判断是否有runnable/sleep(D/S)过长的现象。</p>
+</blockquote>
+<p>如图：<br><img src="systrace16.png" alt="systrace截图分析"></p>
+<hr>
+<blockquote>
+<p>以下是确定是哪个部分异常，进一步详细调查的方式。</p>
+</blockquote>
+<h2 id="APP-Owner（view模块异常）"><a href="#APP-Owner（view模块异常）" class="headerlink" title="APP Owner（view模块异常）"></a>APP Owner（view模块异常）</h2><blockquote>
+<p>如果已经确定Measure/Layout 占的时间很多。</p>
+</blockquote>
+<ol>
+<li>adb shell setprop debug.view.systraceMeasure true</li>
+<li>adb shell setprop debug.view.systraceLayout true</li>
+<li>adb shell stop</li>
+<li>adb shell start (or make sure your app restart)</li>
+<li>抓取systrace again</li>
+</ol>
+<p>例如下面的例子， 可以发现ListView layout耗时过长。如图：<br><img src="systrace17.png" alt="systrace截图分析"></p>
+<h2 id="APP-Owner（HWUI模块异常）"><a href="#APP-Owner（HWUI模块异常）" class="headerlink" title="APP Owner（HWUI模块异常）"></a>APP Owner（HWUI模块异常）</h2><blockquote>
+<p>到这一步已经没有异常耗时的draw operation, 所以主要是分析<code>APP画图</code>的行为。抓取方式：</p>
+</blockquote>
+<ol>
+<li>adb shell setprop debug.hwui.log.systrace 1</li>
+<li>adb shell dumpsys gfxinfo</li>
+<li>抓取 systrace again (<code>must turn on view,input,freq,res,hwui/gfx</code>)</li>
+</ol>
+<p>如图：<br><img src="systrace18.png" alt="systrace截图分析"></p>
+<hr>
+<h2 id="App-owner-Consult-SS"><a href="#App-owner-Consult-SS" class="headerlink" title="App owner (Consult SS)"></a>App owner (Consult SS)</h2><blockquote>
+<p>进入此状态大多是因为当下系统资源不足而导致，需要case by case 确认可以解决的方案。</p>
+</blockquote>
+<p>如图：<br><img src="systrace19.png" alt="systrace截图分析"></p>
+<ul>
+<li>系统配置信息：</li>
+</ul>
+<p>需要先确定对比机和测试机的系统配置信息<code>CPU cores/freq</code> 可以直接参考systrace (需确认<code>CPU_FREQUENCY event</code>有打开)</p>
+<p>如图：<br><img src="systrace20.png" alt="systrace截图分析"></p>
+<hr>
+<h2 id="App-owner-Consult-SF合成"><a href="#App-owner-Consult-SF合成" class="headerlink" title="App owner (Consult SF合成)"></a>App owner (Consult SF合成)</h2><blockquote>
+<p>需要看trace判断具体问题方向，例如以下几种问题：</p>
+</blockquote>
+<h3 id="Buffer是新的，但是内容还是和上一帧相同"><a href="#Buffer是新的，但是内容还是和上一帧相同" class="headerlink" title="Buffer是新的，但是内容还是和上一帧相同"></a>Buffer是新的，但是内容还是和上一帧相同</h3><p><code>Mali GPU</code>有种<code>smart partial update机制</code>（局部更新）, 不会整个buffer重刷。可以利用<code>debug property</code>先关闭, 视觉上比较容易看：</p>
+<ul>
+<li>adb shell setprop debug.gpu.hwcrc_disabled 1</li>
+<li>adb shell stop</li>
+<li>adb shell start</li>
+</ul>
+<p>如图：<br><img src="systrace21.png" alt="systrace截图分析"></p>
+<h3 id="检查buffer-fence-time同步时间"><a href="#检查buffer-fence-time同步时间" class="headerlink" title="检查buffer fence time同步时间"></a>检查buffer fence time同步时间</h3><p>如图：<br><img src="systrace22.png" alt="systrace截图分析"></p>
+<h3 id="强制GPU合成检查"><a href="#强制GPU合成检查" class="headerlink" title="强制GPU合成检查"></a>强制GPU合成检查</h3><p>在开发者选项中打开GPU强制合成，如果关掉就正常, 问题方向转回到 HWC/driver。</p>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/">https://alonealive.github.io/Blog/2020/02/22/2020/200222_android_systrace_study/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-02-22T12:32:00.000Z" itemprop="datePublished">2020-02-22</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:26:39.717Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/graphics/" rel="tag">#&nbsp;graphics</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2020/03/17/2020/200317_adnroid_touchEvent/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android 触控事件分析</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/01/05/2020/200105_android_lcd_cabc/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android LCD背光驱动节电技术LABC/CABC</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

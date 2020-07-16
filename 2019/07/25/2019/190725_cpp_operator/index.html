@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>C++浮点常量表示、算术运算符、类型转换 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="C++浮点常量表示、算术运算符、类型转换 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/"><meta property="og:locale" content="zh-CN"><meta name="description" content="浮点常量 默认情况下，8.27和3.4E5这类浮点常量都属于double类型。如果希望常量是float类型，使用f或者F后缀对于long double的类型，使用l和L的后缀  例如： 12341.234f  &#x2F;&#x2F;float2.2L    &#x2F;&#x2F;long double2.34F   &#x2F;&#x2F;float23.231E24  &#x2F;&#x2F;double (defalut) - sunwengang - sunwengang blog"><meta name="keywords" content="cpp"><meta property="article:published_time" content="2019-07-25T14:01:37.000Z"><meta property="article:modified_time" content="2020-03-08T10:02:21.770Z"><meta property="og:updated_time" content="2020-03-08T10:02:21.770Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="cpp"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/"
+    },
+    "headline": "C++浮点常量表示、算术运算符、类型转换 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-07-25T14:01:37.000Z",
+    "dateModified": "2020-03-08T10:02:21.770Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "cpp",
+    "description": "浮点常量 默认情况下，8.27和3.4E5这类浮点常量都属于double类型。如果希望常量是float类型，使用f或者F后缀对于long double的类型，使用l和L的后缀  例如： 12341.234f  //float2.2L    //long double2.34F   //float23.231E24  //double (defalut) - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=C++浮点常量表示、算术运算符、类型转换" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=C++浮点常量表示、算术运算符、类型转换&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=C++浮点常量表示、算术运算符、类型转换" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACKElEQVR42u3aW46DMBAF0ex/0zP/kd23GhhN4i5+oiAeBwmbfvj18wXbS6RIkSI/APkqtuWJi2Pej33fvzqW3FfkXOQOU+3fIXfg6pzt8SJHI3eDIe2nD1gNru0DixQJMCtcd/IXKfIukqLTRF5dT6TITiCRAoYKk9CPREEij0NWCdFf/j6WLYo8ChmLRmTShcWFKhC5VVUTeRSyepG7EzQpClQPJlJkCiA6RScSHFeDZ/kgIsciVxM1wZDBlu5RBtAixyI7SRi5SSr0pwcSORtJGpa7/7tjUoBBGggiRabBkQZE+gh0ilYiZyNTIkYaRd2iK57YRY5EkuQ/FaG6wUMVjIgUSYqiVbM9AUmgghMxkWOQnYJ9p1BPH3z7IRA5Ekkn7ioA7hRPq6QONUBFjkSSxUfdjwEpMpRBr8gxyG7RnRSaSLKWEjiRs5HVAKBF/bT/UiNB5EhkNxnDL32jEHa5YCXySCRZKJKOTUk+LQbcWrwk8igknWA7C5RSgpd+Rc5G4oZkcyEoaUBV9xUpsvuC06Z995oiRZLFHAlFm1SpUY+iIJGjkFVyVU3qpFlandNaeCzyaGTargQgNEjeFRtEzkbSQZAaAHQh3a1sUeQYZDVgWhcFRYbLA0fkOCRpcNIFSN1tO9GLFAkm3VS4ShN6q6ggUmRobtKGJ7kuCppFjkamZmc3qHik+CpyLJIWktKi+WqhU3UuqqqJHIP85E2kSJEi/3H7Bey7lcQHjp77AAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">C++浮点常量表示、算术运算符、类型转换</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-07-25</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=C++浮点常量表示、算术运算符、类型转换&url=https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=C++浮点常量表示、算术运算符、类型转换&url=https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACKElEQVR42u3aW46DMBAF0ex/0zP/kd23GhhN4i5+oiAeBwmbfvj18wXbS6RIkSI/APkqtuWJi2Pej33fvzqW3FfkXOQOU+3fIXfg6pzt8SJHI3eDIe2nD1gNru0DixQJMCtcd/IXKfIukqLTRF5dT6TITiCRAoYKk9CPREEij0NWCdFf/j6WLYo8ChmLRmTShcWFKhC5VVUTeRSyepG7EzQpClQPJlJkCiA6RScSHFeDZ/kgIsciVxM1wZDBlu5RBtAixyI7SRi5SSr0pwcSORtJGpa7/7tjUoBBGggiRabBkQZE+gh0ilYiZyNTIkYaRd2iK57YRY5EkuQ/FaG6wUMVjIgUSYqiVbM9AUmgghMxkWOQnYJ9p1BPH3z7IRA5Ekkn7ioA7hRPq6QONUBFjkSSxUfdjwEpMpRBr8gxyG7RnRSaSLKWEjiRs5HVAKBF/bT/UiNB5EhkNxnDL32jEHa5YCXySCRZKJKOTUk+LQbcWrwk8igknWA7C5RSgpd+Rc5G4oZkcyEoaUBV9xUpsvuC06Z995oiRZLFHAlFm1SpUY+iIJGjkFVyVU3qpFlandNaeCzyaGTargQgNEjeFRtEzkbSQZAaAHQh3a1sUeQYZDVgWhcFRYbLA0fkOCRpcNIFSN1tO9GLFAkm3VS4ShN6q6ggUmRobtKGJ7kuCppFjkamZmc3qHik+CpyLJIWktKi+WqhU3UuqqqJHIP85E2kSJEi/3H7Bey7lcQHjp77AAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#浮点常量"><span class="post-toc-number">1.</span> <span class="post-toc-text">浮点常量</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#算术运算符"><span class="post-toc-number">2.</span> <span class="post-toc-text">算术运算符</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#五种C-基本运算符"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">五种C++基本运算符</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#除法"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">除法</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#类型转换"><span class="post-toc-number">3.</span> <span class="post-toc-text">类型转换</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#类型转换的潜在问题"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">类型转换的潜在问题</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#以-方式初始化时进行的转换（C-11）"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">以{}方式初始化时进行的转换（C++11）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#表达式中的自动转换"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">表达式中的自动转换</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#传递参数的时候转换类型"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">传递参数的时候转换类型</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#强制类型转换"><span class="post-toc-number">3.5.</span> <span class="post-toc-text">强制类型转换</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#C-11的auto声明"><span class="post-toc-number">4.</span> <span class="post-toc-text">C++11的auto声明</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#小结"><span class="post-toc-number">5.</span> <span class="post-toc-text">小结</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="浮点常量"><a href="#浮点常量" class="headerlink" title="浮点常量"></a>浮点常量</h2><blockquote>
+<p>默认情况下，<code>8.27</code>和<code>3.4E5</code>这类浮点常量都属于double类型。<br>如果希望常量是float类型，使用<code>f</code>或者<code>F</code>后缀<br>对于<code>long double</code>的类型，使用<code>l</code>和<code>L</code>的后缀</p>
+</blockquote>
+<p><strong>例如：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.234f</span>  <span class="comment">//float</span></span><br><span class="line"><span class="number">2.2L</span>    <span class="comment">//long double</span></span><br><span class="line"><span class="number">2.34F</span>   <span class="comment">//float</span></span><br><span class="line"><span class="number">23.231E24</span>  <span class="comment">//double (defalut)</span></span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+
+<h2 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h2><h3 id="五种C-基本运算符"><a href="#五种C-基本运算符" class="headerlink" title="五种C++基本运算符"></a>五种C++基本运算符</h3><table>
+<thead>
+<tr>
+<th align="center">operation</th>
+<th align="center">note</th>
+<th align="center">example</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">+</td>
+<td align="center">加法</td>
+<td align="center"><code>3+43=46</code></td>
+</tr>
+<tr>
+<td align="center">-</td>
+<td align="center">减法</td>
+<td align="center"><code>20-5=15</code></td>
+</tr>
+<tr>
+<td align="center">*</td>
+<td align="center">乘以</td>
+<td align="center"><code>3*5=15</code></td>
+</tr>
+<tr>
+<td align="center">/</td>
+<td align="center">除以</td>
+<td align="center"><code>10/3=3</code>（整型相除，小数部分丢弃）</td>
+</tr>
+<tr>
+<td align="center">%</td>
+<td align="center">取余</td>
+<td align="center"><code>10%3=1</code></td>
+</tr>
+</tbody></table>
+<p><strong>例如：</strong></p>
+<figure class="highlight c++"><figcaption><span>arith.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">float</span> a = <span class="number">50.25f</span>;</span><br><span class="line">	<span class="keyword">float</span> b = <span class="number">11.17f</span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt; <span class="string">"a="</span> &lt;&lt; a &lt;&lt; <span class="string">",b="</span>&lt;&lt;b&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt; <span class="string">"a+b="</span>&lt;&lt; a+b &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt; <span class="string">"a-b="</span>&lt;&lt; a-b &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt; <span class="string">"a*b="</span>&lt;&lt; a*b &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span>&lt;&lt; <span class="string">"a/b="</span>&lt;&lt; a/b &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>结果：</strong></p>
+<figure class="highlight c++"><figcaption><span>Result</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a=<span class="number">50.25</span>,b=<span class="number">11.17</span></span><br><span class="line">a+b=<span class="number">61.42</span></span><br><span class="line">a-b=<span class="number">39.08</span></span><br><span class="line">a*b=<span class="number">561.292</span></span><br><span class="line">a/b=<span class="number">4.49866</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="除法"><a href="#除法" class="headerlink" title="除法"></a>除法</h3><blockquote>
+<p>如果两个整数相除，结果的小数部分将被丢弃，只保留整数部分  </p>
+<p>如果其中一个（或者两个）是浮点数，则结果也会保留小数部分，类型是浮点数  </p>
+</blockquote>
+<h2 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h2><blockquote>
+<p><font color=red>C++自动执行的类型转换：</font></p>
+<ul>
+<li>将一个算数类型的值赋给另一种算数类型的变量时，C++会对值转换  </li>
+<li>表达式包含不同的类型时，C++会对值转换  </li>
+<li>将参数传递给函数时，C++会对值转换 </li>
+</ul>
+</blockquote>
+<h3 id="类型转换的潜在问题"><a href="#类型转换的潜在问题" class="headerlink" title="类型转换的潜在问题"></a>类型转换的潜在问题</h3><table>
+<thead>
+<tr>
+<th align="center">转换</th>
+<th align="center">潜在问题</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">将较大的浮点类型转换成较小的浮点类型，例如double转换成float</td>
+<td align="center">精度（有效位数降低），值可能超出目标类型的取值范围</td>
+</tr>
+<tr>
+<td align="center">将浮点类型转换成整型</td>
+<td align="center">小数部分丢失</td>
+</tr>
+<tr>
+<td align="center">将较大的整型转换成较小的整型，例如long转换成short</td>
+<td align="center">值可能超出目标类型的取值范围，通常<b>只复制右边的字节</b></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>将0赋值给bool类型，被转换成true<br>非零的则是false</p>
+</blockquote>
+<h3 id="以-方式初始化时进行的转换（C-11）"><a href="#以-方式初始化时进行的转换（C-11）" class="headerlink" title="以{}方式初始化时进行的转换（C++11）"></a>以<code>{}</code>方式初始化时进行的转换（C++11）</h3><blockquote>
+<p>C++11将使用<code>{}</code>的初始化称为<code>列表初始化</code><br>因为这种初始化常用于给复杂的数据类型提供值列表<br>列表初始化不允许<code>缩窄</code>，即可能无法赋值。例如浮点型不允许转换成整型</p>
+</blockquote>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">const int code = 66;  //整型常量</span><br><span class="line">int x = 66;   //整型变量</span><br><span class="line"></span><br><span class="line"><span class="deletion">- char c1 &#123;31366&#125;;  //类型缩窄，非法</span></span><br><span class="line"><span class="addition">+ char c2 = &#123;66&#125;; //合法</span></span><br><span class="line"><span class="addition">+ char c3 &#123;code&#125;;  //合法</span></span><br><span class="line"><span class="deletion">- char c4 = &#123;x&#125;;  //非法，x是一个变量，对于编译器而言，这个值可能很大。所以编译器不会跟踪执行以下阶段：从x被初始化，到被用来初始化c4</span></span><br><span class="line"></span><br><span class="line">x = 31355;</span><br><span class="line"><span class="addition">+ char c5 = x;  //合法，因为x已经被初始化</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="表达式中的自动转换"><a href="#表达式中的自动转换" class="headerlink" title="表达式中的自动转换"></a>表达式中的<code>自动转换</code></h3><blockquote>
+<p>C++在表达式会执行两种自动转换：</p>
+<ol>
+<li>类型出现时就自动转换</li>
+<li>类型和其他类型同时出现在表达式中，将被转换</li>
+</ol>
+</blockquote>
+<ul>
+<li><strong>整型提升</strong><br>在计算表达式时，C++将 <strong>bool,char,unsigned char,signed char,short</strong> 转换成<code>int</code><br>其中<code>true -&gt; 1, false -&gt; 0</code> </li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">short a =<span class="number">20</span>;</span><br><span class="line">short b =<span class="number">30</span>;</span><br><span class="line">short c = a+b; <span class="comment">//在进行计算的时候，会先将a,b转换成int，然后将结果转换成short</span></span><br></pre></td></tr></table></figure>
+<p><strong>Note:</strong> 因为int是计算机最自然的类型，计算机使用这种类型时，运算速度可能最快。</p>
+<blockquote>
+<p>如果short比int短，则unsigned short会被转换成int；<br>如果两个长度相同，unsigned short会被转换成unsigned int；<br>这种规则保证unsigned short进行整型提升的时候不会损失数据</p>
+</blockquote>
+<hr>
+<ul>
+<li><strong>C++11校验后，编译器在进行算术运算时，依次如下查阅：</strong></li>
+</ul>
+<blockquote>
+<p>如果有一个操作类型是<code>long double</code>, 则另一个转换成<code>long double</code><br>否则，有一个是<code>double</code>， 另一个转换成<code>double</code><br>否则，有一个是<code>float</code>， 另一个转换成<code>float</code><br>否则，说明操作数都是整型，执行整型提升  </p>
+<ul>
+<li>在这种情况下，如果两个操作数都是有符号或者无符号的，且级别不同，则转换成级别高的类型  </li>
+<li>如果一个操作数有符号，另一个没有符号，且无符号操作数的级别比有操作符的高，则将有符号操作数转换成无符号操作数（还是转向级别高的类型）</li>
+<li>否则，<code>有符号类型可以表示无符号类型的所有可能取值</code>，则将无符号操作数转换成有符号操作数的类型</li>
+<li><strong>否则，将两个操作数都转换成有符号类型的无符号版本</strong></li>
+</ul>
+</blockquote>
+<hr>
+<h3 id="传递参数的时候转换类型"><a href="#传递参数的时候转换类型" class="headerlink" title="传递参数的时候转换类型"></a>传递参数的时候转换类型</h3><blockquote>
+<p>传递参数时的类型转换 通常由<code>C++函数原型控制</code><br>C++将对char和short类型应用整型提升（int）  </p>
+</blockquote>
+<h3 id="强制类型转换"><a href="#强制类型转换" class="headerlink" title="强制类型转换"></a><strong>强制类型转换</strong></h3><blockquote>
+<p>强制转换不会修改原变量本身，而是创建一个新的、指定类型的值</p>
+</blockquote>
+<ul>
+<li>通用格式如下：</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">(<span class="keyword">typename</span>) value    <span class="comment">//C的方式</span></span><br><span class="line"><span class="keyword">typename</span> (value)    <span class="comment">//C++的方式</span></span><br><span class="line"></span><br><span class="line">例如将变量a的<span class="keyword">int</span>值转换成<span class="keyword">long</span>类型：</span><br><span class="line">(<span class="keyword">long</span>) a</span><br><span class="line"><span class="keyword">long</span> (a)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>强制类型转换符</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static_cast</span>&lt;<span class="keyword">typename</span>&gt; (value)</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line"><span class="keyword">static_cast</span>&lt;<span class="keyword">long</span>&gt; (a)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="C-11的auto声明"><a href="#C-11的auto声明" class="headerlink" title="C++11的auto声明"></a><strong>C++11的<code>auto</code>声明</strong></h2><blockquote>
+<p>auto是C++的关键字<br>使用auto，而不指定变量类型，编译器将把变量的类型设置成和初始值相同</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> n = <span class="number">10</span>;   <span class="comment">//int</span></span><br><span class="line"><span class="keyword">auto</span> x = <span class="number">1.5</span>;  <span class="comment">//double</span></span><br><span class="line"><span class="keyword">auto</span> y = <span class="number">1.3e12</span>L <span class="comment">//long double</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">auto</span> a = <span class="number">0</span>; <span class="comment">//int，自动类型判断不会判断double类型</span></span><br><span class="line"><span class="keyword">auto</span> b = <span class="number">0.0</span>;  <span class="comment">//double</span></span><br><span class="line"><span class="keyword">double</span> c = <span class="number">0</span>;  <span class="comment">//double，显示声明不会出现问题</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//标准模块库(STL)的自动类型判断（复杂类型）</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt; scores;</span><br><span class="line"><span class="comment">//(1)</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">vector</span>&lt;<span class="keyword">double</span>&gt;::iterator pv = scores.<span class="built_in">begin</span>();</span><br><span class="line"><span class="comment">//(2)</span></span><br><span class="line"><span class="keyword">auto</span> pv = scores.<span class="built_in">begin</span>();</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><blockquote>
+<p>C++的基本类型分为两组：  </p>
+<blockquote>
+<p>一组存储整数的类型<br>一组存储浮点数的类型  </p>
+</blockquote>
+<p>整型由小到大依次是：  </p>
+<blockquote>
+<p><code>bool, char, signed char, unsigned char, short, signed char, unsigned char, int, signed int, unsigned int, long, unsinged long, long long, unsigned long long</code>  </p>
+<p>还有在一种<code>wchar_t</code>类型，取决于实现<br>C++11新增的<code>char16_t</code>和<code>char32_t</code>，分别存储16和32位的字符编码<br><code>short</code> 至少16位<br><code>int</code> 至少和<code>short</code>一样长<br><code>long</code> 至少32位  </p>
+</blockquote>
+</blockquote>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/">https://alonealive.github.io/Blog/2019/07/25/2019/190725_cpp_operator/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-07-25T14:01:37.000Z" itemprop="datePublished">2019-07-25</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:02:21.770Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/cpp/'>cpp</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/cpp/" rel="tag">#&nbsp;cpp</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/07/26/2019/190725_linux_linuxEnv/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Ubuntu安装后的环境配置注意点</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/07/25/2019/190724_ubuntu_install/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Ubuntu18系统安装（无需制作启动盘）</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

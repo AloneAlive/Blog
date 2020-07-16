@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android JNI理解 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android JNI理解 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/"><meta property="og:locale" content="zh-CN"><meta name="description" content="概述 JNI,即Java Native Interface，Java本地调用。通过JNI可以实现：    Java程序函数可以调用Natvie语言（C&#x2F;C++）写的函数 Natvie程序函数可以调用Java层的函数 - sunwengang - sunwengang blog"><meta name="keywords" content="JNI"><meta property="article:published_time" content="2019-08-29T15:41:06.000Z"><meta property="article:modified_time" content="2020-03-08T10:11:22.924Z"><meta property="og:updated_time" content="2020-03-08T10:11:22.924Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="JNI"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/"
+    },
+    "headline": "Android JNI理解 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-08-29T15:41:06.000Z",
+    "dateModified": "2020-03-08T10:11:22.924Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "JNI",
+    "description": "概述 JNI,即Java Native Interface，Java本地调用。通过JNI可以实现：    Java程序函数可以调用Natvie语言（C/C++）写的函数 Natvie程序函数可以调用Java层的函数 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android JNI理解" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android JNI理解&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android JNI理解" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACN0lEQVR42u3b0U7DMBBE0fz/T8MrKvbOXRNEyd68IKE2PkW1s54118c/uC6RIkWKfAPkVVzLN375/er1q/e+voeOK3IusotZDbS71+o+eFyRo5G7AXeTaDdBdpBvkwJ8UJEiCfIK1w4tUuTdyN0ivBp4d+/X34kUeVJgkImUFv9q4txSBYl8HLJamH/z5227RZGPQsbQKCzQKSxIhfItqZrIRyGrLzIFryZGtZDj8USORNIvdLWJaoX1nbBB5EjkaYGwG4AUEil0EDkbSQaqiofda083ZSJFdkPP1ETafejUdMIbMZGPR1Y36GywqjCLhq7xoIjIMUjywK/C0hSqkjCh1ZQX+WhktfnvNJBSCFsVwttJLHI8kgZPnUnzo4NPIkciq4d8CqRIiEqKlO0fRuRIZBUCkE1TKjgqZKsBKnIMkjbgSbGbwoVOACZyLvIkcOqgyL1RFSRyFJI0JlOodRJYtQoMkWOQNDAlG3saIhw9cUSOQ3b+0aI7MaoHRPl6kSORtFhIi2+32CAHUUTORKZNfQqnyIG6qqFfhlwixyLJ4Y+0+NIDdTSEECnytHA4+UeM6iCTSJH0QAdtBJBGE2mIipyLJMUB3dB3DjyRAkfkTGT6QtMGUypq6Qas3IiJHINMRWxqwNNGPv0AIkWShZg2iKoPSAoMkSIJsjownw440QNM7WaTyNHI1CiNgzWCWpEiSRBFF/pOYEoOl4ici6QP/nQYhBQWraBM5EjkO18iRYoU+YfXJyFjtaR3Ged7AAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android JNI理解</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-08-29</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android JNI理解&url=https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android JNI理解&url=https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACN0lEQVR42u3b0U7DMBBE0fz/T8MrKvbOXRNEyd68IKE2PkW1s54118c/uC6RIkWKfAPkVVzLN375/er1q/e+voeOK3IusotZDbS71+o+eFyRo5G7AXeTaDdBdpBvkwJ8UJEiCfIK1w4tUuTdyN0ivBp4d+/X34kUeVJgkImUFv9q4txSBYl8HLJamH/z5227RZGPQsbQKCzQKSxIhfItqZrIRyGrLzIFryZGtZDj8USORNIvdLWJaoX1nbBB5EjkaYGwG4AUEil0EDkbSQaqiofda083ZSJFdkPP1ETafejUdMIbMZGPR1Y36GywqjCLhq7xoIjIMUjywK/C0hSqkjCh1ZQX+WhktfnvNJBSCFsVwttJLHI8kgZPnUnzo4NPIkciq4d8CqRIiEqKlO0fRuRIZBUCkE1TKjgqZKsBKnIMkjbgSbGbwoVOACZyLvIkcOqgyL1RFSRyFJI0JlOodRJYtQoMkWOQNDAlG3saIhw9cUSOQ3b+0aI7MaoHRPl6kSORtFhIi2+32CAHUUTORKZNfQqnyIG6qqFfhlwixyLJ4Y+0+NIDdTSEECnytHA4+UeM6iCTSJH0QAdtBJBGE2mIipyLJMUB3dB3DjyRAkfkTGT6QtMGUypq6Qas3IiJHINMRWxqwNNGPv0AIkWShZg2iKoPSAoMkSIJsjownw440QNM7WaTyNHI1CiNgzWCWpEiSRBFF/pOYEoOl4ici6QP/nQYhBQWraBM5EjkO18iRYoU+YfXJyFjtaR3Ged7AAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#MediaScanner示例"><span class="post-toc-number">2.</span> <span class="post-toc-text">MediaScanner示例</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Java层的MediaScanner"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">Java层的MediaScanner</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#JNI层的MediaScanner"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">JNI层的MediaScanner</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#注册JNI函数"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">注册JNI函数</span></a></li></ol></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><blockquote>
+<p>JNI,即Java Native Interface，Java本地调用。通过JNI可以实现：  </p>
+<ul>
+<li>Java程序函数可以调用Natvie语言（C/C++）写的函数</li>
+<li>Natvie程序函数可以调用Java层的函数</li>
+</ul>
+</blockquote>
+<a id="more"></a>
+<h2 id="MediaScanner示例"><a href="#MediaScanner示例" class="headerlink" title="MediaScanner示例"></a>MediaScanner示例</h2><blockquote>
+<p>使用Android Xref提供的 <a href="http://androidxref.com/9.0.0_r3/" target="_blank" rel="noopener">Android 9.0.0_r3的源码</a></p>
+</blockquote>
+<h3 id="Java层的MediaScanner"><a href="#Java层的MediaScanner" class="headerlink" title="Java层的MediaScanner"></a>Java层的MediaScanner</h3><p>完成两件事：</p>
+<ol>
+<li>加载JNI库</li>
+<li>Java的native函数</li>
+</ol>
+<figure class="highlight c++"><figcaption><span>frameworks/base/media/java/android/media/MediaScanner.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MediaScanner</span> <span class="title">implements</span> <span class="title">AutoCloseable</span> &#123;</span></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        System.loadLibrary(<span class="string">"media_jni"</span>);  <span class="comment">//加载对应的JNI库，media_jni是库名，在实际加载动态库的时候会拓展成libmedia_jni.so</span></span><br><span class="line">        native_init();  <span class="comment">//调用函数</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">String</span> TAG = <span class="string">"MediaScanner"</span>;</span><br><span class="line">...</span><br><span class="line">    <span class="function"><span class="keyword">private</span> native <span class="keyword">void</span> <span class="title">processDirectory</span><span class="params">(<span class="keyword">String</span> path, MediaScannerClient client)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> native <span class="keyword">boolean</span> <span class="title">processFile</span><span class="params">(<span class="keyword">String</span> path, <span class="keyword">String</span> mimeType, MediaScannerClient client)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> native <span class="keyword">void</span> <span class="title">setLocale</span><span class="params">(<span class="keyword">String</span> locale)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> native <span class="keyword">byte</span>[] extractAlbumArt(FileDescriptor fd);</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> native <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">native_init</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> native <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">native_setup</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> native <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">native_finalize</span><span class="params">()</span></span>;</span><br></pre></td></tr></table></figure>
+
+<p>动态库是运行时加载的库。如果Java要调用native函数，必须通过一个位于JNI层的动态库实现。通常是在类的static语句中加载，调用<code>System.loadLibrary</code>方法就可以加载。</p>
+<p>函数名前有Java的关键字<code>native</code>的函数表示将由JNI层实现。</p>
+<p>因而Java层只需要两项工作：<strong>加载对应的JNI库，和声明由关键字native修饰的函数</strong></p>
+<h3 id="JNI层的MediaScanner"><a href="#JNI层的MediaScanner" class="headerlink" title="JNI层的MediaScanner"></a>JNI层的MediaScanner</h3><p>JNI对应的文件是<code>frameworks/base/media/jni/android_media_MediaScanner.cpp</code></p>
+<figure class="highlight c++"><figcaption><span>frameworks/base/media/jni/android_media_MediaScanner.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// This function gets a field ID, which in turn causes class initialization.</span></span><br><span class="line"><span class="comment">// It is called from a static block in MediaScanner, which won't run until the</span></span><br><span class="line"><span class="comment">// first time an instance of this class is used.</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">void</span></span><br><span class="line">android_media_MediaScanner_native_init(JNIEnv *env)</span><br><span class="line">&#123;</span><br><span class="line">    ALOGV(<span class="string">"native_init"</span>);</span><br><span class="line">    jclass clazz = env-&gt;FindClass(kClassMediaScanner);</span><br><span class="line">    <span class="keyword">if</span> (clazz == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    fields.context = env-&gt;GetFieldID(clazz, <span class="string">"mNativeContext"</span>, <span class="string">"J"</span>);</span><br><span class="line">    <span class="keyword">if</span> (fields.context == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>java层的native_init函数对应<code>android_media_MediaScanner_native_init</code>。通过文件路径来命名，观察两个文件的路径：</p>
+<ul>
+<li>frameworks/base/media/java/android/media/MediaScanner.java</li>
+<li>frameworks/base/media/jni/android_media_MediaScanner.cpp</li>
+</ul>
+<h4 id="注册JNI函数"><a href="#注册JNI函数" class="headerlink" title="注册JNI函数"></a>注册JNI函数</h4><p>java层的MediaScanner.java函数native_init位于android.media包中，全路径名是：<code>android/media/MediaScanner.java</code>，对应JNI层函数的名字。JNI层将Java函数名称（包含包名）中的<code>.</code>转换成<code>_</code>，通过这种方式，native_init对应JNI的函数。</p>
+<p>JNI函数注册的意思是将java层的native函数和JNI层对应的实现函数关联起来。注册有两种方式：<code>静态方法和动态注册</code></p>
+<ol>
+<li>静态注册</li>
+</ol>
+<blockquote>
+<p>根据函数名来找对应的JNI函数。</p>
+</blockquote>
+<p>（1） 编写Java代码，编译生成.class文件</p>
+<p>（2） 使用Java的工具命令<code>javah -o output packagename.classname</code>，生成一个<code>output.h</code>的JNI头文件，里面声明了对应的JNI函数，只要实现里面的函数即可。</p>
+<ol start="2">
+<li>动态注册</li>
+</ol>
+<blockquote>
+<p>因为Java native函数和JNI函数是一一对应的，所以存在一种<code>JNINativeMethod</code>的结构记录这种一一对应的关系。</p>
+</blockquote>
+<p>例如frameworks/base/media/jni/android_media_MediaScanner.cpp文件中：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> JNINativeMethod gMethods[] = &#123;</span><br><span class="line"> ......</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">"native_setup"</span>,</span><br><span class="line">        <span class="string">"()V"</span>,</span><br><span class="line">        (<span class="keyword">void</span> *)android_media_MediaScanner_native_setup</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="string">"native_finalize"</span>,</span><br><span class="line">        <span class="string">"()V"</span>,</span><br><span class="line">        (<span class="keyword">void</span> *)android_media_MediaScanner_native_finalize</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">//注册上面的数组</span></span><br><span class="line"><span class="comment">// This function only registers the native methods, and is called from</span></span><br><span class="line"><span class="comment">// JNI_OnLoad in android_media_MediaPlayer.cpp</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">register_android_media_MediaScanner</span><span class="params">(JNIEnv *env)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> AndroidRuntime::registerNativeMethods(env,</span><br><span class="line">                kClassMediaScanner, gMethods, NELEM(gMethods));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当Java层通过<code>System.loadLibrary</code>加载完JNI动态库后，会查找该库中<code>JNI_OnLoad</code>函数，然后调用他，之后完成动态注册。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">jint <span class="title">JNI_OnLoad</span><span class="params">(JavaVM* vm, <span class="keyword">void</span>* <span class="comment">/* reserved */</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    JNIEnv* env = <span class="literal">NULL</span>;</span><br><span class="line">    jint result = <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (vm-&gt;GetEnv((<span class="keyword">void</span>**) &amp;env, JNI_VERSION_1_4) != JNI_OK) &#123;</span><br><span class="line">        ALOGE(<span class="string">"ERROR: GetEnv failed\n"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">    assert(env != <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line">    <span class="keyword">if</span> (register_android_media_MediaRecorder(env) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        ALOGE(<span class="string">"ERROR: MediaRecorder native registration failed\n"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (register_android_media_MediaScanner(env) &lt; <span class="number">0</span>) &#123;   <span class="comment">//此处开始动态注册</span></span><br><span class="line">        ALOGE(<span class="string">"ERROR: MediaScanner native registration failed\n"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (register_android_media_MediaMetadataRetriever(env) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        ALOGE(<span class="string">"ERROR: MediaMetadataRetriever native registration failed\n"</span>);</span><br><span class="line">        <span class="keyword">goto</span> bail;</span><br><span class="line">    &#125;</span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">    <span class="comment">/* success -- return valid version number */</span></span><br><span class="line">    result = JNI_VERSION_1_4;</span><br><span class="line"></span><br><span class="line">bail:</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/">https://alonealive.github.io/Blog/2019/08/29/2019/190829_android_JNI/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-08-29T15:41:06.000Z" itemprop="datePublished">2019-08-29</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:11:22.924Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/JNI/" rel="tag">#&nbsp;JNI</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/09/01/2019/190901_cpp_namespace/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++头文件、作用域、内存模型和名称空间</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/08/29/2019/190829_linux_ibus/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">ubuntu输入法无法选择候选文字</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

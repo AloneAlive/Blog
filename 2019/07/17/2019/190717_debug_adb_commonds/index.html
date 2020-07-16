@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Use ADB | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Use ADB | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/"><meta property="og:locale" content="zh-CN"><meta name="description" content="ADB是连接手机设备和电脑设备的调试桥。这种工具命令用于Android调试是基础而且重要的。  Overview Install: sudo apt-get install adb Function:123456通过adb可以管理、操作模拟器和设备，如安装软件、查看设备软硬件参数、系统升级、运行shell命令等。手机启动USB调试模式，设备连接电脑。注：我的手机一加6的USB调试模式打开方式如下： - sunwengang - sunwengang blog"><meta name="keywords" content="ADB"><meta property="article:published_time" content="2019-07-17T14:04:14.000Z"><meta property="article:modified_time" content="2020-03-08T09:59:45.028Z"><meta property="og:updated_time" content="2020-03-08T09:59:45.028Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="ADB"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/"
+    },
+    "headline": "Use ADB | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-07-17T14:04:14.000Z",
+    "dateModified": "2020-03-08T09:59:45.028Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "ADB",
+    "description": "ADB是连接手机设备和电脑设备的调试桥。这种工具命令用于Android调试是基础而且重要的。  Overview Install: sudo apt-get install adb Function:123456通过adb可以管理、操作模拟器和设备，如安装软件、查看设备软硬件参数、系统升级、运行shell命令等。手机启动USB调试模式，设备连接电脑。注：我的手机一加6的USB调试模式打开方式如下： - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Use ADB" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Use ADB&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Use ADB" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACOUlEQVR42u2aQW7DMAwE8/9Pt6deDIk7tFM0FUcXG4kjjQBTWS75+voH4yWkkEIK+QGQr2Isf3j5bvX8z/31ev0srSvkXMgdzArsOtkOkMwZnxFyNORq8W5g7eag8wspJIUkh/YKvDyohRTyYeBUh3C1MfKMkEJ2BEY1SVc4/JoKEvI4yEpA/Ob1bdmikEdBRtNoIRpool8J4re6akIeBVktRDbQNReIIBZyNiR5sXfiIoF0NrbciJBjIVPCREUCFRK4QCDkWMhqQWKIVpshQmN7L+RIyOqgJgFRwaSiaTRphRwJSUypZFh1TClaLBVyLiQ1UVNB/k6AxYNdyJGQpJCZNpFESjIituaYkCMhK9OTFjOroEqJGFZBQo6BJEZnAiECI5n+MbqFHANJFkxBUyb4wdxqNR4LOQKSmgRUaHT+HFqiV8hxkDRAUnKWErmUwMXOASGPh+w0G9MEixpWLYEh5BhI+pJ3xQbd8G3DSsgRkMnA6tyT4lVM5IQcCXmnUZOaAalRJBpjQo6FJAXO1ARSHcyVkVCuKeRYyHc0wJFGkU7ziZBCJrOAmlJdkfyoc0DIMZDpUE5BtpuPFERx85KQx0KShhDSTEcMqySkhRSSNHQkM58e0DQBi4mYkCMgU+L1xOBPRSUcOEKOg+wkSVXB82mDnZBCEsiqMJQMBGIQ4ERMSCFBo1xK1jrCuVVsEvJ4yCeNTCk4aFH1tugV8jjI9MdfNXbcFRPEmBVyJuQnDyGFFFLIPxzf5Az2VaqX2K8AAAAASUVORK5CYII=" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Use ADB</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-07-17</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Use ADB&url=https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Use ADB&url=https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACOUlEQVR42u2aQW7DMAwE8/9Pt6deDIk7tFM0FUcXG4kjjQBTWS75+voH4yWkkEIK+QGQr2Isf3j5bvX8z/31ev0srSvkXMgdzArsOtkOkMwZnxFyNORq8W5g7eag8wspJIUkh/YKvDyohRTyYeBUh3C1MfKMkEJ2BEY1SVc4/JoKEvI4yEpA/Ob1bdmikEdBRtNoIRpool8J4re6akIeBVktRDbQNReIIBZyNiR5sXfiIoF0NrbciJBjIVPCREUCFRK4QCDkWMhqQWKIVpshQmN7L+RIyOqgJgFRwaSiaTRphRwJSUypZFh1TClaLBVyLiQ1UVNB/k6AxYNdyJGQpJCZNpFESjIituaYkCMhK9OTFjOroEqJGFZBQo6BJEZnAiECI5n+MbqFHANJFkxBUyb4wdxqNR4LOQKSmgRUaHT+HFqiV8hxkDRAUnKWErmUwMXOASGPh+w0G9MEixpWLYEh5BhI+pJ3xQbd8G3DSsgRkMnA6tyT4lVM5IQcCXmnUZOaAalRJBpjQo6FJAXO1ARSHcyVkVCuKeRYyHc0wJFGkU7ziZBCJrOAmlJdkfyoc0DIMZDpUE5BtpuPFERx85KQx0KShhDSTEcMqySkhRSSNHQkM58e0DQBi4mYkCMgU+L1xOBPRSUcOEKOg+wkSVXB82mDnZBCEsiqMJQMBGIQ4ERMSCFBo1xK1jrCuVVsEvJ4yCeNTCk4aFH1tugV8jjI9MdfNXbcFRPEmBVyJuQnDyGFFFLIPxzf5Az2VaqX2K8AAAAASUVORK5CYII=" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Overview"><span class="post-toc-number">1.</span> <span class="post-toc-text">Overview</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Commonds"><span class="post-toc-number">2.</span> <span class="post-toc-text">Commonds</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#基础命令"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">基础命令</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#网络相关设置"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">网络相关设置</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#屏幕display信息"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">屏幕display信息</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#软件操作命令"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">软件操作命令</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#文件操作命令："><span class="post-toc-number">2.5.</span> <span class="post-toc-text">文件操作命令：</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#录制视频"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">录制视频</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#日志操作命令"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">日志操作命令</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#APK包相关命令"><span class="post-toc-number">2.8.</span> <span class="post-toc-text">APK包相关命令</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#按名称检查正在运行的进程"><span class="post-toc-number">2.9.</span> <span class="post-toc-text">按名称检查正在运行的进程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#获取当前ACTIVITY"><span class="post-toc-number">2.10.</span> <span class="post-toc-text">获取当前ACTIVITY</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#命令启动指定Activity"><span class="post-toc-number">2.11.</span> <span class="post-toc-text">命令启动指定Activity</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#模拟点击事件（点击屏幕）"><span class="post-toc-number">2.12.</span> <span class="post-toc-text">模拟点击事件（点击屏幕）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#获取设备信息参数"><span class="post-toc-number">2.13.</span> <span class="post-toc-text">获取设备信息参数</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#输入命令input"><span class="post-toc-number">2.14.</span> <span class="post-toc-text">输入命令input</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#adb-shell-am-instrument-…"><span class="post-toc-number">2.15.</span> <span class="post-toc-text">adb shell am instrument …</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Dumpsys信息"><span class="post-toc-number">3.</span> <span class="post-toc-text">Dumpsys信息</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#服务列表信息"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">服务列表信息</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#常见服务信息列表"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">常见服务信息列表</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#dump方法"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">dump方法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#dump窗口信息"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">dump窗口信息</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#dump-SurfaceFlinger信息"><span class="post-toc-number">3.5.</span> <span class="post-toc-text">dump SurfaceFlinger信息</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#GPU帧渲染数据"><span class="post-toc-number">3.6.</span> <span class="post-toc-text">GPU帧渲染数据</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#fastboot模式"><span class="post-toc-number">4.</span> <span class="post-toc-text">fastboot模式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#进入fastboot（设备需要解锁）"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">进入fastboot（设备需要解锁）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#刷机"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">刷机</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>ADB是连接手机设备和电脑设备的调试桥。这种工具命令用于Android调试是基础而且重要的。</p>
+</blockquote>
+<h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><ol>
+<li>Install: sudo apt-get install adb</li>
+<li>Function:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">通过adb可以管理、操作模拟器和设备，如安装软件、查看设备软硬件参数、系统升级、运行shell命令等。</span><br><span class="line">手机启动USB调试模式，设备连接电脑。</span><br><span class="line">注：我的手机一加6的USB调试模式打开方式如下：</span><br><span class="line">       （1）在手机设置的关于手机找到版本号，双击七次打开开发者模式;</span><br><span class="line">       （2）在开发者选项中打开USB调试选项;</span><br><span class="line">       （3）设备连接</span><br></pre></td></tr></table></figure>
+<a id="more"></a>
+</li>
+</ol>
+<hr>
+<h2 id="Commonds"><a href="#Commonds" class="headerlink" title="Commonds"></a><font color=red>Commonds</font></h2><h3 id="基础命令"><a href="#基础命令" class="headerlink" title="基础命令"></a>基础命令</h3><blockquote>
+<p>如果设备连接&gt;1，可使用adb -s DevicesID + 其余部分命令</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">Commond</th>
+<th align="center">Explain</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">adb devices</td>
+<td align="center">查看设备连接情况</td>
+</tr>
+<tr>
+<td align="center">adb version</td>
+<td align="center">查看版本</td>
+</tr>
+<tr>
+<td align="center">adb help</td>
+<td align="center">查看帮助</td>
+</tr>
+<tr>
+<td align="center">adb shell</td>
+<td align="center">进入adb sehll命令</td>
+</tr>
+<tr>
+<td align="center">adb shell top</td>
+<td align="center">查看手机当前进程占用手机内存情况</td>
+</tr>
+<tr>
+<td align="center">adb shell kill -3 pid</td>
+<td align="center">杀掉进程</td>
+</tr>
+<tr>
+<td align="center">adb logcat -v process &#124; grep 8607</td>
+<td align="center">8607是进程 PID</td>
+</tr>
+<tr>
+<td align="center">adb shell reboot -p</td>
+<td align="center">关机</td>
+</tr>
+<tr>
+<td align="center">adb reboot</td>
+<td align="center">重启</td>
+</tr>
+<tr>
+<td align="center">adb shutdown</td>
+<td align="center">关机</td>
+</tr>
+<tr>
+<td align="center">adb root</td>
+<td align="center">root</td>
+</tr>
+<tr>
+<td align="center">adb remount</td>
+<td align="center">获取读写权限</td>
+</tr>
+<tr>
+<td align="center">adb kill-server</td>
+<td align="center">关闭adb服务</td>
+</tr>
+<tr>
+<td align="center">adb start-server</td>
+<td align="center">启动adb服务</td>
+</tr>
+<tr>
+<td align="center">adb shell stop</td>
+<td align="center">关闭设备请求</td>
+</tr>
+<tr>
+<td align="center">adb shell start</td>
+<td align="center">启动设备请求</td>
+</tr>
+<tr>
+<td align="center">adb shell su root setenforce 0</td>
+<td align="center">关闭seLinux模式</td>
+</tr>
+</tbody></table>
+<h3 id="网络相关设置"><a href="#网络相关设置" class="headerlink" title="网络相关设置"></a>网络相关设置</h3><table>
+<thead>
+<tr>
+<th align="center">Commond</th>
+<th align="center">Explain</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">adb shell ifconfig</td>
+<td align="center">查看手机IP</td>
+</tr>
+<tr>
+<td align="center">adb tcpip 5555</td>
+<td align="center">设置手机tcpip</td>
+</tr>
+<tr>
+<td align="center">adb connect IP</td>
+<td align="center">连接IP</td>
+</tr>
+</tbody></table>
+<h3 id="屏幕display信息"><a href="#屏幕display信息" class="headerlink" title="屏幕display信息"></a>屏幕display信息</h3><table>
+<thead>
+<tr>
+<th align="center">Commond</th>
+<th align="center">Explain</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">adb shell wm size</td>
+<td align="center">查看分辨率</td>
+</tr>
+<tr>
+<td align="center">adb shell set wm size</td>
+<td align="center">设置分辨率</td>
+</tr>
+</tbody></table>
+<h3 id="软件操作命令"><a href="#软件操作命令" class="headerlink" title="软件操作命令"></a>软件操作命令</h3><ol>
+<li>安装软件:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">adb install  	</span><br><span class="line">adb install &lt;apk文件路径&gt; :这个命令将指定的apk文件安装到设备上</span><br><span class="line">adb install -r -d APK</span><br></pre></td></tr></table></figure></li>
+<li>卸载软件<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb uninstall &lt;软件名&gt;</span><br><span class="line">adb uninstall -k &lt;软件名&gt;     如果加 -k 参数,为卸载软件但是保留配置和缓存文件</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="文件操作命令："><a href="#文件操作命令：" class="headerlink" title="文件操作命令："></a>文件操作命令：</h3><ol>
+<li>从电脑上发送文件到设备,用push命令可以把本机电脑上的文件或者文件夹复制到设备(手机)<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb push &lt;本地路径&gt; &lt;远程路径&gt;</span><br></pre></td></tr></table></figure></li>
+<li>从设备上下载文件到电脑,用pull命令可以把设备(手机)上的文件或者文件夹复制到本机电脑<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb pull &lt;远程路径&gt; &lt;本地路径&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="录制视频"><a href="#录制视频" class="headerlink" title="录制视频"></a>录制视频</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb shell screenrecord sdcard&#x2F;test.mp4</span><br><span class="line">adb pull sdcard&#x2F;test.mp4 .</span><br></pre></td></tr></table></figure>
+
+<h3 id="日志操作命令"><a href="#日志操作命令" class="headerlink" title="日志操作命令"></a><strong>日志操作命令</strong></h3><ol>
+<li><strong>常用日志命令</strong></li>
+</ol>
+<table>
+<thead>
+<tr>
+<th align="center">Commond</th>
+<th align="center">Explain</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">adb logcat &#124; tee log1</td>
+<td align="center">保存日志到本地并且打印到控制台</td>
+</tr>
+<tr>
+<td align="center">adb logcat -v threadtime</td>
+<td align="center">按照线程时间打印日志</td>
+</tr>
+<tr>
+<td align="center">adb logcat -s System.out</td>
+<td align="center">设置标签（某个字符串），过滤显示日志</td>
+</tr>
+<tr>
+<td align="center">adb logcat -c</td>
+<td align="center">清理已存在的日志</td>
+</tr>
+<tr>
+<td align="center">adb logcat -g</td>
+<td align="center">打印日志缓冲区的大小</td>
+</tr>
+<tr>
+<td align="center">adb logcat  &gt;  home/mylog.txt</td>
+<td align="center">日志保存到电脑某路径</td>
+</tr>
+<tr>
+<td align="center">adb logcat  -d  -f  /sdcard/mylog.txt</td>
+<td align="center">保存到手机上指定位置（-d  日志显示在控制台）</td>
+</tr>
+<tr>
+<td align="center">adb logcat -f /scard/log.txt</td>
+<td align="center">输出到手机指定位置</td>
+</tr>
+</tbody></table>
+<ol start="2">
+<li><p>查看日志</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">adb logcat</span><br><span class="line"></span><br><span class="line">日志等级（由上往下级别递增）：</span><br><span class="line">V   	verbase，级别最低，琐碎、不重要的日志信息</span><br><span class="line">D 	debug，调试信息</span><br><span class="line">I	info，重要信息</span><br><span class="line">W	warning，警告信息</span><br><span class="line">E	error，错误信息</span><br><span class="line">F  	fatal，严重错误信息</span><br><span class="line">S	slient，无记载</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看帮助信息，获取该命令可配置的参数选项</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb logcat  --help</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>加载一个可使用的日志缓冲区供查看</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">adb logcat -b &lt;buffer&gt; </span><br><span class="line"></span><br><span class="line">buffer选项可以填为：</span><br><span class="line">radio	通信系统</span><br><span class="line">system	系统组件</span><br><span class="line">event	event事件模块</span><br><span class="line">main	java层</span><br><span class="line">kernel	linux内核</span><br><span class="line">all     所有</span><br></pre></td></tr></table></figure></li>
+<li><p>指定标签，指定级别过滤显示日志</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb logcat [tag:level]</span><br><span class="line">例如：adb logcat Test:I</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置日志输入格式控制输出字段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">adb logcat -v &lt;format&gt;</span><br><span class="line"></span><br><span class="line">format选项可以填为：</span><br><span class="line">brief	显示优先级&#x2F;标记和原始进程的PID（默认）	</span><br><span class="line">process	只显示进程PID</span><br><span class="line">tag		只显示优先级&#x2F;标记</span><br><span class="line">thread	只显示进程、线程、优先级&#x2F;标记</span><br><span class="line">raw</span><br><span class="line">time</span><br><span class="line">long</span><br><span class="line"></span><br><span class="line">例如：adb logcat -v process</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="APK包相关命令"><a href="#APK包相关命令" class="headerlink" title="APK包相关命令"></a>APK包相关命令</h3><p><strong>adb shell pm命令</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">adb shell pm -l 列出包列表</span><br><span class="line">adb shell pm list packages	查看包名(同上)</span><br><span class="line"></span><br><span class="line">adb shell pm path &quot;PackageName&quot;  获取包的路径(可以通过dump SF获取当前的活动包名)</span><br><span class="line">adb shell pm list  packages  -f	查看包名对应的apk路径及名称</span><br><span class="line">adb shell dumpsys　　列出手机所有apk的详细信息</span><br></pre></td></tr></table></figure>
+
+<h3 id="按名称检查正在运行的进程"><a href="#按名称检查正在运行的进程" class="headerlink" title="按名称检查正在运行的进程"></a>按名称检查正在运行的进程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb shell pidof ”mediaserver“      &#x2F;&#x2F;查找正在运行的服务名的pid</span><br><span class="line">adb shell pidof com.android.phone  &#x2F;&#x2F;获取进程号(如果找到此类进程，则返回PID，否则返回空字符串)</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取当前ACTIVITY"><a href="#获取当前ACTIVITY" class="headerlink" title="获取当前ACTIVITY"></a>获取当前ACTIVITY</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell dumpsys activity top|grep ACTIVITY</span><br></pre></td></tr></table></figure>
+
+<h3 id="命令启动指定Activity"><a href="#命令启动指定Activity" class="headerlink" title="命令启动指定Activity"></a>命令启动指定Activity</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell am start -n com.android.systemui&#x2F;com.android.systemui.recents.RecentActivity</span><br></pre></td></tr></table></figure>
+<h3 id="模拟点击事件（点击屏幕）"><a href="#模拟点击事件（点击屏幕）" class="headerlink" title="模拟点击事件（点击屏幕）"></a>模拟点击事件（点击屏幕）</h3><blockquote>
+<p>打开开发者选项的指针位置选项，点击屏幕即可获得XY坐标。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell input tap x y</span><br></pre></td></tr></table></figure>
+
+<h3 id="获取设备信息参数"><a href="#获取设备信息参数" class="headerlink" title="获取设备信息参数"></a>获取设备信息参数</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">adb shell getprop &quot;name&quot;</span><br><span class="line">例如：</span><br><span class="line">adb shell</span><br><span class="line">getprop 查看机器的全部信息参数</span><br><span class="line">getprop ro.serialno 查看机器的序列号</span><br><span class="line">getprop ro.carrier 查看机器的CID号</span><br><span class="line">getprop ro.hardware 查看机器板子代号</span><br><span class="line">getprop ro.bootloader 查看SPL(Hboot)版本号</span><br><span class="line"></span><br><span class="line">setprop &lt;参数名&gt; &lt;参数值&gt;    设置某个参数</span><br></pre></td></tr></table></figure>
+<h3 id="输入命令input"><a href="#输入命令input" class="headerlink" title="输入命令input"></a>输入命令input</h3><blockquote>
+<p>input后可以跟很多参数， text相当于输入内容，keyevent相当于手机物理或是屏幕按键，tap相当于touch事件，swipe相当于滑动。</p>
+</blockquote>
+<ol>
+<li><p>模拟的是滑动事件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">input swipe模拟的是滑动事件，需要将起始的坐标传进去,可以传入滑动时长</span><br><span class="line">adb shell input swipe &lt;x1&gt; &lt;y1&gt; &lt;x2&gt; &lt;y2&gt; [duration(ms)] (Default: touchscreen)</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line"></span><br><span class="line">向左滑动：</span><br><span class="line">input swipe 600 800 300 800</span><br><span class="line"></span><br><span class="line">向右滑动：</span><br><span class="line">input swipe 300 800 600 800</span><br><span class="line"></span><br><span class="line">滑动：</span><br><span class="line">adb shell input swipe 100 100 200 200 300 &#x2F;&#x2F;从 100 100 经历300毫秒滑动到 200 200 </span><br><span class="line"></span><br><span class="line">长按：</span><br><span class="line">adb shell input swipe 100 100 100 100 1000 &#x2F;&#x2F;在 100 100 位置长按 1000毫秒</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>输入文本内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell input &quot;text&quot;   输入文本内容</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="adb-shell-am-instrument-…"><a href="#adb-shell-am-instrument-…" class="headerlink" title="adb shell am instrument …"></a>adb shell am instrument …</h3><p>instrument为am命令的一个子命令。用于启动一个Instrumentation测试。<br>各项参数：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">-r: 以原始形式输出测试结果；该选项通常是在性能测试时与[-e perf true]一起使用。</span><br><span class="line"></span><br><span class="line">-e  name value: 提供了以键值对形式存在的过滤器和参数。</span><br><span class="line">例如：-e testFile &lt;filePath&gt;（运行文件中指定的用例）；-e package &lt;packageName&gt;（运行这个包中的所有用例）……  有十几种。 </span><br><span class="line"></span><br><span class="line">-p file:    将分析数据写入 file。</span><br><span class="line"></span><br><span class="line">-w: 测试运行器需要使用此选项。</span><br><span class="line">例如:-w &lt;test_package_name&gt;&#x2F;&lt;runner_class&gt; ：&lt;test_package_name&gt;和&lt;runner_class&gt;在测试工程的AndroidManifest.xml中查找，作用是保持adb shell打开直至测试完成。</span><br><span class="line"></span><br><span class="line">--no-window-animation:  运行时关闭窗口动画。</span><br><span class="line"></span><br><span class="line">--user user_id | current:   指定仪器在哪个用户中运行；如果未指定，则在当前用户中运行。</span><br></pre></td></tr></table></figure>
+
+<p>例如运行一个类中的所有用例：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">adb shell am instrument -w -r -e class com.letv.leview.setproxy com.le.tcauto.uitest.test&#x2F;android.support.test.runner.AndroidJUnitRunner</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Dumpsys信息"><a href="#Dumpsys信息" class="headerlink" title="Dumpsys信息"></a><font color=red>Dumpsys信息</font></h2><h3 id="服务列表信息"><a href="#服务列表信息" class="headerlink" title="服务列表信息"></a>服务列表信息</h3><ol>
+<li>adb shell   　　进入shell</li>
+<li>dumpsys -l 　　查看所有正在运行的服务名</li>
+<li>service list  　　查看这些服务名称调用了哪个服务</li>
+</ol>
+<h3 id="常见服务信息列表"><a href="#常见服务信息列表" class="headerlink" title="常见服务信息列表"></a>常见服务信息列表</h3><table>
+<thead>
+<tr>
+<th align="center">服务名</th>
+<th align="center">类名</th>
+<th align="center">功能</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">gfxinfo</td>
+<td align="center">GraphicsBinder</td>
+<td align="center">图像</td>
+</tr>
+<tr>
+<td align="center">SurfaceFlinger</td>
+<td align="center"></td>
+<td align="center">图像相关</td>
+</tr>
+<tr>
+<td align="center">activity</td>
+<td align="center">ActivityManagerService</td>
+<td align="center">AMS相关信息</td>
+</tr>
+<tr>
+<td align="center">package</td>
+<td align="center">PackageManagerService</td>
+<td align="center">PMS相关信息</td>
+</tr>
+<tr>
+<td align="center">window</td>
+<td align="center">WindowManagerService</td>
+<td align="center">WMS相关信息</td>
+</tr>
+<tr>
+<td align="center">input</td>
+<td align="center">InputManagerService</td>
+<td align="center">IMS相关信息</td>
+</tr>
+<tr>
+<td align="center">power</td>
+<td align="center">PowerManagerService</td>
+<td align="center">PMS相关信息</td>
+</tr>
+<tr>
+<td align="center">batterystats</td>
+<td align="center">BatterystatsService</td>
+<td align="center">电池统计信息</td>
+</tr>
+<tr>
+<td align="center">battery</td>
+<td align="center">BatteryService</td>
+<td align="center">电池信息</td>
+</tr>
+<tr>
+<td align="center">alarm</td>
+<td align="center">AlarmManagerService</td>
+<td align="center">闹钟信息</td>
+</tr>
+<tr>
+<td align="center">dropbox</td>
+<td align="center">DropboxManagerService</td>
+<td align="center">调试相关</td>
+</tr>
+<tr>
+<td align="center">procstats</td>
+<td align="center">ProcessStatsService</td>
+<td align="center">进程统计</td>
+</tr>
+<tr>
+<td align="center">cpuinfo</td>
+<td align="center">CpuBinder</td>
+<td align="center">CPU</td>
+</tr>
+<tr>
+<td align="center">meminfo</td>
+<td align="center">MemBinder</td>
+<td align="center">内存</td>
+</tr>
+<tr>
+<td align="center">dbinfo</td>
+<td align="center">DbBinder</td>
+<td align="center">数据库</td>
+</tr>
+<tr>
+<td align="center">appops</td>
+<td align="center"></td>
+<td align="center">app使用情况</td>
+</tr>
+<tr>
+<td align="center">permission</td>
+<td align="center"></td>
+<td align="center">权限</td>
+</tr>
+<tr>
+<td align="center">processinfo</td>
+<td align="center"></td>
+<td align="center">进程服务</td>
+</tr>
+<tr>
+<td align="center">batteryproperties</td>
+<td align="center"></td>
+<td align="center">电池相关</td>
+</tr>
+<tr>
+<td align="center">audio</td>
+<td align="center"></td>
+<td align="center">查看声音信息</td>
+</tr>
+<tr>
+<td align="center">netstats</td>
+<td align="center"></td>
+<td align="center">查看网络统计信息</td>
+</tr>
+<tr>
+<td align="center">diskstats</td>
+<td align="center"></td>
+<td align="center">查看空间free状态</td>
+</tr>
+<tr>
+<td align="center">jobscheduler</td>
+<td align="center"></td>
+<td align="center">查看任务计划</td>
+</tr>
+<tr>
+<td align="center">wifi</td>
+<td align="center"></td>
+<td align="center">wifi信息</td>
+</tr>
+<tr>
+<td align="center">diskstats</td>
+<td align="center"></td>
+<td align="center">磁盘情况</td>
+</tr>
+<tr>
+<td align="center">usagestats</td>
+<td align="center"></td>
+<td align="center">用户使用情况</td>
+</tr>
+<tr>
+<td align="center">devicestoragemonitor</td>
+<td align="center"></td>
+<td align="center">设备信息</td>
+</tr>
+</tbody></table>
+<h3 id="dump方法"><a href="#dump方法" class="headerlink" title="dump方法"></a>dump方法</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dumpsys &lt;service&gt;　　　　打印具体某一项服务（service就是前面表格中的服务名）</span><br><span class="line"></span><br><span class="line">例如： （adb shell）</span><br><span class="line">dumpsys cpuinfo &#x2F;&#x2F;打印一段时间进程的CPU使用百分比排行榜</span><br><span class="line">dumpsys meminfo -h  &#x2F;&#x2F;查看dump内存的帮助信息</span><br><span class="line">dumpsys package &lt;packagename&gt; &#x2F;&#x2F;查看指定包的信息</span><br><span class="line">dumpsys SurfaceFLinger    &#x2F;&#x2F;查看SF服务</span><br></pre></td></tr></table></figure>
+
+<h3 id="dump窗口信息"><a href="#dump窗口信息" class="headerlink" title="dump窗口信息"></a>dump窗口信息</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb shell dumpsys window windows</span><br><span class="line">adb shell dumpsys window windows |grep Current   &#x2F;&#x2F;当前窗口信息</span><br></pre></td></tr></table></figure>
+
+<h3 id="dump-SurfaceFlinger信息"><a href="#dump-SurfaceFlinger信息" class="headerlink" title="dump SurfaceFlinger信息"></a><strong>dump SurfaceFlinger信息</strong></h3><ol>
+<li><p>方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">adb shell dumpsys SurfaceFlinger</span><br><span class="line"></span><br><span class="line">一般包含：</span><br><span class="line">1、layer的信息，layer一般对应于一个surface;</span><br><span class="line">2、opengl的信息。一般是跟gpu比较相关的参数，opengl是标准的接口;</span><br><span class="line">3、display。安卓支持三种类型的display，可以导出display当前的显示状态，也就是各个surface(layer)在各个display的显示属性;</span><br><span class="line">4、surfaceflinger管理graphis buffer的信息。主要是layer申请的帧数据内存;</span><br><span class="line">5、hwcomopser的如果实现dump接口也能知道hwcomposer的一些参数;</span><br><span class="line">6、gralloc的内存分配信息。如果gralloc有实现dump接口的话;</span><br><span class="line">7、合成方式、BufferLayer的树形结构信息</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>连接DP 然后继续dump  SurfaceFlinger信息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">连接之前启动: adb shell dumpsys SurfaceFlinger --file --no-limit </span><br><span class="line">断开后再次执行 adb shell dumpsys SurfaceFlinger --file --no-limit </span><br><span class="line">并pull出来 adb pull &#x2F;data&#x2F;misc&#x2F;wmtrace&#x2F;dumpsys.txt</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h3 id="GPU帧渲染数据"><a href="#GPU帧渲染数据" class="headerlink" title="GPU帧渲染数据"></a>GPU帧渲染数据</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">adb shell dumpsys gfxinfo </span><br><span class="line"></span><br><span class="line">例如查看camera功能的渲染一帧所经过的各个阶段的耗时情况（单位毫秒）</span><br><span class="line">dumpsys gfxinfo **.camera </span><br><span class="line"></span><br><span class="line">带上 framestats 参数可以获取最近的 120 帧数据：</span><br><span class="line">adb shell dumpsys gfxinfo **.camera framestats</span><br></pre></td></tr></table></figure>
+
+<h2 id="fastboot模式"><a href="#fastboot模式" class="headerlink" title="fastboot模式"></a>fastboot模式</h2><h3 id="进入fastboot（设备需要解锁）"><a href="#进入fastboot（设备需要解锁）" class="headerlink" title="进入fastboot（设备需要解锁）"></a>进入fastboot（设备需要解锁）</h3><blockquote>
+<p>adb reboot bootloader<br>fastboot devices 检查设备</p>
+</blockquote>
+<h3 id="刷机"><a href="#刷机" class="headerlink" title="刷机"></a>刷机</h3><ol>
+<li>fastboot erase boot/system 清除区</li>
+<li>fastboot -w</li>
+<li>fastboot boot/system  NewImg  烧录</li>
+<li>fastboot reboot</li>
+</ol>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/">https://alonealive.github.io/Blog/2019/07/17/2019/190717_debug_adb_commonds/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-07-17T14:04:14.000Z" itemprop="datePublished">2019-07-17</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T09:59:45.028Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/ADB/" rel="tag">#&nbsp;ADB</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/07/18/2019/190718-nextdebug-md/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Hexo Next主题优化（二）</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/07/16/2019/190716_debug_ancdoid_callstack/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">在Android源码调试函数的堆栈</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

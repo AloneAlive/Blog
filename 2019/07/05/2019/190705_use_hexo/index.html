@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Use hexo and github to build website | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Use hexo and github to build website | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/"><meta property="og:locale" content="zh-CN"><meta name="description" content="这篇文章主要是讲述如何结合hexo和github建站。使用hexo+github建站，相对减少开发时间和成本。相关Link： hexo官方文档、github建站Issue、我的网站 - sunwengang - sunwengang blog"><meta name="keywords" content="hexo"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/changeLinkStyle.png"><meta property="article:published_time" content="2019-07-05T14:04:14.000Z"><meta property="article:modified_time" content="2020-03-08T07:08:11.739Z"><meta property="og:updated_time" content="2020-03-08T07:08:11.739Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="hexo"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/"
+    },
+    "headline": "Use hexo and github to build website | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-07-05T14:04:14.000Z",
+    "dateModified": "2020-03-08T07:08:11.739Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "hexo",
+    "description": "这篇文章主要是讲述如何结合hexo和github建站。使用hexo+github建站，相对减少开发时间和成本。相关Link： hexo官方文档、github建站Issue、我的网站 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Use hexo and github to build website" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Use hexo and github to build website&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Use hexo and github to build website" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACNElEQVR42u3awVLDMAxF0f7/T8O2gKN35ZShWDeb0Jk0PmEiV5b8+PgHx0OkSJEi3wD5KI4vX/j2+ft3q2ufr3k+p3FFzkUuX9rni4ub/bjx4nsVthxX5GjkavDqvEKs7nkVZGlckSK7SIq9nKhFiryBrCZk8mDpYUWK7CQY1cDpIdLk/rIsSORxyJTU/tb5ZatFkUchY9EoTMid4sJVInK7qibyKGQ1IE0OaGGBjidSZLo4Ye8kJGViInI0cgUmoBRs1X2rABMpslPQv0JVC/0Sc/W3yJFI+qJXD5SuJU0ntBATOQJJJvJUfCJBmIJkayEm8kjkVXKbFvg7hS2UVNCClcijkakQ3ynWV9dVQboMPJEjkTSJTRvnSIOg81nkXGT1gtOmfPpRqP4ZZXFL5Egk+eEnKFLsr4IFR7fI45Gp6RlfbrChM03e25m5yCORZLHVaXCSompqHIicjaSF+Z1iKt1I18qCRB6PJAV9iqELtFuTucjjkWjDRqPBTjfUoYKDyPFIUlAiLz0NnLghSuRIZJq8SYMpNQOq4KgaoSLnIjtFTxJYtNmfCmIiZyOrl7zT7OwEVyzMihyNJAVQOsmn4CHBJHIuMh1kwUQKWSnYUFVN5AhkJwg6G0JJo3RrISZyBJI02dFNQ2Oqk8CIFLlTUCLJRCfBECmSIjsbjkiQkKKCSJEESRKKVACgm0JFiqSJwc6CbKf4KnI2kjaUOkUBumirmvQiZyLf+RApUqTIPzw+AbwK90Y64eAiAAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Use hexo and github to build website</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-07-05</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/web/">web</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Use hexo and github to build website&url=https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Use hexo and github to build website&url=https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACNElEQVR42u3awVLDMAxF0f7/T8O2gKN35ZShWDeb0Jk0PmEiV5b8+PgHx0OkSJEi3wD5KI4vX/j2+ft3q2ufr3k+p3FFzkUuX9rni4ub/bjx4nsVthxX5GjkavDqvEKs7nkVZGlckSK7SIq9nKhFiryBrCZk8mDpYUWK7CQY1cDpIdLk/rIsSORxyJTU/tb5ZatFkUchY9EoTMid4sJVInK7qibyKGQ1IE0OaGGBjidSZLo4Ye8kJGViInI0cgUmoBRs1X2rABMpslPQv0JVC/0Sc/W3yJFI+qJXD5SuJU0ntBATOQJJJvJUfCJBmIJkayEm8kjkVXKbFvg7hS2UVNCClcijkakQ3ynWV9dVQboMPJEjkTSJTRvnSIOg81nkXGT1gtOmfPpRqP4ZZXFL5Egk+eEnKFLsr4IFR7fI45Gp6RlfbrChM03e25m5yCORZLHVaXCSompqHIicjaSF+Z1iKt1I18qCRB6PJAV9iqELtFuTucjjkWjDRqPBTjfUoYKDyPFIUlAiLz0NnLghSuRIZJq8SYMpNQOq4KgaoSLnIjtFTxJYtNmfCmIiZyOrl7zT7OwEVyzMihyNJAVQOsmn4CHBJHIuMh1kwUQKWSnYUFVN5AhkJwg6G0JJo3RrISZyBJI02dFNQ2Oqk8CIFLlTUCLJRCfBECmSIjsbjkiQkKKCSJEESRKKVACgm0JFiqSJwc6CbKf4KnI2kjaUOkUBumirmvQiZyLf+RApUqTIPzw+AbwK90Y64eAiAAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#1-安装node-js"><span class="post-toc-number">1.</span> <span class="post-toc-text">1. 安装node.js</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#2-配置hexo"><span class="post-toc-number">2.</span> <span class="post-toc-text">2. 配置hexo</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#3-初始化hexo工作目录"><span class="post-toc-number">3.</span> <span class="post-toc-text">3. 初始化hexo工作目录</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-mkdir-hexo-新建文件夹"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">1. mkdir hexo &#x2F;&#x2F;新建文件夹</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-hexo-init-hexo-初始化hexo工作目录"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">2. hexo init hexo   &#x2F;&#x2F;初始化hexo工作目录</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#4-编译运行登录"><span class="post-toc-number">4.</span> <span class="post-toc-text">4. 编译运行登录</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-hexo-g-build"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">1. hexo g   &#x2F;&#x2F;build</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-hexo-s-生成服务端"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">2. hexo s   &#x2F;&#x2F;生成服务端</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#5-发布到github"><span class="post-toc-number">5.</span> <span class="post-toc-text">5. 发布到github</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-在根目录的-config-yml（非theme主题文件下的配置文件）修改"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">1. 在根目录的_config.yml（非theme主题文件下的配置文件）修改</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-安装插件"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">2. 安装插件</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-发布到github"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">3. 发布到github</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#4-查看结果，例如我的网站wizzie-top"><span class="post-toc-number">5.4.</span> <span class="post-toc-text">4. 查看结果，例如我的网站wizzie.top</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#6-修改配置-config-yml"><span class="post-toc-number">6.</span> <span class="post-toc-text">6. 修改配置_config.yml</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-修改主题"><span class="post-toc-number">6.1.</span> <span class="post-toc-text">1. 修改主题</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-修改博主信息"><span class="post-toc-number">6.2.</span> <span class="post-toc-text">2. 修改博主信息</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-hexo文件夹结构"><span class="post-toc-number">6.3.</span> <span class="post-toc-text">3. hexo文件夹结构</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#4-主页配置（分页大小、排序规则）"><span class="post-toc-number">6.4.</span> <span class="post-toc-text">4. 主页配置（分页大小、排序规则）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-网站日期格式"><span class="post-toc-number">6.5.</span> <span class="post-toc-text">5. 网站日期格式</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#7-修改theme的-config-yml-Next主题"><span class="post-toc-number">7.</span> <span class="post-toc-text">7. 修改theme的_config.yml(Next主题)</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#1-主题选择"><span class="post-toc-number">7.1.</span> <span class="post-toc-text">1. 主题选择</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#2-菜单配置"><span class="post-toc-number">7.2.</span> <span class="post-toc-text">2. 菜单配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#3-LOGO修改"><span class="post-toc-number">7.3.</span> <span class="post-toc-text">3. LOGO修改</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#4-页脚配置"><span class="post-toc-number">7.4.</span> <span class="post-toc-text">4. 页脚配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#5-主页阅读全文设置"><span class="post-toc-number">7.5.</span> <span class="post-toc-text">5. 主页阅读全文设置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#6-评论系统"><span class="post-toc-number">7.6.</span> <span class="post-toc-text">6. 评论系统</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#7-右上角github"><span class="post-toc-number">7.7.</span> <span class="post-toc-text">7. 右上角github</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#8-创建page-menu标签"><span class="post-toc-number">7.8.</span> <span class="post-toc-text">8. 创建page(menu标签)</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#9-创建文章和草稿"><span class="post-toc-number">7.9.</span> <span class="post-toc-text">9. 创建文章和草稿</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#10-头像显示"><span class="post-toc-number">7.10.</span> <span class="post-toc-text">10. 头像显示</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#11-浏览进度按钮"><span class="post-toc-number">7.11.</span> <span class="post-toc-text">11. 浏览进度按钮</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#12-侧边栏社交图标"><span class="post-toc-number">7.12.</span> <span class="post-toc-text">12. 侧边栏社交图标</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#13-侧边栏其余外部链接"><span class="post-toc-number">7.13.</span> <span class="post-toc-text">13. 侧边栏其余外部链接</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#14-修改底部user文字"><span class="post-toc-number">7.14.</span> <span class="post-toc-text">14. 修改底部user文字</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#15-修改加载进度条"><span class="post-toc-number">7.15.</span> <span class="post-toc-text">15. 修改加载进度条</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#16-打开本地搜索"><span class="post-toc-number">7.16.</span> <span class="post-toc-text">16. 打开本地搜索</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#17-文章顶部显示时间信息"><span class="post-toc-number">7.17.</span> <span class="post-toc-text">17. 文章顶部显示时间信息</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#18-文章阅读量统计"><span class="post-toc-number">7.18.</span> <span class="post-toc-text">18. 文章阅读量统计</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#8-修改主题背景custom-styl"><span class="post-toc-number">8.</span> <span class="post-toc-text">8. 修改主题背景custom.styl</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#9-修改文章底部标签"><span class="post-toc-number">9.</span> <span class="post-toc-text">9. 修改文章底部标签#</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#10-修改文章链接样式"><span class="post-toc-number">10.</span> <span class="post-toc-text">10. 修改文章链接样式</span></a></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#hexo-admin配置后台"><span class="post-toc-number">11.</span> <span class="post-toc-text">hexo-admin配置后台</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#部署步骤"><span class="post-toc-number">11.1.</span> <span class="post-toc-text">部署步骤</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#hexo的-config-xml配置"><span class="post-toc-number">11.2.</span> <span class="post-toc-text">hexo的_config.xml配置</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>这篇文章主要是讲述如何结合hexo和github建站。使用hexo+github建站，相对减少开发时间和成本。<br>相关Link： <a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">hexo官方文档</a>、<a href="https://github.com/AloneAlive/Blog/issues/3" target="_blank" rel="noopener">github建站Issue</a>、<a href="wizzie.top">我的网站</a></p>
+</blockquote>
+<a id="more"></a>
+
+<h1 id="1-安装node-js"><a href="#1-安装node-js" class="headerlink" title="1. 安装node.js"></a>1. 安装<a href="https://nodejs.org/en/download/" target="_blank" rel="noopener">node.js</a></h1><hr>
+<h1 id="2-配置hexo"><a href="#2-配置hexo" class="headerlink" title="2. 配置hexo"></a>2. 配置hexo</h1><p>npm install -g hexo-cli  </p>
+<hr>
+<h1 id="3-初始化hexo工作目录"><a href="#3-初始化hexo工作目录" class="headerlink" title="3. 初始化hexo工作目录"></a>3. 初始化hexo工作目录</h1><h2 id="1-mkdir-hexo-新建文件夹"><a href="#1-mkdir-hexo-新建文件夹" class="headerlink" title="1. mkdir hexo //新建文件夹"></a>1. mkdir hexo //新建文件夹</h2><h2 id="2-hexo-init-hexo-初始化hexo工作目录"><a href="#2-hexo-init-hexo-初始化hexo工作目录" class="headerlink" title="2. hexo init hexo   //初始化hexo工作目录"></a>2. hexo init hexo   //初始化hexo工作目录</h2><blockquote>
+<p>note: 可能需要安装一些依赖，按照log的指示配置。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">生成目录文件夹：</span><br><span class="line">TODO</span><br></pre></td></tr></table></figure>
+<hr>
+<h1 id="4-编译运行登录"><a href="#4-编译运行登录" class="headerlink" title="4. 编译运行登录"></a>4. 编译运行登录</h1><h2 id="1-hexo-g-build"><a href="#1-hexo-g-build" class="headerlink" title="1. hexo g   //build"></a>1. hexo g   //build</h2><h2 id="2-hexo-s-生成服务端"><a href="#2-hexo-s-生成服务端" class="headerlink" title="2. hexo s   //生成服务端"></a>2. hexo s   //生成服务端</h2><blockquote>
+<p>使用<a href="http://localhost:4000/" target="_blank" rel="noopener">http://localhost:4000/</a> 即可查看结果。</p>
+<blockquote>
+<p>本地测试也可以使用127.0.0.1:4000访问，或者内网IP:4000  方式访问（ipconfig查看）<br>note: 如果有修改，可以使用hexo clean清除public等文件，再重新编译运行。结果文件是public文件夹。</p>
+</blockquote>
+</blockquote>
+<h1 id="5-发布到github"><a href="#5-发布到github" class="headerlink" title="5. 发布到github"></a>5. 发布到github</h1><h2 id="1-在根目录的-config-yml（非theme主题文件下的配置文件）修改"><a href="#1-在根目录的-config-yml（非theme主题文件下的配置文件）修改" class="headerlink" title="1. 在根目录的_config.yml（非theme主题文件下的配置文件）修改"></a>1. 在根目录的_config.yml（非theme主题文件下的配置文件）修改</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">deploy:</span><br><span class="line">  type: git</span><br><span class="line">  repository: git@github.com:***&#x2F;***.github.com.git</span><br><span class="line">  branch: master</span><br></pre></td></tr></table></figure>
+<h2 id="2-安装插件"><a href="#2-安装插件" class="headerlink" title="2. 安装插件"></a>2. 安装插件</h2><p>   npm install hexo-deployer-git –save</p>
+<h2 id="3-发布到github"><a href="#3-发布到github" class="headerlink" title="3. 发布到github"></a>3. 发布到github</h2><pre><code>hexo deploy</code></pre><h2 id="4-查看结果，例如我的网站wizzie-top"><a href="#4-查看结果，例如我的网站wizzie-top" class="headerlink" title="4. 查看结果，例如我的网站wizzie.top"></a>4. 查看结果，例如我的网站<a href="wizzie.top">wizzie.top</a></h2><blockquote>
+<p>note: 需要在你购买域名的万网进行域名绑定解析到github，please google by yourseflf。</p>
+</blockquote>
+<hr>
+<h1 id="6-修改配置-config-yml"><a href="#6-修改配置-config-yml" class="headerlink" title="6. 修改配置_config.yml"></a>6. 修改配置_config.yml</h1><h2 id="1-修改主题"><a href="#1-修改主题" class="headerlink" title="1. 修改主题"></a>1. <strong>修改主题</strong></h2><blockquote>
+<p>推荐主题： <a href="https://hexo.io/themes/" target="_blank" rel="noopener">官方主题</a>、<a href="https://github.com/AloneAlive/hexo-theme-next" target="_blank" rel="noopener">Next套装主题</a>（不需要安装基础依赖插件，简单配置使用）</p>
+</blockquote>
+<p>例如下载Next主题仓库，然后在_config.yml中修改，编译后查看结果即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Extensions</span><br><span class="line">## Plugins: https:&#x2F;&#x2F;hexo.io&#x2F;plugins&#x2F;</span><br><span class="line">## Themes: https:&#x2F;&#x2F;hexo.io&#x2F;themes&#x2F;</span><br><span class="line">## theme: landscape</span><br><span class="line">theme: next</span><br></pre></td></tr></table></figure>
+<h2 id="2-修改博主信息"><a href="#2-修改博主信息" class="headerlink" title="2. 修改博主信息"></a>2. 修改博主信息</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Site</span><br><span class="line">title: 博客     &#x2F;&#x2F;标题</span><br><span class="line">subtitle:       &#x2F;&#x2F;子标题</span><br><span class="line">description:</span><br><span class="line">keywords:</span><br><span class="line">author: wizzie      &#x2F;&#x2F;作者</span><br><span class="line">language: zh-CN   &#x2F;&#x2F;网站语言，可在theme目录的language查看</span><br><span class="line">timezone:</span><br></pre></td></tr></table></figure>
+<h2 id="3-hexo文件夹结构"><a href="#3-hexo文件夹结构" class="headerlink" title="3. hexo文件夹结构"></a>3. hexo文件夹结构</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># Directory</span><br><span class="line">source_dir: source    &#x2F;&#x2F;资源文件夹</span><br><span class="line">public_dir: public   &#x2F;&#x2F;网站构建生成</span><br><span class="line">tag_dir: tags       &#x2F;&#x2F;标签</span><br><span class="line">archive_dir: archives       &#x2F;&#x2F;日期归档</span><br><span class="line">category_dir: categories    &#x2F;&#x2F;分类（使用hexo page &quot;categories&quot;生成）</span><br><span class="line">code_dir: downloads&#x2F;code    &#x2F;&#x2F;下载</span><br><span class="line">i18n_dir: :lang   &#x2F;&#x2F;语言</span><br><span class="line">skip_render: README.md   &#x2F;&#x2F;可以避免该文件构造成html</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-主页配置（分页大小、排序规则）"><a href="#4-主页配置（分页大小、排序规则）" class="headerlink" title="4. 主页配置（分页大小、排序规则）"></a>4. 主页配置（分页大小、排序规则）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Home page setting</span><br><span class="line"># path: Root path for your blogs index page. (default &#x3D; &#39;&#39;)</span><br><span class="line"># per_page: Posts displayed per page. (0 &#x3D; disable pagination)</span><br><span class="line"># order_by: Posts order. (Order by date descending by default)</span><br><span class="line">index_generator:</span><br><span class="line">  path: &#39;&#39;</span><br><span class="line">  per_page: 10</span><br><span class="line">  order_by: -date</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-网站日期格式"><a href="#5-网站日期格式" class="headerlink" title="5. 网站日期格式"></a>5. 网站日期格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># Date &#x2F; Time format</span><br><span class="line">## Hexo uses Moment.js to parse and display date</span><br><span class="line">## You can customize the date format as defined in</span><br><span class="line">## http:&#x2F;&#x2F;momentjs.com&#x2F;docs&#x2F;#&#x2F;displaying&#x2F;format&#x2F;</span><br><span class="line">date_format: YYYY-MM-DD</span><br><span class="line">time_format: HH:mm:ss</span><br></pre></td></tr></table></figure>
+
+<h1 id="7-修改theme的-config-yml-Next主题"><a href="#7-修改theme的-config-yml-Next主题" class="headerlink" title="7. 修改theme的_config.yml(Next主题)"></a>7. 修改theme的_config.yml(Next主题)</h1><h2 id="1-主题选择"><a href="#1-主题选择" class="headerlink" title="1. 主题选择"></a>1. 主题选择</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Schemes</span><br><span class="line">#scheme: Muse</span><br><span class="line">#scheme: Mist</span><br><span class="line">scheme: Pisces</span><br><span class="line">#scheme: Gemini</span><br></pre></td></tr></table></figure>
+<h2 id="2-菜单配置"><a href="#2-菜单配置" class="headerlink" title="2. 菜单配置"></a>2. 菜单配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">menu:</span><br><span class="line">  home: &#x2F; || home</span><br><span class="line">  archives: &#x2F;archives&#x2F; || archive</span><br><span class="line">  categories: &#x2F;categories&#x2F; || th</span><br><span class="line">  tags: &#x2F;tags&#x2F; || tags</span><br><span class="line">  about: &#x2F;about&#x2F; || user</span><br><span class="line">  #schedule: &#x2F;schedule&#x2F; || calendar</span><br><span class="line">  #sitemap: &#x2F;sitemap.xml || sitemap</span><br><span class="line">  #commonweal: &#x2F;404&#x2F; || heartbeat</span><br><span class="line"></span><br><span class="line"># Enable &#x2F; Disable menu icons &#x2F; item badges.</span><br><span class="line">menu_settings:</span><br><span class="line">  icons: true</span><br><span class="line">  badges: false</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-LOGO修改"><a href="#3-LOGO修改" class="headerlink" title="3. LOGO修改"></a>3. LOGO修改</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">favicon:</span><br><span class="line">  small: &#x2F;images&#x2F;favicon-16x16-next.png</span><br><span class="line">  medium: &#x2F;images&#x2F;favicon-32x32-next.png</span><br><span class="line">  apple_touch_icon: &#x2F;images&#x2F;apple-touch-icon-next.png</span><br><span class="line">  safari_pinned_tab: &#x2F;images&#x2F;logo.svg</span><br><span class="line">  #android_manifest: &#x2F;images&#x2F;manifest.json</span><br><span class="line">  #ms_browserconfig: &#x2F;images&#x2F;browserconfig.xml</span><br></pre></td></tr></table></figure>
+
+<h2 id="4-页脚配置"><a href="#4-页脚配置" class="headerlink" title="4. 页脚配置"></a>4. 页脚配置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">footer:</span><br><span class="line">  # Specify the date when the site was setup. If not defined, current year will be used.</span><br><span class="line">  since: 2019</span><br><span class="line"></span><br><span class="line">  # Icon between year and copyright info.</span><br><span class="line">  icon:</span><br><span class="line">    # Icon name in fontawesome, see: https:&#x2F;&#x2F;fontawesome.com&#x2F;v4.7.0&#x2F;icons&#x2F;</span><br><span class="line">    # &#96;heart&#96; is recommended with animation in red (#ff0000).</span><br><span class="line">    name: user          &#x2F;&#x2F;图标可以到提供的网站修改</span><br><span class="line">    # If you want to animate the icon, set it to true.</span><br><span class="line">    animated: false     &#x2F;&#x2F;动画效果</span><br><span class="line">    # Change the color of icon, using Hex Code.</span><br><span class="line">    color: &quot;#808080&quot;        &#x2F;&#x2F;图标颜色</span><br><span class="line"></span><br><span class="line">  # If not defined, &#96;author&#96; from Hexo main config will be used.</span><br><span class="line">  copyright:</span><br><span class="line"></span><br><span class="line">  powered:</span><br><span class="line">    # Hexo link (Powered by Hexo).  &#x2F;&#x2F;关闭hexo强力驱动显示</span><br><span class="line">    enable: false</span><br><span class="line">    # Version info of Hexo after Hexo link (vX.X.X).</span><br><span class="line">    version: false</span><br><span class="line"></span><br><span class="line">  theme:</span><br><span class="line">    # Theme &amp; scheme info link (Theme - NexT.scheme).   &#x2F;&#x2F;关闭next主题显示</span><br><span class="line">    enable: false</span><br><span class="line">    # Version info of NexT after scheme info (vX.X.X).</span><br><span class="line">    version: false</span><br><span class="line"></span><br><span class="line">  # Beian icp information for Chinese users. In China, every legal website should have a beian icp in website footer.</span><br><span class="line">  # http:&#x2F;&#x2F;www.beian.miit.gov.cn</span><br><span class="line">  beian:</span><br><span class="line">    enable: false</span><br><span class="line">    icp:</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-主页阅读全文设置"><a href="#5-主页阅读全文设置" class="headerlink" title="5. 主页阅读全文设置"></a>5. 主页阅读全文设置</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># Automatically Excerpt (Not recommend).</span><br><span class="line"># Use &lt;!-- more --&gt; in the post to control excerpt accurately.</span><br><span class="line">auto_excerpt:</span><br><span class="line">  enable: true      &#x2F;&#x2F;修改成true</span><br><span class="line">  length: 150   &#x2F;&#x2F;显示字数</span><br></pre></td></tr></table></figure>
+
+<h2 id="6-评论系统"><a href="#6-评论系统" class="headerlink" title="6. 评论系统"></a>6. <strong>评论系统</strong></h2><p>配置文件提供了一些畅言、Valine(要指定next版本)、gitment、gitalk等，选择其中一个进行配置，配置方法见另一篇文章。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"># ---------------------------------------------------------------</span><br><span class="line"># Comments and Widgets</span><br><span class="line"># See: https:&#x2F;&#x2F;theme-next.org&#x2F;docs&#x2F;third-party-services&#x2F;comments-and-widgets</span><br><span class="line"># ---------------------------------------------------------------</span><br><span class="line">.......</span><br><span class="line"># Gitalk</span><br><span class="line"># Demo: https:&#x2F;&#x2F;gitalk.github.io</span><br><span class="line">gitalk:</span><br><span class="line">  enable: true</span><br><span class="line">  github_id:  # Github repo owner</span><br><span class="line">  repo:  # Repository name to store issues</span><br><span class="line">  client_id:  # Github Application Client ID</span><br><span class="line">  client_secret:  # Github Application Client Secret</span><br><span class="line">  admin_user:  # GitHub repo owner and collaborators, only these guys can initialize github issues</span><br><span class="line">  distraction_free_mode: true # Facebook-like distraction free mode</span><br><span class="line">  # Gitalk&#39;s display language depends on user&#39;s browser or system environment</span><br><span class="line">  # If you want everyone visiting your site to see a uniform language, you can set a force language value</span><br><span class="line">  # Available values: en, es-ES, fr, ru, zh-CN, zh-TW</span><br><span class="line">  language:</span><br></pre></td></tr></table></figure>
+<h2 id="7-右上角github"><a href="#7-右上角github" class="headerlink" title="7. 右上角github"></a>7. 右上角github</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"># &#96;Follow me on GitHub&#96; banner in the top-right corner.</span><br><span class="line">github_banner:</span><br><span class="line">  enable: false   &#x2F;&#x2F;修改成true</span><br><span class="line">  permalink: https:&#x2F;&#x2F;github.com&#x2F;yourname</span><br><span class="line">  title: Follow me on GitHub</span><br></pre></td></tr></table></figure>
+
+<h2 id="8-创建page-menu标签"><a href="#8-创建page-menu标签" class="headerlink" title="8. 创建page(menu标签)"></a>8. 创建page(menu标签)</h2><ol>
+<li>在终端窗口下，定位到 Hexo 站点目录下。使用 hexo new page 新建一个页面，命名为 categories ：<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd your-hexo-site</span><br><span class="line">$ hexo <span class="keyword">new</span> page categories</span><br></pre></td></tr></table></figure></li>
+<li>categories目录index.md修改<br>date: 2019-05-08 22:40:04<br>type: “categories”</li>
+</ol>
+<hr>
+<ol start="3">
+<li>编辑刚新建的页面,设置分类<br>title: 分类<br>date: 2019-06-01 12:39:04<br>categories: Testing #分类名<br>type: “categories”</li>
+</ol>
+<hr>
+<h2 id="9-创建文章和草稿"><a href="#9-创建文章和草稿" class="headerlink" title="9. 创建文章和草稿"></a>9. 创建文章和草稿</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd you-site</span><br><span class="line">$ hexo new post(或者draft) &quot;you title&quot;</span><br></pre></td></tr></table></figure>
+
+<h2 id="10-头像显示"><a href="#10-头像显示" class="headerlink" title="10. 头像显示"></a>10. 头像显示</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># Sidebar Avatar</span><br><span class="line">avatar:</span><br><span class="line">  # In theme directory (source/images): /images/avatar.gif</span><br><span class="line">  # In site directory (source/uploads): /uploads/avatar.gif</span><br><span class="line">  # You can also use other linking images.</span><br><span class="line">  url: <span class="regexp">/images/u</span>ser.jpg    <span class="comment">//使用本地图片</span></span><br><span class="line">  # If true, the avatar would be dispalyed in circle.</span><br><span class="line">  rounded: <span class="literal">true</span>    <span class="comment">//是否圆形显示</span></span><br><span class="line">  # The value of opacity should be choose from 0 to 1 to set the opacity of the avatar.</span><br><span class="line">  opacity: <span class="number">1</span>  <span class="comment">//透明度</span></span><br><span class="line">  # If true, the avatar would be rotated with the cursor.</span><br><span class="line">  rotated: <span class="literal">true</span>   <span class="comment">//是否旋转</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="11-浏览进度按钮"><a href="#11-浏览进度按钮" class="headerlink" title="11. 浏览进度按钮"></a>11. 浏览进度按钮</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">back2top:</span><br><span class="line">  enable: <span class="literal">true</span>   <span class="comment">//是否启用</span></span><br><span class="line">  # Back to top in sidebar.</span><br><span class="line">  sidebar: <span class="literal">false</span>  <span class="comment">//是否显示在左侧栏下方</span></span><br><span class="line">  # Scroll percent label in b2t button.</span><br><span class="line">  scrollpercent: <span class="literal">true</span>   <span class="comment">//是否显示阅读进度</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="12-侧边栏社交图标"><a href="#12-侧边栏社交图标" class="headerlink" title="12. 侧边栏社交图标"></a>12. 侧边栏社交图标</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># Social Links</span><br><span class="line"># Usage: `Key: permalink || icon`</span><br><span class="line">social:</span><br><span class="line">  #E-Mail: mailto:yourname@gmail.com || envelope</span><br><span class="line">  #Weibo: https://weibo.com/yourname || weibo</span><br><span class="line"></span><br><span class="line">social_icons:</span><br><span class="line">  enable: <span class="literal">true</span></span><br><span class="line">  icons_only: <span class="literal">false</span>  <span class="comment">//是否只显示图标</span></span><br><span class="line">  transition: <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+<h2 id="13-侧边栏其余外部链接"><a href="#13-侧边栏其余外部链接" class="headerlink" title="13. 侧边栏其余外部链接"></a>13. 侧边栏其余外部链接</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Blog rolls</span><br><span class="line">links_icon: link</span><br><span class="line">links_title: Links</span><br><span class="line">#links_layout: block</span><br><span class="line">links_layout: inline</span><br><span class="line">links:</span><br><span class="line">  移动平台资源整理: https:<span class="comment">//mobdevgroup.com/</span></span><br><span class="line">  Android Developer: https:<span class="comment">//developer.android.com/docs</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="14-修改底部user文字"><a href="#14-修改底部user文字" class="headerlink" title="14. 修改底部user文字"></a>14. 修改底部user文字</h2><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># If <span class="keyword">not</span> defined, `author` from Hexo main <span class="built_in">config</span> will be used.</span><br><span class="line">  copyright: 'wizzie.top'</span><br></pre></td></tr></table></figure>
+
+<h2 id="15-修改加载进度条"><a href="#15-修改加载进度条" class="headerlink" title="15. 修改加载进度条"></a>15. 修改加载进度条</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">pace: <span class="literal">true</span></span><br><span class="line"># Themes list:</span><br><span class="line"># pace-theme-big-counter | pace-theme-bounce | pace-theme-barber-shop | pace-theme-center-atom</span><br><span class="line">......</span><br><span class="line">pace_theme: pace-theme-barber-shop</span><br></pre></td></tr></table></figure>
+
+<h2 id="16-打开本地搜索"><a href="#16-打开本地搜索" class="headerlink" title="16. 打开本地搜索"></a>16. 打开本地搜索</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">local_search:</span><br><span class="line">  enable: <span class="literal">true</span></span><br><span class="line">  # If auto, trigger search by changing input.</span><br><span class="line">  # If manual, trigger search by pressing enter key or search button.</span><br><span class="line">  trigger: auto</span><br><span class="line">  # Show top n results per article, show all results by setting to -1</span><br><span class="line">  top_n_per_article: <span class="number">-1</span></span><br><span class="line">  # Unescape html strings to the readable one.</span><br><span class="line">  <span class="built_in">unescape</span>: <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="17-文章顶部显示时间信息"><a href="#17-文章顶部显示时间信息" class="headerlink" title="17. 文章顶部显示时间信息"></a>17. 文章顶部显示时间信息</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"># Post meta display settings</span><br><span class="line">post_meta:</span><br><span class="line">  item_text: <span class="literal">true</span>   <span class="comment">//</span></span><br><span class="line">  created_at: <span class="literal">true</span>   <span class="comment">//创建文章时间</span></span><br><span class="line">  updated_at:</span><br><span class="line">    enable: <span class="literal">true</span>    <span class="comment">//显示更新时间</span></span><br><span class="line">    another_day: <span class="literal">true</span>   <span class="comment">//其他天显示</span></span><br><span class="line">  categories: <span class="literal">true</span>  <span class="comment">//分类显示</span></span><br></pre></td></tr></table></figure>
+<h2 id="18-文章阅读量统计"><a href="#18-文章阅读量统计" class="headerlink" title="18. 文章阅读量统计"></a>18. 文章阅读量统计</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"># Show Views / Visitors of the website / page with busuanzi.</span><br><span class="line"># Get more information on http://ibruce.info/2015/04/04/busuanzi</span><br><span class="line">busuanzi_count:</span><br><span class="line">  enable: <span class="literal">true</span></span><br><span class="line">  total_visitors: <span class="literal">true</span></span><br><span class="line">  total_visitors_icon: user</span><br><span class="line">  total_views: <span class="literal">true</span></span><br><span class="line">  total_views_icon: eye</span><br><span class="line">  post_views: <span class="literal">true</span></span><br><span class="line">  post_views_icon: eye</span><br></pre></td></tr></table></figure>
+
+<h1 id="8-修改主题背景custom-styl"><a href="#8-修改主题背景custom-styl" class="headerlink" title="8. 修改主题背景custom.styl"></a>8. 修改主题背景custom.styl</h1><p>修改source/_custom/custon.styl文件，详情可以查询其他博客案例。</p>
+<h1 id="9-修改文章底部标签"><a href="#9-修改文章底部标签" class="headerlink" title="9. 修改文章底部标签#"></a>9. 修改文章底部标签#</h1><p>在theme/layout/_macro/post.swig修改标签：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//将原有的#替换成&lt;i class="fa fa-tag"&gt;&lt;/i&gt;</span></span><br><span class="line">&lt;a href=<span class="string">"&#123;&#123; url_for(tag.path) &#125;&#125;"</span> rel=<span class="string">"tag"</span>&gt;&lt;i class=<span class="string">"fa fa-tag"</span>&gt;&lt;/i&gt;&#123;&#123; tag.name &#125;&#125;&lt;/a&gt;</span><br></pre></td></tr></table></figure>
+
+<h1 id="10-修改文章链接样式"><a href="#10-修改文章链接样式" class="headerlink" title="10. 修改文章链接样式"></a>10. 修改文章链接样式</h1><p>在theme/next/source/css/custom/custom.styl添加以下内容：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 文章内链接文本样式</span></span><br><span class="line">.post-body p a&#123;</span><br><span class="line">  color: #0593d3;</span><br><span class="line">  border-bottom: none;</span><br><span class="line">  border-bottom: 1px solid #0593d3;</span><br><span class="line">  &amp;:hover &#123;</span><br><span class="line">    color: #fc6423;</span><br><span class="line">    border-bottom: none;</span><br><span class="line">    border-bottom: 1px solid #fc6423;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>效果图：<br><img src="changeLinkStyle.png" alt="change LinkStyle" title="change article link Style"></p>
+<blockquote>
+<p>note：注意此处的image是放在hexo/source/img/目录下，但是构建之后在public目录下img是一级目录。所以引用的时候不用加上souce/</p>
+</blockquote>
+<h1 id="hexo-admin配置后台"><a href="#hexo-admin配置后台" class="headerlink" title="hexo-admin配置后台"></a>hexo-admin配置后台</h1><blockquote>
+<p>查看github源项目： <a href="https://github.com/jaredly/hexo-admin" target="_blank" rel="noopener">https://github.com/jaredly/hexo-admin</a></p>
+</blockquote>
+<h2 id="部署步骤"><a href="#部署步骤" class="headerlink" title="部署步骤"></a>部署步骤</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm install --save hexo-admin</span><br><span class="line">hexo server -d</span><br><span class="line"><span class="built_in">open</span> http:<span class="comment">//localhost:4000/admin/</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="hexo的-config-xml配置"><a href="#hexo的-config-xml配置" class="headerlink" title="hexo的_config.xml配置"></a>hexo的_config.xml配置</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">admin:</span><br><span class="line">   username: zoro</span><br><span class="line">   password_hash:be121740bf988b2225a313fa1f107ca1</span><br><span class="line">   secret: hey hexo</span><br><span class="line">   deployCommand: './admin_script/hexo-generate.sh'</span><br><span class="line">  <span class="meta"># expire: 60*1</span></span><br></pre></td></tr></table></figure>
+
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/">https://alonealive.github.io/Blog/2019/07/05/2019/190705_use_hexo/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-07-05T14:04:14.000Z" itemprop="datePublished">2019-07-05</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T07:08:11.739Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/web/'>web</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/hexo/" rel="tag">#&nbsp;hexo</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/07/08/2019/190708_hexo%E7%9A%84admin%E5%90%8E%E5%8F%B0%E6%90%AD%E5%BB%BA/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">hexo的admin后台搭建</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

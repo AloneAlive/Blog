@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android SELinux权限笔记 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android SELinux权限笔记 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/"><meta property="og:locale" content="zh-CN"><meta name="description" content="在新增一个HIDL Service后，需要对其进行权限配置，不然通过adb shell ps -A|grep NAService会发现该service无法启动，也会通过抓取log发现一堆的avc: denied权限问题。关于SELinux可以推荐文档：https:&#x2F;&#x2F;www.pianshen.com&#x2F;article&#x2F;6549296922&#x2F;， 非常详细，本文只是作为记录部分常用的笔记。 - sunwengang - sunwengang blog"><meta name="keywords" content="android"><meta property="article:published_time" content="2020-03-25T14:32:00.000Z"><meta property="article:modified_time" content="2020-03-25T14:39:15.576Z"><meta property="og:updated_time" content="2020-03-25T14:39:15.576Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/"
+    },
+    "headline": "Android SELinux权限笔记 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-03-25T14:32:00.000Z",
+    "dateModified": "2020-03-25T14:39:15.576Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android",
+    "description": "在新增一个HIDL Service后，需要对其进行权限配置，不然通过adb shell ps -A|grep NAService会发现该service无法启动，也会通过抓取log发现一堆的avc: denied权限问题。关于SELinux可以推荐文档：https://www.pianshen.com/article/6549296922/， 非常详细，本文只是作为记录部分常用的笔记。 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android SELinux权限笔记" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android SELinux权限笔记&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android SELinux权限笔记" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACM0lEQVR42u2awY6DMAxE+f+f7l5RFXtmUlbbjR+XqgjIi4TNeOzr9Q+OC0gggQTyCyCv5rhfs7r2fq561v3+7lnLdYEcC7l8ad/OO5uQgVCAV+sCORuyetlXUKtFu3Or82pdIIHsIKsFq0DqrgUSyKcgUyGyulc9F0ggnQ99J2LdZJ6IEiCBVAHxm7+PVYtAHgXpFE9uALhi43FXDcijIJXZ5JoFnchQCb4s3oAEUgBW5mkiIiKjAciRkF1S3jEHKjM/KfSABNIq1AvYbmM7RRmQQKZmfrWZTpBUid8OHCBHQToJVwld1VDq4KNqEcgxkN0AiDMQUn0Y1IdCJnYgx0KmDaFkkCQxt+xkDuTRkE7B1BVXjnmQBCaQQKaDcSqYnEBRHwAggdxpDDlGayJitgePgTwO8onFrQWfEL1AjoBUAvWTIU5n6KltIAA5FtJpKiUbcg2rWGAAOQJSGfOJeV8FY2J6SVcNyDGQKnE7xr8Sy8oMkMY+kGMgnUTsFlGfDIpExj6Qx0I6w8BJEnZEhfoPJJBJ0nYDRpn6jgEBJJBJQ90VvYkp1iZzIMdCdkZoYpqqhr21cSBHQjoNT0cQd8LZGUSWhhWQYyDVC+0YrI6odQuwthADcgykMxDSmQTdPaqpZAcOkOMgE0MpaQQ4R5nogQQyaKBbQ5qm8WCbA0ACaQwvKWNBJezWmAVyNGQy0KE2kYrcyLACcgSk8+FXxueO+a+EC5AzIb/5ABJIIIH8w+MHQSlW9YGqEykAAAAASUVORK5CYII=" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android SELinux权限笔记</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-03-25</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android SELinux权限笔记&url=https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android SELinux权限笔记&url=https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACM0lEQVR42u2awY6DMAxE+f+f7l5RFXtmUlbbjR+XqgjIi4TNeOzr9Q+OC0gggQTyCyCv5rhfs7r2fq561v3+7lnLdYEcC7l8ad/OO5uQgVCAV+sCORuyetlXUKtFu3Or82pdIIHsIKsFq0DqrgUSyKcgUyGyulc9F0ggnQ99J2LdZJ6IEiCBVAHxm7+PVYtAHgXpFE9uALhi43FXDcijIJXZ5JoFnchQCb4s3oAEUgBW5mkiIiKjAciRkF1S3jEHKjM/KfSABNIq1AvYbmM7RRmQQKZmfrWZTpBUid8OHCBHQToJVwld1VDq4KNqEcgxkN0AiDMQUn0Y1IdCJnYgx0KmDaFkkCQxt+xkDuTRkE7B1BVXjnmQBCaQQKaDcSqYnEBRHwAggdxpDDlGayJitgePgTwO8onFrQWfEL1AjoBUAvWTIU5n6KltIAA5FtJpKiUbcg2rWGAAOQJSGfOJeV8FY2J6SVcNyDGQKnE7xr8Sy8oMkMY+kGMgnUTsFlGfDIpExj6Qx0I6w8BJEnZEhfoPJJBJ0nYDRpn6jgEBJJBJQ90VvYkp1iZzIMdCdkZoYpqqhr21cSBHQjoNT0cQd8LZGUSWhhWQYyDVC+0YrI6odQuwthADcgykMxDSmQTdPaqpZAcOkOMgE0MpaQQ4R5nogQQyaKBbQ5qm8WCbA0ACaQwvKWNBJezWmAVyNGQy0KE2kYrcyLACcgSk8+FXxueO+a+EC5AzIb/5ABJIIIH8w+MHQSlW9YGqEykAAAAASUVORK5CYII=" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#selinux相关命令"><span class="post-toc-number">1.</span> <span class="post-toc-text">selinux相关命令</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#抓取SELinux-Log"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">抓取SELinux Log</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#File-contexts"><span class="post-toc-number">2.</span> <span class="post-toc-text">File_contexts</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#domain-te"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">domain.te</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#selinux没有对某个文件的权限（有neverAllow）处理方法"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">selinux没有对某个文件的权限（有neverAllow）处理方法</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Service-contexts"><span class="post-toc-number">3.</span> <span class="post-toc-text">Service_contexts</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Property-contexts"><span class="post-toc-number">4.</span> <span class="post-toc-text">Property_contexts</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Hwservice-contexts"><span class="post-toc-number">5.</span> <span class="post-toc-text">Hwservice_contexts</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#te语法"><span class="post-toc-number">6.</span> <span class="post-toc-text">te语法</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>在新增一个HIDL Service后，需要对其进行权限配置，不然通过<code>adb shell ps -A|grep NAService</code>会发现该service无法启动，也会通过抓取log发现一堆的<code>avc: denied</code>权限问题。关于SELinux可以推荐文档：<a href="https://www.pianshen.com/article/6549296922/，" target="_blank" rel="noopener">https://www.pianshen.com/article/6549296922/，</a> 非常详细，本文只是作为记录部分常用的笔记。</p>
+</blockquote>
+<a id="more"></a>
+
+<blockquote>
+<p><code>Android sepolicy</code>，SEAndroid是一种基于安全策略的MAC安全机制。SEAndroid安全机制中的安全策略就是在安全上下文的基础上进行描述的，也就是说，它通过主体和客体的安全上下文，定义主体是否有权限访问客体。</p>
+</blockquote>
+<blockquote>
+<p>例如添加一个service，在<code>.rc</code>文件定义了service，还需要在<code>sepolicy</code>的<code>file_context</code>中添加权限。</p>
+</blockquote>
+<h2 id="selinux相关命令"><a href="#selinux相关命令" class="headerlink" title="selinux相关命令"></a>selinux相关命令</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 查看进程的sContext</span><br><span class="line">ps -Z</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 查看文件权限</span><br><span class="line">ls -Z</span><br></pre></td></tr></table></figure>
+
+<p>查看selinux开关状态：<code>adb shell getenforce</code></p>
+<p>可能返回结果有三种：Enforcing、Permissive 和 Disabled。Disabled 代表 SELinux 被禁用，Permissive 代表仅记录安全警告但不阻止可疑行为，Enforcing 代表记录警告且阻止可疑行为。</p>
+<p>一般调试通过以下命令关闭SELinux权限（需重启生效）：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb root</span><br><span class="line">adb shell setenforce 0</span><br></pre></td></tr></table></figure>
+
+<h3 id="抓取SELinux-Log"><a href="#抓取SELinux-Log" class="headerlink" title="抓取SELinux Log"></a>抓取SELinux Log</h3><ol>
+<li>抓kernel log，<code>adb shell dmesg</code></li>
+<li>抓kernel log，使用命令,可以直接提出avc的log：<code>adb shell &quot;cat /proc/kmsg | grep avc&quot; &gt; avc_log.txt</code></li>
+<li><code>adb logcat –b events</code>,搜索关键字：<code>avc: denied</code></li>
+</ol>
+<hr>
+<h2 id="File-contexts"><a href="#File-contexts" class="headerlink" title="File_contexts"></a>File_contexts</h2><blockquote>
+<p>用于声明文件的安全上下文，plat前缀的文件用于声明system、rootfs、data等与设备无关的文件。Nonplat 用于声明vendor、data/vendor等文件。</p>
+</blockquote>
+<h3 id="domain-te"><a href="#domain-te" class="headerlink" title="domain.te"></a>domain.te</h3><blockquote>
+<p>该策略文件会限制一些特征文件的权限，一般不建议修改。</p>
+</blockquote>
+<h3 id="selinux没有对某个文件的权限（有neverAllow）处理方法"><a href="#selinux没有对某个文件的权限（有neverAllow）处理方法" class="headerlink" title="selinux没有对某个文件的权限（有neverAllow）处理方法"></a>selinux没有对某个文件的权限（有neverAllow）处理方法</h3><blockquote>
+<p>参考：<a href="https://blog.csdn.net/ly890700/article/details/54645212" target="_blank" rel="noopener">https://blog.csdn.net/ly890700/article/details/54645212</a></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">01-01 08:03:22.410000   217   217 W applypatch: type&#x3D;1400 audit(0.0:16): avc: denied &#123; read &#125; for name&#x3D;&quot;mmcblk0p15&quot; dev&#x3D;&quot;tmpfs&quot; ino&#x3D;3364 scontext&#x3D;u:r:install_recovery:s0 tcontext&#x3D;u:object_r:block_device:s0 tclass&#x3D;blk_file permissive&#x3D;0</span><br></pre></td></tr></table></figure>
+
+<p>意思是说明<code>install_revovery</code>没有block_device的权限</p>
+<p>只要在install_recovery.te中加入下面权限就可以了。</p>
+<ul>
+<li><code>allow install_recovery recover_block_device:blk_file { open read write };</code></li>
+</ul>
+<hr>
+<h2 id="Service-contexts"><a href="#Service-contexts" class="headerlink" title="Service_contexts"></a>Service_contexts</h2><blockquote>
+<p>用于声明java service 的安全上下文， O上将该文件拆分为<code>plat</code>和<code>nonplat</code>前缀的两个文件，但nonplat前缀的文件并没有具体的内容（vendor和system java service不允许binder操作）。</p>
+</blockquote>
+<h2 id="Property-contexts"><a href="#Property-contexts" class="headerlink" title="Property_contexts"></a>Property_contexts</h2><blockquote>
+<p>用于声明属性的安全上下文，plat 前缀的文件用于声明system属性，nonplat前缀的文件用于声明vendor 属性。ril.开头的属性的安全上下文为<code>u:object_r:radio_prop:s0</code>，这意味着只有有权限访问Type为radio_prop的资源的进程才可以访问这些属性。</p>
+</blockquote>
+<h2 id="Hwservice-contexts"><a href="#Hwservice-contexts" class="headerlink" title="Hwservice_contexts"></a>Hwservice_contexts</h2><p>新增文件，用于声明HIDL service 安全上下文。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">android.hardware.vibrator::IVibrator                u:object_r:hal_vibrator_hwservice:s0</span><br><span class="line">android.hardware.vr::IVr                            u:object_r:hal_vr_hwservice:s0</span><br><span class="line">android.hardware.weaver::IWeaver                    u:object_r:hal_weaver_hwservice:s0</span><br><span class="line">android.hardware.wifi::IWifi                        u:object_r:hal_wifi_hwservice:s0</span><br><span class="line">android.hardware.wifi.hostapd::IHostapd             u:object_r:hal_wifi_hostapd_hwservice:s0</span><br><span class="line">android.hardware.wifi.offload::IOffload             u:object_r:hal_wifi_offload_hwservice:s0</span><br><span class="line">android.hidl.allocator::IAllocator                  u:object_r:hidl_allocator_hwservice:s0</span><br><span class="line">android.hidl.base::IBase                            u:object_r:hidl_base_hwservice:s0</span><br><span class="line">android.hidl.manager::IServiceManager               u:object_r:hidl_manager_hwservice:s0</span><br><span class="line">android.hidl.memory::IMapper                        u:object_r:hidl_memory_hwservice:s0</span><br><span class="line">android.hidl.token::ITokenManager                   u:object_r:hidl_token_hwservice:s0</span><br><span class="line">android.system.net.netd::INetd                      u:object_r:system_net_netd_hwservice:s0</span><br></pre></td></tr></table></figure>
+
+<h2 id="te语法"><a href="#te语法" class="headerlink" title="te语法"></a>te语法</h2><ul>
+<li><code>allow signal</code>：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">allow domain domain : process signal; # 每个进程都能向它自己和其它进程发送signal  </span><br><span class="line">allow domain self : process signal;   # 每个进程都能向它自己发送signal</span><br></pre></td></tr></table></figure>
+
+<hr>
+<blockquote>
+<p>参考文档：</p>
+</blockquote>
+<ul>
+<li><a href="https://blog.csdn.net/ch853199769/article/details/82501078" target="_blank" rel="noopener">https://blog.csdn.net/ch853199769/article/details/82501078</a></li>
+<li><a href="https://blog.csdn.net/innost/article/details/19299937" target="_blank" rel="noopener">https://blog.csdn.net/innost/article/details/19299937</a></li>
+</ul>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/">https://alonealive.github.io/Blog/2020/03/25/2020/200325_android_sepolicy_study/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-25");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-03-25T14:32:00.000Z" itemprop="datePublished">2020-03-25</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2020/03/26/2020/200326_diary_our/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">想把我唱给你听</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/03/20/2020/200320_android_rcFile_study/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android RC文件分析</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

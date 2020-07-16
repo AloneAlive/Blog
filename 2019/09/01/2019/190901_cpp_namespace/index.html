@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>C++头文件、作用域、内存模型和名称空间 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="C++头文件、作用域、内存模型和名称空间 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/"><meta property="og:locale" content="zh-CN"><meta name="description" content="单独编译C++提供#include语法，因而可以将程序划分，大致可以分成三部分：    头文件a.h：包含结构声明和使用这些结构的函数原型 源代码文件a.cpp：包含与结构相关的函数的代码 源代码文件b.cpp：包含调用与结构相关的函数的代码 - sunwengang - sunwengang blog"><meta name="keywords" content="cpp"><meta property="article:published_time" content="2019-09-01T13:52:00.000Z"><meta property="article:modified_time" content="2020-03-08T10:14:08.790Z"><meta property="og:updated_time" content="2020-03-08T10:14:08.790Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="cpp"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/"
+    },
+    "headline": "C++头文件、作用域、内存模型和名称空间 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-09-01T13:52:00.000Z",
+    "dateModified": "2020-03-08T10:14:08.790Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "cpp",
+    "description": "单独编译C++提供#include语法，因而可以将程序划分，大致可以分成三部分：    头文件a.h：包含结构声明和使用这些结构的函数原型 源代码文件a.cpp：包含与结构相关的函数的代码 源代码文件b.cpp：包含调用与结构相关的函数的代码 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=C++头文件、作用域、内存模型和名称空间" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=C++头文件、作用域、内存模型和名称空间&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=C++头文件、作用域、内存模型和名称空间" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACNElEQVR42u2bwW6DUAwE8/8/3Z4qtQn2jkmqpni4kFACg/Rs1mv39vEPtpuQQgop5BtA3prtxw8Ojn99/n78/nM61t1XyL2Qh4u2gKF/r87rzn04X8jVkPcLtwJrF3oIriOY6r5CCpkgCWwVOORFIKSQZwKnS7zkwaq9kEJOBEYlgLubT0TLS1SQkJeD7BLzb+5fVi0KeSnIaBo1hVQnejux8XJXTchLQXYLmcBScdEZYOVDCbkS8ugizxZfSYjQoBJSyO5iJInTB6yu3woMIddBJhO0ulgyAiZNq7IQE3IdZDKOSEE/ESSpISrkbsgOJjWIJib9xLQSUkhS5J9JzDSAYjIXchVk94OU7JMhmoRHl+SFFJImYiJ2SZAg8SzkSsgqQRMzazp0lwza0rAScjXkM4FEzqUvASGFpANLE+OfBCRW5kKugUxDHF0ST0PIpGnQBpuQ6yGpwJi+AJJJFQWGkCshqdBN59DgOpXMhVwDOTFUJ/+QQQyv1nQVcjUkGTymwyDT655y1YS8LGQy7KkhQAs28l1IIZOxROAmQdXtR8a+kCsgiRGQFn0nPpJAPjXNIuRlIUnTnQqLrgmfCjMhd0OmLRXzk6ZoMvxbw0rINZC08KeLnQTkU4WYkCsgScBQQysGw9nAEXIdJDGqJgMkRFjE4k5IIYfNyxQokxcCmmYRUkhoRE0bop3AFlLIJDAmg3eTphJq7gu5FpIaSSmZk6G7NGQnpJDvvAkppJBC/uH2Cf0IFkSaa7xsAAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">C++头文件、作用域、内存模型和名称空间</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-09-01</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=C++头文件、作用域、内存模型和名称空间&url=https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=C++头文件、作用域、内存模型和名称空间&url=https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACNElEQVR42u2bwW6DUAwE8/8/3Z4qtQn2jkmqpni4kFACg/Rs1mv39vEPtpuQQgop5BtA3prtxw8Ojn99/n78/nM61t1XyL2Qh4u2gKF/r87rzn04X8jVkPcLtwJrF3oIriOY6r5CCpkgCWwVOORFIKSQZwKnS7zkwaq9kEJOBEYlgLubT0TLS1SQkJeD7BLzb+5fVi0KeSnIaBo1hVQnejux8XJXTchLQXYLmcBScdEZYOVDCbkS8ugizxZfSYjQoBJSyO5iJInTB6yu3woMIddBJhO0ulgyAiZNq7IQE3IdZDKOSEE/ESSpISrkbsgOJjWIJib9xLQSUkhS5J9JzDSAYjIXchVk94OU7JMhmoRHl+SFFJImYiJ2SZAg8SzkSsgqQRMzazp0lwza0rAScjXkM4FEzqUvASGFpANLE+OfBCRW5kKugUxDHF0ST0PIpGnQBpuQ6yGpwJi+AJJJFQWGkCshqdBN59DgOpXMhVwDOTFUJ/+QQQyv1nQVcjUkGTymwyDT655y1YS8LGQy7KkhQAs28l1IIZOxROAmQdXtR8a+kCsgiRGQFn0nPpJAPjXNIuRlIUnTnQqLrgmfCjMhd0OmLRXzk6ZoMvxbw0rINZC08KeLnQTkU4WYkCsgScBQQysGw9nAEXIdJDGqJgMkRFjE4k5IIYfNyxQokxcCmmYRUkhoRE0bop3AFlLIJDAmg3eTphJq7gu5FpIaSSmZk6G7NGQnpJDvvAkppJBC/uH2Cf0IFkSaa7xsAAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#单独编译"><span class="post-toc-number">1.</span> <span class="post-toc-text">单独编译</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#头文件内容和引用"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">头文件内容和引用</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#头文件管理"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">头文件管理</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#作用域scope"><span class="post-toc-number">2.</span> <span class="post-toc-text">作用域scope</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#数据内存的存储方式（存储持续性）"><span class="post-toc-number">3.</span> <span class="post-toc-text">数据内存的存储方式（存储持续性）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#线程存储持续性"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">线程存储持续性</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#自动存储持续性"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">自动存储持续性</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#静态持续变量"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">静态持续变量</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#静态持续性、外部链接性"><span class="post-toc-number">3.3.1.</span> <span class="post-toc-text">静态持续性、外部链接性</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#静态持续性、内部链接性"><span class="post-toc-number">3.3.2.</span> <span class="post-toc-text">静态持续性、内部链接性</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#静态持续性、无链接性"><span class="post-toc-number">3.3.3.</span> <span class="post-toc-text">静态持续性、无链接性</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#限定符和说明符"><span class="post-toc-number">4.</span> <span class="post-toc-text">限定符和说明符</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#存储说明符"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">存储说明符</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#cv-限定符-const和volatile"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">cv-限定符(const和volatile)</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#名称空间"><span class="post-toc-number">5.</span> <span class="post-toc-text">名称空间</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#作用域解析运算符-双冒号"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">作用域解析运算符::双冒号</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#using声明恶化using编译指令"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">using声明恶化using编译指令</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#建议"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">建议</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="单独编译"><a href="#单独编译" class="headerlink" title="单独编译"></a>单独编译</h2><p>C++提供<code>#include</code>语法，因而可以将程序划分，大致可以分成三部分：  </p>
+<ol>
+<li>头文件<code>a.h</code>：包含结构声明和使用这些结构的函数原型</li>
+<li>源代码文件<code>a.cpp</code>：包含与结构相关的函数的代码</li>
+<li>源代码文件<code>b.cpp</code>：包含调用与结构相关的函数的代码<a id="more"></a>
+<h3 id="头文件内容和引用"><a href="#头文件内容和引用" class="headerlink" title="头文件内容和引用"></a>头文件内容和引用</h3></li>
+</ol>
+<blockquote>
+<p>头文件常包含的内容：</p>
+</blockquote>
+<ul>
+<li>函数原型</li>
+<li>使用<code>#define</code>或者<code>const</code>定义的符号常量</li>
+<li>结构声明struct</li>
+<li>类声明class</li>
+<li>模板声明template</li>
+<li>内联函数inline</li>
+</ul>
+<blockquote>
+<p>头文件引用时，使用<code>#include &quot;coordin.h&quot;</code>，而不是<code>#include &lt;coordin.h&gt;</code><br>因为尖括号的文件名，C++编译器将在存储标准头文件的主机系统的文件系统中查找；而双引号的头文件，则编译器将首先查找当前的工作目录或源代码目录（或其他目录，取决于编译器）</p>
+</blockquote>
+<h3 id="头文件管理"><a href="#头文件管理" class="headerlink" title="头文件管理"></a>头文件管理</h3><p>在同一个文件中只能将同一个头文件包含一次。有时候会存在包含了另一个头文件的头文件。因而有一种方法基于预处理器编译指令<code>#ifndef即if not defined</code>可以忽略第一次包含之外的所有内容，但是这种方法不能防止编译器将文件包含两次。。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//仅当以前没有使用预处理器编译指令#define定义名称COORDIN_H_时，才处理#inndef和#endif之间的语句</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">ifndef</span> COORDIN_H_</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> COORDIN_H_  <span class="comment">//完成该名称的定义</span></span></span><br><span class="line">...</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="作用域scope"><a href="#作用域scope" class="headerlink" title="作用域scope"></a>作用域<code>scope</code></h2><blockquote>
+<p>作用域描述名称在文件的多大范围可见。<br>C++变量的作用域有多种。</p>
+</blockquote>
+<ul>
+<li>局部变量只在定义他的代码块中可用。</li>
+<li>作用域为全局（也叫文件作用域）的变量在定义位置到文件结尾之间都可用。</li>
+<li>自动变量的作用域为局部</li>
+<li>静态变量的作用域是全局还是局部取决于它如何被定义</li>
+<li>在函数原型作用域中使用的名称只包含参数列表的括号内可用</li>
+<li>在类中声明的成员的作用域为整个类</li>
+<li>在名称空间中声明的变量的作用域是整个名称空间</li>
+<li>C++函数的作用域可以是整个类或者命名空间，但不能是局部的，不能只对自己可见，这样会导致不能被其他函数调用</li>
+</ul>
+<p>不同的C++存储方式是通过存储持续性（数据内存存储方式）、作用域和链接性来描述的。</p>
+<h2 id="数据内存的存储方式（存储持续性）"><a href="#数据内存的存储方式（存储持续性）" class="headerlink" title="数据内存的存储方式（存储持续性）"></a>数据内存的存储方式（存储持续性）</h2><blockquote>
+<p>C++使用三种方案存储数据，见文章《C++内存分配方式和模板类vector,array》<br>C++11新增了<code>线程存储持续性</code></p>
+</blockquote>
+<h3 id="线程存储持续性"><a href="#线程存储持续性" class="headerlink" title="线程存储持续性"></a>线程存储持续性</h3><p>在多核处理器很常见，这些CPU可以同时处理多个执行任务（可以使用SDK的systrace工具抓取一份trace查看）。这让程序能够将计算放在可并行处理的不同线程中。如果变量是使用关键字<code>thread_local</code>声明的，则其生命周期和所属的线程一样长。</p>
+<h3 id="自动存储持续性"><a href="#自动存储持续性" class="headerlink" title="自动存储持续性"></a>自动存储持续性</h3><blockquote>
+<p>默认情况下，在函数中声明的函数参数和变量的存储持续性是自动，作用域是局部，没有链接性。当函数结束时，这些变量将小时（执行到代码块时，将为变量分配内存，但是其作用域的起点是其声明位置）</p>
+</blockquote>
+<p>如果在代码块中定义了变量，则该变量的存在时间和作用域将被限制在该代码块内。</p>
+<p>通常存储在栈stack中，先进后出。之所以被称为栈，是由于新数据被象征性的放在原有数据的上面（相邻的内存单元），当程序使用完后，将其从栈中删除（栈的默认长度取决于实现，编译器通常提供改变栈长度的选项）。程序使用两个指针跟踪栈，一个指向栈底（开始位置），一个指向栈顶（下一个可用内存单元）。当函数被调用时，其自动变量被加入栈中，栈顶指针指向变量后的下一个可用内存单元。函数结束时，栈顶指针被重置为函数被调用前的值，从而释放新变量使用的内存。</p>
+<p>有些自动变量存储在<strong>寄存器</strong>中，关键字<code>register</code>最初由C语言引入，C++11之前，它建议编译器使用CPU寄存器存储自动变量。这旨在提高访问变量的速度。<br><code>register int count_fast;</code></p>
+<p>在C++11中，失去了这种提示作用，关键字<code>register</code>只是显式的指出变量是自动的。鉴于它只能用于原本就是自动的变量，使用他的唯一原因是指出这个变量的名称可能与外部变量相同，避免使用了该关键字的现有代码非法。</p>
+<h3 id="静态持续变量"><a href="#静态持续变量" class="headerlink" title="静态持续变量"></a>静态持续变量</h3><p>C++未静态存储持续性变量提供三种链接性：</p>
+<ol>
+<li>外部链接性（可在其他文件中访问）</li>
+<li>内部链接性（只能在当前文件中访问）</li>
+<li>无链接性（只能在当前函数或者代码块中访问）</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">int</span> global = <span class="number">1000</span>;   <span class="comment">//外部链接，作用域是整个文件</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">int</span> one_file = <span class="number">50</span>; <span class="comment">//内部链接，作用域是整个文件</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">fun1</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">static</span> <span class="keyword">int</span> count = <span class="number">0</span>; <span class="comment">//无链接</span></span><br><span class="line">  <span class="keyword">int</span> ma = <span class="number">0</span>;   <span class="comment">//自动变量，两者区别在于静态无链接变量在函数没有被执行时，也会在内存中</span></span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="center">存储描述</th>
+<th align="center">持续性</th>
+<th align="center">作用域</th>
+<th align="center">链接性</th>
+<th align="center">声明方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">自动</td>
+<td align="center">自动</td>
+<td align="center">代码块</td>
+<td align="center">无</td>
+<td align="center">代码块中</td>
+</tr>
+<tr>
+<td align="center">寄存器</td>
+<td align="center">自动</td>
+<td align="center">代码块</td>
+<td align="center">无</td>
+<td align="center">代码块中，使用关键字<code>register</code></td>
+</tr>
+<tr>
+<td align="center">静态，无链接性</td>
+<td align="center">静态</td>
+<td align="center">代码块</td>
+<td align="center">无</td>
+<td align="center">使用关键字’static’</td>
+</tr>
+<tr>
+<td align="center">静态，外部链接性</td>
+<td align="center">静态</td>
+<td align="center">文件</td>
+<td align="center">外部</td>
+<td align="center">不再任何函数内</td>
+</tr>
+<tr>
+<td align="center">静态，内部链接性</td>
+<td align="center">静态</td>
+<td align="center">文件</td>
+<td align="center">内部</td>
+<td align="center">不再任何函数内，使用关键字<code>static</code></td>
+</tr>
+</tbody></table>
+<p>所有静态持续变量的初始化特征：<strong>未被出的初始化的静态变量的所在位都被设置为0，这种变量被称为零初始化的</strong></p>
+<p>零初始化和常量表达式初始化被统称为静态初始化，这意味着在编译器处理文件（翻译单元）时初始化变量。动态初始化意味着变量将在编译后初始化。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> x;   <span class="comment">//零初始化</span></span><br><span class="line"><span class="keyword">int</span> y = <span class="number">5</span>; <span class="comment">//y先被零初始化，然后编译器计算常量表达式，初始化成5</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="静态持续性、外部链接性"><a href="#静态持续性、外部链接性" class="headerlink" title="静态持续性、外部链接性"></a>静态持续性、外部链接性</h4><p>链接性为外部的变量通常简称为外部变量，存储持续性是静态，作用域是整个文件。在函数外部定义，因此对所有函数都是外部的。例如可以在main()前面或者头文件中定义他们。可以在文件中位于外部变量定义后面的任何函数中使用它，因此也被称为<code>全局变量</code>（相对于局部的自动变量）</p>
+<p>C++有“单定义规则”，每个变量只能有一次定义。因而C++提供两种变量声明，一种是<code>定义声明</code>，分配存储空间；另一种是<code>引用声明</code>，不给变量分配存储空间，引用已有的变量。</p>
+<p>引用声明使用关键字extern，则不进行初始化。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">double</span> up;  <span class="comment">//零初始化</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">int</span> blem;;  <span class="comment">//引用声明，不进行初始化（此处可以引用其他文件已经声明的外部变量）</span></span><br><span class="line"><span class="keyword">extern</span> <span class="keyword">char</span> gr = <span class="string">'z'</span>;  <span class="comment">//已经初始化了，所以导致分配存储空间</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="静态持续性、内部链接性"><a href="#静态持续性、内部链接性" class="headerlink" title="静态持续性、内部链接性"></a>静态持续性、内部链接性</h4><p>不同于外部变量，将static限定符用于作用域为整个文件的变量时，该变量的链接性是内部的。<strong>两者区别是</strong> 内部链接的变量只能在所属的文件中使用，外部变量具有外部链接性，可以在其他文件中使用。</p>
+<h4 id="静态持续性、无链接性"><a href="#静态持续性、无链接性" class="headerlink" title="静态持续性、无链接性"></a>静态持续性、无链接性</h4><p>将static限定符用于在代码块中定义的变量，导致局部变量的存储持续性是静态的。这意味着虽然只能在该代码块使用，但是在该代码块不处于活动状态时仍然存在。<code>因此在两次调用该函数时，静态局部变量的值将保持不变。此外如果初始化了静态局部变量，则程序只在启动时进行一次初始化，再次调用时不会初始化，即值保持上次的值</code></p>
+<hr>
+<h2 id="限定符和说明符"><a href="#限定符和说明符" class="headerlink" title="限定符和说明符"></a>限定符和说明符</h2><h3 id="存储说明符"><a href="#存储说明符" class="headerlink" title="存储说明符"></a>存储说明符</h3><ul>
+<li>auto(在C++11不再是说明符)</li>
+<li>register</li>
+<li>static</li>
+<li>extern</li>
+<li>thread_local</li>
+<li>mutable</li>
+</ul>
+<ol>
+<li>同一个声明中不能使用多个说明符（除了thread_local可以和static或者extern结合使用）</li>
+<li>C++11之前auto指出变量是自动变量，但是在C++11中，auto用于自动类型推断</li>
+<li>register用于在声明中指示寄存器存储，在C++11中只是显式的指出变量是自动的</li>
+<li>static被用在作用域是整个文件的声明中时，表示内部链接性；被用于局部声明中，表示局部变量的存储持续性是静态的</li>
+<li>extern表明是引用声明，即声明引用在其他地方定义的变量</li>
+<li>thread_local指出变量的持续性和所属线程的持续性相同。thread_local变量之于线程，犹如常规静态变量之于整个程序。</li>
+<li>mutable的含义根据const来解释（<code>查看下一小节</code>）</li>
+</ol>
+<h3 id="cv-限定符-const和volatile"><a href="#cv-限定符-const和volatile" class="headerlink" title="cv-限定符(const和volatile)"></a>cv-限定符(const和volatile)</h3><ul>
+<li>const</li>
+<li>volatile</li>
+</ul>
+<ol>
+<li>const表示内存被初始化后，程序不能再对其进行修改</li>
+<li>volatile表明即使程序代码没有对内存单元进行修改，其值也可能发生变化。作用是为了改善编译器的优化能力。例如，如果编译器发现程序在几条语句中两次使用了某个变量的值，则编译器可能不是让程序查找这个值两次，而是将这个值缓存到既存区中。（这种优化假设变量的值在两次使用之间不发生变化）将变量声明为volatile，则编译器不会进行这种优化；否则将进行这种优化。</li>
+<li>可以使用<code>mutable</code>指出，即使结构（或者类）变量为const，其某个成员也可以被修改。</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">data</span> &#123;</span></span><br><span class="line">  <span class="keyword">char</span> name[<span class="number">30</span>];</span><br><span class="line">  <span class="keyword">mutable</span> <span class="keyword">int</span> accesses;</span><br><span class="line">  ...</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> data veep = &#123;<span class="string">"peter"</span>, <span class="number">0</span>, ...&#125;;</span><br><span class="line">+ <span class="built_in">strcpy</span>(veep.name, <span class="string">"nancy"</span>);  <span class="comment">//not allowed,因为const</span></span><br><span class="line">- veep.accesses++;  <span class="comment">//allow</span></span><br></pre></td></tr></table></figure>
+
+<p>veep的const限定符禁止程序修改veep的成员，但access成员的mutable说明符可以使的access不受这种限制。</p>
+<hr>
+<h2 id="名称空间"><a href="#名称空间" class="headerlink" title="名称空间"></a>名称空间</h2><ol>
+<li>声明区域是可以在其中进行声明的区域。例如函数外面声明全局变量，其声明区域为所在的文件；<br>函数中声明变量，声明区域为所在代码块；</li>
+<li>潜在作用域：变量的潜在作用域从声明点开始，到其声明区域的结尾。因此潜在作用域比声明作用域小，这是由于变量必须定义后才能使用。</li>
+<li>关键字<code>namespace</code>通过定义一种新的声明区域来创建命名的空间，如此不会和另一个名称空间发生同名冲突。</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> Javk &#123;</span><br><span class="line">  <span class="keyword">double</span> pail;</span><br><span class="line">  <span class="keyword">int</span> pal;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">namespace</span> Jil &#123;</span><br><span class="line">  <span class="keyword">double</span> pail;</span><br><span class="line">  <span class="keyword">int</span> pal;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="作用域解析运算符-双冒号"><a href="#作用域解析运算符-双冒号" class="headerlink" title="作用域解析运算符::双冒号"></a>作用域解析运算符<code>::双冒号</code></h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Jil::pal = <span class="number">3</span>;   <span class="comment">//限定的名称</span></span><br><span class="line"><span class="keyword">int</span> pal = <span class="number">10</span>;   <span class="comment">//未限定的名称</span></span><br><span class="line">Javk::pail = <span class="number">23.4</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="using声明恶化using编译指令"><a href="#using声明恶化using编译指令" class="headerlink" title="using声明恶化using编译指令"></a>using声明恶化using编译指令</h3><blockquote>
+<p>using声明使得特定的标识符可用，using编译指令使得整个命名空间可用。</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> Jil &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">using</span> Jil::pail;  <span class="comment">//using声明</span></span><br><span class="line">  <span class="keyword">double</span> a;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>using编译指令由名称空间和关键字<code>using namespace</code>组成。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> Jil;</span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="建议"><a href="#建议" class="headerlink" title="建议"></a>建议</h3><ul>
+<li>不要在头文件使用using编译指令，如果非要使用，应将其放在所有的预处理编译指令<code>#include</code>后面</li>
+<li>导入名称时，首选使用作用域解析运算符或者using声明的方法</li>
+<li>对于using声明，首选将其作用域设置为局部而不是全局</li>
+</ul>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/">https://alonealive.github.io/Blog/2019/09/01/2019/190901_cpp_namespace/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-09-01T13:52:00.000Z" itemprop="datePublished">2019-09-01</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:14:08.790Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/cpp/'>cpp</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/cpp/" rel="tag">#&nbsp;cpp</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/09/04/2019/190904_cpp_class_object/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++对象和类</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/08/29/2019/190829_android_JNI/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android JNI理解</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

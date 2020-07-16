@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="website"><meta property="og:url" content="https://alonealive.github.io/Blog/page/3/"><meta property="og:locale" content="zh-CN"><meta name="description" content="sunwengang - sunwengang blog">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/page/3/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Blog",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    "url": "https://alonealive.github.io/Blog",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog"
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "",
+    "description": "sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAAAAAB0L9x7AAABg0lEQVR42u3by5KDMAxEUf7/p5MtqbJbbSDQoi6bydM5CxWSJc/2Cbg2ECBAtEBs4vr5gvH6/n1nXRC5iGHQ7D9c/MBoHWtdENGI2aJVQI7WcdYF0Ruhbk6jIAbxfsTosbqpgXgHYpZoRkE3A6mAPpVFQdyOUAXpmb+XVdsgbkWUm9bZApPA/MuuHMStCBVIClUmJ2M9EJmIWQEzK1JUYes2W0D0QahixrlUMVPeMUFEIVYKWrcZoj4Log/CSWCqcVIVRlZggngcsdL4cBrwhxIYiEiEu8F1m++qWALRA+E2vY4ksOlzEJEIlcjcDdEKHkQ+YqUhrlDuQL+c/ICIQTg3risa8TIwQUQhzh7WqJptZRYFEYlwfrwcuBoHAkFkI5xBnNOEdw8CgchHWIN187DOyqYZRDaiCkinceI04UD0Qhw5KFwN8Q9lURAtECrInOGs/U8mINog1Oa4SnByAAMiGuE0zKpB7OoBDxC5iOqL6vWqgLEbZyBiEE9eIECAiEZ8AddX+TlS9mo3AAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            <div class="container">
+    <div class="main-container">
+        <main>
+            <div class="post-stream-container">
+                <!-- # Post List # -->
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/20/2019/190820_opengl_setup/" rel="bookmark">ubuntu搭建opengl环境</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        安装1234sudo apt-get install build-essentialsudo apt-get install libgl1-mesa-devsudo apt-get install libglu1-mesa-devsudo apt-get install freeglut3-dev
+    <a href="/Blog/2019/08/20/2019/190820_opengl_setup/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-20</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/opengl/">opengl</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/15/2019/190815_cpp_ifelse/" rel="bookmark">C++分支语句、逻辑表达式、字符函数库、switch、文本I/O</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        if语句
+两种格式： if和if else
+
+    <a href="/Blog/2019/08/15/2019/190815_cpp_ifelse/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-15</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/14/2019/190814_cpp_for/" rel="bookmark">C++循环语句for, while, do-while</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        for循环12for (int i = 5; i &lt; 0; i--)    cout &lt;&lt; "i=" &lt;&lt; i &lt;&lt;endl;
+    <a href="/Blog/2019/08/14/2019/190814_cpp_for/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-14</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/13/2019/190813_cpp_typeTemplete/" rel="bookmark">C++内存分配方式和模板类vector, array</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        使用new创建动态结构
+在运行时创建数组优于编译时创建数组，对于结构也是如此。需要在程序运行时为结构分配所需的空间，可以使用new完成。动态意味着内存是在运行时，而不是编译时分配的。例如inflatable *ps = new inflatable;其中inflatable是一个结构类型。这句代码将把存储结构inflatable的一块可用内存的地址赋值给ps。箭头成员运算符-&gt;，可用于指向结构的指针。例如ps指向一个inflatable结构的成员price，即ps-&gt;price
+
+    <a href="/Blog/2019/08/13/2019/190813_cpp_typeTemplete/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-13</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/12/2019/190812_cpp_complex2/" rel="bookmark">C++复合类型之枚举、指针</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        枚举enum
+C++的enum工具提供了另一种创建符号常量的方式，可以代替const。它还允许定义新的类型，但是必须严格按照格式。使用enum语法格式和结构相似，例如  
+
+    <a href="/Blog/2019/08/12/2019/190812_cpp_complex2/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-12</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/01/2019/190801_cpp_complex/" rel="bookmark">C++复合类型之数组、字符串、结构、共用体</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+题外话： 在我眼里，我实习的第一家公司教会了我两件事，一是让自己忙起来，二是代码规范整洁。有时候有所悟会很晚，但终究不迟。序： C++提供了基于整型和浮点类型创建的复合类型。影响最深远的复合类型是类。然而，C++还支持几种普通的复合类型。例如，数组 可以存储多个同类型的值。结构 可以存储多个不同类型的值。指针 则是一种将数据所处位置告诉计算机的类型。
+
+    <a href="/Blog/2019/08/01/2019/190801_cpp_complex/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-01</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/27/2019/190727-linux-zsh-md/" rel="bookmark">linux配置zsh终端</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+从echo $SHELL可以查看当前使用的终端是/bin/bash。zsh是Ubuntu的一种终端工具，虽然听说功能很强很给力，事实上我只是被他的众多主题迷住了。具体查看文档
+
+    <a href="/Blog/2019/07/27/2019/190727-linux-zsh-md/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-27</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/linux/">linux</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/27/2019/190726-next-addmusic/" rel="bookmark">hexo文章中使用iframe插件插入网易云音乐</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+为了收藏一些喜欢的音乐分享在博客上，使用iframe插件生成网易云音乐的控件。
+
+    <a href="/Blog/2019/07/27/2019/190726-next-addmusic/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-27</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/web/">web</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/26/2019/190725_linux_linuxEnv/" rel="bookmark">Ubuntu安装后的环境配置注意点</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+Ubuntu系统刚安装完成后，工作还只是进行了一小半，还有一大堆的环境需要配置搭建。比如说JDK, nodejs, python, vs code编译器 …
+
+    <a href="/Blog/2019/07/26/2019/190725_linux_linuxEnv/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-26</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/linux/">linux</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/25/2019/190725_cpp_operator/" rel="bookmark">C++浮点常量表示、算术运算符、类型转换</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        浮点常量
+默认情况下，8.27和3.4E5这类浮点常量都属于double类型。如果希望常量是float类型，使用f或者F后缀对于long double的类型，使用l和L的后缀
+
+例如：
+12341.234f  //float2.2L    //long double2.34F   //float23.231E24  //double (defalut)
+    <a href="/Blog/2019/07/25/2019/190725_cpp_operator/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-25</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/25/2019/190724_ubuntu_install/" rel="bookmark">Ubuntu18系统安装（无需制作启动盘）</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        数据备份准备工具
+Ubuntu系统（官网选择版本下载ISO文件）
+U盘（之前有一个U盘是做了window10的启动盘）
+
+安装步骤
+移除备份好的机械硬盘
+
+制作一个启动盘(win10系统不需要用软碟通UltraISO作启动盘)
+    <a href="/Blog/2019/07/25/2019/190724_ubuntu_install/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-25</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/linux/">linux</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/23/2019/190723_cpp_float/" rel="bookmark">C++多字节char、bool、字符常量、浮点数</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        wchar_t
+程序需要处理的字符集可能无法用一个8位的字节表示，比如日文、汉字等此时有两种处理方法：  
+
+编译器厂商将char定义16位的字节或者更长  
+char表示8位的字节，另一种wchar_t表示宽字符类型，可以扩展字符集
+
+
+    <a href="/Blog/2019/07/23/2019/190723_cpp_float/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-23</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/22/2019/190722-hexo-article-pass/" rel="bookmark">hexo文章加密方法</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        直接修改JS
+存在问题：可能被破解。如果你的博客源码是存放在GitHub这样的开源库的话，那么恭喜你。别有用心之人可以通过查看你的GitHub仓库对应文章的md文件找到这个密码。
+
+    <a href="/Blog/2019/07/22/2019/190722-hexo-article-pass/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-22</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/web/">web</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/22/2019/190722-git-stashing/" rel="bookmark">git stash储藏命令</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+储藏（stashing）可以获取工作目录的中间状态，即被修改过的被追踪的文件和暂存的变更。
+并将它保存在一个未完结变更的堆栈中，随时可以重新应用。
+
+    <a href="/Blog/2019/07/22/2019/190722-git-stashing/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-22</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/git/">git</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/21/2019/190721-cpp-variable/" rel="bookmark">C++变量</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        C++变量命名规则
+只能使用字母、数字、下划线  
+第一个字符不能是数字  
+区分大小写
+不能使用关键字
+以两个下划线或下划线和大写字母打头的名称保留给实现（编译器及其使用的资源）使用，以一个下划线开头的名称被保留给实现，用作全局标识符
+C++对命名的长度没有限制，但是有些平台会限制长度
+
+    <a href="/Blog/2019/07/21/2019/190721-cpp-variable/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-21</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/18/2019/190718-nextdebug-md/" rel="bookmark">Hexo Next主题优化（二）</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        样式页脚foot优化爱心跳动
+在Next主题根目录的配置文件修改
+
+    <a href="/Blog/2019/07/18/2019/190718-nextdebug-md/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-18</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/web/">web</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/17/2019/190717_debug_adb_commonds/" rel="bookmark">Use ADB</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+ADB是连接手机设备和电脑设备的调试桥。这种工具命令用于Android调试是基础而且重要的。
+
+Overview
+Install: sudo apt-get install adb
+Function:123456通过adb可以管理、操作模拟器和设备，如安装软件、查看设备软硬件参数、系统升级、运行shell命令等。手机启动USB调试模式，设备连接电脑。注：我的手机一加6的USB调试模式打开方式如下：       （1）在手机设置的关于手机找到版本号，双击七次打开开发者模式;       （2）在开发者选项中打开USB调试选项;       （3）设备连接
+    <a href="/Blog/2019/07/17/2019/190717_debug_adb_commonds/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-17</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/16/2019/190716_debug_ancdoid_callstack/" rel="bookmark">在Android源码调试函数的堆栈</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+在Android代码中可以通过了解函数的CallStack加速调试和分析过程，本文说明如何在Android运行时加入CallStack及Android P上的注意点。
+
+Java12import android.util.Log; Log.d("yourTag", Log.getStackTraceString(new Exception()));
+    <a href="/Blog/2019/07/16/2019/190716_debug_ancdoid_callstack/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-16</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/15/2019/190715_genminiChange-md/" rel="bookmark">Next Gemini主题优化</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        圆角设计主题修改成Gemini
+不同于Pisces, Gemini主题是卡片式布局
+
+_config.xml12345# Schemes#scheme: Muse#scheme: Mist#scheme: Piscesscheme: Gemini
+    <a href="/Blog/2019/07/15/2019/190715_genminiChange-md/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-15</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/web/">web</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/15/2019/190715_debug_VTS/" rel="bookmark">Use VTS</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        Overview来源为了能更快的将设备升级到新的Android版本，Android O 开始新引入了 Project Treble，Project Treble 适用于搭载 Android O 及后续版本的所有新设备。 
+    <a href="/Blog/2019/07/15/2019/190715_debug_VTS/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-15</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+            </div>
+        </main>
+        
+<nav>
+<ul class="pagination">
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/page/2/" rel="prev">
+                <span class="page-item-subtitle"><i class="icon icon-back" aria-hidden="true"></i></span>
+                <span class="page-item-title">上一页</span>
+            </a>
+        </li>
+    
+    
+        <li class="page-item page-next">
+            <a href="/Blog/page/4/" rel="next">
+                <span class="page-item-title">下一页</span>
+                <span class="page-item-subtitle"><i class="icon icon-forward" aria-hidden="true"></i></span>
+            </a>
+        </li>
+    
+</ul>
+</nav>
+
+
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

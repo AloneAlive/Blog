@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>C++分支语句、逻辑表达式、字符函数库、switch、文本I/O | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="C++分支语句、逻辑表达式、字符函数库、switch、文本I&#x2F;O | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/"><meta property="og:locale" content="zh-CN"><meta name="description" content="if语句 两种格式： if和if else - sunwengang - sunwengang blog"><meta name="keywords" content="cpp"><meta property="article:published_time" content="2019-08-15T14:23:05.000Z"><meta property="article:modified_time" content="2020-03-08T10:11:22.924Z"><meta property="og:updated_time" content="2020-03-08T10:11:22.924Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="cpp"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/"
+    },
+    "headline": "C++分支语句、逻辑表达式、字符函数库、switch、文本I/O | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-08-15T14:23:05.000Z",
+    "dateModified": "2020-03-08T10:11:22.924Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "cpp",
+    "description": "if语句 两种格式： if和if else - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=C++分支语句、逻辑表达式、字符函数库、switch、文本I/O" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=C++分支语句、逻辑表达式、字符函数库、switch、文本I/O&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=C++分支语句、逻辑表达式、字符函数库、switch、文本I/O" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACNElEQVR42u2aQW7DMAwE/f9Pt9fUkLhDO0VTc3xJ2ijSCBCV5ZLH1z94DiGFFFLID4A8iuc85jz+9fMfky/Gvv4PryvkWMjlod1ArN5XwOc5V9/ZrivkaMjOAT8vWC3UCS4hhaSQ6VJPwNUPgJBC3gmcdIHvgmM1RkghrwqM3cXcER1JqNxWQUI+DrJKiH7z9W3ZopCPgoymURC7ZLFdwL3NVRPyUZBExBJxUV3aKzi0KSFHQlKTKQF2PqdBJeRMyGRIdS/yFDxkLiFnQ1YHuwtFjFayISFnQ3YuX2qEVubrruiEC6BCjoBMBmoSGsTI6phWQgpJTdCO6E3FKhRwQgoJLvUqeO7MtdyEkGMhO0lV1fhBRTH5W0gh7zSLVGZXahgpi/pCjoWkhhVpCiHJWiqCCjkbskrYUxMdFbfp8m65akKOgCQXeieZ6poOWxEjpJCgWa4SwJ2G0JbAEFLI0OBOxcYdASPkbEhi1KeCUZXkYzOAFuWFfDRkGpyakEkD05WGZiFnQ6YiUqfZo9pcZcDGAqiQoyFJcYk0yF0JHhw4Qo6DpMZA2lgSybgoL+RISNL4QQueZOzlKq2Qj4ZMD2kGoY1QlViJhpWQYyDTgSYJfkvI3s0WhRwBmSYjzezUtL8cOEKOg0zFStIIT8REEhhCCkmLl1UxPgVfMhzaiZiQ4yFJY0faXBV0qNgk5DjI6tB3TANq/F8yrIQcA5l++JM5QAqo1DgQUshPfoQUUkgh//D5Bnl99lUzhQkJAAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">C++分支语句、逻辑表达式、字符函数库、switch、文本I/O</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-08-15</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=C++分支语句、逻辑表达式、字符函数库、switch、文本I/O&url=https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=C++分支语句、逻辑表达式、字符函数库、switch、文本I/O&url=https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACNElEQVR42u2aQW7DMAwE/f9Pt9fUkLhDO0VTc3xJ2ijSCBCV5ZLH1z94DiGFFFLID4A8iuc85jz+9fMfky/Gvv4PryvkWMjlod1ArN5XwOc5V9/ZrivkaMjOAT8vWC3UCS4hhaSQ6VJPwNUPgJBC3gmcdIHvgmM1RkghrwqM3cXcER1JqNxWQUI+DrJKiH7z9W3ZopCPgoymURC7ZLFdwL3NVRPyUZBExBJxUV3aKzi0KSFHQlKTKQF2PqdBJeRMyGRIdS/yFDxkLiFnQ1YHuwtFjFayISFnQ3YuX2qEVubrruiEC6BCjoBMBmoSGsTI6phWQgpJTdCO6E3FKhRwQgoJLvUqeO7MtdyEkGMhO0lV1fhBRTH5W0gh7zSLVGZXahgpi/pCjoWkhhVpCiHJWiqCCjkbskrYUxMdFbfp8m65akKOgCQXeieZ6poOWxEjpJCgWa4SwJ2G0JbAEFLI0OBOxcYdASPkbEhi1KeCUZXkYzOAFuWFfDRkGpyakEkD05WGZiFnQ6YiUqfZo9pcZcDGAqiQoyFJcYk0yF0JHhw4Qo6DpMZA2lgSybgoL+RISNL4QQueZOzlKq2Qj4ZMD2kGoY1QlViJhpWQYyDTgSYJfkvI3s0WhRwBmSYjzezUtL8cOEKOg0zFStIIT8REEhhCCkmLl1UxPgVfMhzaiZiQ4yFJY0faXBV0qNgk5DjI6tB3TANq/F8yrIQcA5l++JM5QAqo1DgQUshPfoQUUkgh//D5Bnl99lUzhQkJAAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#if语句"><span class="post-toc-number">1.</span> <span class="post-toc-text">if语句</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#嵌套ifelse"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">嵌套ifelse</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#逻辑表达式"><span class="post-toc-number">2.</span> <span class="post-toc-text">逻辑表达式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#使用保留字表达"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">使用保留字表达</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#字符函数库cctype"><span class="post-toc-number">3.</span> <span class="post-toc-text">字符函数库cctype</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#三目条件运算符（-）"><span class="post-toc-number">4.</span> <span class="post-toc-text">三目条件运算符（?:）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#switch"><span class="post-toc-number">5.</span> <span class="post-toc-text">switch</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#文件输入输出I-O"><span class="post-toc-number">6.</span> <span class="post-toc-text">文件输入输出I&#x2F;O</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#写入"><span class="post-toc-number">6.1.</span> <span class="post-toc-text">写入</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#写入到文本文件"><span class="post-toc-number">6.2.</span> <span class="post-toc-text">写入到文本文件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#读取文本"><span class="post-toc-number">6.3.</span> <span class="post-toc-text">读取文本</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="if语句"><a href="#if语句" class="headerlink" title="if语句"></a>if语句</h2><blockquote>
+<p>两种格式： <code>if</code>和<code>if else</code></p>
+</blockquote>
+<a id="more"></a>
+<figure class="highlight c++"><figcaption><span>if.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span> ch;</span><br><span class="line">	<span class="keyword">int</span> spaces = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> total = <span class="number">0</span>;</span><br><span class="line">	<span class="built_in">cin</span>.<span class="built_in">get</span>(ch);</span><br><span class="line">	<span class="keyword">while</span> (ch != <span class="string">'.'</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (ch == <span class="string">' '</span>)</span><br><span class="line">			++spaces;</span><br><span class="line">		++total;</span><br><span class="line">		<span class="built_in">cin</span>.<span class="built_in">get</span>(ch);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; spaces &lt;&lt; <span class="string">" spaces, total is "</span> &lt;&lt; total &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">a</span><br><span class="line">b</span><br><span class="line">c</span><br><span class="line"> <span class="comment">//space</span></span><br><span class="line"> <span class="comment">//space</span></span><br><span class="line">.</span><br><span class="line"><span class="number">2</span> spaces, total is <span class="number">10</span>   <span class="comment">//总数为10是因为包含换行符</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">或者如下结果：</span><br><span class="line">dwdadw   .</span><br><span class="line"><span class="number">3</span> spaces, total is <span class="number">9</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="嵌套ifelse"><a href="#嵌套ifelse" class="headerlink" title="嵌套ifelse"></a>嵌套ifelse</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (ch == <span class="string">'A'</span>)</span><br><span class="line">  a++;</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="keyword">if</span> (ch ==<span class="string">'B'</span>)</span><br><span class="line">    b++;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">if</span> (ch == <span class="string">'C'</span>)</span><br><span class="line">    c++;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    x++;</span><br></pre></td></tr></table></figure>
+
+<h2 id="逻辑表达式"><a href="#逻辑表达式" class="headerlink" title="逻辑表达式"></a>逻辑表达式</h2><blockquote>
+<p>三种：逻辑or<code>||</code>， 逻辑and<code>&amp;&amp;</code>，逻辑NOT<code>!</code></p>
+</blockquote>
+<p>例如： </p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">5</span> &gt; <span class="number">3</span> || <span class="number">5</span> &gt; <span class="number">10</span>   <span class="comment">//如果左侧为true，就不会判断右侧</span></span><br><span class="line">等同于</span><br><span class="line">(<span class="number">2</span> &lt; <span class="number">3</span>) || (<span class="number">5</span> &gt; <span class="number">10</span>) <span class="comment">//说明逻辑运算符优先级低于关系运算符</span></span><br><span class="line"></span><br><span class="line"><span class="number">5</span> &gt; <span class="number">8</span> &amp;&amp; <span class="number">5</span> &lt; <span class="number">10</span>  <span class="comment">//优先判断左侧，如果左侧为false，就不会判断右侧</span></span><br><span class="line"></span><br><span class="line">!(x &gt; <span class="number">5</span>)   <span class="comment">//取反</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用保留字表达"><a href="#使用保留字表达" class="headerlink" title="使用保留字表达"></a>使用保留字表达</h3><table>
+<thead>
+<tr>
+<th align="center">逻辑运算符</th>
+<th align="center">另一种表达方式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">&amp;&amp;</td>
+<td align="center">and</td>
+</tr>
+<tr>
+<td align="center">或</td>
+<td align="center">or</td>
+</tr>
+<tr>
+<td align="center">!</td>
+<td align="center">not</td>
+</tr>
+</tbody></table>
+<h2 id="字符函数库cctype"><a href="#字符函数库cctype" class="headerlink" title="字符函数库cctype"></a>字符函数库cctype</h2><blockquote>
+<p>使用<code>isalpha()</code>来检查字符是否为字母字符<br>使用<code>isdigit()</code>来测试字符是否是数字字符<br>使用<code>isspace()</code>来测试字符是否是空白（如换行符、空格、制表符）<br>使用<code>ispunct()</code>来测试字符是否是标点符号</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th align="center">函数名</th>
+<th align="center">入参</th>
+<th align="center">返回值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">isalnum()</td>
+<td align="center">字母或数字</td>
+<td align="center">true</td>
+</tr>
+<tr>
+<td align="center">isalpha()</td>
+<td align="center">字母</td>
+<td align="center">true</td>
+</tr>
+<tr>
+<td align="center">iscntrl()</td>
+<td align="center">控制字符</td>
+<td align="center">true</td>
+</tr>
+<tr>
+<td align="center">isdigit()</td>
+<td align="center">数字（0～9）</td>
+<td align="center">true</td>
+</tr>
+<tr>
+<td align="center">isgraph()</td>
+<td align="center">除空格外的打印字符</td>
+<td align="center">true</td>
+</tr>
+<tr>
+<td align="center">islower()</td>
+<td align="center">小写字符</td>
+<td align="center">true</td>
+</tr>
+<tr>
+<td align="center">isprint()</td>
+<td align="center">打印字符，包含空格</td>
+<td align="center">true</td>
+</tr>
+<tr>
+<td align="center">ispunct()</td>
+<td align="center">标点符号</td>
+<td align="center">true</td>
+</tr>
+<tr>
+<td align="center">isspace()</td>
+<td align="center">标准空白字符，如空格、换行、回车、水平制表符、垂直制表符</td>
+<td align="center">true</td>
+</tr>
+<tr>
+<td align="center">isupper()</td>
+<td align="center">大写字母</td>
+<td align="center">true</td>
+</tr>
+<tr>
+<td align="center">isxdigit()</td>
+<td align="center">十六进制数字，即0～9、a~f、A～F</td>
+<td align="center">返回true</td>
+</tr>
+<tr>
+<td align="center">tolower()</td>
+<td align="center">大写字符</td>
+<td align="center">返回其小写，否则返回参数</td>
+</tr>
+<tr>
+<td align="center">toupper()</td>
+<td align="center">小写字符</td>
+<td align="center">返回大写，否则返回参数</td>
+</tr>
+</tbody></table>
+<h2 id="三目条件运算符（-）"><a href="#三目条件运算符（-）" class="headerlink" title="三目条件运算符（?:）"></a>三目条件运算符（?:）</h2><p><code>5 &gt; 3 ? 10 : 12</code>，如果true，则返回10，false返回12</p>
+<h2 id="switch"><a href="#switch" class="headerlink" title="switch"></a>switch</h2><blockquote>
+<p>switch中的每个case标签必须是一个单独的值。这个值必须是整数（含char）。因此switch无法处理浮点测试。另外case标签必须是常量。<br><code>break</code>和<code>continue</code>都呢该构跳过代码。不同之处前者跳出整个循环，后者跳出本次循环。</p>
+</blockquote>
+<figure class="highlight c++"><figcaption><span>switchtest.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">char</span> choice;</span><br><span class="line">        <span class="built_in">cin</span> &gt;&gt; choice;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (choice != <span class="string">'Q'</span> &amp;&amp; choice != <span class="string">'q'</span>) &#123;</span><br><span class="line">                <span class="keyword">switch</span>(choice) &#123;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'a'</span>:</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'A'</span>:</span><br><span class="line">                                <span class="built_in">cout</span> &lt;&lt; <span class="string">"result is a/A\n"</span>;</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">case</span> <span class="string">'b'</span>:</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'B'</span>:</span><br><span class="line">                                <span class="built_in">cout</span> &lt;&lt; <span class="string">"result is b/B\n"</span>;</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'d'</span>:</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'D'</span>:</span><br><span class="line">                                <span class="built_in">cout</span> &lt;&lt; <span class="string">"result is d/D\n"</span>;</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'c'</span>:</span><br><span class="line">                        <span class="keyword">case</span> <span class="string">'C'</span>:</span><br><span class="line">                                <span class="built_in">cout</span> &lt;&lt; <span class="string">"result is c/C\n"</span>;</span><br><span class="line">                                <span class="keyword">break</span>;</span><br><span class="line">			<span class="keyword">default</span>:</span><br><span class="line">				<span class="built_in">cout</span> &lt;&lt; <span class="string">"Not abcd"</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">		<span class="built_in">cin</span> &gt;&gt; choice;</span><br><span class="line">        &#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">a</span><br><span class="line">result is a/A</span><br><span class="line">B</span><br><span class="line">result is b/B</span><br><span class="line">c</span><br><span class="line">result is c/C</span><br><span class="line">D </span><br><span class="line">result is d/D</span><br><span class="line">F</span><br><span class="line">Not abcd</span><br><span class="line">q</span><br></pre></td></tr></table></figure>
+
+<h2 id="文件输入输出I-O"><a href="#文件输入输出I-O" class="headerlink" title="文件输入输出I/O"></a>文件输入输出<code>I/O</code></h2><h3 id="写入"><a href="#写入" class="headerlink" title="写入"></a>写入</h3><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> ch;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">cin</span> &gt;&gt; ch;</span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">cout</span> &lt;&lt; <span class="string">"Result is "</span> &lt;&lt; ch &lt;&lt;<span class="built_in">std</span>::<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">char</span> <span class="keyword">word</span>[<span class="number">50</span>];</span><br><span class="line"><span class="built_in">cin</span> &gt;&gt; <span class="keyword">word</span>;  <span class="comment">//不断读取，直到遇到空白字符</span></span><br><span class="line"><span class="built_in">cin</span>.getline(<span class="keyword">word</span>, <span class="number">50</span>);  <span class="comment">//不断读取，直到遇到换行符</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="写入到文本文件"><a href="#写入到文本文件" class="headerlink" title="写入到文本文件"></a>写入到文本文件</h3><figure class="highlight c++"><figcaption><span>outfile.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span> automobile[<span class="number">50</span>];</span><br><span class="line">	<span class="keyword">int</span> year;</span><br><span class="line">	<span class="keyword">double</span> a_price;</span><br><span class="line">	<span class="keyword">double</span> b_price;</span><br><span class="line"></span><br><span class="line">	ofstream outFile;</span><br><span class="line">	outFile.<span class="built_in">open</span>(<span class="string">"carinfo.txt"</span>);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter the make and model of automobile: \n"</span>;</span><br><span class="line">	<span class="built_in">cin</span>.getline(automobile, <span class="number">50</span>);</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter the model year: \n"</span>;</span><br><span class="line">	<span class="built_in">cin</span> &gt;&gt; year;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter the original asking price: \n"</span>;</span><br><span class="line">	<span class="built_in">cin</span> &gt;&gt; a_price;</span><br><span class="line">	b_price = <span class="number">0.913</span> * a_price;</span><br><span class="line"></span><br><span class="line">	outFile &lt;&lt; fixed;</span><br><span class="line">	outFile.precision(<span class="number">2</span>);</span><br><span class="line">	outFile.setf(ios_base::showpoint);</span><br><span class="line">	outFile &lt;&lt; <span class="string">"Make and model: "</span> &lt;&lt; automobile &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	outFile &lt;&lt; <span class="string">"Year : "</span> &lt;&lt; year &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	outFile &lt;&lt; <span class="string">"Was asking $"</span> &lt;&lt; a_price &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	outFile &lt;&lt; <span class="string">"Now asking $"</span> &lt;&lt; b_price &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	outFile.<span class="built_in">close</span>();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行结束后生成的文件：</strong></p>
+<figure class="highlight plain"><figcaption><span>carinfo.txt </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Make and model: Flitz Perky</span><br><span class="line">Year : 2009</span><br><span class="line">Was asking $13500.00</span><br><span class="line">Now asking $12325.50</span><br></pre></td></tr></table></figure>
+
+<h3 id="读取文本"><a href="#读取文本" class="headerlink" title="读取文本"></a>读取文本</h3><p><strong>读取文件：</strong></p>
+<figure class="highlight c++"><figcaption><span>readfile_test.txt </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">12</span> <span class="number">31.2</span> <span class="number">321</span></span><br><span class="line"><span class="number">23</span> <span class="number">23.21</span> <span class="number">31</span></span><br><span class="line"><span class="number">23</span> <span class="number">31</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>代码：</strong></p>
+<figure class="highlight c++"><figcaption><span>readfile.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;fstream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstdlib&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> SIZE = <span class="number">60</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line">	<span class="keyword">char</span> filename[SIZE];</span><br><span class="line">	ifstream inFile;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Enter file name: \n"</span>;</span><br><span class="line">	<span class="built_in">cin</span>.getline(filename, SIZE);</span><br><span class="line">	inFile.<span class="built_in">open</span>(filename);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (!inFile.is_open()) &#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Could not open file "</span> &lt;&lt; filename &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">		<span class="built_in">exit</span>(EXIT_FAILURE);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">double</span> value;</span><br><span class="line">	<span class="keyword">double</span> sum = <span class="number">0.0</span>;</span><br><span class="line">	<span class="keyword">int</span> count = <span class="number">0</span>;  <span class="comment">//读取的数量</span></span><br><span class="line"></span><br><span class="line">	inFile &gt;&gt; value;  <span class="comment">//获取第一个alue</span></span><br><span class="line">	<span class="keyword">while</span> (inFile.good()) &#123;</span><br><span class="line">		++count;         <span class="comment">//读取数量+1</span></span><br><span class="line">		sum += value;    <span class="comment">//极端总和</span></span><br><span class="line">		inFile &gt;&gt; value; <span class="comment">//获取下一个value	</span></span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (inFile.eof()) </span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"End of file reached.\n"</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">if</span> (inFile.fail())</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Input terminated by data mismatch.\n"</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Input terminated for unknown reason.\n"</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (count == <span class="number">0</span>)</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"No data processed.\n"</span>;</span><br><span class="line">	<span class="keyword">else</span></span><br><span class="line">	&#123;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Item read : "</span> &lt;&lt; count &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">		<span class="built_in">cout</span> &lt;&lt; <span class="string">"Sum : "</span> &lt;&lt; sum &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	inFile.<span class="built_in">close</span>();</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Enter file name: </span><br><span class="line">readfile_test.txt</span><br><span class="line">End of file reached.</span><br><span class="line">Item <span class="built_in">read</span> : <span class="number">8</span></span><br><span class="line">Sum : <span class="number">495.41</span></span><br></pre></td></tr></table></figure>
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/">https://alonealive.github.io/Blog/2019/08/15/2019/190815_cpp_ifelse/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-08-15T14:23:05.000Z" itemprop="datePublished">2019-08-15</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:11:22.924Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/cpp/'>cpp</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/cpp/" rel="tag">#&nbsp;cpp</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/08/20/2019/190820_opengl_setup/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">ubuntu搭建opengl环境</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/08/14/2019/190814_cpp_for/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++循环语句for, while, do-while</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

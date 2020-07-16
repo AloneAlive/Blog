@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android SurfaceFlinger和HWC2概述 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android SurfaceFlinger和HWC2概述 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/"><meta property="og:locale" content="zh-CN"><meta name="description" content="转载夕月风大佬博客： https:&#x2F;&#x2F;www.jianshu.com&#x2F;p&#x2F;824a9ddf68b9参考Android Q AOSP源码添加修改部分内容参考源码： http:&#x2F;&#x2F;aosp.opersys.com&#x2F;xref&#x2F;android-10.0.0_r14&#x2F; - sunwengang - sunwengang blog"><meta name="keywords" content="graphics"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/Layer_Struct.png"><meta property="article:published_time" content="2019-12-22T15:32:00.000Z"><meta property="article:modified_time" content="2020-03-08T10:22:18.357Z"><meta property="og:updated_time" content="2020-03-08T10:22:18.357Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="graphics"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/"
+    },
+    "headline": "Android SurfaceFlinger和HWC2概述 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-12-22T15:32:00.000Z",
+    "dateModified": "2020-03-08T10:22:18.357Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "graphics",
+    "description": "转载夕月风大佬博客： https://www.jianshu.com/p/824a9ddf68b9参考Android Q AOSP源码添加修改部分内容参考源码： http://aosp.opersys.com/xref/android-10.0.0_r14/ - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android SurfaceFlinger和HWC2概述" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android SurfaceFlinger和HWC2概述&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android SurfaceFlinger和HWC2概述" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACO0lEQVR42u2c0arDMAxD8/8/vfs6Sm1JoeNu8cnL2EibU4hTWTZbrx8YC0gggQTyCyBXM97nuHPf5999T+4F5FzI200rFrpbuLvf9TpnXSBnQ143brXBFcj1WvVg3b2BBFJBVgF1d6BXLwsggXwCshIEVaBU16r7Agmk86JX4qETG11wPaqCgDwOskuIPvn5WLYI5FGQ0jQSi3ULqiB7zFUD8ijIREDsLlqZWvKhgBwJ6SRhjknQBZbzYLcPAuR4yPS33WKAuheQsyG7jZ4GjvMiUHOABLIrYqoCZ2U6VQ/YFZ3sbBHIMZDKlK+EhzNfFejtRhEgR0C6DR1OMHTF/C645GEO5DhIpwmpWywVD8oUAHI2pDLaE1PLSdTcgiuQcyFV0bMTwYlRn4hoIIF0hEAnRhJB7AYrkEA6xU0lGpLGEMfgAnImZGeUOqZAYng5DXbSwQDyeMjWWBfQ6iB3XgK2wAByDGR3GKtDVxkFjuFlH+ZAjoF0DNEdc9VJ5rZcNSBHQKrAcYJCmftpQzOQcyHVBrYTebPo6XwHEkhlWrkmlFtY6j5bFQTkKEgnyVeNHrZwWMtrVAFyNKRbYHcMLlfsKrEM5ExIp3CpDu4koauCza7SAnk8pNrQ6hBWxqoy8uNEDMgRkLtNI0pwKIgocIAcB5k00akGpHSUBz2QQBqF+MScd83UqCIGJJBL/7lgMl+ZBkACmWz6pBiViFw7cIAcA5m8+J1A2knupKsG5BjIbx5AAgkkkP84/gC7RpXE/233pAAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android SurfaceFlinger和HWC2概述</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-12-22</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android SurfaceFlinger和HWC2概述&url=https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android SurfaceFlinger和HWC2概述&url=https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACO0lEQVR42u2c0arDMAxD8/8/vfs6Sm1JoeNu8cnL2EibU4hTWTZbrx8YC0gggQTyCyBXM97nuHPf5999T+4F5FzI200rFrpbuLvf9TpnXSBnQ143brXBFcj1WvVg3b2BBFJBVgF1d6BXLwsggXwCshIEVaBU16r7Agmk86JX4qETG11wPaqCgDwOskuIPvn5WLYI5FGQ0jQSi3ULqiB7zFUD8ijIREDsLlqZWvKhgBwJ6SRhjknQBZbzYLcPAuR4yPS33WKAuheQsyG7jZ4GjvMiUHOABLIrYqoCZ2U6VQ/YFZ3sbBHIMZDKlK+EhzNfFejtRhEgR0C6DR1OMHTF/C645GEO5DhIpwmpWywVD8oUAHI2pDLaE1PLSdTcgiuQcyFV0bMTwYlRn4hoIIF0hEAnRhJB7AYrkEA6xU0lGpLGEMfgAnImZGeUOqZAYng5DXbSwQDyeMjWWBfQ6iB3XgK2wAByDGR3GKtDVxkFjuFlH+ZAjoF0DNEdc9VJ5rZcNSBHQKrAcYJCmftpQzOQcyHVBrYTebPo6XwHEkhlWrkmlFtY6j5bFQTkKEgnyVeNHrZwWMtrVAFyNKRbYHcMLlfsKrEM5ExIp3CpDu4koauCza7SAnk8pNrQ6hBWxqoy8uNEDMgRkLtNI0pwKIgocIAcB5k00akGpHSUBz2QQBqF+MScd83UqCIGJJBL/7lgMl+ZBkACmWz6pBiViFw7cIAcA5m8+J1A2knupKsG5BjIbx5AAgkkkP84/gC7RpXE/233pAAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#SurfaceFlinger概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">SurfaceFlinger概述</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#SurfaceFlinger类定义"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">SurfaceFlinger类定义</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ISurfaceComposer接口实现"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">ISurfaceComposer接口实现</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ComposerCallback接口实现"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">ComposerCallback接口实现</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#mCurrentState和mDrawingState"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">mCurrentState和mDrawingState</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#硬件合成HWC2概述"><span class="post-toc-number">2.</span> <span class="post-toc-text">硬件合成HWC2概述</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HWC常规准则"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">HWC常规准则</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HWC2框架"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">HWC2框架</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#HWC2数据结构"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">HWC2数据结构</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#图层Layer"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">图层Layer</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Layer按照类型划分"><span class="post-toc-number">2.4.1.</span> <span class="post-toc-text">Layer按照类型划分</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Layer按照数据划分"><span class="post-toc-number">2.4.2.</span> <span class="post-toc-text">Layer按照数据划分</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Layer属性"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">Layer属性*</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#位置属性"><span class="post-toc-number">2.5.1.</span> <span class="post-toc-text">位置属性</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#内容属性"><span class="post-toc-number">2.5.2.</span> <span class="post-toc-text">内容属性</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#合成属性（确认用哪种合成方式）"><span class="post-toc-number">2.5.3.</span> <span class="post-toc-text">合成属性（确认用哪种合成方式）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#优化属性"><span class="post-toc-number">2.5.4.</span> <span class="post-toc-text">优化属性</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#小结"><span class="post-toc-number">3.</span> <span class="post-toc-text">小结</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>转载夕月风大佬博客： <a href="https://www.jianshu.com/p/824a9ddf68b9" target="_blank" rel="noopener">https://www.jianshu.com/p/824a9ddf68b9</a><br>参考Android Q AOSP源码添加修改部分内容<br>参考源码： <a href="http://aosp.opersys.com/xref/android-10.0.0_r14/" target="_blank" rel="noopener">http://aosp.opersys.com/xref/android-10.0.0_r14/</a></p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="SurfaceFlinger概述"><a href="#SurfaceFlinger概述" class="headerlink" title="SurfaceFlinger概述"></a>SurfaceFlinger概述</h2><p>大多数APP在屏幕通常显示三个部分：</p>
+<ul>
+<li>屏幕顶部的状态栏</li>
+<li>底部或者侧边的导航栏</li>
+<li>应用的界面</li>
+</ul>
+<p>有些应用会显示更多或者更少的层。例如主屏幕会有一个单独的壁纸层；全屏幕的游戏可能会隐藏状态栏目。这些可以通过<code>Dump Surfacelinger</code>查看BufferLayers部分的信息来获取具体信息（<code>adb shell dumpsys SurfaceFlinger</code>）。从Dump结果看，layer呈树形结构(<code>Tree</code>)分布。</p>
+<p>每个层都可以单独更新。状态栏和导航栏由系统进程渲染，而应用层由应用渲染，两者之间不进行协调。</p>
+<h3 id="SurfaceFlinger类定义"><a href="#SurfaceFlinger类定义" class="headerlink" title="SurfaceFlinger类定义"></a>SurfaceFlinger类定义</h3><figure class="highlight c++"><figcaption><span>frameworks/native/services/surfaceflinger/SurfaceFlinger.h</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SurfaceFlinger</span> :</span> <span class="keyword">public</span> BnSurfaceComposer,</span><br><span class="line">                       <span class="keyword">public</span> PriorityDumper,</span><br><span class="line">                       <span class="keyword">private</span> IBinder::DeathRecipient,</span><br><span class="line">                       <span class="keyword">private</span> HWC2::ComposerCallback</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function">SurfaceFlingerBE&amp; <span class="title">getBE</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> mBE; &#125;</span><br><span class="line">    <span class="function"><span class="keyword">const</span> SurfaceFlingerBE&amp; <span class="title">getBE</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123; <span class="keyword">return</span> mBE; &#125;</span><br><span class="line">    ......</span><br></pre></td></tr></table></figure>
+
+<p>继承BnSurfaceComposer，实现ISurfaceComposer接口；实现ComposerCallback；继承辅助类PriorityDumper，主要提供SurfaceFlinger的Dump信息，并且提高提供信息的分离和格式设置。</p>
+<h3 id="ISurfaceComposer接口实现"><a href="#ISurfaceComposer接口实现" class="headerlink" title="ISurfaceComposer接口实现"></a>ISurfaceComposer接口实现</h3><p>ISurfaceComposer是提供给上层Client端的接口（Bp端），此处的SurfaceFlinger是Server端（Bn端）。接口内容包括：</p>
+<figure class="highlight c++"><figcaption><span>frameworks/native/include/gui/ISurfaceComposer.h</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ISurfaceComposer</span>:</span> <span class="keyword">public</span> IInterface &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    DECLARE_META_INTERFACE(SurfaceComposer)</span><br><span class="line">    ......</span><br><span class="line">        <span class="comment">/* returns information for each configuration of the given display</span></span><br><span class="line"><span class="comment">     * intended to be used to get information about built-in displays */</span></span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">status_t</span> <span class="title">getDisplayConfigs</span><span class="params">(<span class="keyword">const</span> sp&lt;IBinder&gt;&amp; <span class="built_in">display</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">            Vector&lt;DisplayInfo&gt;* configs)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    ......</span><br></pre></td></tr></table></figure>
+
+<p>接口在SurfaceFlinger中都有对应的方法实现。Client端通过Binder跨进程调到SurfaceFlinger中。获取Display的信息，其实现就是SurfaceFlinger的<code>getDisplayConfig</code>函数。</p>
+<h3 id="ComposerCallback接口实现"><a href="#ComposerCallback接口实现" class="headerlink" title="ComposerCallback接口实现"></a>ComposerCallback接口实现</h3><p>ComposerCallback是HWC2的callback接口，包括以下接口：</p>
+<figure class="highlight c++"><figcaption><span>frameworks/native/services/surfaceflinger/DisplayHardware/HWC2.h</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">namespace</span> HWC2 &#123;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Display</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Layer</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Implement this interface to receive hardware composer events.</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// These callback functions will generally be called on a hwbinder thread, but</span></span><br><span class="line"><span class="comment">// when first registering the callback the onHotplugReceived() function will</span></span><br><span class="line"><span class="comment">// immediately be called on the thread calling registerCallback().</span></span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// All calls receive a sequenceId, which will be the value that was supplied to</span></span><br><span class="line"><span class="comment">// HWC2::Device::registerCallback(). It's used to help differentiate callbacks</span></span><br><span class="line"><span class="comment">// from different hardware composer instances.</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ComposerCallback</span> &#123;</span></span><br><span class="line"> <span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">onHotplugReceived</span><span class="params">(<span class="keyword">int32_t</span> sequenceId, <span class="keyword">hwc2_display_t</span> <span class="built_in">display</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                                   Connection connection)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">onRefreshReceived</span><span class="params">(<span class="keyword">int32_t</span> sequenceId,</span></span></span><br><span class="line"><span class="function"><span class="params">                                   <span class="keyword">hwc2_display_t</span> <span class="built_in">display</span>)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="function"><span class="keyword">virtual</span> <span class="keyword">void</span> <span class="title">onVsyncReceived</span><span class="params">(<span class="keyword">int32_t</span> sequenceId, <span class="keyword">hwc2_display_t</span> <span class="built_in">display</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                                 <span class="keyword">int64_t</span> timestamp)</span> </span>= <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">virtual</span> ~ComposerCallback() = <span class="keyword">default</span>;</span><br><span class="line">&#125;;</span><br><span class="line">.....</span><br></pre></td></tr></table></figure>
+
+<p>Callback提供了注册接口<code>registerCallback</code>，在SurfaceFlinger初始化的时候注册：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::init</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ALOGI(  <span class="string">"SurfaceFlinger's main thread ready to run. "</span></span><br><span class="line">            <span class="string">"Initializing graphics H/W..."</span>);</span><br><span class="line">....</span><br><span class="line">mCompositionEngine-&gt;getHwComposer().registerCallback(<span class="keyword">this</span>, getBE().mComposerSequenceId);</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+
+<p>此处<code>registerCallback</code>的<code>this</code>就是SurfaceFlinger对ComposerCallback接口的实现。</p>
+<ul>
+<li>onHotplugReceived： 热插拔事件的回调，显示屏幕连接或者断开时回调。</li>
+<li>onRefreshReceived： 接收底层HWComposer的刷新请求。在<code>repaintEverythingForHWC</code>中，<code>mRepaintEverything</code>为<code>true</code>的时候，将触发一次刷新，重新进行合成显示。重新绘制说明底层配置、参数等有变动，SurfaceFlinger前面给的数据不能用，需要重新根据变动后的配置进行合成，给适合当前配置的显示数据。</li>
+</ul>
+<figure class="highlight c++"><figcaption><span>frameworks/native/services/surfaceflinger/SurfaceFlinger.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::onRefreshReceived</span><span class="params">(<span class="keyword">int</span> sequenceId, <span class="keyword">hwc2_display_t</span> <span class="comment">/*hwcDisplayId*/</span>)</span> </span>&#123;</span><br><span class="line">    <span class="function">Mutex::Autolock <span class="title">lock</span><span class="params">(mStateLock)</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (sequenceId != getBE().mComposerSequenceId) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    repaintEverythingForHWC();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::repaintEverythingForHWC</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    mRepaintEverything = <span class="literal">true</span>;</span><br><span class="line">    mEventQueue-&gt;invalidate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>onVsyncReceived： Vsync事件上报，接收底层硬件上报的垂直同步信号。此处可以通过抓取<code>Systrace</code>的方式查看具体的Vsync的信息（底层硬件、SurfaceFlinger、APP三部分的Vsync，一般Android版本升级的时候会进行<code>vsync的tuning</code>）</li>
+<li><strong>显示周期Vsync</strong>： 设备显示会按照一定速率更新（一般是一秒60帧，即16.6ms刷新一次）。如果显示内容在刷新期间更新，则会出现撕裂现象，因此必须在周期之间更新（<code>这也是vsync tunning的必要性，保持SurfaceFlinger和draw frame都在vsync周期里面，并且不重叠</code>）在可以安全更新内容时，系统便会接收来自显示设备的信号。</li>
+</ul>
+<p>刷新率可能会随时间而变化，例如一些设备的刷新范围在58fps至62fps之间，具体视当前条件而定。对于连接了HDMI的电视，刷新率在理论上可以下降到24Hz或者48Hz，以便和视频匹配。由于每个刷新周期只能更新屏幕一次，因此以200fps的刷新率为显示设备提交缓冲区并没有必要性，因为大部分桢不能被看到（人眼合适的是60fps）。SurfaceFlinger不会在应用提交缓冲区时进行操作，而是在显示设备准备好接收新缓冲区的时候才会唤醒。</p>
+<p>当Vsync信号到达的时候，SurfaceFlinger会遍历层列表，以寻找新的缓冲区。如果找到会获取该缓冲区，否则会使用以前获取的缓冲区。SurfaceFlinger总是需要可显示的内容，因此会保留一个缓冲区。如果在某个层没有提交缓冲区，则该层会被忽略。</p>
+<p>此处会在合成调用到<code>handlePageFlip</code>函数，函数中先调用<code>latchBuffer</code>从BufferQueue取Buffer，然后等待Vsync信号更新到FrameBuffer。</p>
+<ul>
+<li><strong>合成方式</strong>： 目前SurfaceFlinger支持两种合成方式：一种是Device合成，一种是Client合成。SurfaceFlinger在收集可见层的所有缓冲区之后，便会询问HardwareComposer应该如何进行合成。</li>
+<li><ul>
+<li>Client合成：之前称之为GLES合成，也可以称之为GPU合成，该合成方式是相对于硬件合成来说的，将各个Layer的内容用GPU渲染到暂存缓冲区中，最后将暂存缓冲区传送到显示硬件Client合成采用RenderEngine进行合成。</li>
+</ul>
+</li>
+<li><ul>
+<li>Device合成： 用专门的硬件合成器进行合成HWComposer，所以硬件合成的能力就取决于硬件的实现。其合成方式是将各个Layer的数据全部传给显示硬件，并告知它从不同的缓冲区读取屏幕不同部分的数据。HWComposer是Device合成的抽象。</li>
+</ul>
+</li>
+</ul>
+<p>合成方式可以从Dump SurfaceFlinger中查看到Layer的具体合成方式，GPU合成一般可以通过开发者选项中启动，强制GPU合成；而Device合成在Dump信息中一般显示成SDE合成。</p>
+<p>GPU合成数据后，作为一个特殊的Layer传给显示硬件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">Display 0 HWC layers:</span><br><span class="line">-------------------------------------------------------------------------------</span><br><span class="line"> Layer name</span><br><span class="line">           Z |  Comp Type |   Disp Frame (LTRB) |          Source Crop (LTRB)</span><br><span class="line">-------------------------------------------------------------------------------</span><br><span class="line"> com.android.systemui.ImageWallpaper#0</span><br><span class="line">  rel      0 |     Client |    0    0 1080 2280 |    0.0    0.0 1080.0 2280.0</span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line"> net.oneplus.launcher/net.oneplus.launcher.Launcher#0</span><br><span class="line">  rel      0 |     Client |    0    0 1080 2280 |    0.0    0.0 1080.0 2280.0</span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line"><span class="meta"> StatusBar#</span><span class="bash">0</span></span><br><span class="line">  rel      0 |     Client |    0    0 1080   80 |    0.0    0.0 1080.0   80.0</span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line"><span class="meta"> GestureButtonRegion#</span><span class="bash">0</span></span><br><span class="line">  rel      0 |     Client |    0 2216 1080 2280 |    0.0    0.0 1080.0   64.0</span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line"><span class="meta"> ScreenDecorOverlay#</span><span class="bash">0</span></span><br><span class="line">  rel      0 |     Device |    0    0 1080  106 |    0.0    0.0 1080.0  106.0</span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line"><span class="meta"> ScreenDecorOverlayBottom#</span><span class="bash">0</span></span><br><span class="line">  rel      0 |     Device |    0 2198 1080 2280 |    0.0    0.0 1080.0   82.0</span><br><span class="line">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</span><br><span class="line"></span><br><span class="line">|-----|------------|-----------|------|-------------|--------------------------|---------------------|---------------------|----|------------|-----------|----|-----|</span><br><span class="line">| Idx |  Comp Type |   Split   | Pipe |    W x H    |          Format          |  Src Rect (L T R B) |  Dst Rect (L T R B) |  Z |    Flags   | Deci(HxV) | CS | Rng |</span><br><span class="line">|-----|------------|-----------|------|-------------|--------------------------|---------------------|---------------------|----|------------|-----------|----|-----|</span><br><span class="line">|   6 | GPU_TARGET |    Pipe-1 |   94 | 1088 x 2288 |           RGBA_8888_UBWC |    0    0 1080 2280 |    0    0 1080 2280 |  0 | 0x00000002 |   0 x   0 |  0 |   0 |</span><br><span class="line">|   4 |        SDE |    Pipe-1 |  103 | 1088 x  112 |           RGBA_8888_UBWC |    0    0 1080  106 |    0    0 1080  106 |  1 | 0x00000000 |   0 x   0 |  1 |   1 |</span><br><span class="line">|   5 |        SDE |    Pipe-1 |   92 | 1088 x   96 |           RGBA_8888_UBWC |    0    0 1080   82 |    0 2198 1080 2280 |  2 | 0x00000000 |   0 x   0 |  1 |   1 |</span><br><span class="line">|-----|------------|-----------|------|-------------|--------------------------|---------------------|---------------------|----|------------|-----------|----|-----|</span><br></pre></td></tr></table></figure>
+<ul>
+<li>SurfaceFlingerBE: 从Android P上分离出来，定义上看是将Surfacelinger分离为前后端。</li>
+<li>消息队列和主线程： 和应用进程类似，SurfaceFlinger也有一个主线程，主要是进行显示数据的处理，即合成。Surfacelinger是一个服务，将会响应上层的请求，各个进程的请求都在SurfaceFlinger的各个Binder线程中，如果线程很耗时，那么应用端就会被block。主线程将他们分离开来，各干各的。</li>
+</ul>
+<p><strong>Note：</strong></p>
+<ol>
+<li>SurfaceFligner有两个状态，Layer也有两个状态，一个是mCurrentState，一个是mDrawingState。</li>
+<li>两个EventThread，一个是给SurfaceFlinger本身使用，一个是为了给应用分发事件的。</li>
+</ol>
+<hr>
+<h3 id="mCurrentState和mDrawingState"><a href="#mCurrentState和mDrawingState" class="headerlink" title="mCurrentState和mDrawingState"></a><code>mCurrentState</code>和<code>mDrawingState</code></h3><ol>
+<li>这两个成员是Layer类中<code>Layer::State</code>的类型。</li>
+</ol>
+<figure class="highlight c++"><figcaption><span>Layer.h</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">State</span> &#123;</span></span><br><span class="line">    Geometry active;  <span class="comment">//计算后的实际尺寸</span></span><br><span class="line">    Geometry requested; <span class="comment">//用户设置的尺寸</span></span><br><span class="line">    <span class="keyword">int32_t</span> z; <span class="comment">//Layer的Z轴值，值越小位置就越靠小</span></span><br><span class="line">    <span class="keyword">uint32_t</span> layerStack;  <span class="comment">//和显示设备的关联值</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">unit8_t</span> alpha; <span class="comment">//Layer的透明度</span></span><br><span class="line">    <span class="keyword">uint8_t</span> flags;  <span class="comment">//Layer的标志（如果上次绘制后用户改变了Layer）</span></span><br><span class="line">    <span class="keyword">uint8_t</span> reserved[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">int32_t</span> sequence; <span class="comment">//序列值，Layer的属性变化一次就会加一（例如setAlpha,setSize,setLayer等）</span></span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">// the transparentRegion hint is a bit special, it's latched only</span></span><br><span class="line">    <span class="comment">// when we receive a buffer -- this is because it's "content"</span></span><br><span class="line">    <span class="comment">// dependent.</span></span><br><span class="line">    Region activeTransparentRegion; <span class="comment">//实际的透明区域</span></span><br><span class="line">    Region requestedTransparentRegion;  <span class="comment">//用户中的透明区域</span></span><br><span class="line">    ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>Surfacelinger创建Surface的时候，会调用<code>createLayer</code>，然后调用<code>addClientLayer</code>函数，这里会把Layer对象放在<code>mCurrentState</code>的layerSortedByZ对象中。</p>
+</li>
+<li><p>Surfacelinger合成的时候，调用<code>preComposition</code>函数，会先调用<code>mDrawingState</code>的layerSortedByZ来获取上次绘图的Layer层列表（并不是所有layer都参与屏幕图像的绘制，因此通过State对象记录参与绘制的Layer对象）</p>
+</li>
+<li><p>Layer对象在绘制图形时，使用的是mDrawingState变量；用户调用接口设置Layer对象属性时，设置的值保存在mCurrentState中。这样就不会因为用户的操作而干扰Layer对象的绘制了。</p>
+</li>
+<li><p><code>Layer::doTransaction</code>函数会比较这两个成员变量，如果有不同的地方，说明上次绘制后，用户改变了Layer的属性，要把这种变化通过flags返回。</p>
+</li>
+<li><p><code>layerStack</code>字段是用户指定的一个值，用户可以给DisplayDevice指定一个layerStack值，只有Layer对象和DisplayDevice对象的layerStack相等，这个Layer才能在这个显示设备输出。这样的好处可以让显示设备只显示某个Surface的内容。例如，可以让HDMI显示设备只显示手机上播放的Surface窗口，但是不显示Activity窗口。</p>
+</li>
+<li><p><code>Layer::doTransaction</code>最后会调用<code>commitTransaction</code>函数，就是将mCurrentState赋值给mDrawingState。</p>
+</li>
+</ol>
+<hr>
+<ol start="8">
+<li>以上的是在Layer.cpp中的两个成员变量，而在<code>SurfaceFlinger.cpp</code>也有同名的<code>mCurrentState</code>和<code>mDrawingState</code>两个成员变量（定义在SurfaceFlinger.h中），定义不一样，只是名字相同。</li>
+</ol>
+<figure class="highlight c++"><figcaption><span>SF.h</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">State</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    explicit State(LayerVector::StateSet set) : stateSet(set), layersSortedByZ(set) &#123;&#125;</span><br><span class="line">    State&amp; <span class="keyword">operator</span>=(<span class="keyword">const</span> State&amp; other) &#123;</span><br><span class="line">        <span class="comment">// We explicitly don't copy stateSet so that, e.g., mDrawingState</span></span><br><span class="line">        <span class="comment">// always uses the Drawing StateSet.</span></span><br><span class="line">        layersSortedByZ = other.layersSortedByZ;</span><br><span class="line">        displays = other.displays;</span><br><span class="line">        colorMatrixChanged = other.colorMatrixChanged;</span><br><span class="line">        <span class="keyword">if</span> (colorMatrixChanged) &#123;</span><br><span class="line">            colorMatrix = other.colorMatrix;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">const</span> LayerVector::StateSet stateSet = LayerVector::StateSet::Invalid;</span><br><span class="line">    LayerVector layersSortedByZ;  <span class="comment">//保存所有参与绘制的Layer对象</span></span><br><span class="line">    DefaultKeyedVector&lt; wp&lt;IBinder&gt;, DisplayDeviceState&gt; displays; <span class="comment">//保存所有输出设备的DisplayDeviceState对象</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">bool</span> colorMatrixChanged = <span class="literal">true</span>;</span><br><span class="line">    mat4 colorMatrix;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">traverseInZOrder</span><span class="params">(<span class="keyword">const</span> LayerVector::Visitor&amp; visitor)</span> <span class="keyword">const</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">traverseInReverseZOrder</span><span class="params">(<span class="keyword">const</span> LayerVector::Visitor&amp; visitor)</span> <span class="keyword">const</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ol start="9">
+<li>SF.cpp中的<code>handleTransactionLocked</code>函数会根据<code>eTraversalNeeded</code>标志决定是否要检查所有的Layer对象。如果某个Layer对象有这个标志，将会调用他的<code>doTransaction</code>函数。<code>Layer::doTransaction</code>函数返回的flags如果有<code>eVisibleRegion</code>说明这个Layer需要更新，就把<code>mVisibleRegionDirty</code>设置为true。</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::handleTransactionLocked</span><span class="params">(<span class="keyword">uint32_t</span> transactionFlags)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">// Notify all layers of available frames</span></span><br><span class="line">    mCurrentState.traverseInZOrder([](Layer* layer) &#123;</span><br><span class="line">        layer-&gt;notifyAvailableFrames();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Traversal of the children</span></span><br><span class="line"><span class="comment">     * (perform the transaction for each of them if needed)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (transactionFlags &amp; eTraversalNeeded) &#123;</span><br><span class="line">        mCurrentState.traverseInZOrder([&amp;](Layer* layer) &#123;</span><br><span class="line">            <span class="keyword">uint32_t</span> trFlags = layer-&gt;getTransactionFlags(eTransactionNeeded);</span><br><span class="line">            <span class="keyword">if</span> (!trFlags) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">uint32_t</span> flags = layer-&gt;doTransaction(<span class="number">0</span>);</span><br><span class="line">            <span class="keyword">if</span> (flags &amp; Layer::eVisibleRegion)</span><br><span class="line">                mVisibleRegionsDirty = <span class="literal">true</span>;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ......<span class="comment">//这部分代码是根据每种显示设备的不同，设置和显示设备关联在一起的Layer（主要看LayerStack是否和DisplayDevice的layerStack相同）的TransformHint（主要指设备的显示方向orientation）</span></span><br><span class="line"></span><br><span class="line">    commitTransaction();</span><br><span class="line"></span><br><span class="line">    updateCursorAsync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Note:</strong> <code>handleTransaction</code>的作用是处理系统在两次刷新期间的各种变化。Surfacelinger模块中不管是SurfaceFlinger类和Layer类</p>
+<hr>
+<h2 id="硬件合成HWC2概述"><a href="#硬件合成HWC2概述" class="headerlink" title="硬件合成HWC2概述"></a>硬件合成HWC2概述</h2><p>Hardware Composer HAL(HWC)是指硬件完成图像数据组合并显示的能力。</p>
+<p>SurfaceFlinger是一个系统服务（系统启动时启动），作用是接收来自多个源的Buffer数据，并进行合成，然后发送到显示设备进行显示。</p>
+<p>SurfaceFlinger和HWC的相互配合，实现Android系统的合成和显示（非GPU合成）。</p>
+<hr>
+<p>Android 7.0包含新版本的HWC（HWC2），Android需要自行配置。</p>
+<p>Android 8.0，HWC2正式开启，并且版本升级为2.1。（<code>/frameworks/native/services/surfaceflinger/DisplayHardware/</code>）</p>
+<p>HWC2是SurfaceFlinger用来与专门的窗口合成硬件进行通信（Device合成方式）。SurfaceFlinger包含使用3D图形处理器（GPU）执行窗口合成任务的备用途径，但是此路径并不理想（GPU合成方式），因为：</p>
+<ol>
+<li>通常，GPU没有针对此进行优化，因此能耗可能大于执行合成所需的能耗；</li>
+<li>每次SUrfaceFlinger使用GPU合成时，应用都无法使用处理器进行自我渲染，因此应尽可能使用专门的硬件而不是GPU进行合成。</li>
+</ol>
+<p>GPU（Client合成）和HWC（Client合成）两种方式对比：</p>
+<table>
+<thead>
+<tr>
+<th align="center">合成类型</th>
+<th align="center">耗电情况</th>
+<th align="center">性能情况</th>
+<th align="center">Alpha处理</th>
+<th align="center">DRM内容处理</th>
+<th align="center">其他限制</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Device合成（HWC）</td>
+<td align="center">耗电低</td>
+<td align="center">性能高</td>
+<td align="center">很多Vendor的HWC不支持Alpha的处理和合成</td>
+<td align="center">基本都能访问DRM内容</td>
+<td align="center">能合成的Surface层数有限，对每种Surface类型处理层数有限</td>
+</tr>
+<tr>
+<td align="center">Client合成（GPU）</td>
+<td align="center">耗电高</td>
+<td align="center">性能低</td>
+<td align="center">能处理每个像素的Alpha及每个Layer的Alpha</td>
+<td align="center">早期版本GPU不能访问DRM的内容</td>
+<td align="center">目前的处理层数没有限制</td>
+</tr>
+</tbody></table>
+<p><strong>Note:</strong></p>
+<ol>
+<li>Alpha处理： 图片的透明度（0～255或者0.0f~1.0f），数值越小透明度越高</li>
+<li>DRM内容处理：（Digital Rights Management）一种业界使用广泛的数字内容版权保护技术。</li>
+</ol>
+<h3 id="HWC常规准则"><a href="#HWC常规准则" class="headerlink" title="HWC常规准则"></a>HWC常规准则</h3><p>Hardware Composer抽象层后的物理显示设备硬件可因设备而异。但是一般来说，遵循以下规则：</p>
+<ol>
+<li>HWC应至少支持4个叠加层（状态栏、系统栏、应用、壁纸/背景）</li>
+<li>层可以大于屏幕，因此HWC应能处理大于显示屏的层（例如壁纸）</li>
+<li>应该同时支持预乘每个像素Alpha混合和每个平面Alpha混合</li>
+<li>HWC应能够处理GPU、Camera、视频解码器（Video Decoder）生成的相同缓冲区，因此支持以下某些属性会很有帮助：</li>
+</ol>
+<ul>
+<li><ul>
+<li>RGBA打包顺序</li>
+</ul>
+</li>
+<li><ul>
+<li>YUV格式</li>
+</ul>
+</li>
+<li><ul>
+<li>Tiling,swizzling和步幅属性</li>
+</ul>
+</li>
+</ul>
+<ol start="5">
+<li>为了支持受保护的内容（Secure layer），必须提供受保护视频播放的硬件路径</li>
+</ol>
+<p><strong>Note：</strong></p>
+<ol>
+<li>RGBA是一种颜色值</li>
+<li>YUV是一种颜色编码格式，可以说YUV流媒体是原始流数据，大部分的视频领域都在使用。他与RGB类似，但RGB更多的用于渲染时，而YUV则用在数据传输，因为它占用更少的频宽。当然，实时通讯为了降低带宽都会采用H264/H265编码。从字面意思理解，YUV的含义:Y代表亮度信息（灰度），UV分别代表色彩信息。YUV的常用名称有许多，如YUV422这是大部分镜头出来的数据，还有许多（yuv420,yuv444等）</li>
+<li>Tiling简单来说就是将image进行切割，切成<code>M * N</code>小块，最后用的时候再进行拼接，类似铺瓷砖</li>
+<li>swizzling是一种拌和技术，这是向量的单元可以被任意的重新排放或重复</li>
+</ol>
+<p>HWC专注于优化，智能的选择要发送到叠加硬件的Surface，以最大限度减轻GPU的负载。<strong>另一种优化是检测屏幕是否正在更新；如果不是，这将合成委托给OpenGL而不是HWC，以节省电量。但屏幕再次更新时，继续将合成分发给HWC</strong>。</p>
+<p>为常见的用例做准备，比如：</p>
+<ul>
+<li>纵向和横向模式下的全屏游戏</li>
+<li>带着字幕和播放控件的全屏视频</li>
+<li>主屏幕（状态栏、系统栏目、应用、动态壁纸）</li>
+<li>受保护的视频播放</li>
+<li>多显示设备支持</li>
+</ul>
+<h3 id="HWC2框架"><a href="#HWC2框架" class="headerlink" title="HWC2框架"></a>HWC2框架</h3><p>从Android 8.0开始的Treble项目，对Android架构做了调整，让制造商以更低的成本更加轻松快速的将设备更新到Android系统。这就对HAL层有了很大的调整，利用提供给Vendor的接口，将Vendor的实现和Android上层分离开来。</p>
+<p>这样的架构也使得HWC架构变得复杂，HWC属于<code>Binderized</code>的HAL类型。<code>Binderized</code>类型的HAL将上层Android和底层HAL分别采用两个不同的进程实现，中间采用Binder进行通信，为了和前面的Binder进行区别，这里采用<code>HWBinder</code>。</p>
+<p>可以将HWC分为以下几个部分：</p>
+<ul>
+<li><p>Binder 1：</p>
+</li>
+<li><ul>
+<li>SurfaceFlinger Service</li>
+</ul>
+</li>
+<li><ul>
+<li>HWC2 Client</li>
+</ul>
+</li>
+<li><p>Binder 2：</p>
+</li>
+<li><ul>
+<li>HWC2 Server</li>
+</ul>
+</li>
+<li><ul>
+<li>HWC2 Vendor Impl</li>
+</ul>
+</li>
+</ul>
+<p><strong>具体解释：</strong></p>
+<ol>
+<li>Client端：Client就是指SurfaceFlinger。不过SurfaceFlinger采用前后端设计，以后和HWC相关的逻辑应该会放到后端（<code>SurfaceFlingerBE</code>），即<code>/frameworks/native/services/surfaceflinger/</code></li>
+<li>HWC Client端： 这一部分属于SurfaceFlinger进程，直接用过Binder通信，和HWC2的HAL Server交互。在SurfaceFlinger中采用<code>namespace HWC2</code>的命名空间，即<code>frameworks/native/services/surfaceflinger/DisplayHardware/HWComposer.cpp</code>。</li>
+<li>HWC2 Server端: 这里将建立一个进程实现HWC的<code>Server端</code>。服务端再调用底层Vendor的具体实现。并且，对于底层合成的实现不同，此处会做一些适配（<code>适配HWC1.x</code>），和FrameBuffer的实现。这部分包含三部分：<strong>接口、实现、服务</strong>，以动态库的形式存在：（<code>hardware/interfaces/graphics/composer/2.1/default/</code>）</li>
+</ol>
+<ul>
+<li><ul>
+<li><a href="mailto:android.hardware.graphics.composer@2.1.so">android.hardware.graphics.composer@2.1.so</a></li>
+</ul>
+</li>
+<li><ul>
+<li><a href="mailto:android.hardware.graphics.composer@2.1-impl.so">android.hardware.graphics.composer@2.1-impl.so</a></li>
+</ul>
+</li>
+<li><ul>
+<li><a href="mailto:android.hardware.graphics.composer@2.1-service.so">android.hardware.graphics.composer@2.1-service.so</a></li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>HWC Vendor实现： 这部分是HWC的具体实现，由硬件厂商完成，（<code>例如高通QCOM</code>），代码一般是<code>hardware/qcom/display/</code>。HWC必须采用<code>Binderized HAL</code>模式，但是不一定要实现HWC2的HAL版本。HWC2的实现需要配置，以Android 8.0为例，包含：</li>
+</ol>
+<ul>
+<li><ul>
+<li>添加宏定义<code>TARGET_USERS_HWC2</code></li>
+</ul>
+</li>
+<li><ul>
+<li>编译打包HWC2相关的so库</li>
+</ul>
+</li>
+<li><ul>
+<li>SELinux相关的权限添加</li>
+</ul>
+</li>
+<li><ul>
+<li>配置<code>manifest.xml</code>：<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;hal format=<span class="string">"hidl"</span>&gt;</span><br><span class="line">        &lt;name&gt;android.hardware.graphics.composer&lt;/name&gt;</span><br><span class="line">        &lt;transport&gt;hwbinder&lt;/transport&gt;</span><br><span class="line">        &lt;version&gt;<span class="number">2.1</span>&lt;/version&gt;</span><br><span class="line">        &lt;interface&gt;</span><br><span class="line">            &lt;name&gt;IComposer&lt;/name&gt;</span><br><span class="line">            &lt;instance&gt;<span class="keyword">default</span>&lt;/instance&gt;</span><br><span class="line">        &lt;/interface&gt;</span><br><span class="line">&lt;/hal&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="HWC2数据结构"><a href="#HWC2数据结构" class="headerlink" title="HWC2数据结构"></a>HWC2数据结构</h3><ol>
+<li>HWC2的一些常用接口定义在头文件<code>hardware/libhardware/include/hardware/hwcomposer2.h</code>中，一些共用的数据定义是HAL的接口中:</li>
+</ol>
+<ul>
+<li><code>hardware/interfaces/graphics/common/1.0/</code></li>
+<li><code>hardware/interfaces/graphics/composer/2.1/</code></li>
+</ul>
+<h3 id="图层Layer"><a href="#图层Layer" class="headerlink" title="图层Layer"></a>图层Layer</h3><p>每个Layer都有一组属性，用来定义和其他Layer的交互方式。他在每一个模块（层）代码定义的实现不一样，但是Layer的理念是一样的。</p>
+<ul>
+<li><p><a href="http://aosp.opersys.com/xref/android-10.0.0_r14/xref/frameworks/native/services/surfaceflinger/" target="_blank" rel="noopener">SurfaceFlinger中</a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">frameworks&#x2F;native&#x2F;services&#x2F;surfaceflinger</span><br><span class="line">├── Layer.h</span><br><span class="line">├── Layer.cpp</span><br><span class="line">├── ColorLayer.h</span><br><span class="line">├── ColorLayer.cpp</span><br><span class="line">├── BufferLayer.h</span><br><span class="line">└── BufferLayer.cpp</span><br><span class="line">|__ ...</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><a href="">HWC2中</a></p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">frameworks&#x2F;native&#x2F;services&#x2F;surfaceflinger&#x2F;DisplayHardware</span><br><span class="line">├── HWC2.h</span><br><span class="line">└── HWC2.cpp</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在HAL中实现时，定义为hwc2_layer_t，是在头文件hwcomposer2.h中定义的:<code>typedef uint64_t hwc2_layer_t;</code></li>
+<li>HIDL中定义为Layer，这个Layer和<code>hwc2_layer_t</code>是一样的：<code>typedef uint64_t Layer;</code></li>
+</ul>
+<h4 id="Layer按照类型划分"><a href="#Layer按照类型划分" class="headerlink" title="Layer按照类型划分"></a>Layer按照类型划分</h4><p>大致分为<code>BufferLayer</code>和<code>COlorLayer</code>（在SF中createLayer中），<code>BufferLayer</code>就是有Buffer的Lyaer（Bufferueue，GraphicsBuffer），需要上层应用Producer生长；<code>ColorLayer</code>可以绘制一种制定的颜色和透明度Alpha（取代之前的Dim Layer）。</p>
+<h4 id="Layer按照数据划分"><a href="#Layer按照数据划分" class="headerlink" title="Layer按照数据划分"></a>Layer按照数据划分</h4><p>大致分为<code>RGB Layer</code>和<code>YUV Layer</code>，前者是RGB格式，比较常见的就是UI界面的数据；后者的Buffer是YUV类型的，平常播放Video，Camera预览等，都是YUV类型的。</p>
+<h3 id="Layer属性"><a href="#Layer属性" class="headerlink" title="Layer属性*"></a>Layer属性*</h3><blockquote>
+<p>Layer的属性定义他和其他模块（层）的关系，和显示屏（DeisplayDevice）的关系等。Layer包含的属性类别如下（上述也有部分内容）：</p>
+</blockquote>
+<h4 id="位置属性"><a href="#位置属性" class="headerlink" title="位置属性"></a>位置属性</h4><blockquote>
+<p>定义层在其显示设备上的现实位置，包含层边缘的位置和其相对于其他层的Z-Order等，并且还定义了很多个<strong>区域Region</strong>：</p>
+</blockquote>
+<figure class="highlight c++"><figcaption><span>frameworks/native/services/surfaceflinger/Layer.h</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Layer</span> :</span> <span class="keyword">public</span> <span class="keyword">virtual</span> RefBase &#123;</span><br><span class="line">    ... ...</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    ... ...</span><br><span class="line">    <span class="comment">// regions below are in window-manager space</span></span><br><span class="line">    Region visibleRegion;</span><br><span class="line">    Region coveredRegion;</span><br><span class="line">    Region visibleNonTransparentRegion;</span><br><span class="line">    Region surfaceDamageRegion;</span><br></pre></td></tr></table></figure>
+<p>Region中是很多个Rect的集合，即一个Layer的visibleRegion可能是几个Rect的集合（rect对象用来存储一个矩形框的左上角坐标、宽度和高度。描述矩形的宽度、高度和原点）</p>
+<p>SurfaceFlinger中定义的Region都是从上层（WMS）传递过来的。而在HWC中，是用的下面的结构描述：</p>
+<figure class="highlight c++"><figcaption><span>hardware/libhardware/include/hardware/hwcomposer_defs.h</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">hwc_color</span> &#123;</span></span><br><span class="line">    <span class="keyword">uint8_t</span> r;</span><br><span class="line">    <span class="keyword">uint8_t</span> g;</span><br><span class="line">    <span class="keyword">uint8_t</span> b;</span><br><span class="line">    <span class="keyword">uint8_t</span> a;</span><br><span class="line">&#125; <span class="keyword">hwc_color_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">hwc_float_color</span> &#123;</span></span><br><span class="line">    <span class="keyword">float</span> r;</span><br><span class="line">    <span class="keyword">float</span> g;</span><br><span class="line">    <span class="keyword">float</span> b;</span><br><span class="line">    <span class="keyword">float</span> a;</span><br><span class="line">&#125; <span class="keyword">hwc_float_color_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">hwc_frect</span> &#123;</span></span><br><span class="line">    <span class="keyword">float</span> left;</span><br><span class="line">    <span class="keyword">float</span> top;</span><br><span class="line">    <span class="keyword">float</span> right;</span><br><span class="line">    <span class="keyword">float</span> bottom;</span><br><span class="line">&#125; <span class="keyword">hwc_frect_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">hwc_rect</span> &#123;</span></span><br><span class="line">    <span class="keyword">int</span> left;</span><br><span class="line">    <span class="keyword">int</span> top;</span><br><span class="line">    <span class="keyword">int</span> right;</span><br><span class="line">    <span class="keyword">int</span> bottom;</span><br><span class="line">&#125; <span class="keyword">hwc_rect_t</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">hwc_region</span> &#123;</span></span><br><span class="line">    <span class="keyword">size_t</span> numRects;</span><br><span class="line">    <span class="keyword">hwc_rect_t</span> <span class="keyword">const</span>* rects;</span><br><span class="line">&#125; <span class="keyword">hwc_region_t</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>Transform，这个在SurfaceFlinger中定义的一个重要的结构，意思是变换矩阵，是一个<code>3*3</code>的矩阵。</li>
+</ul>
+<p><strong>联系流程：</strong><br><code>Rect &lt;- Region &lt;- Layer &lt;- State &lt;- Geometry &lt;- Transform &lt;- mat33</code></p>
+<ul>
+<li>Layer的两个状态：mCurrentState和mDrawingState，前者是给SurfaceFlinger的前段准备数据，后者是将数据给到合成。每个状态有两个Geometry的描述<code>request</code>（上层请求的）和<code>active</code>（当前正在使用的）。每个Geometry中有一个Transform矩阵，一个Transform包含一个mat33的整列。</li>
+</ul>
+<p>Transform中包含两部分，一部分是位置Postion，另一部分是真正的2D的变换矩阵。通过下面两个函数设置：（对应Layer中的setPostion和setMatrix函数，这是上层WMS设置下来的）</p>
+<figure class="highlight c++"><figcaption><span>frameworks/native/libs/ui/Transform.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Transform::set</span><span class="params">(<span class="keyword">float</span> tx, <span class="keyword">float</span> ty)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    mMatrix[<span class="number">2</span>][<span class="number">0</span>] = tx;</span><br><span class="line">    mMatrix[<span class="number">2</span>][<span class="number">1</span>] = ty;</span><br><span class="line">    mMatrix[<span class="number">2</span>][<span class="number">2</span>] = <span class="number">1.0f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isZero(tx) &amp;&amp; isZero(ty)) &#123;</span><br><span class="line">        mType &amp;= ~TRANSLATE;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mType |= TRANSLATE;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Transform::set</span><span class="params">(<span class="keyword">float</span> a, <span class="keyword">float</span> b, <span class="keyword">float</span> c, <span class="keyword">float</span> d)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">mat33&amp; <span class="title">M</span><span class="params">(mMatrix)</span></span>;</span><br><span class="line">    M[<span class="number">0</span>][<span class="number">0</span>] = a;    M[<span class="number">1</span>][<span class="number">0</span>] = b;</span><br><span class="line">    M[<span class="number">0</span>][<span class="number">1</span>] = c;    M[<span class="number">1</span>][<span class="number">1</span>] = d;</span><br><span class="line">    M[<span class="number">0</span>][<span class="number">2</span>] = <span class="number">0</span>;    M[<span class="number">1</span>][<span class="number">2</span>] = <span class="number">0</span>;</span><br><span class="line">    mType = UNKNOWN_TYPE;</span><br><span class="line">&#125;</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="内容属性"><a href="#内容属性" class="headerlink" title="内容属性"></a>内容属性</h4><blockquote>
+<p>定义显示的内容如何呈现（即Buffer）。Layer的显示，除了之前的几个区域Region描述，还有很多结构进一步描述才能显示，例如裁减（用来扩展内容的一部分以填充层的边界）和转换（用来显示旋转或者翻转的内容）等信息。HWCInfo结构体中包括了一些这样的信息：</p>
+</blockquote>
+<figure class="highlight c++"><figcaption><span>frameworks/native/services/surfaceflinger/CompositionEngine/include/compositionengine/impl/OutputLayerCompositionState.h</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">OutputLayerCompositionState</span> &#123;</span></span><br><span class="line">    <span class="comment">// The region of this layer which is visible on this output</span></span><br><span class="line">    Region visibleRegion;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// If true, client composition will be used on this output</span></span><br><span class="line">    <span class="keyword">bool</span> forceClientComposition&#123;<span class="literal">false</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// If true, when doing client composition, the target may need to be cleared</span></span><br><span class="line">    <span class="keyword">bool</span> clearClientTarget&#123;<span class="literal">false</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The display frame for this layer on this output</span></span><br><span class="line">    Rect displayFrame;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The source crop for this layer on this output</span></span><br><span class="line">    FloatRect sourceCrop;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The buffer transform to use for this layer o on this output.</span></span><br><span class="line">    Hwc2::Transform bufferTransform&#123;<span class="keyword">static_cast</span>&lt;Hwc2::Transform&gt;(<span class="number">0</span>)&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The Z order index of this layer on this output</span></span><br><span class="line">    <span class="keyword">uint32_t</span> z;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * HWC state</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line"></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">Hwc</span> &#123;</span></span><br><span class="line">        <span class="function"><span class="keyword">explicit</span> <span class="title">Hwc</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;HWC2::Layer&gt; hwcLayer)</span> : <span class="title">hwcLayer</span><span class="params">(hwcLayer)</span> </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// The HWC Layer backing this layer</span></span><br><span class="line">        <span class="built_in">std</span>::<span class="built_in">shared_ptr</span>&lt;HWC2::Layer&gt; hwcLayer;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// The HWC composition type for this layer</span></span><br><span class="line">        Hwc2::IComposerClient::Composition hwcCompositionType&#123;</span><br><span class="line">                Hwc2::IComposerClient::Composition::INVALID&#125;;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// The buffer cache for this layer. This is used to lower the</span></span><br><span class="line">        <span class="comment">// cost of sending reused buffers to the HWC.</span></span><br><span class="line">        HwcBufferCache hwcBufferCache;</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// The HWC state is optional, and is only set up if there is any potential</span></span><br><span class="line">    <span class="comment">// HWC acceleration possible.</span></span><br><span class="line">    <span class="built_in">std</span>::optional&lt;Hwc&gt; hwc;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Debugging</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">dump</span><span class="params">(<span class="built_in">std</span>::<span class="built_in">string</span>&amp; result)</span> <span class="keyword">const</span></span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>关系图：</p>
+<p><img src="Layer_Struct.png" alt="Layer显示结构图"></p>
+<p>解释：</p>
+<ol>
+<li>Layer区域和屏幕区域，就是Layer和屏幕本身的大小区域</li>
+<li>sourceCrop：剪切区域，sourceCrop是对Layer进行剪切的，值截取部分Layer的内容进行显示；sourceCrop不超过Layer的大小，超过没有意义。</li>
+<li>displayFrame：显示区域，displayFrame表示Layer在屏幕上的显示区域，具体说来，是sourceCrop区域在显示屏上的显示区域。displayFrame一般来说，小于屏幕的区域。而displayFrame可能比sourceCrop大，可能小，这都是正常的，只是需要做缩放，这就是合成时需要处理的。</li>
+<li>visibleRegion：可见区域，displayFrame 区域不一定都能看到的，如果存在上层Layer，那么displayFrame区域可能部分或全部被盖住，displayFrame没有被盖住的部分就是可见区域visibleRegion。</li>
+<li>damageRegion 受损区域，或者称之为更新区域。damageRegion表示Layer内容被破坏的区域，也就是说这部分区域的内容变了，所以这个属性一般是和上一帧相比时才有意义。这算是对合成的一种优化，重新合成时，我们只去合成damageRegion区域，其他的可见区域还是用的上一帧的数据。</li>
+<li>visibleNonTransparentRegion：可见非透明区域。透明区域transparentRegion是可见区域visibleRegion的一部分，只是这一部分透明的看到的是底层Layer的内容。在SurfaceFlinger的Layer中定义visibleNonTransparentRegion，表示可见而又不透明的部分。</li>
+<li>coveredRegion：被覆盖的区域。表示Layer被TopLayer覆盖的区域，一看图就很好理解。从图中，你可以简单的认为是displayFrame和TopLayer区域重合的部分。</li>
+</ol>
+<p><strong>注意：</strong> 这里之所以说简单的认为，这是因为HWC空间的区域大小是SurfaceFlinger空间的区域经过缩放，经过Transform旋转，移动等后才得出的，要是混淆了就理解不对了。</p>
+<h4 id="合成属性（确认用哪种合成方式）"><a href="#合成属性（确认用哪种合成方式）" class="headerlink" title="合成属性（确认用哪种合成方式）"></a>合成属性（确认用哪种合成方式）</h4><blockquote>
+<p>定义层应如何与其他层合成。包括混合模式和用于Alpha合成的全层Alpha值等信息。总的说来，合成分为两个大类：<code>GPU合成</code>和<code>HWC合成</code>。根据具体的情况，分为下列几类：</p>
+</blockquote>
+<figure class="highlight c++"><figcaption><span>hardware/libhardware/include/hardware/hwcomposer2.h</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">enum</span> <span class="class"><span class="keyword">class</span> <span class="title">Composition</span> :</span> <span class="keyword">int32_t</span> &#123;</span><br><span class="line">    Invalid = HWC2_COMPOSITION_INVALID,</span><br><span class="line">    <span class="built_in">Client</span> = HWC2_COMPOSITION_CLIENT,</span><br><span class="line">    Device = HWC2_COMPOSITION_DEVICE,</span><br><span class="line">    SolidColor = HWC2_COMPOSITION_SOLID_COLOR,</span><br><span class="line">    Cursor = HWC2_COMPOSITION_CURSOR,</span><br><span class="line">    Sideband = HWC2_COMPOSITION_SIDEBAND,</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p><strong>释义：</strong></p>
+<ol>
+<li>Client 相对HWC2硬件合成的概念，主要是处理BufferLayer数据，用GPU处理。</li>
+<li>Device HWC2硬件设备，主要处理BufferLayer数据，用HWC处理</li>
+<li>SolidColor 固定颜色合成，主要处理ColorLayer数据，用HWC处理或GPU处理。</li>
+<li>Cursor 鼠标标识合成，主要处理鼠标等图标，用HWC处理或GPU处理</li>
+<li>Sideband Sideband为视频的边频带，一般需要需要硬件合成器作特殊处理，但是也可以用GPU处理。</li>
+</ol>
+<p>在合成信息HWCInfo中，包含成的类型。通过Layer的setCompositionType方法进行指定：</p>
+<figure class="highlight c++"><figcaption><span>frameworks/native/services/surfaceflinger/Layer.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Layer::setCompositionType</span><span class="params">(<span class="keyword">int32_t</span> hwcId, HWC2::Composition type, <span class="keyword">bool</span> callIntoHwc)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (getBE().mHwcLayers.count(hwcId) == <span class="number">0</span>) &#123;</span><br><span class="line">        ALOGE(<span class="string">"setCompositionType called without a valid HWC layer"</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">auto</span>&amp; hwcInfo = getBE().mHwcLayers[hwcId];</span><br><span class="line">    <span class="keyword">auto</span>&amp; hwcLayer = hwcInfo.layer;</span><br><span class="line">    ALOGV(<span class="string">"setCompositionType(%"</span> PRIx64 <span class="string">", %s, %d)"</span>, hwcLayer-&gt;getId(), to_string(type).c_str(),</span><br><span class="line">          <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(callIntoHwc));  <span class="comment">//默认true</span></span><br><span class="line">    <span class="keyword">if</span> (hwcInfo.compositionType != type) &#123;</span><br><span class="line">        ALOGV(<span class="string">"    actually setting"</span>);</span><br><span class="line">        hwcInfo.compositionType = type;</span><br><span class="line">        <span class="keyword">if</span> (callIntoHwc) &#123;</span><br><span class="line">            <span class="keyword">auto</span> error = hwcLayer-&gt;setCompositionType(type);  <span class="comment">//合成方式</span></span><br><span class="line">            ALOGE_IF(error != HWC2::Error::None,</span><br><span class="line">                     <span class="string">"[%s] Failed to set "</span></span><br><span class="line">                     <span class="string">"composition type %s: %s (%d)"</span>,</span><br><span class="line">                     mName.<span class="built_in">string</span>(), to_string(type).c_str(), to_string(error).c_str(),</span><br><span class="line">                     <span class="keyword">static_cast</span>&lt;<span class="keyword">int32_t</span>&gt;(error));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>确定合成类型分成三步：</p>
+<ol>
+<li>SurfaceFlinger制定合成类型，此时<code>callIntoHwc=true</code>，将类型制定给HWC</li>
+<li>HWC根据实际情况看SurfaceFlinger制定的合成类型是否可以执行，如果不满足，作出修改</li>
+<li>SurfaceFlinger根据HWC的修改情况再作出调整，最终确认合成类型，此时<code>callIntoHwc=false</code></li>
+</ol>
+<h4 id="优化属性"><a href="#优化属性" class="headerlink" title="优化属性"></a>优化属性</h4><blockquote>
+<p>提供一些非必须的参数，以供HWC进行合成的优化。包括层的可见区域以及层的哪个部分自上一帧以来已经更新等信息。也就是前面说到的visibleRegion，damageRegion等。</p>
+</blockquote>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><blockquote>
+<p>本篇主要是SurfaceFlinger概述，和HWC2的概述，还有Layer的属性和类型，合成方式的内容。<br>另外还有关于HWC的内容，和Display显示设备的信息重新划分单独的一篇学习。</p>
+</blockquote>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/">https://alonealive.github.io/Blog/2019/12/22/2019/191222_android_HWC2/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-12-22T15:32:00.000Z" itemprop="datePublished">2019-12-22</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:22:18.357Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/graphics/" rel="tag">#&nbsp;graphics</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2020/01/05/2020/200105_android_lcd_cabc/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android LCD背光驱动节电技术LABC/CABC</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/11/24/2019/191124_android_binder_example/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android Binder实例</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

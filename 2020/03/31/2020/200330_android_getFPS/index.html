@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android 两种实时获取FPS的方法 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android 两种实时获取FPS的方法 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/"><meta property="og:locale" content="zh-CN"><meta name="description" content="通过ADB命令实时获取FPS帧率有两种方式，一种是dump gfxinfo，一种是dump SF --latency。其他还可以通过三方APP GameBooster（Google PlayStore可以下载）打开实时FPS监控查看。如果是查看动画是否丢帧，可以通过视频工具QuickTime Player逐帧查看需要测试的动画的拍摄视频。一般每4帧会出现一个新的动画，录制视频查看这个过程是有动画虚 - sunwengang - sunwengang blog"><meta name="keywords" content="android"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/hwui_framestats.png"><meta property="article:published_time" content="2020-03-31T15:32:00.000Z"><meta property="article:modified_time" content="2020-03-31T13:27:43.706Z"><meta property="og:updated_time" content="2020-03-31T13:27:43.706Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/"
+    },
+    "headline": "Android 两种实时获取FPS的方法 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-03-31T15:32:00.000Z",
+    "dateModified": "2020-03-31T13:27:43.706Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android",
+    "description": "通过ADB命令实时获取FPS帧率有两种方式，一种是dump gfxinfo，一种是dump SF --latency。其他还可以通过三方APP GameBooster（Google PlayStore可以下载）打开实时FPS监控查看。如果是查看动画是否丢帧，可以通过视频工具QuickTime Player逐帧查看需要测试的动画的拍摄视频。一般每4帧会出现一个新的动画，录制视频查看这个过程是有动画虚 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android 两种实时获取FPS的方法" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android 两种实时获取FPS的方法&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android 两种实时获取FPS的方法" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACLElEQVR42u2aQW4CQQwE+f+nkyuJmHZ5QxRC11wQC8vWSPbQbvv28Q/WTUghhRTyBSBvYd1/58vN376z+fz+2vhcIWshHwbt8OB07ZgIYWOP7heyG/IU7FOgkw1+ByTPFVJICnl6YAJOCSakkM9KnEeJQjcopJAE8nQgJ+H6UBT8UIgIKeRUEP3m69OqRSHfCnI0jUiAL8RwKtQuu2pCvhVkCmQiQqaiK4mSaWNC9kJOEMksPQkSahKk60J2Qm4O5/Q+iVoqXEaBIWQNJCrUQ6E/gZAGQSzEhKyEJE1QKjxOG0hNJ5Q4QlZAnoL7JBqm4owkDmmWCinklCRTQmwMKtKEErIXkohcHOgb8RD+MITshrzaNE8CZFqk4SpkLyQ1oqZmOxlWok19Ibsh0w0kAZJ5kMx+MqQnZC8kMZjoMBIWD1tlLmQN5GYgiQpdYuZPBoSQvZBXBzu2Q8Qbg0xIIUlBRQ55YmpddtWErIKk4mIyEDaJSIaRheyFpMG8bYhuB0WwMheyBjIZ9tTAJ4N1uKEqZC0kEaBUjFDji5hdQnZDTgNx6ccn4K0RIaSQKIgvFmykSYAMKyFrIKc1/VASHqRhGk0GISsh6dDx5uCnDat1ISZkDWQSAZPYIAZWNO9p4ghZB4kG3KCZT4XFZL4KKeQW8krBtRluFlJIMsDxzMN/HGQSshqSBj0ZEtmK3LVhJeTbQ9I/fjpUtzGnYpNeyErIV15CCimkkH+4PgGBnzYkCN2U9AAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android 两种实时获取FPS的方法</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-03-31</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android 两种实时获取FPS的方法&url=https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android 两种实时获取FPS的方法&url=https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACLElEQVR42u2aQW4CQQwE+f+nkyuJmHZ5QxRC11wQC8vWSPbQbvv28Q/WTUghhRTyBSBvYd1/58vN376z+fz+2vhcIWshHwbt8OB07ZgIYWOP7heyG/IU7FOgkw1+ByTPFVJICnl6YAJOCSakkM9KnEeJQjcopJAE8nQgJ+H6UBT8UIgIKeRUEP3m69OqRSHfCnI0jUiAL8RwKtQuu2pCvhVkCmQiQqaiK4mSaWNC9kJOEMksPQkSahKk60J2Qm4O5/Q+iVoqXEaBIWQNJCrUQ6E/gZAGQSzEhKyEJE1QKjxOG0hNJ5Q4QlZAnoL7JBqm4owkDmmWCinklCRTQmwMKtKEErIXkohcHOgb8RD+MITshrzaNE8CZFqk4SpkLyQ1oqZmOxlWok19Ibsh0w0kAZJ5kMx+MqQnZC8kMZjoMBIWD1tlLmQN5GYgiQpdYuZPBoSQvZBXBzu2Q8Qbg0xIIUlBRQ55YmpddtWErIKk4mIyEDaJSIaRheyFpMG8bYhuB0WwMheyBjIZ9tTAJ4N1uKEqZC0kEaBUjFDji5hdQnZDTgNx6ccn4K0RIaSQKIgvFmykSYAMKyFrIKc1/VASHqRhGk0GISsh6dDx5uCnDat1ISZkDWQSAZPYIAZWNO9p4ghZB4kG3KCZT4XFZL4KKeQW8krBtRluFlJIMsDxzMN/HGQSshqSBj0ZEtmK3LVhJeTbQ9I/fjpUtzGnYpNeyErIV15CCimkkH+4PgGBnzYkCN2U9AAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#dumpsys-gfxinfo"><span class="post-toc-number">1.</span> <span class="post-toc-text">dumpsys gfxinfo</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#案例"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">案例</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#参数framestats"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">参数framestats</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#dumpsys-SurfaceFlinger-–latency"><span class="post-toc-number">2.</span> <span class="post-toc-text">dumpsys SurfaceFlinger –latency</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>通过ADB命令实时获取FPS帧率有两种方式，一种是<code>dump gfxinfo</code>，一种是<code>dump SF --latency</code>。其他还可以通过三方APP GameBooster（Google PlayStore可以下载）打开实时FPS监控查看。<br>如果是查看动画是否丢帧，可以通过视频工具QuickTime Player逐帧查看需要测试的动画的拍摄视频。一般每4帧会出现一个新的动画，录制视频查看这个过程是有动画虚影的。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="dumpsys-gfxinfo"><a href="#dumpsys-gfxinfo" class="headerlink" title="dumpsys gfxinfo"></a>dumpsys gfxinfo</h2><blockquote>
+<p>dumpsys是一款运行在设备上的Android工具，将 gfxinfo命令传递给dumpsys可在logcat中提供输出，其中包含各阶段发生的动画以及帧相关的性能信息。但是gfxinfo不统计SurfaceView。</p>
+</blockquote>
+<p>步骤：</p>
+<ol>
+<li>打开开发者选项中的HWUI呈现模式分析，选择“在adb shell dumpsys gfxinfo中”</li>
+<li>在需要测试的界面获取包名，可以使用dump SF/activity获取</li>
+<li>清空后台任务，操作UI滑动，然后执行获取<code>adb shell dumpsys gfxinfo &lt; PACKAGE_NAME &gt;</code></li>
+</ol>
+<p>framestats信息和frame耗时信息通常为2s收集一次（一次120帧，一帧16ms，耗时约2s）。如果要重置所有计数器重新收集帧率数据，执行<code>adb shell dumpsys gfxinfo &lt; PACKAGE_NAME &gt; reset</code></p>
+<h3 id="案例"><a href="#案例" class="headerlink" title="案例"></a>案例</h3><p>例如测试我的设备一加六滑动桌面的帧率，执行上述的前两步：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb shell dumpsys activity top|grep ACTIVITY</span><br><span class="line"> ACTIVITY net.oneplus.launcher&#x2F;.Launcher 5f5af6c pid&#x3D;4077</span><br></pre></td></tr></table></figure>
+
+<p>然后滑动桌面执行<code>adb shell dumpsys gfxinfo net.oneplus.launcher</code>，获取到128帧的数据。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">&gt; adb shell dumpsys gfxinfo net.oneplus.launcher</span><br><span class="line"></span><br><span class="line">Applications Graphics Acceleration Info:</span><br><span class="line">Uptime: 594308934 Realtime: 1044551416</span><br><span class="line"></span><br><span class="line">** Graphics info for pid 4077 [net.oneplus.launcher] **  &#x2F;&#x2F;表明当前dump的界面和进程ID</span><br><span class="line"></span><br><span class="line">Stats since: 573121582148193ns</span><br><span class="line">Total frames rendered: 17625  &#x2F;&#x2F;本次dump搜集了17625帧的信息</span><br><span class="line">Janky frames: 1735 (9.84%)  &#x2F;&#x2F;有1735帧超过了16.6ms.卡帧率是9.84%</span><br><span class="line">50th percentile: 6ms </span><br><span class="line">90th percentile: 16ms</span><br><span class="line">95th percentile: 20ms</span><br><span class="line">99th percentile: 38ms</span><br><span class="line">Number Missed Vsync: 72  &#x2F;&#x2F;垂直同步失败的帧</span><br><span class="line">Number High input latency: 8269  &#x2F;&#x2F;处理input时间超时的帧</span><br><span class="line">Number Slow UI thread: 482  &#x2F;&#x2F;因为UI线程的工作超时导致的帧数</span><br><span class="line">Number Slow bitmap uploads: 101  &#x2F;&#x2F;因为bitmap加载耗时的帧数</span><br><span class="line">Number Slow issue draw commands: 31  &#x2F;&#x2F;因为绘制导致超时的帧数</span><br><span class="line">Number Frame deadline missed: 544</span><br><span class="line">HISTOGRAM: 5ms&#x3D;7576 6ms&#x3D;2645 7ms&#x3D;1902  ... &#x2F;&#x2F;直方图数据，表面耗时为0~5ms的帧数是7576，同理类推</span><br><span class="line">......</span><br><span class="line">Profile data in ms:</span><br><span class="line"></span><br><span class="line">	net.oneplus.launcher&#x2F;net.oneplus.launcher.Launcher&#x2F;android.view.ViewRootImpl@3b33fe6 (visibility&#x3D;0)</span><br><span class="line">	Draw	Prepare	Process	Execute</span><br><span class="line">	6.94	0.40	2.69	1.70   &#x2F;&#x2F;四个加起来小于16.6ms属于正常的一帧，超过则是jank（丢帧）</span><br><span class="line">	2.86	0.35	5.19	2.36</span><br><span class="line">	2.55	0.32	1.10	0.98</span><br><span class="line">	2.77	0.34	1.39	1.49</span><br><span class="line">	2.16	0.31	1.38	1.34</span><br><span class="line">	2.32	0.30	1.09	0.66</span><br><span class="line">	2.05	0.25	1.04	0.83</span><br><span class="line">	2.13	0.25	1.04	1.16</span><br><span class="line">	1.99	0.30	1.11	1.51</span><br><span class="line">	3.09	0.44	3.01	2.22</span><br><span class="line">	2.34	0.72	2.40	1.68</span><br><span class="line">	2.28	0.36	2.49	1.84</span><br><span class="line">	2.58	0.48	2.90	1.64</span><br><span class="line">	2.31	0.40	2.13	1.78</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<p>解析：</p>
+<ul>
+<li>Draw：构建java显示列表DisplayList的时间，也就是执行每一个View的onDraw方法,创建或者更新每一个View的DisplayList对象的时间。</li>
+<li>Prepare：准备函数的执行耗时</li>
+<li>Process：小号在Android的2D渲染器执行显示列表的时间，view越多，要执行的绘制命令就越多，耗时越长</li>
+<li>Execture：消耗在排列每个发送过来的帧的顺序的时间.或者说是CPU告诉GPU渲染一帧的时间,这是一个阻塞调用,因为CPU会一直等待GPU发出接到命令的回复。所以这个时间，一般都很短。</li>
+</ul>
+<p>Draw + Prepare+Process + Execute = 完整显示一帧 ，这个时间要小于16ms才能保存每秒60帧。</p>
+<h3 id="参数framestats"><a href="#参数framestats" class="headerlink" title="参数framestats"></a>参数framestats</h3><p>如果需要获取详细的帧信息，可以使用Android 6引入的新参数framestats，执行<code>adb shell dumpsys gfxinfo &lt; PACKAGE_NAME &gt; framestats</code></p>
+<p>结果会打印额外的信息，以CSV格式输出。每一行代表应用程序生成的一帧。每一行的列数都相同，每列对应描述帧在不同的时间段的耗时情况。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---PROFILEDATA---</span><br><span class="line">Flags,IntendedVsync,Vsync,OldestInputEvent,NewestInputEvent,HandleInputStart,AnimationStart,PerformTraversalsStart,DrawStart,SyncQueued,SyncStart,IssueDrawCommandsStart,SwapBuffers,FrameCompleted,DequeueBufferDuration,QueueBufferDuration,</span><br><span class="line">0,594399833469194,594399833469194,9223372036854775807,0,594399833992420,594399834015180,594399834093462,594399835255753,594399835397316,594399835719034,594399835808878,594399836632628,594399837228514,96000,146000,</span><br><span class="line">0,594429840570165,594429840570165,9223372036854775807,0,594429841649231,594429841736940,594429841741471,594429842202356,594429845314544,594429847401106,594429847993190,594429853626210,594429854321679,264000,326000,</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>解析：</p>
+<ul>
+<li>flags：FLAGS列为’0’的行可以通过从FRAME_COMPLETED列中减去INTENDED_VSYNC列计算其总帧时间。如果非零，则该行应该被忽略，因为该帧的预期布局和绘制时间超过16ms，为异常帧。</li>
+<li>*IntendedVsync：帧的的预期起点。如果此值与VSYNC不同，是由于UI线程中的工作使其无法及时响应垂直同步信号所造成的；</li>
+<li>Vsync：花费在vsync监听器和帧绘制的时间（Choreographer frame回调，动画，<code>View.getDrawingTime（）</code>等）；</li>
+<li>OldestInputEvent：输入队列中最旧输入事件的时间戳，如果没有输入事件，则输入Long.MAX_VALUE。此值主要用于平台工作，对应用程序开发人员的用处有限。</li>
+<li>NewestInputEvent：输入队列中最新输入事件的时间戳，如果帧没有输入事件，则为0。此值主要用于平台工作，对应用程序开发人员的用处有限。然而，通过查看（FRAME_COMPLETED - NEWEST_INPUT_EVENT），可以大致了解应用程序添加的延迟时间。</li>
+<li>HandleInputStart：将输入事件分派给应用程序的时间戳（deliverInputEvent函数）。通过查看这段时间和ANIMATION_START之间的时间，可以测量应用程序处理输入事件的时间。<code>如果这个数字很高（&gt; 2ms），这表明程序花费了非常长的时间来处理输入事件</code>。例如View.onTouchEvent（），也就是说此工作需要优化，或者分发到不同的线程。请注意，某些情况下这是可以接受的，例如发起新活动或类似活动的点击事件，并且此数字很大。</li>
+<li>AnimationStart：运行Choreographer注册动画的时间戳。通过查看这段时间和PERFORM_TRANVERSALS_START之间的时间，可以确定评估运行的所有动画器（ObjectAnimator，ViewPropertyAnimator和常用转换器）需要多长时间。<code>如果此数字很高（&gt; 2ms），请检查您的应用是否编写了自定义动画以确保它们适用于动画。</code></li>
+<li>PerformTraversalsStart：计算<code>PERFORM_TRAVERSALS_STAR-DRAW_START</code>，则可以获取到布局和测量阶段完成的时间。（注意，在滚动或动画期间，希望这应该接近于零）</li>
+<li>DrawStart：performTraversals的绘制阶段开始的时间。这是录制任何无效视图的显示列表的起点。这和SYNC_START之间的时间是在树中所有无效视图上调用View.draw（）所花费的时间。</li>
+<li>SyncQueued：同步请求发送到RenderThread的时间。如果此时间和SYNC_START之间的时间很长（&gt; 0.1ms左右），则意味着RenderThread忙于处理不同的帧。在内部，这被用来区分帧做了太多的工作，超过了16ms的预算，由于前一帧超过了16ms的预算，帧被停止了。</li>
+<li>SYNC_START：绘图的同步阶段开始的时间。如果此时间与<code>ISSUE_DRAW_COMMANDS_START</code>之间的时间很长（&gt; 0.4ms左右），则通常表示有许多新的位图必须上传到GPU。</li>
+<li>IssueDrawCommandsStart：硬件渲染器开始向GPU发出绘图命令的时间。这段时间和<code>FRAME_COMPLETED</code>之间的时间间隔显示了应用程序正在生产多少GPU。像这样出现太多透支或低效率渲染效果的问题。</li>
+<li>SwapBuffers：eglSwapBuffers被调用的时间。</li>
+<li>*FrameCompleted：帧的完整时间。花在这个帧上的总时间可以通过<code>FRAME_COMPLETED - INTENDED_VSYNC</code>来计算。</li>
+</ul>
+<p>这些数据可以直接通过修改开发者选项的HWUI呈现模式分析为<code>在屏幕显示为条形图</code>，如图：</p>
+<p><img src="hwui_framestats.png" alt="帧率条形图"></p>
+<hr>
+<h2 id="dumpsys-SurfaceFlinger-–latency"><a href="#dumpsys-SurfaceFlinger-–latency" class="headerlink" title="dumpsys SurfaceFlinger –latency"></a>dumpsys SurfaceFlinger –latency</h2><blockquote>
+<p><code>adb shell dumpsys SurfaceFlinger --latency LayerName</code>命令主要用于获取游戏/视频应用的fps数据。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">16666666</span><br><span class="line">597043335926672	597043380168807	597043346611672</span><br><span class="line">597043352801411	597043396837974	597043363218234</span><br><span class="line">597043368960943	597043413558338	597043379891672</span><br><span class="line">597043385568078	597043430198078	597043396569641</span><br><span class="line">597043405252505	597043446885266	597043413698495</span><br><span class="line">597043421909328	597043463546203	597043430320943</span><br><span class="line">597043718620370	597043747090734	597043725964432</span><br><span class="line">597043729160422	597043763770213	597043730802818</span><br><span class="line">597043745858911	597043780445786	597043747847765</span><br><span class="line">597043758497193	597043797131620	597043764349745</span><br><span class="line">597043775327557	597043813810786	597043781148963</span><br><span class="line">597043791070734	597043830486880	597043796912974</span><br><span class="line">597043808038338	597043847152140	597043813671047</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>第一行数据，表示刷新的时间间隔refresh_period，我的机器打印出来的间隔期是。即Dump SF里面的VSYNC period。<br>剩下的127行（127帧）数据分为三部分，每一列表是一种类型。</p>
+<ul>
+<li>第一列：表示应用绘制图像的时间点</li>
+<li>第二列：SF将帧提交给H/W(硬件)绘制之前的垂直同步时间。</li>
+<li>第三列：在SF将帧提交给H/W的时间点，算是H/W接受完SF发来数据的时间点，绘制完成的时间点。s</li>
+</ul>
+<p><strong>计算方式：</strong>一般打印出来的数据是129行（部分机型打印两次257行，但是第一部分是无效数据，取后半部分），取len-2的第一列数据为end_time，取len-128的第一列数据为start_time。</p>
+<p><code>fps = 127/((end_time - start_time) / 1000000.0)</code></p>
+<p>除以1000000是因为命令打印出来的是纳秒单位，要转为毫秒进行计算，127就是因为命令一次打印出来127帧的数据而已。</p>
+<ul>
+<li>参考：<a href="https://blog.csdn.net/itfootball/article/details/43084527/" target="_blank" rel="noopener">https://blog.csdn.net/itfootball/article/details/43084527/</a></li>
+<li>参考：<a href="https://www.jianshu.com/p/6c0cfc25b038" target="_blank" rel="noopener">https://www.jianshu.com/p/6c0cfc25b038</a></li>
+<li>参考：<a href="https://blog.csdn.net/luoshengyang/article/details/7846923" target="_blank" rel="noopener">https://blog.csdn.net/luoshengyang/article/details/7846923</a></li>
+</ul>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/">https://alonealive.github.io/Blog/2020/03/31/2020/200330_android_getFPS/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-31");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-03-31T15:32:00.000Z" itemprop="datePublished">2020-03-31</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2020/04/01/2020/200401_diary_exerciseBike/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">智能健身车</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/03/26/2020/200326_diary_our/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">想把我唱给你听</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

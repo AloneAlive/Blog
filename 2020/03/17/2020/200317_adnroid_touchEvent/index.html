@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android 触控事件分析 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android 触控事件分析 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/"><meta property="og:locale" content="zh-CN"><meta name="description" content="我们常见的触摸事件除了按下，弹起，移动之外还有很多，诸如长按，双击，Scroll，Fling等，他们是怎么判断的，还有这些长按，双击等事件的时间能否自由设置。可以在开发者选项中打开“显示点按操作反馈”和“指针位置”，同时可以打开inputflinger模块的log开关做一些调试，分析TP报点。  一般当我们需要处理触摸事件时有两种方式：  委托式 ： 将事件委托给监听器来进行处理。即定义一个Vie - sunwengang - sunwengang blog"><meta name="keywords" content="display, input"><meta property="article:published_time" content="2020-03-17T14:32:00.000Z"><meta property="article:modified_time" content="2020-05-20T16:39:48.829Z"><meta property="og:updated_time" content="2020-05-20T16:39:48.829Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="display, input"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/"
+    },
+    "headline": "Android 触控事件分析 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-03-17T14:32:00.000Z",
+    "dateModified": "2020-05-20T16:39:48.829Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "display, input",
+    "description": "我们常见的触摸事件除了按下，弹起，移动之外还有很多，诸如长按，双击，Scroll，Fling等，他们是怎么判断的，还有这些长按，双击等事件的时间能否自由设置。可以在开发者选项中打开“显示点按操作反馈”和“指针位置”，同时可以打开inputflinger模块的log开关做一些调试，分析TP报点。  一般当我们需要处理触摸事件时有两种方式：  委托式 ： 将事件委托给监听器来进行处理。即定义一个Vie - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android 触控事件分析" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android 触控事件分析&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android 触控事件分析" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACNUlEQVR42u2a227CQAxE8/8/TZ+QqBTPJQKVxicvFJHuHtDaGXt8PP7BdQAJJJBAfgHkIa7pnl8Lmfuf718/i/cFci3k6aE9Wfh1cQU4BsIAPu4L5GrI6bCrw90GjAsgIIFsIN1hd4keSCA/BTltpF7dPUAC2QiMZsMkiCphA+RaSCciPvX6tmoRyFtB2qZRsbhqIpwFz9u6akDeClJtroDTIv+KIAYSSLegC6opKJrgOf1/IFdCqsPcCgQXOG7dSGAAuQ4yLcacieSa+8o4ABJIe4CNGeoS+WQA1IED5ArI1ExKxIdL2OrvS4MiQN4SsknOk2hwCV/9ADJIgVwJqcweV1Q1ojkxAGy1COQKSCcAmqGl5EGgjE+pgoBcA5kk7fTLtGJ5KviA3A2ZBEpiFjkxm4iMKrqBvC2kS7BOGMQbBsLZil4gV0CmAsAJCSU4ksFRaYACuQqyMYCSYc8kqbthFCB3Q6omUxIwiQmVFmc2mQO5AtKJASdgFYgaBlEPACB3QzZDc2kTtBUb4x5AroRsjCMlCJLh0PQ9kEAmw0VNE6ppGsiAAxLIsEBKTPyq4EpEL5DrIJMhkGQAJDHr46E8IFdCNsMfSeMpSeyqOAMSSHegXVNVCeC0UVsXYkDeHjIRF27TtLFwOXCAXAeZmO2pcE1ExWUVBCSQxlRKjKXE/I8LMSCBTA95YYImjS8ggUwHOlwDtDWVqsABcg2ke/A3gdGs6ZqvQO6E/OYLSCCBBPIPrx+AW1b1IMJ1pgAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android 触控事件分析</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-03-17</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android 触控事件分析&url=https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android 触控事件分析&url=https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACNUlEQVR42u2a227CQAxE8/8/TZ+QqBTPJQKVxicvFJHuHtDaGXt8PP7BdQAJJJBAfgHkIa7pnl8Lmfuf718/i/cFci3k6aE9Wfh1cQU4BsIAPu4L5GrI6bCrw90GjAsgIIFsIN1hd4keSCA/BTltpF7dPUAC2QiMZsMkiCphA+RaSCciPvX6tmoRyFtB2qZRsbhqIpwFz9u6akDeClJtroDTIv+KIAYSSLegC6opKJrgOf1/IFdCqsPcCgQXOG7dSGAAuQ4yLcacieSa+8o4ABJIe4CNGeoS+WQA1IED5ArI1ExKxIdL2OrvS4MiQN4SsknOk2hwCV/9ADJIgVwJqcweV1Q1ojkxAGy1COQKSCcAmqGl5EGgjE+pgoBcA5kk7fTLtGJ5KviA3A2ZBEpiFjkxm4iMKrqBvC2kS7BOGMQbBsLZil4gV0CmAsAJCSU4ksFRaYACuQqyMYCSYc8kqbthFCB3Q6omUxIwiQmVFmc2mQO5AtKJASdgFYgaBlEPACB3QzZDc2kTtBUb4x5AroRsjCMlCJLh0PQ9kEAmw0VNE6ppGsiAAxLIsEBKTPyq4EpEL5DrIJMhkGQAJDHr46E8IFdCNsMfSeMpSeyqOAMSSHegXVNVCeC0UVsXYkDeHjIRF27TtLFwOXCAXAeZmO2pcE1ExWUVBCSQxlRKjKXE/I8LMSCBTA95YYImjS8ggUwHOlwDtDWVqsABcg2ke/A3gdGs6ZqvQO6E/OYLSCCBBPIPrx+AW1b1IMJ1pgAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#MotionEvent对象事件处理"><span class="post-toc-number">1.</span> <span class="post-toc-text">MotionEvent对象事件处理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#MotionEvent底层事件获取（触控事件分发机制）"><span class="post-toc-number">2.</span> <span class="post-toc-text">MotionEvent底层事件获取（触控事件分发机制）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#systrace查看Input事件流程"><span class="post-toc-number">3.</span> <span class="post-toc-text">systrace查看Input事件流程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#详细分析"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">详细分析</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>我们常见的触摸事件除了按下，弹起，移动之外还有很多，诸如长按，双击，Scroll，Fling等，他们是怎么判断的，还有这些长按，双击等事件的时间能否自由设置。可以在开发者选项中打开“显示点按操作反馈”和“指针位置”，同时可以打开inputflinger模块的log开关做一些调试，分析TP报点。</p>
+</blockquote>
+<p>一般当我们需要处理触摸事件时有两种方式：</p>
+<ul>
+<li>委托式 ： 将事件委托给监听器来进行处理。即定义一个<code>View.onTouchListener()</code>子类的监听器，由其<code>onTouch()</code>方法来处理。</li>
+<li>回调式 ： 通过重写View类自己的<code>onTouchEvent()</code>方法来处理，在执行时会回调该方法，在其中执行自定义的代码。</li>
+</ul>
+<a id="more"></a>
+
+<p><strong>关于主触点，副触点</strong>：发送触屏事件的时候，除了此触屏事件所对应的触点之外，如果当前触点多于一个或者等于一个，则此事件为副触点事件，发送此事件的触点叫做副触点。否则为主触点事件，发送此事件的触点为主触点。</p>
+<h2 id="MotionEvent对象事件处理"><a href="#MotionEvent对象事件处理" class="headerlink" title="MotionEvent对象事件处理"></a>MotionEvent对象事件处理</h2><p>在<code>MotionEvent.java</code>中,ACTION动作事件定义</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ACTION_DOWN = <span class="number">0</span>;</span><br><span class="line">ACTION_UP = <span class="number">1</span>;</span><br><span class="line">ACTION_MOVE = <span class="number">2</span>;</span><br><span class="line">ACTION_CANCEL =<span class="number">3</span> ;</span><br><span class="line">ACTION_POINTER_DOWN = <span class="number">5</span>; <span class="comment">//A non-primary pointer has gone down.</span></span><br><span class="line">ACTION_POINTER_UP = <span class="number">6</span>;</span><br><span class="line">ACTION_SCROLL = <span class="number">8</span>; <span class="comment">//the most event contains relative vertical and/or horizontal scroll offset.</span></span><br></pre></td></tr></table></figure>
+
+<p>（1） 首先当点击下屏幕，触屏事件从<code>View.java</code>的onTouchEvent()开始处理：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line"><span class="keyword">case</span> MotionEvent.ACTION_DOWN:</span><br><span class="line">    <span class="comment">// a short period in case this is a scroll.</span></span><br><span class="line">    <span class="keyword">if</span> (isInScrollingContainer) &#123;</span><br><span class="line">        mPrivateFlags |= PFLAG_PREPRESSED;</span><br><span class="line">        <span class="keyword">if</span> (mPendingCheckForTap == <span class="keyword">null</span>) &#123;</span><br><span class="line">            mPendingCheckForTap = <span class="keyword">new</span> CheckForTap();</span><br><span class="line">        &#125;</span><br><span class="line">        postDelayed(mPendingCheckForTap, ViewConfiguration.getTapTimeout());</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        setPressed(<span class="keyword">true</span>);</span><br><span class="line">        checkForLongClick(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"><span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
+
+<p>（2） 事件响应是先有按下才会有后续事件。因此先查看<code>ACTION_DOWN</code>。在此case中判断如果是在scrollingContainer中则等待一段时间执行检查是否为Tap事件。因为可能按下之后可能会有scroll操作，如果有将丢弃长按检测。而如果不在container中，则立即执行长按检测。</p>
+<figure class="highlight java"><figcaption><span>view.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">CheckForTap</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            mPrivateFlags &amp;= ~PFLAG_PREPRESSED;</span><br><span class="line">            setPressed(<span class="keyword">true</span>);</span><br><span class="line">            checkForLongClick(ViewConfiguration.getTapTimeout());</span><br><span class="line">        &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>（3） 在其中执行了<code>setPressed()</code>操作，其后执行<code>checkForLongClick()</code>，即等待500ms-180ms 来执行longPress操作。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">postDelayed(mPendingCheckForLongPress,</span><br><span class="line">         ViewConfiguration.getLongPressTimeout() - delayOffset);</span><br></pre></td></tr></table></figure>
+
+<p>在其中执行<code>performLongClick()</code>。在该函数中处理长按需要做的事情，例如长按监听器中流程，显示contextMenu，处理长按震动反馈：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">handled = li.mOnLongClickListener.onLongClick(View.<span class="keyword">this</span>);</span><br><span class="line">handled = showContextMenu();</span><br><span class="line">performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);</span><br></pre></td></tr></table></figure>
+
+<p><strong>Note</strong>: 此处有两个时间数据： <code>tapTimeout</code> 和 <code>longPressTimeout</code>。</p>
+<p>定义在<code>frameworks/base/core/java/android/view/ViewConfiguration.java</code>，时间是可以自定义的，但最好采用google提供的，这是经过大量积累得来的数据。而此处的longTimeout是设置辅助功能界面中’触摸和按住延迟’选项可设置的，如果没有设置那就是用默认的500ms。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TAP_TIMEOUT = <span class="number">180</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DOUBLE_TAP_TIMEOUT = <span class="number">300</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> DEFAULT_LONG_PRESS_TIMEOUT = <span class="number">500</span>;</span><br></pre></td></tr></table></figure>
+
+<h2 id="MotionEvent底层事件获取（触控事件分发机制）"><a href="#MotionEvent底层事件获取（触控事件分发机制）" class="headerlink" title="MotionEvent底层事件获取（触控事件分发机制）"></a>MotionEvent底层事件获取（触控事件分发机制）</h2><p>（1） 在onResume时会将view显示出来，跟踪代码到执行时会调用<code>ActivityThread的handleResumeActivity()</code>。可以看到获取window的DecorView，即整个window的顶层View。<br>调用流程为:（创建窗口）</p>
+<ol>
+<li>WindowManager.addView()；</li>
+<li>在实现类WindowManagerImpl中实现addView()；</li>
+<li>最后一行通过root.setView()；</li>
+<li>在ViewRootImpl中实现setView()；</li>
+<li>在其中调用windowSession.add()。</li>
+<li>windowSession为客户端，而服务器端为<code>Session.java</code>,在Session中转而调用WindowManagerService的addWindow()来实现add方法。</li>
+</ol>
+<p>（2）<code>WindowManagerService中addWindow</code>这里实现了事件信息传递和交互的通道，内部采用socketpair，通过<code>InputChannel</code>来实现。</p>
+<p><strong>Note</strong>：openInputChannelPair(), 在其中创建socketpair,一个匿名的已连接套接字，一个为发送端，一个为接收端，可以进行双工通讯（UNIX网络编程）。</p>
+<p>获取InputChannel, 一个置为Input，一个置为output。RegisterInputChannel中调用nativeRegisterInputChannel。</p>
+<p>（3）在<code>WindowManagerService</code>中创建InputManagerService类（InputManagerService.java）对象，并start。</p>
+<p>之后通过JNI流程在native中执行，并执行InputManager的start方法。</p>
+<p>（4）在创建InputReader时会将dispatcher传入。即InputReader的成员变量mQueuedListener为dispatcher的执行者，具体代码分析flush函数，关注Args，例如MotionArgs, flush执行后，将调用<code>dispatcher-&gt;notifyMotion()</code>;</p>
+<p>如果只关注Motion的话，那么就是调用<code>InputDispatcher-&gt;notifyMotion()</code>。</p>
+<p><strong>从抓取Systrace可以查看到触屏的整个事件，从InputReader开始，然后到deliverInputEvent触发APP绘制。关于报点可以重点关注inputflinger模块的log打印，会打印input的坐标。</strong></p>
+<h2 id="systrace查看Input事件流程"><a href="#systrace查看Input事件流程" class="headerlink" title="systrace查看Input事件流程"></a>systrace查看Input事件流程</h2><blockquote>
+<p>参考： <a href="https://www.jianshu.com/p/427b084b0d77" target="_blank" rel="noopener">https://www.jianshu.com/p/427b084b0d77</a><br>参考： <a href="https://mp.weixin.qq.com/s/Q2k6pLEyXhHZvZOIiU5ucA" target="_blank" rel="noopener">https://mp.weixin.qq.com/s/Q2k6pLEyXhHZvZOIiU5ucA</a></p>
+</blockquote>
+<ol>
+<li>触摸屏每隔几毫秒（如果是60刷新率，则一秒扫描屏幕120次，大概8ms扫描一次）扫描一次，如果有触摸事件，那么把事件上报到对应的驱动。</li>
+<li>InputReader 读取触摸事件交给 InputDispatcher 进行事件派发。</li>
+<li>InputDispatcher 将触摸事件发给注册了 Input 事件的 App。</li>
+<li>App 拿到事件之后，进行 Input 事件分发，如果此事件分发的过程中，App 的 UI 发生了变化，那么会请求 Vsync，则进行一帧的绘制。</li>
+</ol>
+<h3 id="详细分析"><a href="#详细分析" class="headerlink" title="详细分析"></a>详细分析</h3><p>所以systrace从InputReader开始：（前面还有一点很短的“binder transaction”的时间）</p>
+<figure class="highlight java"><figcaption><span>frameworks/native/services/inputflinger/InputReader.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Dispatch pointer down events using the new pointer locations.</span></span><br><span class="line"><span class="keyword">while</span> (!downIdBits.isEmpty()) &#123;</span><br><span class="line">    uint32_t downId = downIdBits.clearFirstMarkedBit();</span><br><span class="line">    dispatchedIdBits.markBit(downId);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (dispatchedIdBits.count() == <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">// First pointer is going down.  Set down time.</span></span><br><span class="line">        mDownTime = when;</span><br><span class="line">        <span class="comment">/// M: for input MET systrace  @&#123;</span></span><br><span class="line">        <span class="function">ScopedTrace <span class="title">_l</span><span class="params">(ATRACE_TAG_INPUT, <span class="string">"AppLaunch_dispatchPtr:Down"</span>)</span></span>;</span><br><span class="line">        <span class="comment">/// @&#125;</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后会到InputDispatcher的dispatchMotionLocked函数，并且InputDispatcher会从InboundQueue中取出Input事件派发到各个App(连接)的OutBoundQueue(OutboundQueue区域oq)</p>
+<figure class="highlight java"><figcaption><span>frameworks/native/services/inputflinger/InputDispatcher.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">bool InputDispatcher::dispatchMotionLocked(</span><br><span class="line">        nsecs_t currentTime, MotionEntry* entry, DropReason* dropReason, nsecs_t* nextWakeupTime) &#123;</span><br><span class="line">    ATRACE_CALL();</span><br><span class="line">    <span class="comment">// Preprocessing.</span></span><br><span class="line">    <span class="keyword">if</span> (! entry-&gt;dispatchInProgress) &#123;</span><br><span class="line">        entry-&gt;dispatchInProgress = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">        logOutboundMotionDetails(<span class="string">"dispatchMotion - "</span>, entry);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后到deliverInputEvent，说明APP UI Thread被Input事件唤醒；（起始点可以看到当前APP的Launcher是1，value=1表示有一个input事件，如果主线程卡顿没法及时处理Input事件，这里的Value会堆积）</p>
+<p>之后则是APP的UI线程启动，然后再触发APP的绘制线程进行绘制等等。</p>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/">https://alonealive.github.io/Blog/2020/03/17/2020/200317_adnroid_touchEvent/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-05-21");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-03-17T14:32:00.000Z" itemprop="datePublished">2020-03-17</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-05-20T16:39:48.829Z" itemprop="dateModified">2020-05-21</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/display/" rel="tag">#&nbsp;display</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/input/" rel="tag">#&nbsp;input</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2020/03/20/2020/200320_android_rcFile_study/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android RC文件分析</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/02/22/2020/200222_android_systrace_study/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android Systrace如何抓取分析问题</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

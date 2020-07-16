@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android Input事件ANR流程 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android Input事件ANR流程 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/"><meta property="og:locale" content="zh-CN"><meta name="description" content="Android Input体系中，大致有两种类型的事件：实体按键key事件，屏幕点击触摸事件。如果根据事件类型的不同，还能细分为基础实体按键的key(power，volume up&#x2F;down，recents，back，home)，实体键按键，屏幕点击(多点，单点)，屏幕滑动等事件。在Android整个Input体系中有三个格外重要的成员：Eventhub，InputReader，InputDisp - sunwengang - sunwengang blog"><meta name="keywords" content="display, input"><meta property="article:published_time" content="2020-05-10T15:32:00.000Z"><meta property="article:modified_time" content="2020-05-20T16:37:09.890Z"><meta property="og:updated_time" content="2020-05-20T16:37:09.890Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="display, input"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/"
+    },
+    "headline": "Android Input事件ANR流程 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-05-10T15:32:00.000Z",
+    "dateModified": "2020-05-20T16:37:09.890Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "display, input",
+    "description": "Android Input体系中，大致有两种类型的事件：实体按键key事件，屏幕点击触摸事件。如果根据事件类型的不同，还能细分为基础实体按键的key(power，volume up/down，recents，back，home)，实体键按键，屏幕点击(多点，单点)，屏幕滑动等事件。在Android整个Input体系中有三个格外重要的成员：Eventhub，InputReader，InputDisp - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android Input事件ANR流程" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android Input事件ANR流程&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android Input事件ANR流程" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACOElEQVR42u2cwW7DMAxD8/8/3V2HwBJJJ8A66+XSrnHsV8BSKVrY9fkH1wUkkEAC+QWQV3N19+/3fv99f9+NreYGcjbkctPePl+NWy18H+uMqdYBcjZkNdny4cW9FZgzf7cukECqSaqxMgCKOYAEchfSEQlpgAEJ5K7AUKLXEQ2OgHmkgoA8DnIH5I3XV6tFII+B3NnglcCQiwaBBeRcyKrgchd0xa2aO/rFAfJoSLWAU3RVBqqC6mCBnAvZBYAslITRqkSLSvBAzoVUG9tJyk4gqKBrAwfIMZDKjFITdYHmiJfuGSDnQqpE7hwwJaaXOw+QcyGVIeoYrZ1575j6djIHcgSkc2BULeCK27TZCcjZkG6zR5eA7WBIgg3IsZBqA6eJXJkBnbC2ohvIoyFT0zQp2BJj1TKsgBwD2R10ugGjmpleN/aBPBZSiVwVMMnnbvABORvSaSZOTP/EsIoEBpBjIJ1k7Rj9rqHwyFUDcgRkUhh1RZUSvY7pFSlzII+GVIs7DcmOiFYmbGlYATkaMin01eKdKeaYY0DOhEwMqdRsdUwDu1oEchykk4TTBO8eYEUdVkAeD6kaOFTh1TWJqsBUzwA5E9I56NwRB4k5GxtWQB4NqTby0yYlJ+EDCeQn/EdbyUG8c0jqBCaQQLoC1i2muoY6V2QACaTTBNcl4J0m5TZggQTSONB0mpBl0W8cagEJpGqmS76EI2jVFwFyNmRaiKnDzKQZKjJRgRwB+c0XkEACCeQfXj9kfRc1/+WRQgAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android Input事件ANR流程</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-05-10</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android Input事件ANR流程&url=https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android Input事件ANR流程&url=https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACOElEQVR42u2cwW7DMAxD8/8/3V2HwBJJJ8A66+XSrnHsV8BSKVrY9fkH1wUkkEAC+QWQV3N19+/3fv99f9+NreYGcjbkctPePl+NWy18H+uMqdYBcjZkNdny4cW9FZgzf7cukECqSaqxMgCKOYAEchfSEQlpgAEJ5K7AUKLXEQ2OgHmkgoA8DnIH5I3XV6tFII+B3NnglcCQiwaBBeRcyKrgchd0xa2aO/rFAfJoSLWAU3RVBqqC6mCBnAvZBYAslITRqkSLSvBAzoVUG9tJyk4gqKBrAwfIMZDKjFITdYHmiJfuGSDnQqpE7hwwJaaXOw+QcyGVIeoYrZ1575j6djIHcgSkc2BULeCK27TZCcjZkG6zR5eA7WBIgg3IsZBqA6eJXJkBnbC2ohvIoyFT0zQp2BJj1TKsgBwD2R10ugGjmpleN/aBPBZSiVwVMMnnbvABORvSaSZOTP/EsIoEBpBjIJ1k7Rj9rqHwyFUDcgRkUhh1RZUSvY7pFSlzII+GVIs7DcmOiFYmbGlYATkaMin01eKdKeaYY0DOhEwMqdRsdUwDu1oEchykk4TTBO8eYEUdVkAeD6kaOFTh1TWJqsBUzwA5E9I56NwRB4k5GxtWQB4NqTby0yYlJ+EDCeQn/EdbyUG8c0jqBCaQQLoC1i2muoY6V2QACaTTBNcl4J0m5TZggQTSONB0mpBl0W8cagEJpGqmS76EI2jVFwFyNmRaiKnDzKQZKjJRgRwB+c0XkEACCeQfXj9kfRc1/+WRQgAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#问题日志"><span class="post-toc-number">1.</span> <span class="post-toc-text">问题日志</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#代码分析"><span class="post-toc-number">2.</span> <span class="post-toc-text">代码分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#循环读取分发Input事件"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">循环读取分发Input事件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#若case-EventEntry-TYPE-KEY"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">若case EventEntry::TYPE_KEY</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ANR的函数调用onANRLocked"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">ANR的函数调用onANRLocked</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#分析方法"><span class="post-toc-number">3.</span> <span class="post-toc-text">分析方法</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#可能导致ANR的原因"><span class="post-toc-number">4.</span> <span class="post-toc-text">可能导致ANR的原因</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>Android Input体系中，大致有两种类型的事件：实体按键key事件，屏幕点击触摸事件。如果根据事件类型的不同，还能细分为基础实体按键的key(power，volume up/down，recents，back，home)，实体键按键，屏幕点击(多点，单点)，屏幕滑动等事件。在Android整个Input体系中有三个格外重要的成员：Eventhub，InputReader，InputDispatcher。它们分别担负着各自不同的职责，Eventhub负责监听<code>/dev/input</code>产生的Input事件；InputReader负责从Eventhub读取事件，并将读取的事件发给InputDispatcher；InputDispatcher则根据实际的需要具体分发给当前手机获得焦点实际的Window。<br>常说的Input ANR超时，都是指的是Input事件分发超时。</p>
+</blockquote>
+<a id="more"></a>
+
+<blockquote>
+<p>参考：<a href="https://blog.csdn.net/abm1993/article/details/80461752" target="_blank" rel="noopener">https://blog.csdn.net/abm1993/article/details/80461752</a><br>参考：<a href="https://blog.csdn.net/abm1993/article/details/80497039" target="_blank" rel="noopener">https://blog.csdn.net/abm1993/article/details/80497039</a><br>参考：<a href="https://www.jianshu.com/p/f05d6b05ba17" target="_blank" rel="noopener">https://www.jianshu.com/p/f05d6b05ba17</a></p>
+</blockquote>
+<h2 id="问题日志"><a href="#问题日志" class="headerlink" title="问题日志"></a>问题日志</h2><p>从下面的log可以看到超过了5s导致发生Input ANR事件。</p>
+<ul>
+<li>main log：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">04-22 10:49:36.222646  1270  1376 I InputDispatcher: Application is not responding: AppWindowToken&#123;e4f7c16 token&#x3D;Token&#123;8a1cd31 ActivityRecord&#123;21295d8 u0 com.android.PACKAGE&#x2F;.PACKAGE_Activity t10&#125;&#125;&#125;.  It has been 5008.2ms since event, 5005.5ms since wait started.  Reason: Waiting because no window has focus but there is a focused application that may eventually add a window when it finishes starting up.</span><br><span class="line">04-22 10:49:36.342164  1270  1407 E TAG     : 82 Tanet</span><br><span class="line">......</span><br><span class="line">04-22 10:49:41.347174  1270  1376 I InputDispatcher: Dropped event because it is stale.</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>system log：</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">04-22 10:49:31.216699  1270  1376 D PowerManagerService: getScreenOffTimeoutLocked:  isTestFlag &#x3D; false</span><br><span class="line">04-22 10:49:31.216986  1270  1376 W WindowManager: Failed looking up window callers&#x3D;com.android.server.wm.InputManagerCallback.interceptKeyBeforeDispatching:182 com.android.server.input.InputManagerService.interceptKeyBeforeDispatching:1839 &lt;bottom of call stack&gt; </span><br><span class="line">04-22 10:49:36.224611  1270  1376 I WindowManager: Input event dispatching timed out .  Reason: Waiting because no window has focus but there is a focused application that may eventually add a window when it finishes starting up.</span><br><span class="line">04-22 10:49:36.341180  1270  1407 W InputManager: Input event injection from pid 6143 timed out.</span><br><span class="line">04-22 10:49:36.342467  1270  1376 W WindowManager: Failed looking up window callers&#x3D;com.android.server.wm.InputManagerCallback.interceptKeyBeforeDispatching:182</span><br></pre></td></tr></table></figure>
+
+<h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><h3 id="循环读取分发Input事件"><a href="#循环读取分发Input事件" class="headerlink" title="循环读取分发Input事件"></a>循环读取分发Input事件</h3><p>在frameworks/native/services/inputflinger/InputDispatcher.cpp中，流程从<code>InputDispatcherThread::threadLoop()</code>线程循环开始，方法体只调用循环一个函数<code>mDispatcher-&gt;dispatchOnce()</code>。</p>
+<p>如果没有等待的命令，则会循环运行主要函数<code>dispatchOnceInnerLocked</code>不断的读取并分发Input事件：</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/inputflinger/InputDispatcher.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InputDispatcher::dispatchOnceInnerLocked</span><span class="params">(<span class="keyword">nsecs_t</span>* nextWakeupTime)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">nsecs_t</span> currentTime = now(); <span class="comment">//记录事件的当前时间点</span></span><br><span class="line">...</span><br><span class="line">    <span class="keyword">case</span> EventEntry::TYPE_KEY: &#123;   <span class="comment">//点击事件</span></span><br><span class="line">        KeyEntry* typedEntry = <span class="keyword">static_cast</span>&lt;KeyEntry*&gt;(mPendingEvent);</span><br><span class="line">        <span class="keyword">if</span> (isAppSwitchDue) &#123;</span><br><span class="line">            <span class="keyword">if</span> (isAppSwitchKeyEvent(typedEntry)) &#123;</span><br><span class="line">                resetPendingAppSwitchLocked(<span class="literal">true</span>);</span><br><span class="line">                isAppSwitchDue = <span class="literal">false</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (dropReason == DROP_REASON_NOT_DROPPED) &#123;</span><br><span class="line">                dropReason = DROP_REASON_APP_SWITCH;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (dropReason == DROP_REASON_NOT_DROPPED</span><br><span class="line">                &amp;&amp; isStaleEvent(currentTime, typedEntry)) &#123;</span><br><span class="line">            dropReason = DROP_REASON_STALE;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (dropReason == DROP_REASON_NOT_DROPPED &amp;&amp; mNextUnblockedEvent) &#123;</span><br><span class="line">            dropReason = DROP_REASON_BLOCKED;</span><br><span class="line">        &#125;</span><br><span class="line">        done = dispatchKeyLocked(currentTime, typedEntry, &amp;dropReason, nextWakeupTime);  <span class="comment">//执行该函数</span></span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br><span class="line">    <span class="keyword">if</span> (done) &#123;</span><br><span class="line">        <span class="keyword">if</span> (dropReason != DROP_REASON_NOT_DROPPED) &#123;</span><br><span class="line">            dropInboundEventLocked(mPendingEvent, dropReason);</span><br><span class="line">        &#125;</span><br><span class="line">        mLastDropReason = dropReason;</span><br><span class="line"></span><br><span class="line">        releasePendingEventLocked();</span><br><span class="line">        *nextWakeupTime = LONG_LONG_MIN;  <span class="comment">// force next poll to wake up immediately</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该函数最后调用了dropInputEvent事件<code>dropInboundEventLocked(mPendingEvent, dropReason);</code></p>
+<h3 id="若case-EventEntry-TYPE-KEY"><a href="#若case-EventEntry-TYPE-KEY" class="headerlink" title="若case EventEntry::TYPE_KEY"></a>若case EventEntry::TYPE_KEY</h3><p>如果是Key事件，则会执行<code>InputDispatcher::dispatchKeyLocked</code>函数。然后在该函数中调用<code>findFocusedWindowTargetsLocked</code></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">InputDispatcher::dispatchKeyLocked</span><span class="params">(<span class="keyword">nsecs_t</span> currentTime, KeyEntry* entry,</span></span></span><br><span class="line"><span class="function"><span class="params">        DropReason* dropReason, <span class="keyword">nsecs_t</span>* nextWakeupTime)</span> </span>&#123;</span><br><span class="line">            ......</span><br><span class="line">    <span class="comment">// Identify targets.</span></span><br><span class="line">    <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;InputTarget&gt; inputTargets;</span><br><span class="line">    <span class="keyword">int32_t</span> injectionResult = findFocusedWindowTargetsLocked(currentTime,</span><br><span class="line">            entry, inputTargets, nextWakeupTime);</span><br><span class="line">    <span class="keyword">if</span> (injectionResult == INPUT_EVENT_INJECTION_PENDING) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    setInjectionResult(entry, injectionResult);</span><br><span class="line">    <span class="keyword">if</span> (injectionResult != INPUT_EVENT_INJECTION_SUCCEEDED) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Add monitor channels from event's or focused display.</span></span><br><span class="line">    addGlobalMonitoringTargetsLocked(inputTargets, getTargetDisplayId(entry));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Dispatch the key.</span></span><br><span class="line">    dispatchEventLocked(currentTime, entry, inputTargets);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在函数<code>findFocusedWindowTargetsLocked</code>中开始就会进行判断，当<code>focusedWindowHandle == nullptr</code>但是<code>focusedApplicationHandle != nullptr</code>的时候调用<code>handleTargetsNotReadyLocked</code>报出ANR的错误日志。</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/inputflinger/InputDispatcher.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int32_t</span> <span class="title">InputDispatcher::findFocusedWindowTargetsLocked</span><span class="params">(<span class="keyword">nsecs_t</span> currentTime,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">const</span> EventEntry* entry, <span class="built_in">std</span>::<span class="built_in">vector</span>&lt;InputTarget&gt;&amp; inputTargets, <span class="keyword">nsecs_t</span>* nextWakeupTime)</span> </span>&#123;</span><br><span class="line">            ......</span><br><span class="line">    <span class="comment">// If there is no currently focused window and no focused application</span></span><br><span class="line">    <span class="comment">// then drop the event.</span></span><br><span class="line">    <span class="keyword">if</span> (focusedWindowHandle == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (focusedApplicationHandle != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="comment">//monkey test的时候经常遇到类似log的ANR。典型的无窗口，有应用的ANR问题，这里我们就需要了解Android应用的启动流程了，一般此类问题都是Android应用首次启动时会发生此类问题，此时我们应用本身需要检查一下我们的Android应用重写的Application onCreate方法，Android应用的启动界面是否在onCreate onStart方法中是否存在耗时操作。当然不排除系统原因造成的启动慢，直接导致ANR问题发生的情况</span></span><br><span class="line">            injectionResult = handleTargetsNotReadyLocked(currentTime, entry,</span><br><span class="line">                    focusedApplicationHandle, <span class="literal">nullptr</span>, nextWakeupTime,</span><br><span class="line">                    <span class="string">"Waiting because no window has focus but there is a "</span></span><br><span class="line">                    <span class="string">"focused application that may eventually add a window "</span></span><br><span class="line">                    <span class="string">"when it finishes starting up."</span>);  </span><br><span class="line">            <span class="keyword">goto</span> Unresponsive;</span><br><span class="line">        &#125;</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+
+<p><code>InputDispatcher::handleTargetsNotReadyLocked</code>执行代码：</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/inputflinger/InputDispatcher.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int32_t</span> <span class="title">InputDispatcher::handleTargetsNotReadyLocked</span><span class="params">(<span class="keyword">nsecs_t</span> currentTime,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">const</span> EventEntry* entry,   <span class="comment">//点击触摸事件</span></span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">const</span> sp&lt;InputApplicationHandle&gt;&amp; applicationHandle,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">const</span> sp&lt;InputWindowHandle&gt;&amp; windowHandle,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">nsecs_t</span>* nextWakeupTime, <span class="keyword">const</span> <span class="keyword">char</span>* reason)</span> </span>&#123;   </span><br><span class="line">....</span><br><span class="line"><span class="keyword">if</span> (mInputTargetWaitCause != INPUT_TARGET_WAIT_CAUSE_APPLICATION_NOT_READY) &#123;</span><br><span class="line"><span class="comment">//这里一般是有应用（application已经创建），无窗口，或者有应用，有窗口ANR的情形，一般同一个窗口至进入一次该方法</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">nsecs_t</span> timeout;  <span class="comment">//int64类型秒数</span></span><br><span class="line">            <span class="keyword">if</span> (windowHandle != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">                timeout = windowHandle-&gt;getDispatchingTimeout(DEFAULT_INPUT_DISPATCHING_TIMEOUT);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (applicationHandle != <span class="literal">nullptr</span>) &#123;   <span class="comment">//执行这个，有应用无窗口</span></span><br><span class="line">                timeout = applicationHandle-&gt;getDispatchingTimeout(</span><br><span class="line">                        DEFAULT_INPUT_DISPATCHING_TIMEOUT); <span class="comment">//5s超时</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                timeout = DEFAULT_INPUT_DISPATCHING_TIMEOUT; <span class="comment">//5s</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">mInputTargetWaitCause = INPUT_TARGET_WAIT_CAUSE_APPLICATION_NOT_READY;<span class="comment">//超时等待原因</span></span><br><span class="line">mInputTargetWaitStartTime = currentTime;<span class="comment">//函数入参当前时间，此处就是当前input事件的第一次分发时间</span></span><br><span class="line">mInputTargetWaitTimeoutTime = currentTime + timeout; <span class="comment">//设置超时</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">//无窗口</span></span><br><span class="line">            <span class="keyword">if</span> (windowHandle != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                mInputTargetWaitApplicationHandle = windowHandle-&gt;inputApplicationHandle;<span class="comment">//记录当前等待的应用</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//TODO 记录当前等待的应用，针对无窗口，有应用</span></span><br><span class="line">            <span class="keyword">if</span> (mInputTargetWaitApplicationHandle == <span class="literal">NULL</span> &amp;&amp; applicationHandle != <span class="literal">NULL</span>) &#123;</span><br><span class="line">                mInputTargetWaitApplicationHandle = applicationHandle;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line">    <span class="comment">//当前时间已经大于超时时间，说明应用有时间分发超时了，需要触发ANR</span></span><br><span class="line">    <span class="keyword">if</span> (currentTime &gt;= mInputTargetWaitTimeoutTime) &#123;   <span class="comment">//应该是超时5s</span></span><br><span class="line">        onANRLocked(currentTime, applicationHandle, windowHandle,</span><br><span class="line">                entry-&gt;eventTime , mInputTargetWaitStartTime, reason);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Force poll loop to wake up immediately on next iteration once we get the</span></span><br><span class="line">        <span class="comment">// ANR response back from the policy.</span></span><br><span class="line">        *nextWakeupTime = LONG_LONG_MIN;</span><br><span class="line">        <span class="keyword">return</span> INPUT_EVENT_INJECTION_PENDING;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ANR的函数调用onANRLocked"><a href="#ANR的函数调用onANRLocked" class="headerlink" title="ANR的函数调用onANRLocked"></a>ANR的函数调用onANRLocked</h3><p>最后发生ANR调用<code>InputDispatcher::onANRLocked</code></p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/inputflinger/InputDispatcher.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">InputDispatcher::onANRLocked</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">nsecs_t</span> currentTime, <span class="keyword">const</span> sp&lt;InputApplicationHandle&gt;&amp; applicationHandle,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">const</span> sp&lt;InputWindowHandle&gt;&amp; windowHandle,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">nsecs_t</span> eventTime, <span class="keyword">nsecs_t</span> waitStartTime, <span class="keyword">const</span> <span class="keyword">char</span>* reason)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">float</span> dispatchLatency = (currentTime - eventTime) * <span class="number">0.000001f</span>;</span><br><span class="line">    <span class="keyword">float</span> waitDuration = (currentTime - waitStartTime) * <span class="number">0.000001f</span>;</span><br><span class="line">    ALOGI(<span class="string">"Application is not responding: %s.  "</span></span><br><span class="line">            <span class="string">"It has been %0.1fms since event, %0.1fms since wait started.  Reason: %s"</span>,</span><br><span class="line">            getApplicationWindowLabel(applicationHandle, windowHandle).c_str(),</span><br><span class="line">            dispatchLatency, waitDuration, reason);</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="分析方法"><a href="#分析方法" class="headerlink" title="分析方法"></a>分析方法</h2><ol>
+<li>抓取systrace分析：可以分析Input事件的部分</li>
+<li>系统的Trace log：系统生成的Trace文件保存在<code>data/anr</code>,可以用过命令<code>adb pull data/anr/</code>取出。</li>
+<li>抓取日志分析</li>
+</ol>
+<h2 id="可能导致ANR的原因"><a href="#可能导致ANR的原因" class="headerlink" title="可能导致ANR的原因"></a>可能导致ANR的原因</h2><ol>
+<li>怀疑是不是在Activty oncreate和onstart耗时太多，导致窗口还未创建好，input事件超时5s<br>应用窗口是在onResume中才去向WindowManager添加注册的。因此在注册添加窗口之前，application或者启动的Activity的生命周期onCreate，onStart的任意方法，做了耗时操作，或者他们加载一起的执行时间过长，都是能够导致<code>无窗口，有应用类型的Input ANR问题</code>发生的。所以实际开发应用的时候，就要尽可能的把耗时的操作，异步处理。具体异步实现思路可以使用<code>new thread + handler，Asynctask，HandlerThread</code>等等，这里推荐使用HandlerThread，因为google封装的接口，使用起来简单。</li>
+<li>可能是UI主线程做了耗时的操作。</li>
+</ol>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/">https://alonealive.github.io/Blog/2020/05/10/2020/200510_android_inputANR/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-05-21");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-05-10T15:32:00.000Z" itemprop="datePublished">2020-05-10</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-05-20T16:37:09.890Z" itemprop="dateModified">2020-05-21</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/display/" rel="tag">#&nbsp;display</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/input/" rel="tag">#&nbsp;input</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2020/05/20/2020/200520_android_input_notifyMotion/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android InputDispatcher获取点击事件</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/04/14/2020/200413_cpp_strstrTostrcmp/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++字符串比较函数strcmp和strstr的用法</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

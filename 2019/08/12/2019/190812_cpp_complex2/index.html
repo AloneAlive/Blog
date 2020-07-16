@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>C++复合类型之枚举、指针 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="C++复合类型之枚举、指针 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/"><meta property="og:locale" content="zh-CN"><meta name="description" content="枚举enum C++的enum工具提供了另一种创建符号常量的方式，可以代替const。它还允许定义新的类型，但是必须严格按照格式。使用enum语法格式和结构相似，例如 - sunwengang - sunwengang blog"><meta name="keywords" content="cpp"><meta property="article:published_time" content="2019-08-12T14:21:05.000Z"><meta property="article:modified_time" content="2020-03-08T10:11:22.924Z"><meta property="og:updated_time" content="2020-03-08T10:11:22.924Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="cpp"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/"
+    },
+    "headline": "C++复合类型之枚举、指针 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-08-12T14:21:05.000Z",
+    "dateModified": "2020-03-08T10:11:22.924Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "cpp",
+    "description": "枚举enum C++的enum工具提供了另一种创建符号常量的方式，可以代替const。它还允许定义新的类型，但是必须严格按照格式。使用enum语法格式和结构相似，例如 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=C++复合类型之枚举、指针" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=C++复合类型之枚举、指针&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=C++复合类型之枚举、指针" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMUlEQVR42u3bS1LDQAxFUe9/0zBhQAXrfZxQBOt6QhKI+7jKaqul5vj4B8cBEiRIkG+APMTx40tfn33/3dnfPp7j8XU6Lsi9yNObdkCqgdX51HemcUHuRp7d7FOQNANNn7lxQYJskVMQTcHyY6IGCfIJpEooVCBNKJAgE6RKcKfENrkIh35JFgTydki1IPrNny9bLYK8FdIWjYaTugHdQuylVTWQt0ImA6mJ3Q2qHga2QAZyLbIpnE7AJFlWwXN6ISBBigW/+ps02NLzg9yNTAqdqmGUBqDETK9BrkROX0qbl+050nOC3ItMmkjufdOMqhJmkKuRyQKpKdy7B0I0sYNciVQLrKZI0CQPcTICciXSbS5KG/BpklFtAgC5EumSgaSg75oCLljGBwHIlUiVsKrJ3DWl1OeuCQoSZLMZJIG7SVoFEkiQVwpWz1xgehEg9yLdRJxuSG6CyjVZQe5GqsBxwdMkHK55enkyB3k7ZHJDJ4WEtpjlHiIg9yKfKeqnC7UrG5pB7kY2jc90Q13agJINVZBrkWnhPXnfBKTdGAoSZNgsaotQaXGrDhyQt0YmCUaz8Tgp4NskGORKpDuSTXJJAjIFiQxEkCuR7oZONiClm+2SBZitqoFcgVSbPGxRqSzaXw4ckOuQ9SLpYjLhEgyQIKtNl0f3j2tpMTXqiIEEGWwOSSfty0kzyNXI9KZPG6dtIyoKHJBrkM2DPymENou7uKoGcg3ynQ+QIEGC/MPjE07TVgRJJ8gRAAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">C++复合类型之枚举、指针</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-08-12</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=C++复合类型之枚举、指针&url=https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=C++复合类型之枚举、指针&url=https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMUlEQVR42u3bS1LDQAxFUe9/0zBhQAXrfZxQBOt6QhKI+7jKaqul5vj4B8cBEiRIkG+APMTx40tfn33/3dnfPp7j8XU6Lsi9yNObdkCqgdX51HemcUHuRp7d7FOQNANNn7lxQYJskVMQTcHyY6IGCfIJpEooVCBNKJAgE6RKcKfENrkIh35JFgTydki1IPrNny9bLYK8FdIWjYaTugHdQuylVTWQt0ImA6mJ3Q2qHga2QAZyLbIpnE7AJFlWwXN6ISBBigW/+ps02NLzg9yNTAqdqmGUBqDETK9BrkROX0qbl+050nOC3ItMmkjufdOMqhJmkKuRyQKpKdy7B0I0sYNciVQLrKZI0CQPcTICciXSbS5KG/BpklFtAgC5EumSgaSg75oCLljGBwHIlUiVsKrJ3DWl1OeuCQoSZLMZJIG7SVoFEkiQVwpWz1xgehEg9yLdRJxuSG6CyjVZQe5GqsBxwdMkHK55enkyB3k7ZHJDJ4WEtpjlHiIg9yKfKeqnC7UrG5pB7kY2jc90Q13agJINVZBrkWnhPXnfBKTdGAoSZNgsaotQaXGrDhyQt0YmCUaz8Tgp4NskGORKpDuSTXJJAjIFiQxEkCuR7oZONiClm+2SBZitqoFcgVSbPGxRqSzaXw4ckOuQ9SLpYjLhEgyQIKtNl0f3j2tpMTXqiIEEGWwOSSfty0kzyNXI9KZPG6dtIyoKHJBrkM2DPymENou7uKoGcg3ynQ+QIEGC/MPjE07TVgRJJ8gRAAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#枚举enum"><span class="post-toc-number">1.</span> <span class="post-toc-text">枚举enum</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#指针"><span class="post-toc-number">2.</span> <span class="post-toc-text">指针</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#地址运算符-amp"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">地址运算符&amp;</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#声明和初始化"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">声明和初始化</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#指针和数字"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">指针和数字</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#使用new分配内存"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">使用new分配内存</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#使用delete释放内存"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">使用delete释放内存</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#使用new创建动态数组"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">使用new创建动态数组</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#指针小结"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">指针小结</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="枚举enum"><a href="#枚举enum" class="headerlink" title="枚举enum"></a>枚举<code>enum</code></h2><blockquote>
+<p>C++的enum工具提供了另一种创建符号常量的方式，可以代替<code>const</code>。<br>它还允许定义新的类型，但是必须严格按照格式。<br>使用<code>enum</code>语法格式和<code>结构</code>相似，<strong>例如</strong>  </p>
+</blockquote>
+<a id="more"></a>
+<p><code>enum colorInfo{red, blue, orange};</code></p>
+<ul>
+<li>colorInfo是新类型的名称；colorInfo被成为<code>枚举</code></li>
+<li>red,blue,orange是符号常量，对应整型树脂<code>0,1,2</code>，这些常量叫做<code>枚举量</code>  <ul>
+<li>默认情况下，将整型数值赋给枚举量，从0开始以此类推</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li>声明</li>
+</ol>
+<p>使用枚举名来声明这种枚举的变量：<code>colorInfo band;</code></p>
+<ol start="2">
+<li>赋值</li>
+</ol>
+<p>只能使用定义枚举量赋值给枚举的变量：</p>
+<figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="addition">+ band = red; //将定义枚举中的red值赋给band变量</span></span><br><span class="line"><span class="deletion">- band = black;   //在枚举中不存在</span></span><br><span class="line"></span><br><span class="line">double *pn;</span><br><span class="line">char *pa;</span><br><span class="line">double *pc;</span><br><span class="line"></span><br><span class="line">double bu = 4.2;</span><br><span class="line">pn = &amp;bu;</span><br><span class="line">pa = new char;</span><br><span class="line">pc = new double[10];</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>设置枚举的值</li>
+</ol>
+<blockquote>
+<ul>
+<li>使用赋值运算符显式设置枚举的值：<blockquote>
+<p><code>enum bits {one=1, two=2};</code></p>
+</blockquote>
+</li>
+<li>显式定义部分元素（其他的元素以前一个元素作为参照依次+1）<blockquote>
+<p><code>enum bytes {a, b=100, c}</code>  <strong>//此时a=0,b=100,c=101</strong></p>
+</blockquote>
+</li>
+<li>创建多个值相同的枚举量<blockquote>
+<p><code>enum {zero, null=0, one, numero_uno=1};</code> <strong>//其中zero和null都是0，后面两个都是1，这是合法的</strong></p>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<ol start="4">
+<li>枚举的取值范围</li>
+</ol>
+<blockquote>
+<p><strong>枚举的最大值</strong>的<strong>最小的2的次幂</strong>，将其减去1，得到取值范围的上限。</p>
+<blockquote>
+<p><strong>例如最大值是101，则最小的2的次幂是128，减去1，所以取值的上限是127</strong></p>
+</blockquote>
+<p>如果<code>枚举量的最小值&gt;=0</code>，则取值范围的下限是0；否则同上，取2的最小次幂，减一，加上负号。</p>
+<blockquote>
+<p><strong>例如最小值是<code>-6</code>，则取最小2次幂减一是7，加上负号，所以取值下限是-7</strong></p>
+</blockquote>
+</blockquote>
+<hr>
+<h2 id="指针"><a href="#指针" class="headerlink" title="指针"></a><strong>指针</strong></h2><blockquote>
+<p>计算机在存储数据的时候必须跟踪的三种基本属性：</p>
+<ol>
+<li>信息存储的位置</li>
+<li>存储的值</li>
+<li>存储的类型</li>
+</ol>
+<p>指针是一个变量，其存储的值是<code>值的地址</code></p>
+</blockquote>
+<h3 id="地址运算符-amp"><a href="#地址运算符-amp" class="headerlink" title="地址运算符&amp;"></a>地址运算符<code>&amp;</code></h3><p>地址运算符<code>&amp;</code>可以获取一个常规变量的地址，例如<code>home</code>是变量，<code>&amp;home</code>即是他的地址</p>
+<figure class="highlight c++"><figcaption><span>address1.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> dog = <span class="number">6</span>;</span><br><span class="line">	<span class="keyword">double</span> food = <span class="number">4.5</span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"dog = "</span> &lt;&lt; dog &lt;&lt; <span class="string">", food = "</span> &lt;&lt; food &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"dog address = "</span> &lt;&lt; &amp;dog &lt;&lt; <span class="string">", food address = "</span> &lt;&lt; &amp;food &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>打印结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">dog = <span class="number">6</span>, food = <span class="number">4.5</span></span><br><span class="line">dog address = <span class="number">0x7fff81decc1c</span>, food address = <span class="number">0x7fff81decc20</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Notes:</strong></p>
+<ol>
+<li><p>常用十六进制描述地址（也存在十进制表示法）。 使用常规变量时，<code>值是指定的量，而地址是派生量</code></p>
+</li>
+<li><p><strong>面向对象OOP和面向过程的编程区别</strong>在于，OOP强调的是在运行阶段（非编译阶段）进行决策。运行阶段指的是程序正在运行，编译阶段指的是编译器将程序组合起来时。  </p>
+<p> 运行阶段决策提供了灵活性，可以根据实时情况进行调整。例如声明数组的时候定义长度。</p>
+</li>
+<li><p>指针用于存储值的地址。指针名表示的是地址，<code>*</code>运算符被称为间接值或解除引用运算符，将其应用于指针，可以得到该地址处存储的值。</p>
+<blockquote>
+<p>例如：假设manly是一个指针，则<code>manly</code>表示的是一个地址，而<code>*manly</code>表示存储在该处的值。<code>*manly</code>和常规int变量等效。</p>
+</blockquote>
+</li>
+</ol>
+<p><strong>例如下列代码：</strong></p>
+<figure class="highlight c++"><figcaption><span>pointer.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> updates = <span class="number">6</span>;   	<span class="comment">//变量</span></span><br><span class="line">	<span class="keyword">int</span> * p_updates;	<span class="comment">//指针</span></span><br><span class="line">	p_updates = &amp;updates;	<span class="comment">//指针存储了变量的地址</span></span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"value updates = "</span> &lt;&lt; updates &lt;&lt; <span class="string">", p_updates = "</span> &lt;&lt; p_updates &lt;&lt; <span class="string">", &amp;updates = "</span> &lt;&lt; &amp;updates &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	*p_updates = *p_updates + <span class="number">1</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Now updates = "</span>&lt;&lt; updates &lt;&lt; <span class="string">", *p_updates = "</span>&lt;&lt; *p_updates &lt;&lt; <span class="string">", p_updates = "</span> &lt;&lt; p_updates &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">value updates = <span class="number">6</span>, p_updates = <span class="number">0x7ffcf520fbcc</span>, &amp;updates = <span class="number">0x7ffcf520fbcc</span></span><br><span class="line">Now updates = <span class="number">7</span>, *p_updates = <span class="number">7</span>, p_updates = <span class="number">0x7ffcf520fbcc</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="声明和初始化"><a href="#声明和初始化" class="headerlink" title="声明和初始化"></a>声明和初始化</h3><blockquote>
+<p>指针声明必须指定指针指向的数据的类型  </p>
+<blockquote>
+<p><code>int * p_updates;</code><br><code>*p_updates</code>的类型是<code>int</code>，由于<code>*</code>被用于指针，因此<code>p_updates</code>变量本身必须是指针，即<code>p_updates</code>指向int类型，或者是指向int的指针，或<code>int*</code><br><code>p_updates</code>是指针（地址）；<code>*p_updates</code>是int，而不是指针。</p>
+</blockquote>
+</blockquote>
+<p><strong>Notes:</strong></p>
+<blockquote>
+<p>(1) <code>*</code>两边的空格是可选的。<br><code>int *ptr;</code> 强调<code>*ptr</code>是int类型的变量。<br><code>int* ptr;</code> 强调<code>int*</code>是一种指向int的指针。（在C++中，<code>int*是复合类型，是指向int的指针</code>）</p>
+<blockquote>
+</blockquote>
+<p>(2) 在C++中创建指针时，计算机将分配内存用来存储地址的内存，但是不会分配用来存储指针所指向的数据的内存。例如：</p>
+<blockquote>
+<p><code>long *fellow;</code><br><code>*fellow = 2333; //ERROR</code><br>此处没有给<code>2333</code>赋地址。</p>
+</blockquote>
+</blockquote>
+<h3 id="指针和数字"><a href="#指针和数字" class="headerlink" title="指针和数字"></a>指针和数字</h3><blockquote>
+<p>整数可以加减乘除，而指针表示地址，描述的是位置，将两个地址相乘没有意义。</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//ERROR 不可以直接赋值，编译器会有错误消息：通用类型不匹配</span></span><br><span class="line"><span class="keyword">int</span>* ptr;</span><br><span class="line">ptr = <span class="number">0xB8000000</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Right 转换</span></span><br><span class="line"><span class="keyword">int</span>* ptr;</span><br><span class="line">ptr = (<span class="keyword">int</span>*) <span class="number">0xB8000000</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用new分配内存"><a href="#使用new分配内存" class="headerlink" title="使用new分配内存"></a>使用<code>new</code>分配内存</h3><blockquote>
+<p>在C++中，除了可以使用C语言的方法<code>malloc()</code>函数分配内存，还可以使用<code>new</code>运算符<br>例如：<br>(1) <code>int *ptr = new int;</code><br><code>new int</code>告诉程序需要合适存储int的内存。<code>new</code>运算符根据类型确定需要多少字节的内存，然后找到这样的内存并返回地址。接着将地址赋给<code>ptr</code>，<code>ptr</code>是被声明为指向int的指针。</p>
+<p>(2) <code>int hig;</code><br><code>int *pn = &amp;hig;</code><br>这种方法是使用<code>hig</code>名称来访问<code>int</code></p>
+<p>为一个数据对象（可以是结构，或者基本类型等）获得并指定分配内存的通用格式：<br><strong><code>typename * poniter_name = new typename;</code></strong></p>
+</blockquote>
+<p><strong>代码示例：</strong></p>
+<figure class="highlight c++"><figcaption><span>use_new.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> nights = <span class="number">1001</span>;</span><br><span class="line">	<span class="keyword">int</span> *pt = <span class="keyword">new</span> <span class="keyword">int</span>;  <span class="comment">//分配内存</span></span><br><span class="line">	*pt = <span class="number">1001</span>;  <span class="comment">//赋值</span></span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"nights = "</span> &lt;&lt; nights &lt;&lt; <span class="string">", its' address = "</span> &lt;&lt; &amp;nights &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"*pt = "</span> &lt;&lt; *pt &lt;&lt; <span class="string">", its' address = "</span> &lt;&lt; pt &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">double</span> *pd = <span class="keyword">new</span> <span class="keyword">double</span>;</span><br><span class="line">	*pd = <span class="number">10000001.0</span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"*pd = "</span> &lt;&lt; *pd &lt;&lt; <span class="string">", address of pointer *pd = "</span> &lt;&lt; &amp;pd &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"size of pt = "</span> &lt;&lt; <span class="keyword">sizeof</span>(pt);</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">" : size of *pt = "</span> &lt;&lt; <span class="keyword">sizeof</span>(*pt) &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"size of pd = "</span> &lt;&lt; <span class="keyword">sizeof</span>(pd);</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">" : size of *pd = "</span> &lt;&lt; <span class="keyword">sizeof</span>(*pd) &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">nights = <span class="number">1001</span>, its<span class="number">'</span> address = <span class="number">0x7fff3426f484</span></span><br><span class="line">*pt = <span class="number">1001</span>, its<span class="number">'</span> address = <span class="number">0x150bc20</span></span><br><span class="line">*pd = <span class="number">1e+07</span>, address of pointer *pd = <span class="number">0x7fff3426f488</span></span><br><span class="line"><span class="built_in">size</span> of pt = <span class="number">8</span> : <span class="built_in">size</span> of *pt = <span class="number">4</span></span><br><span class="line"><span class="built_in">size</span> of pd = <span class="number">8</span> : <span class="built_in">size</span> of *pd = <span class="number">8</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>Note:</strong></p>
+<p>变量<code>nights</code>和<code>pd</code>的值都存储在<code>栈stack</code>的内存区域；而<code>new</code>从<code>堆heap</code>或者<code>自由存储区free store</code>的内存区域分配内存。</p>
+<h3 id="使用delete释放内存"><a href="#使用delete释放内存" class="headerlink" title="使用delete释放内存"></a>使用<code>delete</code>释放内存</h3><blockquote>
+<p>使用delete时，后面要加上指向内存块的指针（这些内存块最初是由new分配的）</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> *ps = <span class="keyword">new</span> <span class="keyword">int</span>;</span><br><span class="line">...</span><br><span class="line"><span class="keyword">delete</span> ps;</span><br></pre></td></tr></table></figure>
+
+<p>这将会释放ps指向的内存，但是不会删除指针ps本身。例如，可以将ps重新指向另一个新分配的内存块。</p>
+<p><strong>一定要配对的使用new和delete</strong>，否则会发生<code>内存泄漏 memory leak</code>。</p>
+<p><strong>只能用delete来释放使用new分配的内存（对空指针使用delete是安全的）</strong></p>
+<p><strong>使用delete的关键是，将他用于new分配的内存，这并不意味者要使用用于new的指针，而是用于new的地址。</strong></p>
+<p><strong>例如：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> *ps = <span class="keyword">new</span> <span class="keyword">int</span>;</span><br><span class="line"><span class="keyword">delete</span> ps;  <span class="comment">//ok</span></span><br><span class="line"><span class="keyword">delete</span> ps;  <span class="comment">//not ok</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> jugs = <span class="number">6</span>;</span><br><span class="line"><span class="keyword">int</span> *pi = &amp;jugs; <span class="comment">//ok</span></span><br><span class="line"><span class="keyword">delete</span> pi;   <span class="comment">//not allowed</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> *pk = <span class="keyword">new</span> <span class="keyword">int</span>;	<span class="comment">//分配内存</span></span><br><span class="line"><span class="keyword">int</span> *pq = pk;   <span class="comment">//声明第二个指针</span></span><br><span class="line"><span class="keyword">delete</span> pq; <span class="comment">//delete第二个指针，并不会影响pk的值（但是pk的值必须要new分配内存）</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用new创建动态数组"><a href="#使用new创建动态数组" class="headerlink" title="使用new创建动态数组"></a>使用<code>new</code>创建动态数组</h3><p>例如下面的语句创建指针，它指向包含十个int值的内存块中的第一个元素：<br><code>int *psome = new int[10];</code></p>
+<p>不能修改数组名的值，但是可以修改指针变量。</p>
+<p>将指针变量加一后，增加的量等于它指向类型的字节数（例如int数组一个变量四个字节）</p>
+<p><strong>代码：</strong></p>
+<figure class="highlight c++"><figcaption><span>arraytnew.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line">	<span class="keyword">double</span> *p3 = <span class="keyword">new</span> <span class="keyword">double</span>[<span class="number">3</span>];</span><br><span class="line">	p3[<span class="number">0</span>] = <span class="number">0.2</span>;</span><br><span class="line">	p3[<span class="number">1</span>] = <span class="number">0.5</span>;</span><br><span class="line">	p3[<span class="number">2</span>] = <span class="number">0.8</span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"p3[1] = "</span>&lt;&lt; p3[<span class="number">1</span>] &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	p3+=<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"Now p3[0] = "</span>&lt;&lt; p3[<span class="number">0</span>] &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Now p3[1] = "</span>&lt;&lt; p3[<span class="number">1</span>] &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	p3-=<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">delete</span> []p3;  <span class="comment">//free memory</span></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">p3[<span class="number">1</span>] = <span class="number">0.5</span></span><br><span class="line">Now p3[<span class="number">0</span>] = <span class="number">0.5</span></span><br><span class="line">Now p3[<span class="number">1</span>] = <span class="number">0.8</span>     <span class="comment">//+1之后的数组第一个元素就变成了第二个元素</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="指针小结"><a href="#指针小结" class="headerlink" title="指针小结"></a><strong>指针小结</strong></h3><ul>
+<li><p>对数组使用<code>sizeof</code>得到的是数组的长度（int4个字节乘以元素数量，单位是字节），而对指针使用<code>sizeof</code>得到的是指针的长度，即指针指向的是一个数组（元素数量）。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> *pt = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</span><br><span class="line">*pt = <span class="number">5</span>;  <span class="comment">//pt[0]=5 or pt=5</span></span><br><span class="line">pt[<span class="number">0</span>] = <span class="number">6</span>;  <span class="comment">//reset</span></span><br><span class="line"></span><br><span class="line">pt[<span class="number">9</span>] = <span class="number">44</span>;</span><br><span class="line"><span class="keyword">int</span> coats[<span class="number">10</span>];</span><br><span class="line">*(coats + <span class="number">4</span>) = <span class="number">12</span>;   <span class="comment">//coats[4] = 12</span></span><br></pre></td></tr></table></figure></li>
+<li><p>数组名被解释为其第一个元素的地址<code>arrayname</code>，而对数组名应用地址运算符<code>&amp;</code>时，即<code>&amp;arrayname</code>，得到的是整个数组的地址。<br>例如：</p>
+  <figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">short tell[<span class="number">10</span>];</span><br><span class="line">tell <span class="comment">//display &amp;tell[0]，一个2字节内存块的地址</span></span><br><span class="line">&amp;tell <span class="comment">//display address of whole array，一个20字节内存块的地址</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>对指针接触引用意味着获取指针指向的值，例如<code>*pn</code>，另一种接触引用的方法是使用数组表示法，例如<code>pn[0]</code>。</p>
+</li>
+<li><p>区别指针和指针指向的值，<code>int *pt = new int; *pt = 5;</code>其中pt是指向int的指针，而*pt是完全等同于一个int类型的变量。</p>
+</li>
+<li><p>数组的<code>静态联编</code>是使用数组声明来创建数组时，数组的长度在编译时设置<code>int tacos[10];</code></p>
+</li>
+<li><p>数组的<code>动态联编</code>是使用<code>new[]</code>创建数组，在运行时为数组分配空间，其长度在运行时者之。使用完这种数组后，应该使用<code>delete[]</code>释放占用的内存。</p>
+</li>
+</ul>
+<figure class="highlight c++"><figcaption><span>ptrstr.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">char</span> animal[<span class="number">20</span>] = <span class="string">"bear"</span>;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">char</span> *bird = <span class="string">"wren"</span>;</span><br><span class="line">	<span class="keyword">char</span> *ps;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; animal &lt;&lt; <span class="string">" and "</span> &lt;&lt; bird &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="comment">//cout &lt;&lt; ps &lt;&lt;endl;  //may crash, may garbage, may skip, print nothing</span></span><br><span class="line"></span><br><span class="line">	ps = animal;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; ps &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; (<span class="keyword">int</span> *)animal &lt;&lt; <span class="string">" and "</span> &lt;&lt; (<span class="keyword">int</span> *)ps &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	ps = <span class="keyword">new</span> <span class="keyword">char</span>(<span class="built_in">strlen</span>(animal) + <span class="number">1</span>);  <span class="comment">//get new storage返回字符串的长度</span></span><br><span class="line">	<span class="built_in">strcpy</span>(ps, animal);  <span class="comment">//copy string to new storage将字符串从一个位置复制到另一个位置</span></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"After using strcpy, animal "</span> &lt;&lt; animal &lt;&lt; <span class="string">" at "</span>&lt;&lt; (<span class="keyword">int</span>*)animal &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; ps &lt;&lt; <span class="string">" at "</span> &lt;&lt; (<span class="keyword">int</span>*)ps &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">delete</span> []ps;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">bear <span class="keyword">and</span> wren</span><br><span class="line">bear</span><br><span class="line"><span class="number">0x7ffde23d00b0</span> <span class="keyword">and</span> <span class="number">0x7ffde23d00b0</span></span><br><span class="line">After <span class="keyword">using</span> <span class="built_in">strcpy</span>, animal bear at <span class="number">0x7ffde23d00b0</span></span><br><span class="line">bear at <span class="number">0x1b2b030</span></span><br></pre></td></tr></table></figure>
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/">https://alonealive.github.io/Blog/2019/08/12/2019/190812_cpp_complex2/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-08-12T14:21:05.000Z" itemprop="datePublished">2019-08-12</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:11:22.924Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/cpp/'>cpp</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/cpp/" rel="tag">#&nbsp;cpp</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/08/13/2019/190813_cpp_typeTemplete/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++内存分配方式和模板类vector, array</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/08/01/2019/190801_cpp_complex/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++复合类型之数组、字符串、结构、共用体</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

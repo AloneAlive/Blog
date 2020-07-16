@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Hexo Next主题优化（二） | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Hexo Next主题优化（二） | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/"><meta property="og:locale" content="zh-CN"><meta name="description" content="样式页脚foot优化爱心跳动 在Next主题根目录的配置文件修改 - sunwengang - sunwengang blog"><meta name="keywords" content="hexo"><meta property="article:published_time" content="2019-07-18T14:41:47.000Z"><meta property="article:modified_time" content="2020-03-08T10:00:02.380Z"><meta property="og:updated_time" content="2020-03-08T10:00:02.380Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="hexo"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/"
+    },
+    "headline": "Hexo Next主题优化（二） | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-07-18T14:41:47.000Z",
+    "dateModified": "2020-03-08T10:00:02.380Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "hexo",
+    "description": "样式页脚foot优化爱心跳动 在Next主题根目录的配置文件修改 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Hexo Next主题优化（二）" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Hexo Next主题优化（二）&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Hexo Next主题优化（二）" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACKklEQVR42u2awXKEQAgF/f+fTi45pKyF17jZZCM9F61xdNoqQXhwfPyDcQgppJBCvgHk0Yzy5q9r5yO5/n0u7SvkXsgOpJo7b5aeV93frhFyNeT5wyXzBCYZU/V8IYVMkHTNGaz6OQgp5DOQyXmnQONXDEfI20F2zveR8Ty6Vs1NAhEhhUwJ0SuPP5YtCnkryCgaDYwiBRRJdLisqgl5K8juQ+42SQlZ5/DJfkLuhiQBRBfAdnPTpE1IIScfdeXYuxepXpYEy0LuhexE97RxAiECVnku5ErIJEodYXQiQXqhFIgIKWQFSAUnEhjTYqmQQlK4zsCiUE+Cis5whFwBSZ1yl0DhTUOCJ6SQRAidFI9SINytbwUrIVdBThtBOudMG+hSU6iQuyGp0H4l6OjuR6KXkKshU7KVGpSSQRGBKwYYQq6AJAJUahyZGhItpAq5EzIJUMSZT0WtroAvpJDkxz8pxKdiAS34Cykkaay72ow8EceEFJIUhSaBLC3Gp6OQeyEnYv7UsafkLRVChdwL2RVDU5GUBsLUeNoOKyFXQVKhiiT904ZlbDhCroSkyRUpktLiavlTEXIl5DQBo2uvBM5RVRNyBSQxAir+k8D26URMyBWQXZMHFQSokH/ZcIRcBzlJkkjBczLKZwopJCguURF/IqaiYpOQQkJnTgVWEjijbFHINZC0oYM2gxBnPzYcIddAToQkIoSmhpBUABByN+Q7DyGFFFLIPxyfpAsWREF4HOUAAAAASUVORK5CYII=" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Hexo Next主题优化（二）</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-07-18</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/web/">web</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Hexo Next主题优化（二）&url=https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Hexo Next主题优化（二）&url=https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACKklEQVR42u2awXKEQAgF/f+fTi45pKyF17jZZCM9F61xdNoqQXhwfPyDcQgppJBCvgHk0Yzy5q9r5yO5/n0u7SvkXsgOpJo7b5aeV93frhFyNeT5wyXzBCYZU/V8IYVMkHTNGaz6OQgp5DOQyXmnQONXDEfI20F2zveR8Ty6Vs1NAhEhhUwJ0SuPP5YtCnkryCgaDYwiBRRJdLisqgl5K8juQ+42SQlZ5/DJfkLuhiQBRBfAdnPTpE1IIScfdeXYuxepXpYEy0LuhexE97RxAiECVnku5ErIJEodYXQiQXqhFIgIKWQFSAUnEhjTYqmQQlK4zsCiUE+Cis5whFwBSZ1yl0DhTUOCJ6SQRAidFI9SINytbwUrIVdBThtBOudMG+hSU6iQuyGp0H4l6OjuR6KXkKshU7KVGpSSQRGBKwYYQq6AJAJUahyZGhItpAq5EzIJUMSZT0WtroAvpJDkxz8pxKdiAS34Cykkaay72ow8EceEFJIUhSaBLC3Gp6OQeyEnYv7UsafkLRVChdwL2RVDU5GUBsLUeNoOKyFXQVKhiiT904ZlbDhCroSkyRUpktLiavlTEXIl5DQBo2uvBM5RVRNyBSQxAir+k8D26URMyBWQXZMHFQSokH/ZcIRcBzlJkkjBczLKZwopJCguURF/IqaiYpOQQkJnTgVWEjijbFHINZC0oYM2gxBnPzYcIddAToQkIoSmhpBUABByN+Q7DyGFFFLIPxyfpAsWREF4HOUAAAAASUVORK5CYII=" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#样式"><span class="post-toc-number">1.</span> <span class="post-toc-text">样式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#页脚foot优化"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">页脚foot优化</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#爱心跳动"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">爱心跳动</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#代码框样式"><span class="post-toc-number">2.</span> <span class="post-toc-text">代码框样式</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#代码框样式（复制按钮）"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">代码框样式（复制按钮）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#代码高亮主题"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">代码高亮主题</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#diff样式"><span class="post-toc-number">3.</span> <span class="post-toc-text">diff样式</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#改变显示字体的颜色"><span class="post-toc-number">4.</span> <span class="post-toc-text">改变显示字体的颜色</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#自动更换背景图片"><span class="post-toc-number">5.</span> <span class="post-toc-text">自动更换背景图片</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#背景虚化（解决搜索框被虚化的问题）"><span class="post-toc-number">6.</span> <span class="post-toc-text">背景虚化（解决搜索框被虚化的问题）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#note-便签"><span class="post-toc-number">7.</span> <span class="post-toc-text">note 便签</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#文章编辑"><span class="post-toc-number"></span> <span class="post-toc-text">文章编辑</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#选项卡"><span class="post-toc-number">1.</span> <span class="post-toc-text">选项卡</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#引用（文章居中）"><span class="post-toc-number">2.</span> <span class="post-toc-text">引用（文章居中）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#在文章中插入-iframe"><span class="post-toc-number">3.</span> <span class="post-toc-text">在文章中插入 iframe</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="样式"><a href="#样式" class="headerlink" title="样式"></a>样式</h2><h3 id="页脚foot优化"><a href="#页脚foot优化" class="headerlink" title="页脚foot优化"></a>页脚foot优化</h3><h3 id="爱心跳动"><a href="#爱心跳动" class="headerlink" title="爱心跳动"></a>爱心跳动</h3><blockquote>
+<p>在Next主题根目录的配置文件修改</p>
+</blockquote>
+<a id="more"></a>
+
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">footer</span>:</span><br><span class="line">  # <span class="selector-tag">Specify</span> <span class="selector-tag">the</span> <span class="selector-tag">date</span> <span class="selector-tag">when</span> <span class="selector-tag">the</span> <span class="selector-tag">site</span> <span class="selector-tag">was</span> <span class="selector-tag">setup</span>. <span class="selector-tag">If</span> <span class="selector-tag">not</span> <span class="selector-tag">defined</span>, <span class="selector-tag">current</span> <span class="selector-tag">year</span> <span class="selector-tag">will</span> <span class="selector-tag">be</span> <span class="selector-tag">used</span>.</span><br><span class="line">  <span class="selector-tag">since</span>: 2019</span><br><span class="line"></span><br><span class="line">  # <span class="selector-tag">Icon</span> <span class="selector-tag">between</span> <span class="selector-tag">year</span> <span class="selector-tag">and</span> <span class="selector-tag">copyright</span> <span class="selector-tag">info</span>.</span><br><span class="line">  <span class="selector-tag">icon</span>:</span><br><span class="line">    # Icon name in fontawesome, see: https://fontawesome.com/v4.7.0/icons/</span><br><span class="line">    # `<span class="selector-tag">heart</span>` <span class="selector-tag">is</span> <span class="selector-tag">recommended</span> <span class="selector-tag">with</span> <span class="selector-tag">animation</span> <span class="selector-tag">in</span> <span class="selector-tag">red</span> (<span class="selector-id">#ff0000</span>).</span><br><span class="line">    <span class="selector-tag">name</span>: <span class="selector-tag">heartbeat</span></span><br><span class="line">    # <span class="selector-tag">If</span> <span class="selector-tag">you</span> <span class="selector-tag">want</span> <span class="selector-tag">to</span> <span class="selector-tag">animate</span> <span class="selector-tag">the</span> <span class="selector-tag">icon</span>, <span class="selector-tag">set</span> <span class="selector-tag">it</span> <span class="selector-tag">to</span> <span class="selector-tag">true</span>.</span><br><span class="line">    <span class="selector-tag">animated</span>: <span class="selector-tag">true</span></span><br><span class="line">    # <span class="selector-tag">Change</span> <span class="selector-tag">the</span> <span class="selector-tag">color</span> <span class="selector-tag">of</span> <span class="selector-tag">icon</span>, <span class="selector-tag">using</span> <span class="selector-tag">Hex</span> <span class="selector-tag">Code</span>.</span><br><span class="line">    <span class="selector-tag">color</span>: "<span class="selector-id">#ff0000</span>"</span><br></pre></td></tr></table></figure>
+
+<h2 id="代码框样式"><a href="#代码框样式" class="headerlink" title="代码框样式"></a>代码框样式</h2><h3 id="代码框样式（复制按钮）"><a href="#代码框样式（复制按钮）" class="headerlink" title="代码框样式（复制按钮）"></a>代码框样式（复制按钮）</h3><blockquote>
+<p>在Next主题根目录的配置文件修改</p>
+</blockquote>
+<figure class="highlight"><figcaption><span>主题根目录_config.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">codeblock</span>:</span><br><span class="line">  # <span class="selector-tag">Manual</span> <span class="selector-tag">define</span> <span class="selector-tag">the</span> <span class="selector-tag">border</span> <span class="selector-tag">radius</span> <span class="selector-tag">in</span> <span class="selector-tag">codeblock</span>, <span class="selector-tag">leave</span> <span class="selector-tag">it</span> <span class="selector-tag">blank</span> <span class="selector-tag">for</span> <span class="selector-tag">the</span> <span class="selector-tag">default</span> <span class="selector-tag">value</span>: 1</span><br><span class="line">  border_radius: 10   //代码框边缘圆角</span><br><span class="line">  # <span class="selector-tag">Add</span> <span class="selector-tag">copy</span> <span class="selector-tag">button</span> <span class="selector-tag">on</span> <span class="selector-tag">codeblock</span></span><br><span class="line">  <span class="selector-tag">copy_button</span>:</span><br><span class="line">    <span class="selector-tag">enable</span>: <span class="selector-tag">true</span></span><br><span class="line">    # <span class="selector-tag">Show</span> <span class="selector-tag">text</span> <span class="selector-tag">copy</span> <span class="selector-tag">result</span></span><br><span class="line">    <span class="selector-tag">show_result</span>: <span class="selector-tag">true</span></span><br><span class="line">    # Style: only 'flat' is currently available, leave it blank if you prefer default theme</span><br><span class="line">    style: flat   //复制按钮</span><br></pre></td></tr></table></figure>
+
+<h3 id="代码高亮主题"><a href="#代码高亮主题" class="headerlink" title="代码高亮主题"></a>代码高亮主题</h3><figure class="highlight css"><figcaption><span>主题根目录_config.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"># <span class="selector-tag">Code</span> <span class="selector-tag">Highlight</span> <span class="selector-tag">theme</span></span><br><span class="line"># Available values: normal | night | night eighties | night blue | night bright</span><br><span class="line"># https://github.com/chriskempson/tomorrow-theme</span><br><span class="line"><span class="selector-tag">highlight_theme</span>: <span class="selector-tag">normal</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="diff样式"><a href="#diff样式" class="headerlink" title="diff样式"></a>diff样式</h2><figure class="highlight diff"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="deletion">-  printf("Hello World!");</span></span><br><span class="line"><span class="addition">+  printf("Hello_World!");</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="改变显示字体的颜色"><a href="#改变显示字体的颜色" class="headerlink" title="改变显示字体的颜色"></a>改变显示字体的颜色</h2><blockquote>
+<p>主要是侧边栏和文章主题内容（不包含标题）</p>
+</blockquote>
+<figure class="highlight"><figcaption><span>source/custom/custom.styl</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">//主页的阅读全文、主内容字体，不包含标题</span><br><span class="line"><span class="selector-class">.main-inner</span> &#123;</span><br><span class="line">    p,span,a &#123;color: #ffb6c1;&#125;</span><br><span class="line"></span><br><span class="line">  <span class="selector-tag">background-color</span>: <span class="selector-tag">rgba</span>(255,255,255,0<span class="selector-class">.5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//上侧边栏</span><br><span class="line"><span class="selector-class">.header-inner</span> &#123;</span><br><span class="line">  p,span,a &#123;color: #ffb6c1;&#125;</span><br><span class="line">  <span class="selector-tag">background-color</span>: <span class="selector-tag">rgba</span>(255,255,255,0<span class="selector-class">.5</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 下侧边栏字体颜色</span><br><span class="line"><span class="selector-id">#sidebar</span> &#123;</span><br><span class="line">  p,span,a &#123;color: #ffb6c1;&#125;    //改变颜色</span><br><span class="line">&#125;*/</span><br></pre></td></tr></table></figure>
+
+<h2 id="自动更换背景图片"><a href="#自动更换背景图片" class="headerlink" title="自动更换背景图片"></a>自动更换背景图片</h2><figure class="highlight css"><figcaption><span>source/custom/custom.styl</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">body</span> &#123;</span><br><span class="line">  //以下是自动更换背景图片</span><br><span class="line">  background:url(https://source.unsplash.com/random/1600x900);</span><br><span class="line">  <span class="selector-tag">background-repeat</span>: <span class="selector-tag">no-repeat</span>;</span><br><span class="line">  <span class="selector-tag">background-attachment</span><span class="selector-pseudo">:fixed</span>;</span><br><span class="line">  <span class="selector-tag">background-position</span><span class="selector-pseudo">:50</span>% 50%;</span><br><span class="line">  <span class="selector-tag">background-size</span>: 100% 100%;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//更换侧边标题栏图片</span><br><span class="line"><span class="selector-class">.site-meta</span> &#123;</span><br><span class="line">  //background: #BABABA //#5CADAD;   //颜色</span><br><span class="line">  background-image:url(/images/subtitle1.jpg);   //背景图片</span><br><span class="line">  <span class="selector-tag">background-position</span><span class="selector-pseudo">:50</span>% 50%;</span><br><span class="line">  <span class="selector-tag">background-size</span>: 100% 100%;</span><br><span class="line">  opacity: 0.9;   //虚化</span><br><span class="line">  //p,span,a &#123;color: #3D3D3D;&#125;   //字体颜色</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="背景虚化（解决搜索框被虚化的问题）"><a href="#背景虚化（解决搜索框被虚化的问题）" class="headerlink" title="背景虚化（解决搜索框被虚化的问题）"></a>背景虚化（解决搜索框被虚化的问题）</h2><blockquote>
+<p>修改左侧栏菜单带搜索框的UI的背景颜色RGB值<br>其余的使用透明度<br>如此搜索框的就不会被虚化  </p>
+</blockquote>
+<figure class="highlight css"><figcaption><span>source/custom/custom.styl</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">//主页的阅读全文、主内容字体，不包含标题</span><br><span class="line"><span class="selector-class">.main-inner</span> &#123;</span><br><span class="line">  //background-color: rgba(255,255,255.0.8);</span><br><span class="line">  <span class="selector-tag">opacity</span>: 0<span class="selector-class">.8</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//上侧边栏</span><br><span class="line"><span class="selector-class">.header-inner</span> &#123;</span><br><span class="line">  background-color: rgba(255,255,255,0.8);    //只修改此处的背景颜色，以便搜索框不会被覆盖</span><br><span class="line">  //opacity: 0.75;    //透明度，会覆盖到搜索框</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">//上侧边栏的标题栏</span><br><span class="line"><span class="selector-class">.site-meta</span> &#123;</span><br><span class="line">  background: #5CADAD;   //颜色</span><br><span class="line">  //background-image:url(/images/huojinsi.jpg);   //背景图片</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// 下侧边栏</span><br><span class="line"><span class="selector-id">#sidebar</span> &#123;</span><br><span class="line">  //opacity: 0.8;    //透明度</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="note-便签"><a href="#note-便签" class="headerlink" title="note 便签"></a>note 便签</h2><blockquote>
+<p>主题配置文件搜索 note, 可设置风格和图标是否显示。存在部分样式无效的问题。</p>
+</blockquote>
+<figure class="highlight css"><figcaption><span>主题根目录_config.yml</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">note</span>:</span><br><span class="line">  # <span class="selector-tag">Note</span> <span class="selector-tag">tag</span> <span class="selector-tag">style</span> <span class="selector-tag">values</span>:</span><br><span class="line">  #  <span class="selector-tag">-</span> <span class="selector-tag">simple</span>    <span class="selector-tag">bs-callout</span> <span class="selector-tag">old</span> <span class="selector-tag">alert</span> <span class="selector-tag">style</span>. <span class="selector-tag">Default</span>.</span><br><span class="line">  #  <span class="selector-tag">-</span> <span class="selector-tag">modern</span>    <span class="selector-tag">bs-callout</span> <span class="selector-tag">new</span> (<span class="selector-tag">v2-v3</span>) <span class="selector-tag">alert</span> <span class="selector-tag">style</span>.</span><br><span class="line">  #  <span class="selector-tag">-</span> <span class="selector-tag">flat</span>      <span class="selector-tag">flat</span> <span class="selector-tag">callout</span> <span class="selector-tag">style</span> <span class="selector-tag">with</span> <span class="selector-tag">background</span>, <span class="selector-tag">like</span> <span class="selector-tag">on</span> <span class="selector-tag">Mozilla</span> <span class="selector-tag">or</span> <span class="selector-tag">StackOverflow</span>.</span><br><span class="line">  #  <span class="selector-tag">-</span> <span class="selector-tag">disabled</span>  <span class="selector-tag">disable</span> <span class="selector-tag">all</span> <span class="selector-tag">CSS</span> <span class="selector-tag">styles</span> <span class="selector-tag">import</span> <span class="selector-tag">of</span> <span class="selector-tag">note</span> <span class="selector-tag">tag</span>.</span><br><span class="line">  style: simple   //默认样式</span><br><span class="line">  icons: true   //图标</span><br><span class="line">  border_radius: 10  //圆角</span><br><span class="line">  # Offset lighter of background in % for modern and flat styles (modern: -12 | 12; flat: -18 | 6).</span><br><span class="line">  # <span class="selector-tag">Offset</span> <span class="selector-tag">also</span> <span class="selector-tag">applied</span> <span class="selector-tag">to</span> <span class="selector-tag">label</span> <span class="selector-tag">tag</span> <span class="selector-tag">variables</span>. <span class="selector-tag">This</span> <span class="selector-tag">option</span> <span class="selector-tag">can</span> <span class="selector-tag">work</span> <span class="selector-tag">with</span> <span class="selector-tag">disabled</span> <span class="selector-tag">note</span> <span class="selector-tag">tag</span>.</span><br><span class="line">  <span class="selector-tag">light_bg_offset</span>: 0</span><br></pre></td></tr></table></figure>
+
+<p><strong>示例：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% note default %&#125;default是类型还有以下几种&#123;% endnote %&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&#123;% note default %&#125;default&#123;% endnote %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% note primary %&#125;primary&#123;% endnote %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% note success %&#125;success&#123;% endnote %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% note info %&#125;info&#123;% endnote %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% note warning %&#125;warning&#123;% endnote %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% note danger %&#125;danger&#123;% endnote %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% note  %&#125;空样式&#123;% endnote %&#125;</span><br><span class="line"></span><br><span class="line">&#123;% note danger no-icon %&#125;danger no-icon&#123;% endnote %&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>另一种写法：</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class="note danger"&gt;&lt;p&gt;danger&lt;/p&gt;&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+
+<p><code>&lt;div class=&quot;note danger&quot;&gt;&lt;p&gt;danger&lt;/p&gt;&lt;/div&gt;</code></p>
+<h1 id="文章编辑"><a href="#文章编辑" class="headerlink" title="文章编辑"></a>文章编辑</h1><h2 id="选项卡"><a href="#选项卡" class="headerlink" title="选项卡"></a>选项卡</h2><blockquote>
+<p>“tab” 为选项卡的名称，可以自定义，数字是几表示从第几个选项卡开始。非必须，若数值为 - 1 则隐藏选项卡内容。<br>下载插件： npm i hexo-ruby-marks</p>
+</blockquote>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;% tabs tab,2 %&#125;</span><br><span class="line">&lt;!<span class="selector-tag">--</span> <span class="selector-tag">tab</span> <span class="selector-tag">--</span>&gt;</span><br><span class="line"><span class="selector-tag">this</span> <span class="selector-tag">is</span> <span class="selector-tag">tab1</span></span><br><span class="line">&lt;!<span class="selector-tag">--</span> <span class="selector-tag">endtab</span> <span class="selector-tag">--</span>&gt;</span><br><span class="line">&lt;!<span class="selector-tag">--</span> <span class="selector-tag">tab</span> <span class="selector-tag">--</span>&gt;</span><br><span class="line"><span class="selector-tag">this</span> <span class="selector-tag">is</span> <span class="selector-tag">tab2</span></span><br><span class="line">&lt;!<span class="selector-tag">--</span> <span class="selector-tag">endtab</span> <span class="selector-tag">--</span>&gt;</span><br><span class="line">&lt;!<span class="selector-tag">--</span> <span class="selector-tag">tab</span> <span class="selector-tag">--</span>&gt;</span><br><span class="line"><span class="selector-tag">this</span> <span class="selector-tag">is</span> <span class="selector-tag">tab3</span></span><br><span class="line">&lt;!<span class="selector-tag">--</span> <span class="selector-tag">endtab</span> <span class="selector-tag">--</span>&gt;</span><br><span class="line">&#123;% endtabs %&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>结果：</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;% tabs tab,2 %&#125;</span><br><span class="line">&lt;!-- tab --&gt;</span><br><span class="line">this is tab1</span><br><span class="line">&lt;!-- endtab --&gt;</span><br><span class="line">&lt;!-- tab --&gt;</span><br><span class="line">this is tab2</span><br><span class="line">&lt;!-- endtab --&gt;</span><br><span class="line">&lt;!-- tab --&gt;</span><br><span class="line">this is tab3</span><br><span class="line">&lt;!-- endtab --&gt;</span><br><span class="line">&#123;% endtabs %&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="引用（文章居中）"><a href="#引用（文章居中）" class="headerlink" title="引用（文章居中）"></a>引用（文章居中）</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% cq %&#125;</span><br><span class="line">**there are test words**</span><br><span class="line">&#123;% endcq %&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#123;% cq %&#125;</span><br><span class="line">**there are test words in center**</span><br><span class="line">&#123;% endcq %&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="在文章中插入-iframe"><a href="#在文章中插入-iframe" class="headerlink" title="在文章中插入 iframe"></a>在文章中插入 iframe</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% iframe url [width] [height] %&#125;</span><br></pre></td></tr></table></figure>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/">https://alonealive.github.io/Blog/2019/07/18/2019/190718-nextdebug-md/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-07-18T14:41:47.000Z" itemprop="datePublished">2019-07-18</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:00:02.380Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/web/'>web</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/hexo/" rel="tag">#&nbsp;hexo</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/07/21/2019/190721-cpp-variable/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++变量</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/07/17/2019/190717_debug_adb_commonds/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Use ADB</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

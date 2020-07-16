@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android init进程 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android init进程 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/"><meta property="og:locale" content="zh-CN"><meta name="description" content="概述 init是Linux系统中用户空间的第一个进程。通过adb shell ps -rf查看我的一加手机进程信息。  12UID            PID  PPID C STIME TTY          TIME CMDroot             1     0 0 12:43:34 ?     00:00:10 init   init进程负责创建系统中的几个关键进程，例如zyg - sunwengang - sunwengang blog"><meta name="keywords" content="android"><meta property="article:published_time" content="2019-09-09T13:52:00.000Z"><meta property="article:modified_time" content="2020-03-08T10:14:08.790Z"><meta property="og:updated_time" content="2020-03-08T10:14:08.790Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/"
+    },
+    "headline": "Android init进程 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-09-09T13:52:00.000Z",
+    "dateModified": "2020-03-08T10:14:08.790Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android",
+    "description": "概述 init是Linux系统中用户空间的第一个进程。通过adb shell ps -rf查看我的一加手机进程信息。  12UID            PID  PPID C STIME TTY          TIME CMDroot             1     0 0 12:43:34 ?     00:00:10 init   init进程负责创建系统中的几个关键进程，例如zyg - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android init进程" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android init进程&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android init进程" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACPUlEQVR42u2cy27DMAwE/f8/3V56aA1rH66DpuLoEqSRlRFgysslm+PjH4wDSCCBBPINIA8xflzw9f77Z+e/na89v7przt8L5FzIy5tWLHyedzV3tc4V+HI+kKMh1U2vAmEVXAow+V4ggWwOYgegHhRAAvkk5ArCHeRqXSCBbAWGXEQEyyqAKmED5FhIlRC98vWxbBHIrSCtabQIIHW4O8HxuKsG5FaQznRSN72CTz63mwJyJKQTC2lwXD0EmuC53AiQIyFb4aqCzZlVahO1sQ/k1pDJzbxaNDGzmqQMSCBbgykVEekG5RpAjoR0wkId2I25lQSVVeZAjoJUYEkypcRvOjeqPgA5AjI5hFNDIBEPLpkDcjakE6dJ4VNtQhUM7MEP5FjIxLBPgyxJ/pVAARJIZ9gnsE2xPgkwIIFMmjeaxrhIPJj1gAQyPbTvFjiTIkHUOQDkCMjUiGoP+aaoWgkMILeGTJJ8ZWqlpr9L1irDCsitIRuR4QyoOwVVKZ6BHAvpCkqJUFDBdKehGci5kGkhXs1zpqgKDhmsQI6GTAwp14DsErUkaGyjCJCjIF0ylQaAEhhKPMfdLECOgGwaOJMmEmfCJs3zQM6EdCMtViamQvqQAHI2ZBMIjcBIjfw4EQNyFGRSeIpMzyP7cY5bgQPkOEjXMJwc5Mnmfq2CgATyyP8B3RVAE7jIRAUSyMIouFMsXSaAQI6GbBKwNDhagXFb9AK5HaR78DcJfrqmEiRAzoZ85wEkkEAC+YfjE3Z/9WRcEtNMAAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android init进程</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-09-09</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android init进程&url=https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android init进程&url=https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACPUlEQVR42u2cy27DMAwE/f8/3V56aA1rH66DpuLoEqSRlRFgysslm+PjH4wDSCCBBPINIA8xflzw9f77Z+e/na89v7przt8L5FzIy5tWLHyedzV3tc4V+HI+kKMh1U2vAmEVXAow+V4ggWwOYgegHhRAAvkk5ArCHeRqXSCBbAWGXEQEyyqAKmED5FhIlRC98vWxbBHIrSCtabQIIHW4O8HxuKsG5FaQznRSN72CTz63mwJyJKQTC2lwXD0EmuC53AiQIyFb4aqCzZlVahO1sQ/k1pDJzbxaNDGzmqQMSCBbgykVEekG5RpAjoR0wkId2I25lQSVVeZAjoJUYEkypcRvOjeqPgA5AjI5hFNDIBEPLpkDcjakE6dJ4VNtQhUM7MEP5FjIxLBPgyxJ/pVAARJIZ9gnsE2xPgkwIIFMmjeaxrhIPJj1gAQyPbTvFjiTIkHUOQDkCMjUiGoP+aaoWgkMILeGTJJ8ZWqlpr9L1irDCsitIRuR4QyoOwVVKZ6BHAvpCkqJUFDBdKehGci5kGkhXs1zpqgKDhmsQI6GTAwp14DsErUkaGyjCJCjIF0ylQaAEhhKPMfdLECOgGwaOJMmEmfCJs3zQM6EdCMtViamQvqQAHI2ZBMIjcBIjfw4EQNyFGRSeIpMzyP7cY5bgQPkOEjXMJwc5Mnmfq2CgATyyP8B3RVAE7jIRAUSyMIouFMsXSaAQI6GbBKwNDhagXFb9AK5HaR78DcJfrqmEiRAzoZ85wEkkEAC+YfjE3Z/9WRcEtNMAAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#init分析"><span class="post-toc-number">2.</span> <span class="post-toc-text">init分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#解析系统配置文件init-rc"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">解析系统配置文件init.rc</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#init-rc解析service"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">init.rc解析service</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#属性服务"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">属性服务</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><ul>
+<li>init是Linux系统中用户空间的第一个进程。通过<code>adb shell ps -rf</code>查看我的一加手机进程信息。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UID            PID  PPID C STIME TTY          TIME CMD</span><br><span class="line">root             1     0 0 12:43:34 ?     00:00:10 init</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>init进程负责创建系统中的几个关键进程，例如zygote</li>
+<li>init提供了一个property service（属性服务）来管理Android系统的众多属性<a id="more"></a>
+<h2 id="init分析"><a href="#init分析" class="headerlink" title="init分析"></a>init分析</h2></li>
+</ul>
+<blockquote>
+<p>使用android-10.0.0_r2 AOSP最新源码（<a href="http://192.99.106.107:8080/xref/android-10.0.0_r2/）" target="_blank" rel="noopener">http://192.99.106.107:8080/xref/android-10.0.0_r2/）</a></p>
+</blockquote>
+<p>init进程的入口函数从/system/core/init/main.cpp的main函数开始：</p>
+<figure class="highlight c++"><figcaption><span>system/core/init/main.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</span><br><span class="line"><span class="meta">#<span class="meta-keyword">if</span> __has_feature(address_sanitizer)</span></span><br><span class="line">    __asan_set_error_report_callback(AsanReportCallback);</span><br><span class="line"><span class="meta">#<span class="meta-keyword">endif</span></span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(basename(argv[<span class="number">0</span>]), <span class="string">"ueventd"</span>)) &#123;</span><br><span class="line">        <span class="keyword">return</span> ueventd_main(argc, argv);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (argc &gt; <span class="number">1</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"subcontext"</span>)) &#123;</span><br><span class="line">            android::base::InitLogging(argv, &amp;android::base::KernelLogger);</span><br><span class="line">            <span class="keyword">const</span> BuiltinFunctionMap function_map;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> SubcontextMain(argc, argv, &amp;function_map);  </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"selinux_setup"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> SetupSelinux(argv);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!<span class="built_in">strcmp</span>(argv[<span class="number">1</span>], <span class="string">"second_stage"</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> SecondStageMain(argc, argv); <span class="comment">//此处调用init.cpp的函数入口</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    re</span><br></pre></td></tr></table></figure>
+
+<p>在Android Q之前，此处一直都是直接调用入口函数：</p>
+<figure class="highlight c++"><figcaption><span>system/core/init/main.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">char</span>** argv)</span> </span>&#123;</span><br><span class="line">    android::init::main(argc, argv);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后会调用到init.cpp中的SecondStageMain函数。init的工作流程精简为以下四点：</p>
+<ul>
+<li>解析配置文件</li>
+<li>执行各个阶段的动作（创建zygote的工作就是此时完成）</li>
+<li>调用Property_init初始化属性相关的资源</li>
+<li>init进入一个无线循环，等待一些事情的发生（init处理来自socket和来自属性服务器的相关事情）</li>
+</ul>
+<h3 id="解析系统配置文件init-rc"><a href="#解析系统配置文件init-rc" class="headerlink" title="解析系统配置文件init.rc"></a>解析系统配置文件init.rc</h3><ul>
+<li>在入口函数调用<code>LoadBootScripts(am, sm);</code></li>
+<li>然后调用<code>parser.ParseConfig(bootscript);</code></li>
+<li>调用system/core/init/parser.cpp的parseConfig函数</li>
+<li>调用<code>Parser::ParseConfigFile</code>函数，读取配置文件并解析</li>
+</ul>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">Parser::ParseConfigFile</span><span class="params">(<span class="keyword">const</span> <span class="built_in">std</span>::<span class="built_in">string</span>&amp; path)</span> </span>&#123;</span><br><span class="line">    LOG(INFO) &lt;&lt; <span class="string">"Parsing file "</span> &lt;&lt; path &lt;&lt; <span class="string">"..."</span>;</span><br><span class="line">    android::base::Timer t;</span><br><span class="line">    <span class="keyword">auto</span> config_contents = ReadFile(path);   <span class="comment">//读取init.rc配置文件</span></span><br><span class="line">    <span class="keyword">if</span> (!config_contents) &#123;</span><br><span class="line">        LOG(INFO) &lt;&lt; <span class="string">"Unable to read config file '"</span> &lt;&lt; path &lt;&lt; <span class="string">"': "</span> &lt;&lt; config_contents.error();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ParseData(path, &amp;config_contents.value());</span><br><span class="line"></span><br><span class="line">    LOG(VERBOSE) &lt;&lt; <span class="string">"(Parsing "</span> &lt;&lt; path &lt;&lt; <span class="string">" took "</span> &lt;&lt; t &lt;&lt; <span class="string">".)"</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="init-rc解析service"><a href="#init-rc解析service" class="headerlink" title="init.rc解析service"></a>init.rc解析service</h3><blockquote>
+<p>查看/system/core/rootdir/init.rc</p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">on init   <span class="comment">//on关键字表示一个section，对应的名字时init</span></span><br><span class="line">    sysclktz <span class="number">0</span></span><br><span class="line"></span><br><span class="line">    # Mix device-specific information into the entropy pool</span><br><span class="line">    copy /proc/cmdline /dev/urandom</span><br><span class="line">    copy /system/etc/prop.<span class="keyword">default</span> /dev/urandom</span><br><span class="line"></span><br><span class="line">    symlink /proc/self/fd/<span class="number">0</span> /dev/<span class="built_in">stdin</span></span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"># It is recommended to <span class="built_in">put</span> unnecessary data/ initialization from post-fs-data</span><br><span class="line"># to start-zygote in device's init.rc to unblock zygote start.</span><br><span class="line">on zygote-start &amp;&amp; property:ro.crypto.state=unencrypted</span><br><span class="line">    # A/B update verifier that marks a successful boot.</span><br><span class="line">    exec_start update_verifier_nonencrypted</span><br><span class="line">    start netd</span><br><span class="line">    start zygote</span><br><span class="line">    start zygote_secondary</span><br><span class="line"></span><br><span class="line">on zygote-start &amp;&amp; property:ro.crypto.state=unsupported</span><br><span class="line">    # A/B update verifier that marks a successful boot.</span><br><span class="line">    exec_start update_verifier_nonencrypted</span><br><span class="line">    start netd</span><br><span class="line">    start zygote</span><br><span class="line">    start zygote_secondary</span><br><span class="line"></span><br><span class="line">on zygote-start &amp;&amp; property:ro.crypto.state=encrypted &amp;&amp; property:ro.crypto.type=file</span><br><span class="line">    # A/B update verifier that marks a successful boot.</span><br><span class="line">    exec_start update_verifier_nonencrypted</span><br><span class="line">    start netd</span><br><span class="line">    start zygote</span><br><span class="line">    start zygote_secondary</span><br><span class="line"></span><br><span class="line">on boot    <span class="comment">//新的section，名为boot</span></span><br><span class="line">    # basic network init</span><br><span class="line">    ifup lo   <span class="comment">//一个command</span></span><br><span class="line">    hostname localhost</span><br><span class="line">    domainname localdomain</span><br><span class="line"></span><br><span class="line">    # IPsec SA <span class="keyword">default</span> expiration length</span><br><span class="line">    <span class="built_in">write</span> /proc/sys/net/core/xfrm_acq_expires <span class="number">3600</span></span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p>init.rc中：<code>class_start</code>，标识一个COMMAND，对应的处理函数是do_class_start，位于boot section范围内。</p>
+<h3 id="属性服务"><a href="#属性服务" class="headerlink" title="属性服务"></a>属性服务</h3><blockquote>
+<p>注册标可以存储一些类似ket/value的键值对，一般系统或某些应用程序会吧自己的一些属性存储在注册表中，即使重启，还是能够根据之前在注册表中设置的属性，进行相应的初始化工作。Android平台也提供了一个类似的机制，称为属性服务（property service）  </p>
+</blockquote>
+<p>property的初始化在init.cpp的主函数里面：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">property_init();</span><br><span class="line">......</span><br><span class="line">    <span class="comment">// Make the time that init started available for bootstat to log.</span></span><br><span class="line">    property_set(<span class="string">"ro.boottime.init"</span>, getenv(<span class="string">"INIT_STARTED_AT"</span>));</span><br><span class="line">    property_set(<span class="string">"ro.boottime.init.selinux"</span>, getenv(<span class="string">"INIT_SELINUX_TOOK"</span>));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set libavb version for Framework-only OTA match in Treble build.</span></span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">char</span>* avb_version = getenv(<span class="string">"INIT_AVB_VERSION"</span>);</span><br><span class="line">    <span class="keyword">if</span> (avb_version) property_set(<span class="string">"ro.boot.avb_version"</span>, avb_version);</span><br><span class="line">...</span><br><span class="line">    property_load_boot_defaults(load_debug_prop);</span><br><span class="line">    UmountDebugRamdisk();</span><br><span class="line">    fs_mgr_vendor_overlay_mount_all();</span><br><span class="line">    export_oem_lock_status();</span><br><span class="line">    StartPropertyService(&amp;epoll);</span><br><span class="line">    <span class="function">MountHandler <span class="title">mount_handler</span><span class="params">(&amp;epoll)</span></span>;</span><br><span class="line">    set_usb_controller();</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/">https://alonealive.github.io/Blog/2019/09/09/2019/190909_android_init_service/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-09-09T13:52:00.000Z" itemprop="datePublished">2019-09-09</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:14:08.790Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/09/10/2019/190910_android_zygote_systemserver/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android zygote和SystemServer进程</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/09/04/2019/190904_cpp_class_object/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++对象和类</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

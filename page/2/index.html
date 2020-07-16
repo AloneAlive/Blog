@@ -1,0 +1,1227 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="website"><meta property="og:url" content="https://alonealive.github.io/Blog/page/2/"><meta property="og:locale" content="zh-CN"><meta name="description" content="sunwengang - sunwengang blog">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/page/2/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "@type": "Blog",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    "url": "https://alonealive.github.io/Blog",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog"
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "",
+    "description": "sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIQAAACECAAAAAB0L9x7AAABfElEQVR42u3awRKCMAyEYd7/pfXukM0GnLrFn4s62vAdsEmbHq+A6wABAsQWiENcn785DVSMs+KCiEVUwav31U2r8WVcENGIKqj6/gzqjAOxP6KavE4Dg/hLhJrUQDwHUQWfFjpVQruVRUEsR6iC9M7r16ptEEsR7aK1mcSWrMpBLEWoB8kBqeKmjQdiK8R0sexMTqPKCsRPEd2m1+RmkwkMRCZCFSZuIlMLZxUXRC7CWQB3E5B6INsEBiIWoRa9MhE1V5vAQEQh3E1Rp9DtNlTbLAoiAmFPLMYNqwRWfgYRieia7NVv3GLo0r8DRAyia7o6myHO4glEPsJ5QJ0bO6/WxhmIGIRKPG7wyWEfEHsgnAN9TtPeGQ8iE3GlEece8umaLyAyEe5BYTd5TQ4GgchFdAd7VILqDvvITVYQ0YhJ4616WL+SRUFsg+iKYLeJB+IZiC7glcN/IPIRzoJm0tR3DniAyEWMBormmlos36q2QSxF/PICAQJENOIN3/m6akwxtC4AAAAASUVORK5CYII=" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            <div class="container">
+    <div class="main-container">
+        <main>
+            <div class="post-stream-container">
+                <!-- # Post List # -->
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column column-thumbnail col-4 col-lg-12">
+                    <a href="/Blog/2019/10/23/2019/191023_android_shell/">
+                        <div class="post-thumbnail lazyload" data-bg="url(https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/shell.jpg)"></div>
+                    </a>
+                </div>
+                <div class="column column-body col-8 col-lg-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/10/23/2019/191023_android_shell/" rel="bookmark">Android Shell脚本应用</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        基本结构.sh（系统中文.ch.sh）#!/bin/bash 脚本开头
+#!/bin/csh 是 C shell 的命令解
+    <a href="/Blog/2019/10/23/2019/191023_android_shell/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-10-23</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column column-thumbnail col-4 col-lg-12">
+                    <a href="/Blog/2019/10/21/2019/191021_android_basis/">
+                        <div class="post-thumbnail lazyload" data-bg="url(https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/colorspace.jpeg)"></div>
+                    </a>
+                </div>
+                <div class="column column-body col-8 col-lg-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/10/21/2019/191021_android_basis/" rel="bookmark">Android色彩空间（ColorSpace）</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        色彩空间Color Space广色域WCGWCG（Wide Color Gamut），是Adobe System开发的一种RGB色彩空间，使用纯光谱原色提供较大的色域。与Adove RGB和sRGB相比，能够存储更大范围的颜色值。相比之下，WCG包含CIELAB色彩空间可见颜色的77.6%，而Adobe RGB色彩空间仅覆盖52.1%，sRGB仅覆盖35.9%。
+    <a href="/Blog/2019/10/21/2019/191021_android_basis/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-10-21</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/10/20/2019/191020_cpp_singletonMode/" rel="bookmark">C++ 单例模式</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        懒汉式单例模式
+缺点是延迟加载，比如配置文件，只有在使用的时候才会加载。
+
+    <a href="/Blog/2019/10/20/2019/191020_cpp_singletonMode/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-10-20</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/10/20/2019/191020_java_singletonMode/" rel="bookmark">Java 单例模式</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+单例：保证一个类仅有一个实例，并提供一个访问它的全局访问点。单例模式是一种常用的软件设计模式之一，其目的是保证整个应用中只存在类的唯一个实例。比如我们在系统启动时，需要加载一些公共的配置信息，对整个应用程序的整个生命周期中都可见且唯一，这时需要设计成单例模式。如：spring容器，session工厂，缓存，数据库连接池等等。
+
+    <a href="/Blog/2019/10/20/2019/191020_java_singletonMode/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-10-20</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/java/">java</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/10/16/2019/191016_adndroid_property_setTypes/" rel="bookmark">Android Property</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        property的相关生成文件和设置
+android通过SystemProperties的set和get方法来控制很多东西，一般上层添加一个控制开关可以使用这个方法，在系统里面存在很多个prop文件。它们分别是system/build.prop,system/etc/prop.default,vendor/build.prop,vendor/default.prop。下面分别来说下这几个文件的构成。
+
+    <a href="/Blog/2019/10/16/2019/191016_adndroid_property_setTypes/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-10-16</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/10/12/2019/191012_android_debug1/" rel="bookmark">Android Graphics 调试技巧（十月份更新）</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        readelf命令查看ELF格式的文件信息常见的文件比如动态库(*.so)、静态库（*.a），常用命令：readelf -a libgui.so | grep test_string
+    <a href="/Blog/2019/10/12/2019/191012_android_debug1/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-10-12</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/30/2019/190930_nReal_Sample/" rel="bookmark">nReal搭建Samepl APK</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        概述nrsdk是nreal开发混合现实体验的平台。使用简单的开发过程和高级api，nrsdk提供了一组强大的mr特性，并使nreal眼镜能够了解真实世界。
+nrsdk为开发者提供了五个核心特性：
+
+空间计算使眼镜能够跟踪它们相对于世界的实时位置，并了解周围的环境，例如检测和跟踪平面和图像。
+优化的渲染自动应用于应用程序并在后端运行，以最小化延迟并减少抖动，增强总体用户体验。
+多模态交互为不同的用例提供了交互的直观选择。
+提供了开发工具，以便您可以更好地开发和调试应用程序。
+第三方集成是通过为第三方sdk提供数据来实现的，这允许您充分利用nreal light的硬件功能并构建功能强大的mr/ar应用程序。
+    <a href="/Blog/2019/09/30/2019/190930_nReal_Sample/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-30</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/VR/">VR</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/22/2019/190922-android-handler-cpp/" rel="bookmark">Android Handler消息循环处理机制(例ActivityThread)</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        整体流程
+关键词：Handler、Looper、MessageQueue、handleMessage
+
+消息被存放于消息队列，应用程序的主线程会围绕这个消息队列进入一个无限循环，知道应用程序退出。（消息循环过程是由Looper实现的）
+
+如果队列中有消息，应用程序的主线程会把它取出来，分发给相应的Handler进行处理；
+如果队列中没有消息，应用程序的主县城就会进入空闲等待状态，等待下一个消息的到来；
+    <a href="/Blog/2019/09/22/2019/190922-android-handler-cpp/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-22</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/21/2019/190921-android-wms-view-cpp/" rel="bookmark">Android WMS和View基本理解</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        概述
+Window 可以看做是Surface的一个包装，本质上，Window的本体就是一片Surface。将操作对象Surface，对象关联属性集以及操作方法等组合在一起便是 Window。Surface 其实是一块画布，应用可以随心所欲地通过 Canvas 或者 OpenGL 在其上作画，然后通过 SurfaceFlinger 将多块 Surface 的内容按照特定的顺序(ZOrder)进行混合并输出到 FrameBuffer，从而将 Android 漂亮的脸蛋显示给用户。既然每个窗口都有一块 Surface 供自己涂鸦，所以必然需要一个角色对所有窗口的 Surface 进行协调管理。于是,WMS 应运而生。
+
+
+代码： http://aosp.opersys.com/xref/android-10.0.0_r2/xref/frameworks/base/core/java/android/view/
+
+    <a href="/Blog/2019/09/21/2019/190921-android-wms-view-cpp/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-21</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/16/2019/190916_cpp_useclass/" rel="bookmark">C++ 运算符重载、友元、返回对象</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        运算符重载运算符重载将重载的概念扩展到运算符上，允许赋予C++运算符多种含义。
+例如* 用于地址，将获得存储在这个地址中的值；而用于两个数字之间，得到的是乘积。
+    <a href="/Blog/2019/09/16/2019/190916_cpp_useclass/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-16</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/10/2019/190910_android_zygote_systemserver/" rel="bookmark">Android zygote和SystemServer进程</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        zygote和system_server在Android中的Java层很重要。
+zygote分析
+zygote由init进程根据init.rc的配置项创建的。最初叫app_process，但是在运行过程中，通过Linux的pctrl系统调用将其换成了zygote。通过adb shell ps -ef|grep zygote查看到该进程。
+
+    <a href="/Blog/2019/09/10/2019/190910_android_zygote_systemserver/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-10</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/09/2019/190909_android_init_service/" rel="bookmark">Android init进程</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        概述
+init是Linux系统中用户空间的第一个进程。通过adb shell ps -rf查看我的一加手机进程信息。
+
+12UID            PID  PPID C STIME TTY          TIME CMDroot             1     0 0 12:43:34 ?     00:00:10 init
+
+
+init进程负责创建系统中的几个关键进程，例如zygote
+init提供了一个property service（属性服务）来管理Android系统的众多属性
+    <a href="/Blog/2019/09/09/2019/190909_android_init_service/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-09</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/04/2019/190904_cpp_class_object/" rel="bookmark">C++对象和类</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        类型指定基本类型完成了三项工作：
+
+决定数据对象需要的内存数量
+决定如何解释内存中的位（long和float所占位数相同，但是将他们转换成数值的方法不同）
+决定可使用数据对象执行的操作和方法
+    <a href="/Blog/2019/09/04/2019/190904_cpp_class_object/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-04</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/01/2019/190901_cpp_namespace/" rel="bookmark">C++头文件、作用域、内存模型和名称空间</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        单独编译C++提供#include语法，因而可以将程序划分，大致可以分成三部分：  
+
+头文件a.h：包含结构声明和使用这些结构的函数原型
+源代码文件a.cpp：包含与结构相关的函数的代码
+源代码文件b.cpp：包含调用与结构相关的函数的代码
+    <a href="/Blog/2019/09/01/2019/190901_cpp_namespace/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-01</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/29/2019/190829_android_JNI/" rel="bookmark">Android JNI理解</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        概述
+JNI,即Java Native Interface，Java本地调用。通过JNI可以实现：  
+
+Java程序函数可以调用Natvie语言（C/C++）写的函数
+Natvie程序函数可以调用Java层的函数
+
+
+    <a href="/Blog/2019/08/29/2019/190829_android_JNI/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-29</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/29/2019/190829_linux_ibus/" rel="bookmark">ubuntu输入法无法选择候选文字</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        解决方法1234#删除配置文件rm -rf ~/.cache/ibus/libpinyinibus-daemon -drxibus-daemon -drx
+    <a href="/Blog/2019/08/29/2019/190829_linux_ibus/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-29</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/linux/">linux</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/29/2019/190829_cpp_maohao/" rel="bookmark">C++双冒号、点号、箭头的区别</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        箭头-&gt;和点号.声明一个结构：
+123struct mystruct &#123;    int age;&#125;;
+    <a href="/Blog/2019/08/29/2019/190829_cpp_maohao/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-29</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/28/2019/190828_android_makefile/" rel="bookmark">Android中的makefile（Android.mk）</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+makefile是和make命令一起使用，在Android中，可以使用mm、mmm、mma进行编译。Makefile可以组织项目中各种库和代码之间的依赖，构建项目，和maven、gradle一样属于构建工具。常用于大型项目。
+
+    <a href="/Blog/2019/08/28/2019/190828_android_makefile/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-28</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/26/2019/190826_cpp_inline/" rel="bookmark">C++内联函数、引用变量、函数重载、函数模板</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        内联函数
+常规函数调用使程序跳到另一个地址（函数的地址），并在函数结束后返回。来回跳跃并记录跳跃位置意味着一定的开销。内联函数使得编译器将相应的函数代码替换函数调用。程序无需跳到另一个位置处执行代码，再调回来。因而，内联函数运行速度比常规函数快，但是代价是需要占用更多的内存。如果程序在10个不同的地方调用调用同一个内联函数，则该程序将包含该函数代码的10个副本。
+
+    <a href="/Blog/2019/08/26/2019/190826_cpp_inline/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-26</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/21/2019/190821_cpp_function/" rel="bookmark">C++函数模块（函数指针、递归）</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+本章节主要是围绕函数为圆心，涉及到字符串、指针、C++11特性auto、typedef。由于接触android源码、opengl，需将C++学习一遍，之前只是用过java、c、c#这些。涉及到android源码，例如frameworks/native的surfaceflinger,gui,ui, 以及vender,hardware都是需要仔细的阅读C++代码才能够理解。再如graphics的测量、绘制渲染、硬件加速、合成显示，私以为学习一些图形学是有必要的。人生在勤，不索何获。
+
+    <a href="/Blog/2019/08/21/2019/190821_cpp_function/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-21</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+            </div>
+        </main>
+        
+<nav>
+<ul class="pagination">
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/" rel="prev">
+                <span class="page-item-subtitle"><i class="icon icon-back" aria-hidden="true"></i></span>
+                <span class="page-item-title">上一页</span>
+            </a>
+        </li>
+    
+    
+        <li class="page-item page-next">
+            <a href="/Blog/page/3/" rel="next">
+                <span class="page-item-title">下一页</span>
+                <span class="page-item-subtitle"><i class="icon icon-forward" aria-hidden="true"></i></span>
+            </a>
+        </li>
+    
+</ul>
+</nav>
+
+
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

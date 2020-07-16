@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>nReal搭建Samepl APK | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="nReal搭建Samepl APK | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/"><meta property="og:locale" content="zh-CN"><meta name="description" content="概述nrsdk是nreal开发混合现实体验的平台。使用简单的开发过程和高级api，nrsdk提供了一组强大的mr特性，并使nreal眼镜能够了解真实世界。 nrsdk为开发者提供了五个核心特性：  空间计算使眼镜能够跟踪它们相对于世界的实时位置，并了解周围的环境，例如检测和跟踪平面和图像。 优化的渲染自动应用于应用程序并在后端运行，以最小化延迟并减少抖动，增强总体用户体验。 多模态交互为不同的用例 - sunwengang - sunwengang blog"><meta name="keywords" content="nReal"><meta property="article:published_time" content="2019-09-30T13:52:00.000Z"><meta property="article:modified_time" content="2020-07-05T06:50:32.259Z"><meta property="og:updated_time" content="2020-07-05T06:50:32.259Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="nReal"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/"
+    },
+    "headline": "nReal搭建Samepl APK | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-09-30T13:52:00.000Z",
+    "dateModified": "2020-07-05T06:50:32.259Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "nReal",
+    "description": "概述nrsdk是nreal开发混合现实体验的平台。使用简单的开发过程和高级api，nrsdk提供了一组强大的mr特性，并使nreal眼镜能够了解真实世界。 nrsdk为开发者提供了五个核心特性：  空间计算使眼镜能够跟踪它们相对于世界的实时位置，并了解周围的环境，例如检测和跟踪平面和图像。 优化的渲染自动应用于应用程序并在后端运行，以最小化延迟并减少抖动，增强总体用户体验。 多模态交互为不同的用例 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=nReal搭建Samepl APK" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=nReal搭建Samepl APK&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=nReal搭建Samepl APK" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACO0lEQVR42u2a0W6EMAwE+f+fbp8qVYh4xxynXuPhhR6Xg6GKE+/ax9c/OA4hhRRSyA+APIrjPGb19++xP9fP5/NY9Fwhx0JeTtoF5Orz6n503OUYIUdDXk3savKfv09g5L5CCkkh04J99f3VZkF+L6SQFHL14CqIaAAJKWQnwUjnVTJSAT6eBQm5HWQliN55fkwtCrkVZDSNFkGRHlYlG4+7akJuBZmEViX6E1AFR15MyJmQnQW3YwJUxgG9LuRcyEq006QgGaurTaBMloUcC0lEVjIDSIKRhNpSiAk5CjIVNiuBVhmpJEiSGSukkORhSbTdKUTdFmJCbgmZkopUmKdGffUPaO84Qm4PmSZxtYhXgp9uFtHYF3IcJAmSKORDYFTm6zLhFnIkJDEDKsGWAq7bNIKyICG3hqQNSTSZJSYpLVQJORcyNbuRhiUq/pPBJaSQtNhOzNVugaBayIWcC0kX4WSKkmSZbARCClkJqwRME47KZGgv5kJuD0ke0CkmVYs7KVCV0S3kGMhkJKUgIsHSbWgWcjZkSjQ6kz5dI5+FFDJN8I55QBrqUlOpkEKm5g864ZMpWr0AChwhR0G2DU4IVI2NG4SQIyHTQW6WivkkecEFUCG3h0wTmi7ENLF9WS0KOQKyU6BPCzxpFrkVOEKOg6QiKSWyqam+JfiEFPJmc3sScx3zATsYQgoJTQTazFS9iJBCpuS2SiZeKUS1A0fIMZBp4+8I/G4ygV01IcdAfvIhpJBCCvmHxzdRZvZVQIirvwAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">nReal搭建Samepl APK</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-09-30</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/VR/">VR</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=nReal搭建Samepl APK&url=https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=nReal搭建Samepl APK&url=https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACO0lEQVR42u2a0W6EMAwE+f+fbp8qVYh4xxynXuPhhR6Xg6GKE+/ax9c/OA4hhRRSyA+APIrjPGb19++xP9fP5/NY9Fwhx0JeTtoF5Orz6n503OUYIUdDXk3savKfv09g5L5CCkkh04J99f3VZkF+L6SQFHL14CqIaAAJKWQnwUjnVTJSAT6eBQm5HWQliN55fkwtCrkVZDSNFkGRHlYlG4+7akJuBZmEViX6E1AFR15MyJmQnQW3YwJUxgG9LuRcyEq006QgGaurTaBMloUcC0lEVjIDSIKRhNpSiAk5CjIVNiuBVhmpJEiSGSukkORhSbTdKUTdFmJCbgmZkopUmKdGffUPaO84Qm4PmSZxtYhXgp9uFtHYF3IcJAmSKORDYFTm6zLhFnIkJDEDKsGWAq7bNIKyICG3hqQNSTSZJSYpLVQJORcyNbuRhiUq/pPBJaSQtNhOzNVugaBayIWcC0kX4WSKkmSZbARCClkJqwRME47KZGgv5kJuD0ke0CkmVYs7KVCV0S3kGMhkJKUgIsHSbWgWcjZkSjQ6kz5dI5+FFDJN8I55QBrqUlOpkEKm5g864ZMpWr0AChwhR0G2DU4IVI2NG4SQIyHTQW6WivkkecEFUCG3h0wTmi7ENLF9WS0KOQKyU6BPCzxpFrkVOEKOg6QiKSWyqam+JfiEFPJmc3sScx3zATsYQgoJTQTazFS9iJBCpuS2SiZeKUS1A0fIMZBp4+8I/G4ygV01IcdAfvIhpJBCCvmHxzdRZvZVQIirvwAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#开发工具包"><span class="post-toc-number">2.</span> <span class="post-toc-text">开发工具包</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#选择开发平台"><span class="post-toc-number">3.</span> <span class="post-toc-text">选择开发平台</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#与Android本机应用程序兼容"><span class="post-toc-number">4.</span> <span class="post-toc-text">与Android本机应用程序兼容</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#功能"><span class="post-toc-number"></span> <span class="post-toc-text">功能</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#空间计算"><span class="post-toc-number">1.</span> <span class="post-toc-text">空间计算</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#HelloMR-APP"><span class="post-toc-number"></span> <span class="post-toc-text">HelloMR APP</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#硬件清单"><span class="post-toc-number">1.</span> <span class="post-toc-text">硬件清单</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#软件清单"><span class="post-toc-number">2.</span> <span class="post-toc-text">软件清单</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#创建统一项目"><span class="post-toc-number">3.</span> <span class="post-toc-text">创建统一项目</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#配置生成设置"><span class="post-toc-number">4.</span> <span class="post-toc-text">配置生成设置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#连接到nReal设备-开发工具包"><span class="post-toc-number">5.</span> <span class="post-toc-text">连接到nReal设备(开发工具包)</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#建立并运行"><span class="post-toc-number">6.</span> <span class="post-toc-text">建立并运行</span></a></li></ol></li><li class="post-toc-item post-toc-level-1"><a class="post-toc-link" href="#Sample-APP-立体方块"><span class="post-toc-number"></span> <span class="post-toc-text">Sample APP(立体方块)</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#scene设置"><span class="post-toc-number">1.</span> <span class="post-toc-text">scene设置</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>nrsdk是nreal开发混合现实体验的平台。使用简单的开发过程和高级api，nrsdk提供了一组强大的mr特性，并使nreal眼镜能够了解真实世界。</p>
+<p>nrsdk为开发者提供了五个核心特性：</p>
+<ol>
+<li>空间计算使眼镜能够跟踪它们相对于世界的实时位置，并了解周围的环境，例如检测和跟踪平面和图像。</li>
+<li>优化的渲染自动应用于应用程序并在后端运行，以最小化延迟并减少抖动，增强总体用户体验。</li>
+<li>多模态交互为不同的用例提供了交互的直观选择。</li>
+<li>提供了开发工具，以便您可以更好地开发和调试应用程序。</li>
+<li>第三方集成是通过为第三方sdk提供数据来实现的，这允许您充分利用nreal light的硬件功能并构建功能强大的mr/ar应用程序。<a id="more"></a>
+<h2 id="开发工具包"><a href="#开发工具包" class="headerlink" title="开发工具包"></a>开发工具包</h2></li>
+</ol>
+<p>开发混合现实应用程序需要一个nreal开发工具包。开发工具包由一对nreal光学眼镜、nreal计算单元和nreal光学控制器组成。如果没有，请在这里注册nreal开发工具包！<br>到目前为止，你还不能直接在android手机上开发应用程序。安卓手机开发将于2020年初推出。</p>
+<h2 id="选择开发平台"><a href="#选择开发平台" class="headerlink" title="选择开发平台"></a>选择开发平台</h2><p>nrsdk支持许多最流行的开发环境。通过这些功能，您可以构建全新的mr体验，或者使用mr功能增强现有的原生android应用程序。<br>Unity （Support Unity 2018.2.X） Android Native (to be released) Unreal (to be released)</p>
+<h2 id="与Android本机应用程序兼容"><a href="#与Android本机应用程序兼容" class="headerlink" title="与Android本机应用程序兼容"></a>与Android本机应用程序兼容</h2><p>nreal眼镜现在与android原生应用程序兼容，这意味着只要应用程序安装在设备上，用户就可以通过眼镜查看所有应用程序活动。在你这边什么都不需要改变。要使2d应用程序更具沉浸感和三维感，可以使用nrsdk在现有应用程序中添加mr功能或3d虚拟对象。</p>
+<h1 id="功能"><a href="#功能" class="headerlink" title="功能"></a>功能</h1><h2 id="空间计算"><a href="#空间计算" class="headerlink" title="空间计算"></a>空间计算</h2><p>nreal眼镜使用各种传感器和相机，以建立对周围环境和用户本身的复杂理解，创造身临其境的体验，无缝融合数字世界和现实世界。</p>
+<hr>
+<h1 id="HelloMR-APP"><a href="#HelloMR-APP" class="headerlink" title="HelloMR APP"></a>HelloMR APP</h1><h2 id="硬件清单"><a href="#硬件清单" class="headerlink" title="硬件清单"></a>硬件清单</h2><ol>
+<li>一个nreal计算单元（把它想象成一个没有屏幕的android手机，所以所有的开发过程都将非常类似于移动应用程序开发）。</li>
+<li>一副自然光眼镜</li>
+<li>没有nreal设备？注册nreal开发工具包！或者尝试仿真器在没有nreal眼镜和计算单元的情况下引导nreal应用程序功能。</li>
+<li>连接nReal计算单元和PC的USB-C电缆</li>
+<li>不需要Wi-Fi连接。但是，可以使用Wi-Fi Android调试桥（ADB）连接进行调试和测试。</li>
+</ol>
+<h2 id="软件清单"><a href="#软件清单" class="headerlink" title="软件清单"></a>软件清单</h2><ol>
+<li>Unity 2018.2.x或更高版本，支持Android构建</li>
+<li>下载Unity 1.1的nrsdk(sdk作为nrsdkforunity_1.1.unitypackage下载)</li>
+<li>android sdk 7.0（api级别24）或更高版本，使用android studio中的sdk管理器安装</li>
+</ol>
+<h2 id="创建统一项目"><a href="#创建统一项目" class="headerlink" title="创建统一项目"></a>创建统一项目</h2><ol>
+<li>打开Unity并创建一个新的3D项目。</li>
+<li>set  player settings&gt;other settings&gt;scriptping runtime version to.net 4.x等效版本</li>
+<li>为unity导入nrsdk</li>
+<li><ol>
+<li>选择“资源&gt;导入包&gt;自定义包”。</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>选择您下载的nrsdkforunity_1.1.unitypackage。</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>在“导入包”对话框中，确保选中了所有包选项，然后单击“导入”。</li>
+</ol>
+</li>
+</ol>
+<p>在unity项目窗口中，通过选择assets&gt;nrsk&gt;demos&gt;hellomr找到hellomr示例应用程序。</p>
+<h2 id="配置生成设置"><a href="#配置生成设置" class="headerlink" title="配置生成设置"></a>配置生成设置</h2><ol>
+<li>转到“文件&gt;生成设置”。</li>
+<li>选择android并单击switch platform。</li>
+<li>在“生成设置”窗口中，单击“播放器设置”。</li>
+<li>在Inspector窗口中，按如下方式配置播放机设置：(<a href="https://developer.nreal.ai/develop/unity/android-quickstart" target="_blank" rel="noopener">https://developer.nreal.ai/develop/unity/android-quickstart</a>)</li>
+</ol>
+<h2 id="连接到nReal设备-开发工具包"><a href="#连接到nReal设备-开发工具包" class="headerlink" title="连接到nReal设备(开发工具包)"></a>连接到nReal设备(开发工具包)</h2><p>在计算单元上启用开发人员选项和USB调试。android调试桥（adb）作为默认设置启用，不需要手动设置）。<br>将计算单元连接到Windows PC。</p>
+<h2 id="建立并运行"><a href="#建立并运行" class="headerlink" title="建立并运行"></a>建立并运行</h2><ol>
+<li>在Unity Build设置窗口中，单击Build。在构建成功后，通过wifi android调试桥（adb）安装应用程序。</li>
+<li>断开电脑与电脑的连接，然后将其连接到眼镜上。</li>
+<li>如果这是您第一次运行此应用程序，则需要使用某些工具（如scrcpy）对该应用程序进行身份验证。</li>
+<li>与nReal Light控制器一起启动应用程序。有关如何使用nReal Light控制器的说明，请参阅控制器指南。</li>
+<li>四处移动，直到nrsdk找到一个水平面，检测到的平面将被绿色网格覆盖。</li>
+<li>单击触发器按钮在其上放置nReal徽标对象。</li>
+<li>（可选）使用android logcat查看记录的消息。我们建议使用WiFi Android调试桥（ADB）连接到您的PC，这样您就不必在大多数时间通过数据线连接。</li>
+</ol>
+<hr>
+<h1 id="Sample-APP-立体方块"><a href="#Sample-APP-立体方块" class="headerlink" title="Sample APP(立体方块)"></a>Sample APP(立体方块)</h1><h2 id="scene设置"><a href="#scene设置" class="headerlink" title="scene设置"></a>scene设置</h2><ol>
+<li>在SampleScene删除主摄像头；</li>
+<li>将Assets -&gt; NRSDK -&gt; Prefabs -&gt; NRCameraRig拖拽到SampleScene中；</li>
+<li>将Assets -&gt; NRSDK -&gt; Prefabs -&gt; NRInput拖拽到SampleScene中；</li>
+<li>将Assets -&gt; NRSDK -&gt; Emulator -&gt; Prefabs -&gt; NRTrackableImageTarget拖拽到SampleScene;<br>在其中可以修改场景图像（Image Target）</li>
+<li>在SampleAPP右侧窗口中右击Create -&gt; 3D -&gt; Object -&gt; Cube，创建立方体<br>将Scale均修改成0.25</li>
+<li>右击Create Empty,在Inspector中Add Component<br>(1)Script设置为TrackableFoundTest<br>(2)Observer设置为NRTrackableImageTarget<br>(3)Obj设置为Cube</li>
+<li>打开Assets -&gt; NRSDK -&gt; Emulator -&gt; Scripts -&gt; TrackableFoundTest,编辑源文件C#，添加Update函数，增加每次点击切换立方体颜色</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">using NRKernal;</span><br><span class="line">...</span><br><span class="line">   private void Update()</span><br><span class="line">    &#123;</span><br><span class="line">        if (NRInput.GetButtonDown(ControllerButton.TRIGGER))</span><br><span class="line">            Obj.GetComponent&lt;Renderer&gt;().material.color &#x3D; new Color(Random.value, Random.value, Random.value);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<ol start="8">
+<li>File -&gt; BuildSettings添加SampleAPP，然后选择Android，最后Building</li>
+<li>生成APK，安装full screen black</li>
+<li>或者在Unity上方点击Play按钮使用Emulator查看，常用按键操作：</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">WASD控制前后左右；</span><br><span class="line">Space+鼠标表示头部旋转；</span><br><span class="line">SHIFT+鼠标移动模拟nReal控制器的旋转（3DOF控制器）；</span><br><span class="line">单击鼠标左键模拟控制器触发器的单击（此处会触发Update函数变化颜色）；</span><br><span class="line">单击鼠标右键以模拟控制器主页按钮的压力；</span><br><span class="line">单击鼠标滚轮按钮以模拟控制器的APP按钮的压力；</span><br><span class="line">使用箭头键模拟在控制器的触摸板上滑动；</span><br></pre></td></tr></table></figure>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/">https://alonealive.github.io/Blog/2019/09/30/2019/190930_nReal_Sample/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-07-05");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-09-30T13:52:00.000Z" itemprop="datePublished">2019-09-30</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-07-05T06:50:32.259Z" itemprop="dateModified">2020-07-05</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/VR/'>VR</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/nReal/" rel="tag">#&nbsp;nReal</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/10/12/2019/191012_android_debug1/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android Graphics 调试技巧（十月份更新）</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/09/22/2019/190922-android-handler-cpp/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android Handler消息循环处理机制(例ActivityThread)</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

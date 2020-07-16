@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android WMS和View基本理解 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android WMS和View基本理解 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/"><meta property="og:locale" content="zh-CN"><meta name="description" content="概述 Window 可以看做是Surface的一个包装，本质上，Window的本体就是一片Surface。将操作对象Surface，对象关联属性集以及操作方法等组合在一起便是 Window。Surface 其实是一块画布，应用可以随心所欲地通过 Canvas 或者 OpenGL 在其上作画，然后通过 SurfaceFlinger 将多块 Surface 的内容按照特定的顺序(ZOrder)进行混合 - sunwengang - sunwengang blog"><meta name="keywords" content="graphics"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/displayContent.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/addview.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/relayoutwindow.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/viewgroup.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/view_tree.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/vsync.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/performmeasure.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/performlayout.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/hardware_render.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/software_render.png"><meta property="article:published_time" content="2019-09-21T13:32:22.000Z"><meta property="article:modified_time" content="2020-03-08T10:14:08.790Z"><meta property="og:updated_time" content="2020-03-08T10:14:08.790Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="graphics"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/"
+    },
+    "headline": "Android WMS和View基本理解 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-09-21T13:32:22.000Z",
+    "dateModified": "2020-03-08T10:14:08.790Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "graphics",
+    "description": "概述 Window 可以看做是Surface的一个包装，本质上，Window的本体就是一片Surface。将操作对象Surface，对象关联属性集以及操作方法等组合在一起便是 Window。Surface 其实是一块画布，应用可以随心所欲地通过 Canvas 或者 OpenGL 在其上作画，然后通过 SurfaceFlinger 将多块 Surface 的内容按照特定的顺序(ZOrder)进行混合 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android WMS和View基本理解" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android WMS和View基本理解&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android WMS和View基本理解" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACOElEQVR42u2b0U7DMBAE8/8/DU9IBcW744aKkhu/IJrUnlQ+93bvenz8g3EIKaSQQr4B5BHG1/Vvb3z4/+e19PrZPGldIWdDpoXS5Gf3/rz2+Hqa9/RDEHI05Cpg4sYusKsgIesKKWS8+SQY0uLtwYQU8mrgrJKLBNiSEiGFfDbB2AmUds/LsiAhbwdJhNgr/v66WhTyFpDIOIIJcDrAW8BcdtWEvA1kShqa8KJCq4m0pekg5EjIJOypSDt7X3pAGlRCzoRMQotANLOVJBVL4SfkWEgiqlrAtIRjp/gk5GzIdpCvFiBmVSqEpmRFSCFJwkoDihgBq0M/qkUhR0KS5IDCpCAjH5CQcyHbpiYFeHp406KpkLMhWwJxpRj6bIAJKWQLjl0TlRzaqOAq5GhIUkS/UqjHhfhm7As5ArJt+B1x1hbeaVARUsidgvtOYZSugx0MIW8NSRqO6UJNuO2aqkLOhaQNSihRBQ1zKQGp3dFCjoBMor0WKWGTEvnyqNEt5AhIsunbId+MrDR/TEiEHAlJGjrI4Z6anHYNByGFJIWfai6VghUpzKOKmJAjINvGbk0kJAh3Hl5IIemkyTjdLXy2Bigh50K2QcV+PJSP/oM3IYWkQp2IJir2yZcB6rAS8vaQVwKGNn4uzfsUVEKOhiRm+7NNcjS4hBRyF7Jt/ga8M4eQQiJhVERbSkCa2R+bl4QcCUnM0l3TqhkJNdiEHAu5YySRps9daBQ4Qo6BfOchpJBCCvmH4xMYeFb1XsVb1AAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android WMS和View基本理解</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-09-21</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android WMS和View基本理解&url=https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android WMS和View基本理解&url=https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACOElEQVR42u2b0U7DMBAE8/8/DU9IBcW744aKkhu/IJrUnlQ+93bvenz8g3EIKaSQQr4B5BHG1/Vvb3z4/+e19PrZPGldIWdDpoXS5Gf3/rz2+Hqa9/RDEHI05Cpg4sYusKsgIesKKWS8+SQY0uLtwYQU8mrgrJKLBNiSEiGFfDbB2AmUds/LsiAhbwdJhNgr/v66WhTyFpDIOIIJcDrAW8BcdtWEvA1kShqa8KJCq4m0pekg5EjIJOypSDt7X3pAGlRCzoRMQotANLOVJBVL4SfkWEgiqlrAtIRjp/gk5GzIdpCvFiBmVSqEpmRFSCFJwkoDihgBq0M/qkUhR0KS5IDCpCAjH5CQcyHbpiYFeHp406KpkLMhWwJxpRj6bIAJKWQLjl0TlRzaqOAq5GhIUkS/UqjHhfhm7As5ArJt+B1x1hbeaVARUsidgvtOYZSugx0MIW8NSRqO6UJNuO2aqkLOhaQNSihRBQ1zKQGp3dFCjoBMor0WKWGTEvnyqNEt5AhIsunbId+MrDR/TEiEHAlJGjrI4Z6anHYNByGFJIWfai6VghUpzKOKmJAjINvGbk0kJAh3Hl5IIemkyTjdLXy2Bigh50K2QcV+PJSP/oM3IYWkQp2IJir2yZcB6rAS8vaQVwKGNn4uzfsUVEKOhiRm+7NNcjS4hBRyF7Jt/ga8M4eQQiJhVERbSkCa2R+bl4QcCUnM0l3TqhkJNdiEHAu5YySRps9daBQ4Qo6BfOchpJBCCvmH4xMYeFb1XsVb1AAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">概述</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Dump-window信息"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">Dump window信息</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#相关类"><span class="post-toc-number">2.</span> <span class="post-toc-text">相关类</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#WMS添加窗口流程（addView）"><span class="post-toc-number">3.</span> <span class="post-toc-text">WMS添加窗口流程（addView）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#addWindow"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">addWindow</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#relayoutWindow"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">relayoutWindow</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#View概述"><span class="post-toc-number">4.</span> <span class="post-toc-text">View概述</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#基本元素"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">基本元素</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#View处理简单流程"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">View处理简单流程</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#VSYNC"><span class="post-toc-number">4.2.1.</span> <span class="post-toc-text">VSYNC</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#performTraversals触发描绘处理"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">performTraversals触发描绘处理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#performMeasure（测量）"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">performMeasure（测量）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#performLayout（布局）"><span class="post-toc-number">4.5.</span> <span class="post-toc-text">performLayout（布局）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#performDraw（硬件渲染）"><span class="post-toc-number">4.6.</span> <span class="post-toc-text">performDraw（硬件渲染）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Step1-ViewRootImpl-setView"><span class="post-toc-number">4.6.1.</span> <span class="post-toc-text">Step1. ViewRootImpl.setView</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Step3-ThreaedRenderer-create"><span class="post-toc-number">4.6.2.</span> <span class="post-toc-text">Step3: ThreaedRenderer.create</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Step4：ViewRootImpl-performTraversals"><span class="post-toc-number">4.6.3.</span> <span class="post-toc-text">Step4：ViewRootImpl.performTraversals</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#硬件渲染流程图"><span class="post-toc-number">4.6.4.</span> <span class="post-toc-text">硬件渲染流程图</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#软件渲染"><span class="post-toc-number">4.7.</span> <span class="post-toc-text">软件渲染</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Step1-ViewRootImpl-Draw"><span class="post-toc-number">4.7.1.</span> <span class="post-toc-text">Step1. ViewRootImpl.Draw</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Step2-ViewRootImlp-drawSoftware"><span class="post-toc-number">4.7.2.</span> <span class="post-toc-text">Step2. ViewRootImlp.drawSoftware</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Step3-Framelayout-draw-Canvas"><span class="post-toc-number">4.7.3.</span> <span class="post-toc-text">Step3. Framelayout.draw(Canvas)</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Step4-View-draw"><span class="post-toc-number">4.7.4.</span> <span class="post-toc-text">Step4. View.draw</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Step5-ViewGroup-dispatchDraw"><span class="post-toc-number">4.7.5.</span> <span class="post-toc-text">Step5. ViewGroup.dispatchDraw</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Step6-ViewGroup-drawChild"><span class="post-toc-number">4.7.6.</span> <span class="post-toc-text">Step6. ViewGroup.drawChild</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Step7-View-draw-Canvas-ViewGroup-long"><span class="post-toc-number">4.7.7.</span> <span class="post-toc-text">Step7. View.draw(Canvas, ViewGroup, long)</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Step8-ViewRootImpl-drawSoftware"><span class="post-toc-number">4.7.8.</span> <span class="post-toc-text">Step8. ViewRootImpl.drawSoftware</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#软件渲染流程图"><span class="post-toc-number">4.7.9.</span> <span class="post-toc-text">软件渲染流程图</span></a></li></ol></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><blockquote>
+<p>Window 可以看做是Surface的一个包装，本质上，Window的本体就是一片Surface。将操作对象Surface，对象关联属性集以及操作方法等组合在一起便是 Window。Surface 其实是一块画布，应用可以随心所欲地通过 Canvas 或者 OpenGL 在其上作画，然后通过 SurfaceFlinger 将多块 Surface 的内容按照特定的顺序(ZOrder)进行混合并输出到 FrameBuffer，从而将 Android 漂亮的脸蛋显示给用户。既然每个窗口都有一块 Surface 供自己涂鸦，所以必然需要一个角色对所有窗口的 Surface 进行协调管理。于是,WMS 应运而生。</p>
+</blockquote>
+<blockquote>
+<p>代码： <a href="http://aosp.opersys.com/xref/android-10.0.0_r2/xref/frameworks/base/core/java/android/view/" target="_blank" rel="noopener">http://aosp.opersys.com/xref/android-10.0.0_r2/xref/frameworks/base/core/java/android/view/</a></p>
+</blockquote>
+<a id="more"></a>
+<p><strong>对应的关系：</strong></p>
+<ul>
+<li>1 IDirectFB (顶层) &lt;–&gt; N 屏幕(Screens)</li>
+<li>1 屏幕(Screen) &lt;–&gt; N 层(Layers)</li>
+<li>1 层(Layer) &lt;–&gt; 1 主表面(Primary Surface)</li>
+<li>1 层(Layer) &lt;–&gt; N 窗口(Windows)</li>
+<li>1 窗口(Window) &lt;–&gt; 1 窗口表面(Window Surface)</li>
+<li>1 表面(Surface) &lt;–&gt; N 子表面(Subsurfaces)</li>
+</ul>
+<h3 id="Dump-window信息"><a href="#Dump-window信息" class="headerlink" title="Dump window信息"></a>Dump window信息</h3><p><code>adb shell dumpsys window windows</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">WINDOW MANAGER WINDOWS (dumpsys window windows)</span><br><span class="line">  Window #0 Window&#123;bdae67a u0 InputMethod&#125;:</span><br><span class="line">    mDisplayId=0 stackId=0 mSession=Session&#123;2b3f00f 19539:u0a10056&#125; mClient=android.os.BinderProxy@59092a5</span><br><span class="line">    mOwnerUid=10056 mShowToOwnerOnly=true package=com.baidu.input_yijia appop=NONE</span><br><span class="line">    mAttrs=&#123;(0,0)(fillxwrap) gr=BOTTOM CENTER_VERTICAL sim=&#123;adjust=pan&#125; ty=INPUT_METHOD fmt=TRANSPARENT wanim=0x1030056</span><br><span class="line">      fl=NOT_FOCUSABLE LAYOUT_IN_SCREEN SPLIT_TOUCH HARDWARE_ACCELERATED DRAWS_SYSTEM_BAR_BACKGROUNDS&#125;</span><br><span class="line">    Requested w=1080 h=2280 mLayoutSeq=207584</span><br><span class="line">    mIsImWindow=true mIsWallpaper=false mIsFloatingLayer=true mWallpaperVisible=false</span><br><span class="line">    mBaseLayer=141000 mSubLayer=0 mAnimLayer=0+=0 mLastLayer=0</span><br><span class="line">    mToken=WindowToken&#123;92f628b android.os.Binder@c12205a&#125;</span><br><span class="line">    mViewVisibility=0x8 mHaveFrame=true mObscured=false</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<p>可以列出当前系统中存在的所有窗口。查看下该命令的输出可以发现Android是一个同时存在着多个窗口的系统。比如 StatusBar、NavigationBar、Activity、InputMethod、WallPaper 等窗口都可能同时存在。因为同时有多个窗口各自为政，所以需要 WMS 作为管理者来协调，以便窗口们能在狭窄的显示屏幕上和睦相处。</p>
+<p>作为协调者，WMS的本职工作主要是负责管理各窗口的生命周期（创建/销毁）、各窗口的位置大小（Layout）、各窗口的显示层级（Z-order）以及窗口的显示属性（可见性等）。</p>
+<hr>
+<h2 id="相关类"><a href="#相关类" class="headerlink" title="相关类"></a>相关类</h2><ul>
+<li>DisplayContent：一个容器，一个 DisplayContent 内收集了所有需要显示到相应屏幕上的窗口</li>
+<li>PhoneWindowManager：定义了 Phone 相关的窗口策略，负责为 WMS 提供各种建议，包括布局，事件处理，屏幕旋转等</li>
+<li>WindowAnimator WindowStateAnimator AppWindowAnimator： 主要负责 Surface 相关操作，包括创建，销毁，Surface 属性变更，动画等</li>
+<li>WindowToken AppWindowToken： WindowToken 的作用是将一组相关性紧密的窗口组织在一起。达到批量管理的效果</li>
+<li>WindowState： 一般被认为是 WMS 眼中的窗口，管理着关联窗口的所有属性状态信息</li>
+<li>AppWindowToken 根据 AMS 侧 Activity 的顺序有序排列，WindowState 根据 Layer 值有序排列。</li>
+</ul>
+<p><img src="displayContent.png" alt="Window分布"></p>
+<h2 id="WMS添加窗口流程（addView）"><a href="#WMS添加窗口流程（addView）" class="headerlink" title="WMS添加窗口流程（addView）"></a>WMS添加窗口流程（addView）</h2><p>WindowManagerGlobal，是一个进程唯一的实例，也就是说无论在应用的任何角落调用addView，都会通过WindowManagerGlobal 来处理相应的请求。从理解出发，可以认为<code>WindowManagerGlobal</code>是一个App进程中窗口管理者。</p>
+<p><img src="addview.png" alt="AddView简单流程"></p>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/view/WindowManagerImpl.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addView</span><span class="params">(@NonNull View view, @NonNull ViewGroup.LayoutParams params)</span> </span>&#123;</span><br><span class="line">    applyDefaultToken(params);</span><br><span class="line">    mGlobal.addView(view, params, mContext.getDisplay(), mParentWindow);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用WindowManagerGlobal的addView函数：</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/view/WindowManagerGlobal.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line">     Display display, Window parentWindow) &#123;</span><br><span class="line">    <span class="keyword">if</span> (view == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"view must not be null"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (display == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"display must not be null"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (!(params <span class="keyword">instanceof</span> WindowManager.LayoutParams)) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Params must be WindowManager.LayoutParams"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> WindowManager.LayoutParams wparams = (WindowManager.LayoutParams) params;</span><br><span class="line">    <span class="keyword">if</span> (parentWindow != <span class="keyword">null</span>) &#123;</span><br><span class="line">        parentWindow.adjustLayoutParamsForSubWindow(wparams);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// If there's no parent, then hardware acceleration for this view is</span></span><br><span class="line">        <span class="comment">// set from the application's hardware acceleration setting.</span></span><br><span class="line">        <span class="keyword">final</span> Context context = view.getContext();</span><br><span class="line">        <span class="keyword">if</span> (context != <span class="keyword">null</span></span><br><span class="line">                &amp;&amp; (context.getApplicationInfo().flags</span><br><span class="line">                        &amp; ApplicationInfo.FLAG_HARDWARE_ACCELERATED) != <span class="number">0</span>) &#123;</span><br><span class="line">            wparams.flags |= WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ViewRootImpl root;</span><br><span class="line">    View panelParentView = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">synchronized</span> (mLock) &#123;</span><br><span class="line">        <span class="comment">// Start watching for system property changes.</span></span><br><span class="line">        <span class="keyword">if</span> (mSystemPropertyUpdater == <span class="keyword">null</span>) &#123;</span><br><span class="line">            mSystemPropertyUpdater = <span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="meta">@Override</span> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">synchronized</span> (mLock) &#123;</span><br><span class="line">                        <span class="keyword">for</span> (<span class="keyword">int</span> i = mRoots.size() - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">                            mRoots.get(i).loadSystemProperties();</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;;</span><br><span class="line">            SystemProperties.addChangeCallback(mSystemPropertyUpdater);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> index = findViewLocked(view, <span class="keyword">false</span>);</span><br><span class="line">        <span class="keyword">if</span> (index &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (mDyingViews.contains(view)) &#123;</span><br><span class="line">                <span class="comment">// Don't wait for MSG_DIE to make it's way through root's queue.</span></span><br><span class="line">                mRoots.get(index).doDie();</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"View "</span> + view</span><br><span class="line">                        + <span class="string">" has already been added to the window manager."</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// The previous removeView() had not completed executing. Now it has.</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// If this is a panel window, then find the window it is being</span></span><br><span class="line">        <span class="comment">// attached to for future reference.</span></span><br><span class="line">        <span class="keyword">if</span> (wparams.type &gt;= WindowManager.LayoutParams.FIRST_SUB_WINDOW &amp;&amp;</span><br><span class="line">                wparams.type &lt;= WindowManager.LayoutParams.LAST_SUB_WINDOW) &#123;</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> count = mViews.size();</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (mRoots.get(i).mWindow.asBinder() == wparams.token) &#123;</span><br><span class="line">                    panelParentView = mViews.get(i);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//新疆一个ViewRootImpl对象，调用构造函数</span></span><br><span class="line">        root = <span class="keyword">new</span> ViewRootImpl(view.getContext(), display);</span><br><span class="line">        <span class="comment">//布局参数</span></span><br><span class="line">        view.setLayoutParams(wparams);</span><br><span class="line"></span><br><span class="line">        mViews.add(view);</span><br><span class="line">        mRoots.add(root);</span><br><span class="line">        mParams.add(wparams);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// do this last because it fires off messages to start doing things</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            root.setView(view, wparams, panelParentView); <span class="comment">//调用setView函数</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (RuntimeException e) &#123;</span><br><span class="line">            <span class="comment">// BadTokenException or InvalidDisplayException, clean up.</span></span><br><span class="line">            <span class="keyword">if</span> (index &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                removeViewLocked(index, <span class="keyword">true</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>setView做了很多处理，主要的是调用<code>requestLayout()和 mWindowSession.addToDisplay</code>。见下面：</p>
+<h3 id="addWindow"><a href="#addWindow" class="headerlink" title="addWindow"></a>addWindow</h3><figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/view/ViewRootImpl.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setView</span><span class="params">(View view, WindowManager.LayoutParams attrs, View panelParentView)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">           <span class="keyword">if</span> (mView == <span class="keyword">null</span>) &#123;</span><br><span class="line">               mView = view;</span><br><span class="line"></span><br><span class="line">               mAttachInfo.mDisplayState = mDisplay.getState();</span><br><span class="line">               mDisplayManager.registerDisplayListener(mDisplayListener, mHandler);</span><br><span class="line">               ......</span><br><span class="line">                 <span class="keyword">try</span> &#123;</span><br><span class="line">                   mOrigWindowType = mWindowAttributes.type;</span><br><span class="line">                   mAttachInfo.mRecomputeGlobalAttributes = <span class="keyword">true</span>;</span><br><span class="line">                   collectViewAttributes();</span><br><span class="line">                   <span class="comment">//添加到Display</span></span><br><span class="line">                   res = mWindowSession.addToDisplay(mWindow, mSeq, mWindowAttributes,</span><br><span class="line">                           getHostVisibility(), mDisplay.getDisplayId(), mTmpFrame,</span><br><span class="line">                           mAttachInfo.mContentInsets, mAttachInfo.mStableInsets,</span><br><span class="line">                           mAttachInfo.mOutsets, mAttachInfo.mDisplayCutout, mInputChannel,</span><br><span class="line">                           mTempInsets);</span><br><span class="line">                   setFrame(mTmpFrame);</span><br><span class="line">               &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">                   mAdded = <span class="keyword">false</span>;</span><br><span class="line">                   mView = <span class="keyword">null</span>;</span><br><span class="line">                   mAttachInfo.mRootView = <span class="keyword">null</span>;</span><br><span class="line">                   mInputChannel = <span class="keyword">null</span>;</span><br><span class="line">                   mFallbackEventHandler.setView(<span class="keyword">null</span>);</span><br><span class="line">                   unscheduleTraversals();</span><br><span class="line">                   setAccessibilityFocus(<span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">                   <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Adding window failed"</span>, e);</span><br><span class="line">               &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                   <span class="keyword">if</span> (restore) &#123;</span><br><span class="line">                       attrs.restore();</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">               .....</span><br></pre></td></tr></table></figure>
+
+<p>这里出现了mWindowSession，它的类型是 IWindowSession，是WindowManagerGlobal#sWindowSession的一个引用，进程唯一的实例。</p>
+<p>它是常见的Binder远程调用中IWindowSession的Bp端，Bn端是一个Sessio 实例，存在于WMS所属进程，Session代表了WMS关于窗口管理服务的一个子集，Android 系统中，由App进程端主动向WMS发起的请求，都是通过mWindowSession进行的，也就是说Session提供了所有App进程能够请求WMS的服务请求。</p>
+<p>调用到实现类<code>Session.java</code>:</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/wm/Session.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">addToDisplay</span><span class="params">(IWindow window, <span class="keyword">int</span> seq, WindowManager.LayoutParams attrs,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">int</span> viewVisibility, <span class="keyword">int</span> displayId, Rect outFrame, Rect outContentInsets,</span></span></span><br><span class="line"><span class="function"><span class="params">        Rect outStableInsets, Rect outOutsets,</span></span></span><br><span class="line"><span class="function"><span class="params">        DisplayCutout.ParcelableWrapper outDisplayCutout, InputChannel outInputChannel,</span></span></span><br><span class="line"><span class="function"><span class="params">        InsetsState outInsetsState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> mService.addWindow(<span class="keyword">this</span>, window, seq, attrs, viewVisibility, displayId, outFrame,</span><br><span class="line">            outContentInsets, outStableInsets, outOutsets, outDisplayCutout, outInputChannel,</span><br><span class="line">            outInsetsState);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终调用到<code>WMS.java</code>的addWindow函数。<strong>addWindow的工作可以分为4步：</strong></p>
+<ul>
+<li>WindowToken 检查</li>
+<li>WindowState 创建</li>
+<li>将新建的 WindowState 插入到现有的 WindowState 有序列表里</li>
+<li>给系统中现有的所有 WindowState 重新分配 Layer</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">addWindow</span><span class="params">(Session session, IWindow client, <span class="keyword">int</span> seq,</span></span></span><br><span class="line"><span class="function"><span class="params">            LayoutParams attrs, <span class="keyword">int</span> viewVisibility, <span class="keyword">int</span> displayId, Rect outFrame,</span></span></span><br><span class="line"><span class="function"><span class="params">            Rect outContentInsets, Rect outStableInsets, Rect outOutsets,</span></span></span><br><span class="line"><span class="function"><span class="params">            DisplayCutout.ParcelableWrapper outDisplayCutout, InputChannel outInputChannel,</span></span></span><br><span class="line"><span class="function"><span class="params">            InsetsState outInsetsState)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span>[] appOp = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">1</span>];</span><br><span class="line">        <span class="keyword">int</span> res = mPolicy.checkAddPermission(attrs, appOp);</span><br><span class="line">        <span class="keyword">if</span> (res != WindowManagerGlobal.ADD_OKAY) &#123;</span><br><span class="line">            <span class="keyword">return</span> res;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">boolean</span> reportNewConfig = <span class="keyword">false</span>;</span><br><span class="line">        WindowState parentWindow = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">long</span> origId;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> callingUid = Binder.getCallingUid();</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> type = attrs.type;</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<h3 id="relayoutWindow"><a href="#relayoutWindow" class="headerlink" title="relayoutWindow"></a>relayoutWindow</h3><p><img src="relayoutwindow.png" alt="relayoutWindow处理流程"></p>
+<p>Surface outSurface：输出参数，用于承载该窗口的 Surface，ViewRootImpl 获得此 Surface 便可以调用<code>Draw</code>在上面进行<strong>绘制窗口所承载的所有View</strong>。</p>
+<p>关于 relayoutWindow 的处理内容粗略分为下列：</p>
+<ul>
+<li>根据传入参数更新 WindowState 对象的对应属性，这些属性都会在布局的时刻用到。</li>
+<li>根据传入的可见性参数处理窗口 Surface 的创建或销毁</li>
+<li>处理一些由窗口更新带来的一些变化，如 Focus 变化，输入法窗口/壁纸窗口移动，屏幕构型 Configuration 改变等</li>
+<li>执行 performLayoutAndPlaceSurfaceLocked 函数进行布局</li>
+</ul>
+<h2 id="View概述"><a href="#View概述" class="headerlink" title="View概述"></a>View概述</h2><p><code>View</code>就是一块可以用来进行绘画，可以处理输入事件进行交互的矩形区域，而<code>ViewGroup</code>就是一种可以容纳View的矩形容器。</p>
+<p>从设计模式的角度看，ViewGroup 和 View 是组合模式的典型应用。View 是基本的控件元素，ViewParent 接口定义了添加、删除 View 的接口 addView、removeView，ViewGroup 实现了 ViewParent 的接口，因此可以作为 View 的容器管理 View，同时 ViewGroup 又继承自 View，可以被其他的 ViewGroup 管理。这样 ViewGroup 和 View 就可以组成上面的树状结构了。</p>
+<p><img src="viewgroup.png" alt="View和ViewGroup"></p>
+<p>应用程序启动的过程中，会加载一个或者多个 Activity。每个 Activity 对应一个 PhoneWindow。当Activity在onCreate方法中调用 setContentView 的时候，PhoneWindow 会根据布局文件，创建 View 树，同时，根据应用的一些参数设置，得到集合了窗口显示特性的 View 树的根节点 mDecor 。WindowManagerGlobal 会通过数组记录一个应用程序对应的所有 View 树的根节点 mDecor，布局参数，以及对应的 ViewRootImpl。同时，将 mDecor 和布局参数传递给 ViewRootImpl。ViewRootImpl中实现对 View 树的整体控制，包括与 WMS 的通信，View 的描绘处理，输入事件的分发处理等。</p>
+<p><strong>View 的结构图如下：</strong></p>
+<p><img src="view_tree.png" alt="View关系图"></p>
+<h3 id="基本元素"><a href="#基本元素" class="headerlink" title="基本元素"></a>基本元素</h3><ul>
+<li>View ：最基本的UI组件，表示屏幕上的一个矩形区域</li>
+<li>Window ：1〉 表示顶层窗口，管理界面的显示和事件的响应；2 〉每个Activity均会创建一个PhoneWindow对象，是Activity和整个View系统交互的接口。该Window在Activity的attach方法中通过调用<code>PolicyManager.makeNewWindow</code>创建；</li>
+<li>DecorView ：是Window中view的RootView</li>
+<li>WindowManager ：1〉 主要用来管理窗口的一些状态、属性、view 增加、删除、更新、窗口顺序、消息收集和处理等 2〉interface，继承自ViewManager。所在应用进程的窗口管理器；3〉实现类 WindowManagerImpl</li>
+<li>ViewRootImpl：1 〉界面控制和消息响应；2 〉通过IWindowSession接口与全局窗口管理器WMS进行交互</li>
+<li>ActivityThread：1〉 应用程序的主线程，其中会创建关联当前 Activity 与 Window；2〉创建 WindowManager 实现类实例，把当前 DecoView 加入到 WindowManager</li>
+</ul>
+<h3 id="View处理简单流程"><a href="#View处理简单流程" class="headerlink" title="View处理简单流程"></a>View处理简单流程</h3><h4 id="VSYNC"><a href="#VSYNC" class="headerlink" title="VSYNC"></a>VSYNC</h4><p>VSYNC 信号，即 vertical synchronization，可以理解为垂直同步，或者帧同步。是 Android4.1 为了解决 UI 不流畅问题而引入的处理。当需要同步信号的时候，通过 Choreographer 注册回调，等到 VSYNC信号到来的时候，执行相应的回调。这样，一方面可以避免频繁更新导致的画面不流程；另一方面，因为 SYNC 信号的频率大概是 60 次/秒，即可以保证帧率 60，显示效果非常平滑。</p>
+<p><img src="vsync.png" alt="VSYNC"></p>
+<p>由上图可见，View 的描绘工作，是在 performTraversals 中完成的。主要分为三步：</p>
+<ol>
+<li>performMeasure，负责计算View的尺寸；</li>
+<li>performLayout，负责计算 View 在界面上的位置；</li>
+<li>performDraw，根据前面两步的计算结果，完成实际的描绘工作。</li>
+</ol>
+<h3 id="performTraversals触发描绘处理"><a href="#performTraversals触发描绘处理" class="headerlink" title="performTraversals触发描绘处理"></a>performTraversals触发描绘处理</h3><p>View 的描绘是通过 performTraversals 发起的，所以任何调到 performTraversals 的地方，都会触发描绘处理。</p>
+<ol>
+<li>ViewRootImpl 中初次添加 View:自上而下发起遍历。</li>
+<li>应用主动调用 requestLayout:自下而上通过 mParent 调用父节点的 requestLayout，直至 ViewRootImpl。</li>
+<li>应用主动调用 invalidate:自下而上通过 mParent 调用父节点的 invalidateChild，直至 ViewRootImpl。</li>
+<li>其他情况：如应用程序的 Visibility 发生变化的时候，LayoutParams 发生变化的时候等，都会触发遍历操作。</li>
+</ol>
+<h3 id="performMeasure（测量）"><a href="#performMeasure（测量）" class="headerlink" title="performMeasure（测量）"></a>performMeasure（测量）</h3><p><img src="performmeasure.png" alt="测量流程"></p>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/view/ViewRootImpl.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">performMeasure</span><span class="params">(<span class="keyword">int</span> childWidthMeasureSpec, <span class="keyword">int</span> childHeightMeasureSpec)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mView == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    Trace.traceBegin(Trace.TRACE_TAG_VIEW, <span class="string">"measure"</span>);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        mView.measure(childWidthMeasureSpec, childHeightMeasureSpec);</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        Trace.traceEnd(Trace.TRACE_TAG_VIEW);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/view/View.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">measure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">boolean</span> optical = isLayoutModeOptical(<span class="keyword">this</span>);</span><br><span class="line">       <span class="keyword">if</span> (optical != isLayoutModeOptical(mParent)) &#123;</span><br><span class="line">           Insets insets = getOpticalInsets();</span><br><span class="line">           <span class="keyword">int</span> oWidth  = insets.left + insets.right;</span><br><span class="line">           <span class="keyword">int</span> oHeight = insets.top  + insets.bottom;</span><br><span class="line">           widthMeasureSpec  = MeasureSpec.adjust(widthMeasureSpec,  optical ? -oWidth  : oWidth);</span><br><span class="line">           heightMeasureSpec = MeasureSpec.adjust(heightMeasureSpec, optical ? -oHeight : oHeight);</span><br><span class="line">       &#125;</span><br><span class="line">       ......</span><br><span class="line">        <span class="keyword">if</span> (forceLayout || needsLayout) &#123;</span><br><span class="line">           <span class="comment">// first clears the measured dimension flag</span></span><br><span class="line">           mPrivateFlags &amp;= ~PFLAG_MEASURED_DIMENSION_SET;</span><br><span class="line"></span><br><span class="line">           resolveRtlPropertiesIfNeeded();</span><br><span class="line"></span><br><span class="line">           <span class="keyword">int</span> cacheIndex = forceLayout ? -<span class="number">1</span> : mMeasureCache.indexOfKey(key);</span><br><span class="line">           <span class="keyword">if</span> (cacheIndex &lt; <span class="number">0</span> || sIgnoreMeasureCache) &#123;</span><br><span class="line">               <span class="comment">// measure ourselves, this should set the measured dimension flag back</span></span><br><span class="line">               onMeasure(widthMeasureSpec, heightMeasureSpec);   <span class="comment">//调用onMeasure函数</span></span><br><span class="line">               mPrivateFlags3 &amp;= ~PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT;</span><br><span class="line">           &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="keyword">long</span> value = mMeasureCache.valueAt(cacheIndex);</span><br><span class="line">               <span class="comment">// Casting a long to int drops the high 32 bits, no mask needed</span></span><br><span class="line">               setMeasuredDimensionRaw((<span class="keyword">int</span>) (value &gt;&gt; <span class="number">32</span>), (<span class="keyword">int</span>) value);</span><br><span class="line">               mPrivateFlags3 |= PFLAG3_MEASURE_NEEDED_BEFORE_LAYOUT;</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           <span class="comment">// flag not set, setMeasuredDimension() was not invoked, we raise</span></span><br><span class="line">           <span class="comment">// an exception to warn the developer</span></span><br><span class="line">           <span class="keyword">if</span> ((mPrivateFlags &amp; PFLAG_MEASURED_DIMENSION_SET) != PFLAG_MEASURED_DIMENSION_SET) &#123;</span><br><span class="line">               <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(<span class="string">"View with id "</span> + getId() + <span class="string">": "</span></span><br><span class="line">                       + getClass().getName() + <span class="string">"#onMeasure() did not set the"</span></span><br><span class="line">                       + <span class="string">" measured dimension by calling"</span></span><br><span class="line">                       + <span class="string">" setMeasuredDimension()"</span>);</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           mPrivateFlags |= PFLAG_LAYOUT_REQUIRED;</span><br><span class="line">       &#125;</span><br><span class="line">       ......</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onMeasure</span><span class="params">(<span class="keyword">int</span> widthMeasureSpec, <span class="keyword">int</span> heightMeasureSpec)</span> </span>&#123;</span><br><span class="line">      setMeasuredDimension(getDefaultSize(getSuggestedMinimumWidth(), widthMeasureSpec),</span><br><span class="line">              getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec));</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="performLayout（布局）"><a href="#performLayout（布局）" class="headerlink" title="performLayout（布局）"></a>performLayout（布局）</h3><p><img src="performlayout.png" alt="布局流程"></p>
+<h3 id="performDraw（硬件渲染）"><a href="#performDraw（硬件渲染）" class="headerlink" title="performDraw（硬件渲染）"></a>performDraw（硬件渲染）</h3><blockquote>
+<p>performDraw调用draw，完成绘制工作。实际绘制操作可以分为硬件渲染和软件渲染两种情况。</p>
+</blockquote>
+<h4 id="Step1-ViewRootImpl-setView"><a href="#Step1-ViewRootImpl-setView" class="headerlink" title="Step1. ViewRootImpl.setView"></a>Step1. <code>ViewRootImpl.setView</code></h4><p>当mSurfaceHolder为空，也就是说应用不会要求自己接管对窗口的渲染的情况下，才会开始硬件渲染环境的准备。</p>
+<p>Step2. ViewRootImpl.enableHardwareAcceleration</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/view/ViewRootImpl.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setView</span><span class="params">(View view, WindowManager.LayoutParams attrs, View panelParentView)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">        ......</span><br><span class="line"><span class="comment">// If the application owns the surface, don't enable hardware acceleration</span></span><br><span class="line">              <span class="keyword">if</span> (mSurfaceHolder == <span class="keyword">null</span>) &#123;</span><br><span class="line">                  <span class="comment">// While this is supposed to enable only, it can effectively disable</span></span><br><span class="line">                  <span class="comment">// the acceleration too.</span></span><br><span class="line">                  enableHardwareAcceleration(attrs);</span><br><span class="line">                  <span class="keyword">final</span> <span class="keyword">boolean</span> useMTRenderer = MT_RENDERER_AVAILABLE</span><br><span class="line">                          &amp;&amp; mAttachInfo.mThreadedRenderer != <span class="keyword">null</span>;</span><br><span class="line">                  <span class="keyword">if</span> (mUseMTRenderer != useMTRenderer) &#123;</span><br><span class="line">                      <span class="comment">// Shouldn't be resizing, as it's done only in window setup,</span></span><br><span class="line">                      <span class="comment">// but end just in case.</span></span><br><span class="line">                      endDragResizing();</span><br><span class="line">                      mUseMTRenderer = useMTRenderer;</span><br><span class="line">                  &#125;</span><br><span class="line">              &#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>常驻内存的进程，禁止使用硬件加速，因为非常耗费内存。</li>
+<li>系统进程一般都要禁用硬件加速，但是以下两种情况除外：</li>
+</ol>
+<p>(1) 应用启动之前的<code>Starting Window</code>，会通过设置以下flag，<strong>标示启用硬件加速</strong>，但是不缓存：</p>
+<p><code>WindowManager.LayoutParams.PRIVATE_FLAG_FAKE_HARDWARE_ACCELERATED</code></p>
+<p>(2) 锁屏界面，虽然是在系统进程中，但是通过设置以下 flag，可以启用硬件加速：</p>
+<p><code>WindowManager.LayoutParams.PRIVATE_FLAG_FORCE_HARDWARE_ACCELERATED</code></p>
+<p>其他情况，根据 Activity 窗口是否请求硬件加速渲染决定是否开启硬件加速。通过判断flags位</p>
+<p><code>WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED</code>被置为1，同时硬件支持硬件加速，就可以继续后面的初始化工作了。</p>
+<h4 id="Step3-ThreaedRenderer-create"><a href="#Step3-ThreaedRenderer-create" class="headerlink" title="Step3: ThreaedRenderer.create"></a>Step3: ThreaedRenderer.create</h4><p>设备支持 Open GL ES2.0，就创建对象：ThreadedRender。</p>
+<ol>
+<li>通过 nCreateRootRenderNode 在 Native 层创建一个 Render Node。</li>
+<li>通过 adopt 方法，将 Native 层的 Render Node 封装成 Java 层的 Render Node。</li>
+<li>通过 nCreateProxy 在 Native 层创建一个 Render Proxy 对象。该proxy对象以后负责从Main Thread向RenderThread发送命令。</li>
+</ol>
+<p>RenderProxy 有三个重要的成员变量：</p>
+<ol>
+<li>mRenderThread：进程单例，指向 RenderThread 对象，通过它可以向 RenderThread 线程发送命令。</li>
+<li>mContext：画布上下文。RenderThread 通过它完成渲染工作。</li>
+<li>mDrawFrameTask：指向一个 DrawFrameTask 对象，Main thread 通过它向 Render Thread 线程发送渲染下一帧的命令。</li>
+</ol>
+<h4 id="Step4：ViewRootImpl-performTraversals"><a href="#Step4：ViewRootImpl-performTraversals" class="headerlink" title="Step4：ViewRootImpl.performTraversals"></a>Step4：ViewRootImpl.performTraversals</h4><p>当得到了有效的surface，就通过ThreadedRender的initialize方法，将该surface与RenderThread绑定。</p>
+<h4 id="硬件渲染流程图"><a href="#硬件渲染流程图" class="headerlink" title="硬件渲染流程图"></a>硬件渲染流程图</h4><p><img src="hardware_render.png" alt="硬件渲染流程"></p>
+<p><strong>ThreadedRender.draw主要执行三个操作：</strong></p>
+<ol>
+<li>调用成员函数 updateRootDisplayList 构建或者更新应用程序窗口的 Root Render Node 的 DisplayList。<strong>RenderNode.start 和 RenderNode.end 直接的处理，与软件渲染的流程一样，只是硬件渲染的时候，只把渲染命令存储到 DisplayList 中，并不真正开始执行渲染操作。</strong></li>
+<li>调用成员函数 registerAnimationRenderNode 注册应用程序窗口动画相关的 Render Node 到 native 层。这些RenderNode是用于描述当前窗口设置的动画。</li>
+<li>调用成员函数 nSyncAndDrawFrame，通知Render Thread绘制下一帧。其具体实现在 navtive 层。通DrawFrameTask 向 RenderThread 的 task Queue 抛出一个消息，等待 RenderThread 在合适的时候唤醒。</li>
+</ol>
+<hr>
+<h3 id="软件渲染"><a href="#软件渲染" class="headerlink" title="软件渲染"></a>软件渲染</h3><p>在 ViewRootImpld 的 draw()如果不进行硬件渲染，会进行软件渲染<code>drawSoftware()</code></p>
+<h4 id="Step1-ViewRootImpl-Draw"><a href="#Step1-ViewRootImpl-Draw" class="headerlink" title="Step1. ViewRootImpl.Draw"></a>Step1. ViewRootImpl.Draw</h4><ol>
+<li>计算窗口是否处于滚动状态。</li>
+<li>计算 dirty 区域，也就是需要重绘的区域。</li>
+<li>Dirty 区域不为空，或者动画进行中，继续判断是否选择了硬件加速，如果没有使用硬件加速，则通过 drawSoftware（）发起软件渲染。</li>
+<li>如果动画执行过程中，发起下一次轮询。</li>
+</ol>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/view/ViewRootImpl.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">draw</span><span class="params">(<span class="keyword">boolean</span> fullRedrawNeeded)</span> </span>&#123;</span><br><span class="line">     Surface surface = mSurface;</span><br><span class="line">     ......</span><br><span class="line">             <span class="keyword">if</span> (!drawSoftware(surface, mAttachInfo, xOffset, yOffset,</span><br><span class="line">                     scalingRequired, dirty, surfaceInsets)) &#123;</span><br><span class="line">                 <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">             &#125;</span><br><span class="line">             ......</span><br></pre></td></tr></table></figure>
+
+<h4 id="Step2-ViewRootImlp-drawSoftware"><a href="#Step2-ViewRootImlp-drawSoftware" class="headerlink" title="Step2. ViewRootImlp.drawSoftware"></a>Step2. ViewRootImlp.drawSoftware</h4><p>通过 lockCanvas()获取画布。</p>
+<h4 id="Step3-Framelayout-draw-Canvas"><a href="#Step3-Framelayout-draw-Canvas" class="headerlink" title="Step3. Framelayout.draw(Canvas)"></a>Step3. Framelayout.draw(Canvas)</h4><p>ViewRootImpl 中，通过 mView.draw(canvas)，调用 DecorView 的 draw 方法；DecorView 通过 super.draw(canvas)，调用父类 Framlayout 的 Draw 方法。</p>
+<p>在 FrameLayout 中，通过 super.draw(canvas)方法，调用 View.draw 方法，触发实际的描绘处理。</p>
+<h4 id="Step4-View-draw"><a href="#Step4-View-draw" class="headerlink" title="Step4. View.draw"></a>Step4. View.draw</h4><ol>
+<li>描绘背景。如果 PFLAG_DIRTY_OPAQUE 被设置，并且 mAttachInfo.mIgnoreDirtyState=flase，说明有不透明子view遮挡了当前的 view，不需要绘制背景。</li>
+<li>保存当前画布的堆栈状态，并且创建额外的图层描绘当前视图滑动时的边框渐变效果。FADING_EDGE_VERTICAL 和FADING_EDGE_HORIZONTAL 都没有被设置的时候，不需要执行这步操作。</li>
+<li>通过 onDraw 调用子类描绘处理，完成当前视图的描绘。</li>
+<li>通过 dispatchDraw 调用子视图的描绘处理。</li>
+<li>绘制边框的渐变效果（与步骤 2 对应），并且恢复图层。此步骤不是必需的。</li>
+<li>如果需要显示滚动条，通过 onDrawScrollBars 调用描绘滚动条。</li>
+</ol>
+<h4 id="Step5-ViewGroup-dispatchDraw"><a href="#Step5-ViewGroup-dispatchDraw" class="headerlink" title="Step5. ViewGroup.dispatchDraw"></a>Step5. ViewGroup.dispatchDraw</h4><ol>
+<li><code>FLAG_RUN_ANIMATION</code>被设置，并且允许显示子视图的动画，则通过 bindLayoutAnimation 设置动画。设置完成后，通过LayoutAnimationController 的对象来启动动画，并且调用 mAnimationListener 的 onAnimationStart()来通知动画监听，当前视图开始显示动画了。</li>
+<li>如果子视图可见或者有动画需要显示，就通过方法 drawChild 实现子视图的绘制。</li>
+<li>如果动画结束，通过notifyAnimationListener发送消息，通知动画监听者，动画已经结束。</li>
+</ol>
+<h4 id="Step6-ViewGroup-drawChild"><a href="#Step6-ViewGroup-drawChild" class="headerlink" title="Step6. ViewGroup.drawChild"></a>Step6. ViewGroup.drawChild</h4><p>调用子 view 的 draw(Canvas, ViewGroup,long)方法，实现子视图的绘制。</p>
+<h4 id="Step7-View-draw-Canvas-ViewGroup-long"><a href="#Step7-View-draw-Canvas-ViewGroup-long" class="headerlink" title="Step7. View.draw(Canvas, ViewGroup, long)"></a>Step7. View.draw(Canvas, ViewGroup, long)</h4><ol>
+<li>通过方法<code>drawAnimation</code>实现动画的绘制。</li>
+<li>通过flag检查子视图是否支持缓冲方式绘制。即将子视图缓冲到一个Bitmap中，后续可以通过getDrawingCache获得该bitmap。</li>
+<li>以非缓冲的方式绘制：检查 SKIP_DRAW 标记是否被置位，如果为 1，则跳过当前视图的绘制，调用 ViewGroup 的dispatchDraw，重复前面过程，继续该视图的子视图的绘制；否则，通过调用 View.draw(Canvas)，重复 step4 的过程，完成当前视图的绘制以后，再发起子视图的绘制。</li>
+<li>以缓冲的方式绘制：通过 canvas.drawBitmap()将上次缓冲的 Bitmap 对象 cache 绘制到画布上。</li>
+</ol>
+<h4 id="Step8-ViewRootImpl-drawSoftware"><a href="#Step8-ViewRootImpl-drawSoftware" class="headerlink" title="Step8. ViewRootImpl.drawSoftware"></a>Step8. ViewRootImpl.drawSoftware</h4><p>循环上面的过程，直到所有子视图都被绘制到画布上，返回 drawSoftware 方法。</p>
+<p>通过 surface.unlockCanvasAndPost()方法，请求 SurfaceFlinger 服务渲染这块画布到图形缓冲区。</p>
+<h4 id="软件渲染流程图"><a href="#软件渲染流程图" class="headerlink" title="软件渲染流程图"></a>软件渲染流程图</h4><p><img src="software_render.png" alt="软件渲染流程图"></p>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/">https://alonealive.github.io/Blog/2019/09/21/2019/190921-android-wms-view-cpp/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-09-21T13:32:22.000Z" itemprop="datePublished">2019-09-21</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:14:08.790Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/graphics/" rel="tag">#&nbsp;graphics</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/09/22/2019/190922-android-handler-cpp/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android Handler消息循环处理机制(例ActivityThread)</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/09/16/2019/190916_cpp_useclass/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++ 运算符重载、友元、返回对象</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

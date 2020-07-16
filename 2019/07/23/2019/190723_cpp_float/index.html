@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>C++多字节char、bool、字符常量、浮点数 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="C++多字节char、bool、字符常量、浮点数 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/"><meta property="og:locale" content="zh-CN"><meta name="description" content="wchar_t 程序需要处理的字符集可能无法用一个8位的字节表示，比如日文、汉字等此时有两种处理方法：    编译器厂商将char定义16位的字节或者更长   char表示8位的字节，另一种wchar_t表示宽字符类型，可以扩展字符集 - sunwengang - sunwengang blog"><meta name="keywords" content="cpp"><meta property="article:published_time" content="2019-07-23T14:01:37.000Z"><meta property="article:modified_time" content="2020-03-08T10:01:44.193Z"><meta property="og:updated_time" content="2020-03-08T10:01:44.193Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="cpp"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/"
+    },
+    "headline": "C++多字节char、bool、字符常量、浮点数 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-07-23T14:01:37.000Z",
+    "dateModified": "2020-03-08T10:01:44.193Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "cpp",
+    "description": "wchar_t 程序需要处理的字符集可能无法用一个8位的字节表示，比如日文、汉字等此时有两种处理方法：    编译器厂商将char定义16位的字节或者更长   char表示8位的字节，另一种wchar_t表示宽字符类型，可以扩展字符集 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=C++多字节char、bool、字符常量、浮点数" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=C++多字节char、bool、字符常量、浮点数&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=C++多字节char、bool、字符常量、浮点数" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACKElEQVR42u3b0U7DMAxG4b7/S8MtQon/465oIz65GYO2+So1qWOH6+sftEukSJEiPwB5Fe3nMelz9fPv66/OKfsVORa5fGgXSAIsBwI4VqTI1YO8wnQQ5NzUr0iRZNJdTcKrY6oXhUiRTyF3He8mYvISECnyToDRCR7S8eTFIFJkWhD95edjq0WRRyFj0igkAFYTPVmIPZpVE3kUsnqQdwsscjOvBMQiRcaDQ0edBFXqQ6RI+uKnWHI9UgAQORuZFvsksUqTrVXyCi/ERB6PJJB04ZSs2n2vBqXI2cjqgjEQAAnRTtJK5GxkwpEBkI7pni9yNvJOB1VBlBTmU1FU5GwkGSQ0YdAJUtDGFJFjkR1Up+jeLeaXA0fkKGQ3OO0UoCpkqwAqcgySLKzI32hRPw0kkSKri9AEE9nESX6HqrQiRyBJkp0U52mCoSroixT5yuKrE4SQTfXthJXII5EkaCDFp5SspwV+lLASeTTyzgBJm+7SYgsXXkWORZLAN2F2g4VcdzvYRI5F0sR7Cng7SX2UeBU5GpmK7DQR1bmhOHBFirx6/5RBA+ArtFYUJPJ4ZGpp80d6IZAiKq7SihyBTA80gZOgli7A0I59kccjUxBbblgvEgJ0EdYKMESOQaIXPpjYO4HF7sZEiqQLeNJB2mSScO0MhsjRSFI86gbCZVFf5GgkKWSmhCrdXHx74Igcg7wzUdOiQApKyoBa5EjkJzeRIkWKfGP7BhGgNiSeerdEAAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">C++多字节char、bool、字符常量、浮点数</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-07-23</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=C++多字节char、bool、字符常量、浮点数&url=https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=C++多字节char、bool、字符常量、浮点数&url=https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACKElEQVR42u3b0U7DMAxG4b7/S8MtQon/465oIz65GYO2+So1qWOH6+sftEukSJEiPwB5Fe3nMelz9fPv66/OKfsVORa5fGgXSAIsBwI4VqTI1YO8wnQQ5NzUr0iRZNJdTcKrY6oXhUiRTyF3He8mYvISECnyToDRCR7S8eTFIFJkWhD95edjq0WRRyFj0igkAFYTPVmIPZpVE3kUsnqQdwsscjOvBMQiRcaDQ0edBFXqQ6RI+uKnWHI9UgAQORuZFvsksUqTrVXyCi/ERB6PJJB04ZSs2n2vBqXI2cjqgjEQAAnRTtJK5GxkwpEBkI7pni9yNvJOB1VBlBTmU1FU5GwkGSQ0YdAJUtDGFJFjkR1Up+jeLeaXA0fkKGQ3OO0UoCpkqwAqcgySLKzI32hRPw0kkSKri9AEE9nESX6HqrQiRyBJkp0U52mCoSroixT5yuKrE4SQTfXthJXII5EkaCDFp5SspwV+lLASeTTyzgBJm+7SYgsXXkWORZLAN2F2g4VcdzvYRI5F0sR7Cng7SX2UeBU5GpmK7DQR1bmhOHBFirx6/5RBA+ArtFYUJPJ4ZGpp80d6IZAiKq7SihyBTA80gZOgli7A0I59kccjUxBbblgvEgJ0EdYKMESOQaIXPpjYO4HF7sZEiqQLeNJB2mSScO0MhsjRSFI86gbCZVFf5GgkKWSmhCrdXHx74Igcg7wzUdOiQApKyoBa5EjkJzeRIkWKfGP7BhGgNiSeerdEAAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#wchar-t"><span class="post-toc-number">1.</span> <span class="post-toc-text">wchar_t</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#C-11新增的char16-t和char32-t"><span class="post-toc-number">2.</span> <span class="post-toc-text">C++11新增的char16_t和char32_t</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#bool布尔类型"><span class="post-toc-number">3.</span> <span class="post-toc-text">bool布尔类型</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#常量的符号名称-–-const限定符"><span class="post-toc-number">4.</span> <span class="post-toc-text">常量的符号名称 – const限定符</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#创建常量"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">创建常量</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#const和define比较"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">const和define比较</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#浮点数"><span class="post-toc-number">5.</span> <span class="post-toc-text">浮点数</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#书写方式"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">书写方式</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#浮点类型float-double-long-double"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">浮点类型float,double,long double</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="wchar-t"><a href="#wchar-t" class="headerlink" title="wchar_t"></a>wchar_t</h2><blockquote>
+<p>程序需要处理的字符集可能无法用一个8位的字节表示，比如日文、汉字等<br>此时有两种处理方法：  </p>
+<ol>
+<li>编译器厂商将char定义16位的字节或者更长  </li>
+<li>char表示8位的字节，另一种<code>wchar_t</code>表示宽字符类型，可以扩展字符集</li>
+</ol>
+</blockquote>
+<a id="more"></a>
+
+<p><code>wchar_t</code>类型是一种整数类型，因此可以有足够的空间表示系统使用的最大扩展字符集。</p>
+<p><code>iostream</code>使用<code>wcin</code>和<code>wcout</code>表示宽字符的输入输出。</p>
+<h2 id="C-11新增的char16-t和char32-t"><a href="#C-11新增的char16-t和char32-t" class="headerlink" title="C++11新增的char16_t和char32_t"></a>C++11新增的<code>char16_t</code>和<code>char32_t</code></h2><blockquote>
+<p><code>Unicode</code>提供了一种表示各种字符集的解决方案。ASCII码是Unicode的子集。<br><code>Unicode</code>给每个字符指定一个编号 – 码点<br>码点通常类似: <code>U-222B</code>  (其中U表示这是一个Unicode字符，222B表示该字符的16进制编号)<br>另一种针对多语言文本的编码标准是<code>ISO 10646</code></p>
+</blockquote>
+<p><code>char16_t</code>使用前缀<code>u</code>表示字符常量或者字符串常量；</p>
+<p><code>char32_t</code>使用前缀<code>U</code>表示字符常量或者字符串常量；</p>
+<p><strong>例如：</strong></p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char16_t</span> = <span class="string">u'q'</span>;</span><br><span class="line">char32_t = U'\U0000222B';</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="bool布尔类型"><a href="#bool布尔类型" class="headerlink" title="bool布尔类型"></a>bool布尔类型</h2><blockquote>
+<p>C++将<code>非零值</code>解释为<code>true</code>，<code>0</code>是<code>false</code><br>此处<code>bool</code>表示真和假<br>如果需要打印这个类型的值，可以直接使用<code>%d</code>打印判断是否为<code>0</code></p>
+</blockquote>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">bool</span> is_ready = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> start = <span class="number">-100</span>;  <span class="comment">//true</span></span><br><span class="line"><span class="keyword">bool</span> <span class="built_in">stop</span> = <span class="number">0</span>;   <span class="comment">//false</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="常量的符号名称-–-const限定符"><a href="#常量的符号名称-–-const限定符" class="headerlink" title="常量的符号名称 – const限定符"></a>常量的符号名称 – <code>const限定符</code></h2><blockquote>
+<p>符号名称指出了常量表示的内容（即使用符号来表示一个常量）<br>符号常量的两种定义方式：</p>
+<ol>
+<li><code>#define A 10</code>  (预处理处理)</li>
+<li><code>const int B = 10;</code>  (C++编译器处理，提供类型检查和作用域检查)  </li>
+</ol>
+</blockquote>
+<p><strong>例如：</strong></p>
+<p><code>const int Months = 12; //首字母大写或者全部大写，表示常量（非通用约定）</code> </p>
+<p>常量<code>Months</code>被初始化后，其值就被固定了，编译器不允许修改这个常量的值。</p>
+<p>如果强制修改，g++将指出程序试图给一个只读变量赋值。</p>
+<p>关键词<code>const</code>叫做限定符，因为它限定了声明的含义。</p>
+<h3 id="创建常量"><a href="#创建常量" class="headerlink" title="创建常量"></a>创建常量</h3><blockquote>
+<p>如果在声明中没有提供具体值，则常量的值是不确定的，且无法修改。</p>
+</blockquote>
+<figure class="highlight diff"><figcaption><span>const_test.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">const int pink = 10; //建议在声明中对常量初始化</span><br><span class="line"></span><br><span class="line">//TODO 不建议</span><br><span class="line"><span class="deletion">- const int toes;</span></span><br><span class="line"><span class="deletion">- toes = 10;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="const和define比较"><a href="#const和define比较" class="headerlink" title="const和define比较"></a>const和define比较</h3><blockquote>
+<p>const相比#define定义常量来说， 优势：</p>
+<ol>
+<li>能够明确指定类型  </li>
+<li>可以使用C++的作用域规则将其定义限制在特定的函数或者类文件中  </li>
+<li>可以用于复杂的类型，例如数组、结构</li>
+</ol>
+</blockquote>
+<hr>
+<h2 id="浮点数"><a href="#浮点数" class="headerlink" title="浮点数"></a>浮点数</h2><h3 id="书写方式"><a href="#书写方式" class="headerlink" title="书写方式"></a>书写方式</h3><ol>
+<li>常用的小数点表示法</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">12.34</span><br><span class="line">0.231</span><br><span class="line">92.023</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>E表示法</li>
+</ol>
+<blockquote>
+<p>例如<code>23.3E3</code>表示23.3的三次方。 <code>E</code>可以形容很大或者很小的数。<br><code>E</code>后面是负数，表示<code>除以N*10</code><br><code>d.ddE+n</code>表示小数点向右移动n位<br><code>d.ddE-n</code>表示小数点向左移动n位<br><strong>之所以称为<code>浮点数</code>，就是因为小数点的移动</strong></p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">4E3</span><br><span class="line">34E-10</span><br><span class="line">31.23e12</span><br><span class="line">12.5e-5</span><br></pre></td></tr></table></figure>
+
+<h3 id="浮点类型float-double-long-double"><a href="#浮点类型float-double-long-double" class="headerlink" title="浮点类型float,double,long double"></a>浮点类型<code>float,double,long double</code></h3><blockquote>
+<p>这三个类型是按他们可以表示的<code>有效数位</code>和允许的指数最小范围来描述的。<br><code>有效位</code>表示数字当中有效的位数。比如<code>14000</code>的有效位数是2，因为可以精确到千位，其余三位只不过是占位符。<br>有效位数不依赖小数点的位置。比如<code>12.23</code>的有效位数是4。  </p>
+<p>C++和C对<code>float</code>的有效位数至少32位。<br><code>double</code>至少48位，且不少于float。<br><code>long double</code>至少和<code>double</code>一样多。<br><strong>可以从头文件<code>cfloat</code>和<code>float.h</code>找到系统的限制！</strong></p>
+</blockquote>
+<figure class="highlight c++"><figcaption><span>floatnum.cpp </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line">	<span class="built_in">cout</span>.setf(ios_base::fixed, ios_base::floatfield); <span class="comment">//fixed-point,将E转换成小数点显示</span></span><br><span class="line">	<span class="keyword">float</span> tub = <span class="number">10.0</span>/<span class="number">3.0</span>;</span><br><span class="line">	<span class="keyword">double</span> mint = <span class="number">10.0</span>/<span class="number">3.0</span>;</span><br><span class="line">	<span class="keyword">const</span> <span class="keyword">float</span> million = <span class="number">1.0E6</span>;</span><br><span class="line"></span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"float tub = "</span> &lt;&lt; tub &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"double mint = "</span> &lt;&lt; mint &lt;&lt;<span class="string">"\n"</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"const float million = "</span> &lt;&lt; million &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"tub * million = "</span> &lt;&lt; tub*million &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="built_in">cout</span> &lt;&lt; <span class="string">"mint * million = "</span> &lt;&lt; mint*million&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>g++ floatnum.cpp</code>编译</p>
+<p>生成<code>a.out</code></p>
+<p>执行<code>./a.out</code></p>
+<p><strong>运行结果：</strong></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">float</span> tub = <span class="number">3.333333</span></span><br><span class="line"><span class="keyword">double</span> mint = <span class="number">3.333333</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">float</span> million = <span class="number">1000000.000000</span></span><br><span class="line">tub * million = <span class="number">3333333.250000</span></span><br><span class="line">mint * million = <span class="number">3333333.333333</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>说明:</strong></p>
+<ol>
+<li><code>cout</code>会将<code>3333333.250000</code>直接打印成<code>3333333.25</code> ，而<code>cout.setf</code>将覆盖这种行为；  </li>
+<li><code>cout</code>打印6位小数，他是<code>iostream</code>的一个类成员函数，能够精确的控制输出格式、字段宽度、小数位数、采用小数格式还是E格式显示；  </li>
+</ol>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/">https://alonealive.github.io/Blog/2019/07/23/2019/190723_cpp_float/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-07-23T14:01:37.000Z" itemprop="datePublished">2019-07-23</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:01:44.193Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/cpp/'>cpp</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/cpp/" rel="tag">#&nbsp;cpp</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/07/25/2019/190724_ubuntu_install/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Ubuntu18系统安装（无需制作启动盘）</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/07/22/2019/190722-hexo-article-pass/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">hexo文章加密方法</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

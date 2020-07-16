@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android Shell脚本应用 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android Shell脚本应用 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/"><meta property="og:locale" content="zh-CN"><meta name="description" content="基本结构.sh（系统中文.ch.sh）#!&#x2F;bin&#x2F;bash 脚本开头 #!&#x2F;bin&#x2F;csh 是 C shell 的命令解 - sunwengang - sunwengang blog"><meta name="keywords" content="shell"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/shell.jpg"><meta property="article:published_time" content="2019-10-23T15:52:00.000Z"><meta property="article:modified_time" content="2020-04-01T12:59:48.661Z"><meta property="og:updated_time" content="2020-04-01T12:59:48.661Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="shell"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/shell.jpg">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/"
+    },
+    "headline": "Android Shell脚本应用 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/shell.jpg"
+    },
+    
+    "datePublished": "2019-10-23T15:52:00.000Z",
+    "dateModified": "2020-04-01T12:59:48.661Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "shell",
+    "description": "基本结构.sh（系统中文.ch.sh）#!/bin/bash 脚本开头 #!/bin/csh 是 C shell 的命令解 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/shell.jpg&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android Shell脚本应用" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android Shell脚本应用&summary=&pics=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/shell.jpg&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android Shell脚本应用" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMklEQVR42u3ay26DUAxF0fz/T7ejThD22aZUSfFmklRNuAspBj/u6+sfHC+RIkWK/ADkqzmOn/l5f3w9/r/6bPW9cl2Ra5GnP9oT5NmiFaY7D15X5GpkBel+3FWAdYFC1xUpskNWwVJ9t3tQiBR5V+BUN+9q4epzJEERKbJ70CdsWjTd5G/JgkQ+DpmSiL96va1aFPkoZGwaNSfpCraqKKsC5lddNZGPQnY/5EmBTxMIevEiRaYGFLmYLllIwXN6ISLXIgkmJaqpmX+p2SVyNbI7+aSxRYu37mEhUmT34Ec3XZgMj5sKIlciU0JABpepqdrhx9WiyMcjSYOKDIzI+abNVZG7kZPNHVUCS5MH8lmRe5HkpkwHUN3FdRdWBqHI1cgUQCSRbYsqMByIgSNyBZI0Bbr33WaQVOCNNx6LXIMkqBRoZEM9aUKIFJluvHRQn9BVYtIGm8iVyFTYp5t9CiY6FEUJhsgVyNScSpvh70hQ0M1c5CokKfinye3kIYCnDyLXIulQiSYlVzY0i9yLnBRiZBhPBqvpb5EiryQCNPCmQRO7aiJXIUkSTAsruiG5TaxFioSFVNfgnza4Rrv+RK5ATpIDUqzRIm4UOCJXISdNelKQTTZAXSrERK5A0iR2OmwnTYdRgiFyFZIMK8mAiAwK0oWJFEmQtLE13RyCd7OIFDlYNC4WBlRlIiNyNXLSjCeD+kmSiwNH5BokffCT5v2kuItDVZErkZ98iBQpUuQbj2+055a1z4jmIQAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+            <div class="card-image lazyload" data-bg="url('https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/shell.jpg')"></div>
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android Shell脚本应用</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-10-23</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android Shell脚本应用&url=https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/&pic=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/shell.jpg&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android Shell脚本应用&url=https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/shell.jpg&url=https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMklEQVR42u3ay26DUAxF0fz/T7ejThD22aZUSfFmklRNuAspBj/u6+sfHC+RIkWK/ADkqzmOn/l5f3w9/r/6bPW9cl2Ra5GnP9oT5NmiFaY7D15X5GpkBel+3FWAdYFC1xUpskNWwVJ9t3tQiBR5V+BUN+9q4epzJEERKbJ70CdsWjTd5G/JgkQ+DpmSiL96va1aFPkoZGwaNSfpCraqKKsC5lddNZGPQnY/5EmBTxMIevEiRaYGFLmYLllIwXN6ISLXIgkmJaqpmX+p2SVyNbI7+aSxRYu37mEhUmT34Ec3XZgMj5sKIlciU0JABpepqdrhx9WiyMcjSYOKDIzI+abNVZG7kZPNHVUCS5MH8lmRe5HkpkwHUN3FdRdWBqHI1cgUQCSRbYsqMByIgSNyBZI0Bbr33WaQVOCNNx6LXIMkqBRoZEM9aUKIFJluvHRQn9BVYtIGm8iVyFTYp5t9CiY6FEUJhsgVyNScSpvh70hQ0M1c5CokKfinye3kIYCnDyLXIulQiSYlVzY0i9yLnBRiZBhPBqvpb5EiryQCNPCmQRO7aiJXIUkSTAsruiG5TaxFioSFVNfgnza4Rrv+RK5ATpIDUqzRIm4UOCJXISdNelKQTTZAXSrERK5A0iR2OmwnTYdRgiFyFZIMK8mAiAwK0oWJFEmQtLE13RyCd7OIFDlYNC4WBlRlIiNyNXLSjCeD+kmSiwNH5BokffCT5v2kuItDVZErkZ98iBQpUuQbj2+055a1z4jmIQAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#基本结构-sh（系统中文-ch-sh）"><span class="post-toc-number">1.</span> <span class="post-toc-text">基本结构.sh（系统中文.ch.sh）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#export"><span class="post-toc-number">2.</span> <span class="post-toc-text">export</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#用语句给变量赋值，如将-etc下目录的文件名循环出来"><span class="post-toc-number">3.</span> <span class="post-toc-text">用语句给变量赋值，如将&#x2F;etc下目录的文件名循环出来</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#、-0、-1、-2"><span class="post-toc-number">4.</span> <span class="post-toc-text">$、$0、$1、$2..</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ps-ef-grep-surfaceFlinger-awk-‘-print-2-’的含义"><span class="post-toc-number">5.</span> <span class="post-toc-text">ps -ef |grep surfaceFlinger |awk ‘{print $2}’的含义</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#两种方式声明函数"><span class="post-toc-number">6.</span> <span class="post-toc-text">两种方式声明函数</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#while-语句"><span class="post-toc-number">7.</span> <span class="post-toc-text">while 语句</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#android-serial-adb-shell-getprop-“re-serialno”-获取设备序列号"><span class="post-toc-number">8.</span> <span class="post-toc-text">$android_serial&#x3D;$(adb shell getprop “re.serialno”)获取设备序列号</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#adb-shell-input-swipe-359-1600-359-340-500"><span class="post-toc-number">9.</span> <span class="post-toc-text">adb shell input swipe 359 1600 359 340 500</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#if-ps-ef-grep-c-quot-ssh-quot-gt-1-then-echo-quot-true-quot-fi（适合中断，写成一行）"><span class="post-toc-number">10.</span> <span class="post-toc-text">if [ $(ps -ef | grep -c &quot;ssh&quot;) -gt 1 ]; then echo &quot;true&quot;; fi（适合中断，写成一行）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#sed-i-‘s-15-g’-tmp-txt"><span class="post-toc-number">11.</span> <span class="post-toc-text">sed -i ‘s&#x2F;^.\{15\}&#x2F;&#x2F;g’ tmp.txt</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#sed-i就是直接对文本文件进行操作"><span class="post-toc-number">11.1.</span> <span class="post-toc-text">sed -i就是直接对文本文件进行操作</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#正则"><span class="post-toc-number">11.2.</span> <span class="post-toc-text">正则</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#sed"><span class="post-toc-number">11.3.</span> <span class="post-toc-text">sed</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#多选择语句case"><span class="post-toc-number">12.</span> <span class="post-toc-text">多选择语句case</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#adb-shell-pidof-”mediaserver“"><span class="post-toc-number">13.</span> <span class="post-toc-text">adb shell pidof ”mediaserver“</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#adb-shell-am-start-n"><span class="post-toc-number">14.</span> <span class="post-toc-text">adb shell am start -n</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#adb-shell-input-tap-x-y"><span class="post-toc-number">15.</span> <span class="post-toc-text">adb shell input tap x y</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#adb-shell-dumpsys-window-windows-grep-Current-tee-tmp-txt"><span class="post-toc-number">16.</span> <span class="post-toc-text">adb shell dumpsys window windows |grep Current |tee tmp.txt</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#date-Y-m-d-H-M-S输出日期"><span class="post-toc-number">17.</span> <span class="post-toc-text">date + %Y%m%d_%H%M%S输出日期</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#date-N-cut-c-3"><span class="post-toc-number">18.</span> <span class="post-toc-text">date + %N | cut -c -3</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#cat-systrace-html-grep-postComp-wc-l"><span class="post-toc-number">19.</span> <span class="post-toc-text">cat **systrace.html |grep postComp |wc -l</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#（视频播放时）旋转屏幕"><span class="post-toc-number">20.</span> <span class="post-toc-text">（视频播放时）旋转屏幕</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#shell判断数组中是否包含某个元素"><span class="post-toc-number">21.</span> <span class="post-toc-text">shell判断数组中是否包含某个元素</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#解决播放结束后，判断当前activity然后重新播放"><span class="post-toc-number">22.</span> <span class="post-toc-text">解决播放结束后，判断当前activity然后重新播放</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#包含关系"><span class="post-toc-number">23.</span> <span class="post-toc-text">包含关系</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#查找手机文件"><span class="post-toc-number">24.</span> <span class="post-toc-text">查找手机文件</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#播放视频"><span class="post-toc-number">25.</span> <span class="post-toc-text">播放视频</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#逐行读某个文件"><span class="post-toc-number">26.</span> <span class="post-toc-text">逐行读某个文件</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="基本结构-sh（系统中文-ch-sh）"><a href="#基本结构-sh（系统中文-ch-sh）" class="headerlink" title="基本结构.sh（系统中文.ch.sh）"></a>基本结构.sh（系统中文.ch.sh）</h2><p><code>#!/bin/bash</code> 脚本开头</p>
+<p><code>#!/bin/csh</code> 是 C shell 的命令解</p>
+<a id="more"></a>
+
+<h2 id="export"><a href="#export" class="headerlink" title="export"></a>export</h2><blockquote>
+<p>功能说明：设置或显示环境变量。<br>语　　法：export [-fnp][变量名称]=[变量设置值]<br>补充说明：在 shell 中执行程序时，shell 会提供一组环境变量。export 可新增，修改或删除环境变量，供后续执行的程序使用。export 的效力仅限于该次登陆操作。</p>
+</blockquote>
+<ol>
+<li>用户登录到Linux系统后，系统将启动一个用户shell。在这个shell中，可以使用shell命令或声明变量，也可以创建并运行 shell 脚本程序。</li>
+<li>运行shell脚本程序时，系统将创建一个子shell。此时，系统中将有两个shell，一个是登录时系统启动的 shell，另一个是系统为运行脚本程序创建的shell。</li>
+<li>当一个脚本程序运行完毕，脚本shell将终止，返回到执行该脚本之前的shell。从这种意义上来说，用户可以有许多shell，每个shell都是由某个 shell（称为父 shell）派生的。</li>
+<li>在子shell中定义的变量只在该子shell内有效。</li>
+<li>如果在一个shell脚本程序中定义了一个变量，当该脚本程序运行时，这个定义的变量只是该脚本程序内的一个局部变量，其他的 shell 不能引用它，要使某个变量的值可以在其他 shell 中被改变，可以使用 export 命令对已定义的变量进行输出。</li>
+<li>export命令将使系统在创建每一个新的shell时，定义这个变量的一个拷贝。这个过程称之为变量输出。</li>
+</ol>
+<h2 id="用语句给变量赋值，如将-etc下目录的文件名循环出来"><a href="#用语句给变量赋值，如将-etc下目录的文件名循环出来" class="headerlink" title="用语句给变量赋值，如将/etc下目录的文件名循环出来"></a>用语句给变量赋值，如将<code>/etc</code>下目录的文件名循环出来</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for file in `ls /etc`</span><br><span class="line">或</span><br><span class="line">for file in $(ls /et)</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>$</code>符号来取一个变量的值，常见的就是<code>$VAR</code></p>
+<p>变量定义：<code>app_name=”test”</code></p>
+<h2 id="、-0、-1、-2"><a href="#、-0、-1、-2" class="headerlink" title="$、$0、$1、$2.."></a><code>$、$0、$1、$2..</code></h2><p><code>$0</code>就是你写的shell脚本本身的名字，<code>$1</code>是你给你写的shell脚本传的第一个参数，<code>$2</code>是你给你写的shell脚本传的第二个参数。</p>
+<h2 id="ps-ef-grep-surfaceFlinger-awk-‘-print-2-’的含义"><a href="#ps-ef-grep-surfaceFlinger-awk-‘-print-2-’的含义" class="headerlink" title="ps -ef |grep surfaceFlinger |awk ‘{print $2}’的含义"></a><code>ps -ef |grep surfaceFlinger |awk ‘{print $2}’</code>的含义</h2><ul>
+<li><code>$2</code>：表示第二个字段</li>
+<li><code>print $2</code>：打印第二个字段</li>
+<li><code>-e</code>: 显示所有进程。</li>
+<li><code>-f</code>:全格式</li>
+<li><code>awk &#39;{print $2}&#39; $fileName</code>: 一行一行的读取指定的文件， 以空格作为分隔符，打印每行的第二个字段（即 pid）。</li>
+<li><code>ps</code>: 打印的信息：</li>
+<li>字段含义如下：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">UID PID PPID C STIME TTY TIME CMD</span><br><span class="line">zzw 14124 13991 0 00:38 pts&#x2F;0 00:00:00 grep --color&#x3D;auto dae</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h2 id="两种方式声明函数"><a href="#两种方式声明函数" class="headerlink" title="两种方式声明函数"></a>两种方式声明函数</h2><ol>
+<li>”function”不可以省略(建议)<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">function find &#123; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>不得添加参数<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">find() &#123; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<p>两种声明方式效果等价。<br><strong>注意：</strong><br>（1）函数名和”{“之间必须有空格；<br>（2）不得声明形式参数；<br>（3）必须在调用前声明；<br>（4）无法重载；<br>（5）后来的声明会覆盖之前的声明</p>
+<h2 id="while-语句"><a href="#while-语句" class="headerlink" title="while 语句"></a>while 语句</h2><p><code>while</code>循环用于不断执行一系列命令，也用于从输入文件中读取数据；命令通常为测试条件。其格式为：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while condition</span><br><span class="line">do</span><br><span class="line">    command</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>以下是一个基本的while循环，测试条件是：如果int小于等于5，那么条件返回真。int从0开始，每次循环处理时，<code>int</code>加1运行上述脚本，返回数字1到5，然后终止。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">int=1</span><br><span class="line">while(( $int&lt;=5 ))</span><br><span class="line">do</span><br><span class="line">    echo $int</span><br><span class="line">    let "int++"</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<h2 id="android-serial-adb-shell-getprop-“re-serialno”-获取设备序列号"><a href="#android-serial-adb-shell-getprop-“re-serialno”-获取设备序列号" class="headerlink" title="$android_serial=$(adb shell getprop “re.serialno”)获取设备序列号"></a><code>$android_serial=$(adb shell getprop “re.serialno”)</code>获取设备序列号</h2><h2 id="adb-shell-input-swipe-359-1600-359-340-500"><a href="#adb-shell-input-swipe-359-1600-359-340-500" class="headerlink" title="adb shell input swipe 359 1600 359 340 500"></a><code>adb shell input swipe 359 1600 359 340 500</code></h2><p><code>input</code>后可以跟很多参数，text相当于输入内容，keyevent相当于手机物理或是屏幕按键，tap相当于touch事件，<code>swipe</code>相当于滑动。<br><code>input/swipe</code>模拟的是滑动事件，<code>input swipe &lt;x1&gt; &lt;y1&gt; &lt;x2&gt; &lt;y2&gt; [duration(ms)] (Default: touchscreen)</code>，需要将起始的坐标传进去。</p>
+<ul>
+<li>向左滑动：<br><code>shell@lentk6735_66t_l1:/ $ input swipe 600 800 300 800</code></li>
+<li>向右滑动：<br><code>shell@lentk6735_66t_l1:/ $ input swipe 300 800 600 800</code></li>
+<li>滑动：<br><code>adb shell input swipe 100 100 200 200 300 //从 100 100 经历 300 毫秒滑动到 200 200</code></li>
+<li>长按：<br><code>adb shell input swipe 100 100 100 100 1000 //在 100 100 位置长按 1000 毫秒</code></li>
+</ul>
+<h2 id="if-ps-ef-grep-c-quot-ssh-quot-gt-1-then-echo-quot-true-quot-fi（适合中断，写成一行）"><a href="#if-ps-ef-grep-c-quot-ssh-quot-gt-1-then-echo-quot-true-quot-fi（适合中断，写成一行）" class="headerlink" title="if [ $(ps -ef | grep -c &quot;ssh&quot;) -gt 1 ]; then echo &quot;true&quot;; fi（适合中断，写成一行）"></a><code>if [ $(ps -ef | grep -c &quot;ssh&quot;) -gt 1 ]; then echo &quot;true&quot;; fi（适合中断，写成一行）</code></h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if condition</span><br><span class="line">then</span><br><span class="line"> command1 </span><br><span class="line"> command2</span><br><span class="line"> ...</span><br><span class="line"> commandN</span><br><span class="line">else</span><br><span class="line"> command</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>-eq</code>:等于</li>
+<li><code>-ne</code>:不等于</li>
+<li><code>-le</code>:小于等于</li>
+<li><code>-ge</code>:大于等于</li>
+<li><code>-lt</code>:小于</li>
+<li><code>-gt</code>：大于</li>
+<li><code>-a</code>: 双方都成立（and） 逻辑表达式 –a 逻辑表达式</li>
+<li><code>-o</code>: 单方成立（or） 逻辑表达式 –o 逻辑表达式</li>
+</ul>
+<h2 id="sed-i-‘s-15-g’-tmp-txt"><a href="#sed-i-‘s-15-g’-tmp-txt" class="headerlink" title="sed -i ‘s/^.\{15\}//g’ tmp.txt"></a><code>sed -i ‘s/^.\{15\}//g’ tmp.txt</code></h2><p><code>adb shell wm size &gt; tmp.txt</code> //分辨率导出文件</p>
+<p><code>sed -i ‘s/^.\{15\}//g’ tmp.txt</code> //此处 <code>\{</code>是转义成 `{</p>
+<p><code>wm_size=$(cat tmp.txt)</code></p>
+<h3 id="sed-i就是直接对文本文件进行操作"><a href="#sed-i就是直接对文本文件进行操作" class="headerlink" title="sed -i就是直接对文本文件进行操作"></a><code>sed -i</code>就是直接对文本文件进行操作</h3><p><code>sed -i &#39;s/原字符串/新字符串/&#39; /home/1.txt</code></p>
+<p><code>sed -i &#39;s/原字符串/新字符串/g&#39; /home/1.txt</code></p>
+<h3 id="正则"><a href="#正则" class="headerlink" title="正则"></a>正则</h3><ul>
+<li><code>^</code>: 匹配输入字符串的开始位置。如果设置了<code>RegExp</code>对象的<code>Multiline</code>属性，<code>^</code>也匹配<code>\n</code>或<code>\r</code>之后的位置。</li>
+<li><code>.</code>: 匹配除“\n”之外的任何单个字符。要匹配包括“\n”在内的任何字符，请使用像“(.|\n)”的模式。</li>
+<li><code>\</code>: 将下一个字符标记为一个特殊字符、或一个原义字符、或一个向后引用、或一个八进制转义符。例如，<code>n</code>匹配字符<code>n</code>。<code>\n</code>匹配一个换行符。串行<code>\\</code>匹配<code>\</code>而<code>\(</code>则匹配<code>(</code>。</li>
+<li><code>{n}</code>:n是一个非负整数。匹配确定的n次。例如，<code>o{2}</code>不能匹配<code>Bob</code>中的<code>o</code>，但是能匹配<code>food</code>中的两个<code>o</code>。</li>
+</ul>
+<h3 id="sed"><a href="#sed" class="headerlink" title="sed"></a>sed</h3><ul>
+<li><code>-n</code>：只打印模式匹配的行</li>
+<li><code>-e</code>：直接在命令行模式上进行 sed 动作编辑，此为默认选项</li>
+<li><code>-f</code>：将 sed 的动作写在一个文件内，用–f filename 执行 filename 内的 sed 动作</li>
+<li><code>-r</code>：支持扩展表达式（配合正则表达式）</li>
+<li><code>-i</code>：直接修改文件内容</li>
+</ul>
+<p>例如：</p>
+<ul>
+<li>删除该行的第一个字符：<code>sed -r &#39;s/^.//g&#39; &lt;&lt;&lt; $line</code></li>
+<li>删除文件每行的第二个字符: <code>sed -r &#39;s/^(.)(.)/\2/g&#39; passwd</code></li>
+<li>删除文件每行的倒数第二个字符: <code>sed -r &#39;s/(.)(.)$/\2/g&#39; passwd</code></li>
+<li>交换每行的第一个字符和第二个字符:<code>sed -r &#39;s/^(.)(.)/\2\1/g&#39; passwd</code></li>
+<li>交换每行的第一个单词和最后一个单词:<code>sed -r &#39;s/^([a-Z0-9]+)([^a-Z0-9]+)(.+)([^a-Z0-9]+)([a-Z0-9]+)/\5\2\3\4\1/g&#39; passwd</code></li>
+</ul>
+<h2 id="多选择语句case"><a href="#多选择语句case" class="headerlink" title="多选择语句case"></a>多选择语句<code>case</code></h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">echo '你输入的数字为:'</span><br><span class="line">read aNum</span><br><span class="line">case $aNum in</span><br><span class="line">    1) echo '你选择了 1'</span><br><span class="line">    ;;</span><br><span class="line">    2) echo '你选择了 2'</span><br><span class="line">    ;;</span><br><span class="line">    3) echo '你选择了 3'</span><br><span class="line">    ;;</span><br><span class="line">    4) echo '你选择了 4'</span><br><span class="line">    ;;</span><br><span class="line">    *) echo '你没有输入 1 到 4 之间的数字'</span><br><span class="line">    ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+
+<h2 id="adb-shell-pidof-”mediaserver“"><a href="#adb-shell-pidof-”mediaserver“" class="headerlink" title="adb shell pidof ”mediaserver“"></a><code>adb shell pidof ”mediaserver“</code></h2><p>按名称检查正在运行的进程，可以使用<code>pidof</code>命令：<code>adb shell pidof com.android.phone</code></p>
+<p>如果找到此类进程，则返回<code>PID</code>,否则返回空字符串。</p>
+<h2 id="adb-shell-am-start-n"><a href="#adb-shell-am-start-n" class="headerlink" title="adb shell am start -n"></a><code>adb shell am start -n</code></h2><p><code>adb shell am start -n com.android.camera...</code> //使用组件名方式启动照相机功能</p>
+<p>可以使用<code>adb shell activity|grep ACTIVITY</code> 或者<code>dump SF</code>获取Activity名称</p>
+<h2 id="adb-shell-input-tap-x-y"><a href="#adb-shell-input-tap-x-y" class="headerlink" title="adb shell input tap x y"></a><code>adb shell input tap x y</code></h2><p>模拟点击事件（点击屏幕），可以用来进入清除任务。</p>
+<h2 id="adb-shell-dumpsys-window-windows-grep-Current-tee-tmp-txt"><a href="#adb-shell-dumpsys-window-windows-grep-Current-tee-tmp-txt" class="headerlink" title="adb shell dumpsys window windows |grep Current |tee tmp.txt"></a><code>adb shell dumpsys window windows |grep Current |tee tmp.txt</code></h2><p><strong>实现功能：</strong></p>
+<ul>
+<li><p>获得当前活动窗口的信息，包名以及活动窗体。</p>
+</li>
+<li><p>过滤<code>Current</code>信息，获得<code>window</code>的<code>dump</code>信息。</p>
+</li>
+<li><p><code>|tee</code>的作用：输出到控制台</p>
+</li>
+</ul>
+<hr>
+<h2 id="date-Y-m-d-H-M-S输出日期"><a href="#date-Y-m-d-H-M-S输出日期" class="headerlink" title="date + %Y%m%d_%H%M%S输出日期"></a><code>date + %Y%m%d_%H%M%S</code>输出日期</h2><p>输入格式：20181128_174323</p>
+<h2 id="date-N-cut-c-3"><a href="#date-N-cut-c-3" class="headerlink" title="date + %N | cut -c -3"></a><code>date + %N | cut -c -3</code></h2><p><code>%N</code>: 纳秒</p>
+<p><code>cut</code>： 从指定的范围中提取字节（-b）、或字符（-c）、或字段（-f）</p>
+<ul>
+<li><code>cut -b -3</code>//-3 表示从第一个字节到第三个字节</li>
+<li><code>cut -b 3-</code>//3-表示从第三个字节到行尾</li>
+<li><code>cut -b -3,3-</code> //输出整行，不会出现连续两个重叠的</li>
+</ul>
+<h2 id="cat-systrace-html-grep-postComp-wc-l"><a href="#cat-systrace-html-grep-postComp-wc-l" class="headerlink" title="cat **systrace.html |grep postComp |wc -l"></a><code>cat **systrace.html |grep postComp |wc -l</code></h2><p> <code>（linux 命令）WC</code>：<code>wc - print newline, word, and byte counts for each file</code></p>
+<p>参数及含义：</p>
+<ul>
+<li><code>-c</code>: print the byte counts 统计字节数</li>
+<li><code>-l</code>: print the newline counts：统计行数</li>
+<li><code>-m</code>: print the character counts：将每个文件的字符数及文件名输出到屏幕上，如果当前系统不支持多字节字符其将显示与-c 参数相同的结果</li>
+<li><code>-w</code>: print the word counts：统计字数</li>
+</ul>
+<h2 id="（视频播放时）旋转屏幕"><a href="#（视频播放时）旋转屏幕" class="headerlink" title="（视频播放时）旋转屏幕"></a>（视频播放时）旋转屏幕</h2><p><code>adb shell settings put system user_rotation 1</code>  //获取参数是get</p>
+<h2 id="shell判断数组中是否包含某个元素"><a href="#shell判断数组中是否包含某个元素" class="headerlink" title="shell判断数组中是否包含某个元素"></a>shell判断数组中是否包含某个元素</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">ary=(1 2 3)</span><br><span class="line">a=2</span><br><span class="line">if [[ "$&#123;ary[@]&#125;" =~ "$a" ]] ; then</span><br><span class="line"> echo "a in ary"</span><br><span class="line">else</span><br><span class="line"> echo "a not in ary"</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+
+<h2 id="解决播放结束后，判断当前activity然后重新播放"><a href="#解决播放结束后，判断当前activity然后重新播放" class="headerlink" title="解决播放结束后，判断当前activity然后重新播放"></a>解决播放结束后，判断当前activity然后重新播放</h2><ul>
+<li><code>adb shell dumpsys activity top | grep &quot;ACTIVITY&quot;</code> //获得当前的 activity</li>
+<li><code>adb shell am start -n com.home...</code> //返回桌面 activity</li>
+</ul>
+<h2 id="包含关系"><a href="#包含关系" class="headerlink" title="包含关系"></a>包含关系</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">testPlay=$(adb shell dumpsys activity top | grep "ACTIVITY")testPlaySuccess="com...Activity"</span><br><span class="line">                if [[ $testPlay =~ $testPlaySuccess ]];then</span><br><span class="line">                        echo "包含"</span><br><span class="line">                else</span><br><span class="line">                        echo "不包含"</span><br><span class="line">                fi</span><br></pre></td></tr></table></figure>
+
+<h2 id="查找手机文件"><a href="#查找手机文件" class="headerlink" title="查找手机文件"></a>查找手机文件</h2><p><code>adb shell find /storage -name &quot;*.mp4&quot; | grep FileName</code></p>
+<h2 id="播放视频"><a href="#播放视频" class="headerlink" title="播放视频"></a>播放视频</h2><p><code>adb shell am start -a android.intent.action.VIEW -d &quot;file:///storage/...../Test.mp4&quot; -t &quot;video/&quot;</code></p>
+<h2 id="逐行读某个文件"><a href="#逐行读某个文件" class="headerlink" title="逐行读某个文件"></a>逐行读某个文件</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while read line</span><br><span class="line">do</span><br><span class="line">…</span><br><span class="line">done &lt; file // `&lt;`是读，`&gt;`是写入，`&gt;&gt;`是写入到某个文件的末尾</span><br></pre></td></tr></table></figure>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/">https://alonealive.github.io/Blog/2019/10/23/2019/191023_android_shell/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-04-01");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-10-23T15:52:00.000Z" itemprop="datePublished">2019-10-23</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-04-01T12:59:48.661Z" itemprop="dateModified">2020-04-01</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/shell/" rel="tag">#&nbsp;shell</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/11/03/2019/191103_android_hideDoc/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android @hide接口注释</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/10/21/2019/191021_android_basis/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android色彩空间（ColorSpace）</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

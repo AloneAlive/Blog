@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android LCD背光驱动节电技术LABC/CABC | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android LCD背光驱动节电技术LABC&#x2F;CABC | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/"><meta property="og:locale" content="zh-CN"><meta name="description" content="LCD背光驱动节电技术LABC&#x2F;CABC 手机屏幕大部分是LCD（还有OLED屏幕），而手机的部分电量就是LCD背光消耗的。随着分辨率&#x2F;尺寸的增大，LCD的背光驱动电路也越来越复杂。而高分辨率、高显示颜色、大尺寸的LCD，需要大的背光系统、大的TFT-LCD 面版、高运算速度的驱动IC，这些都造成了高的功率消耗。主要了解一下背光驱动节电技术CABC的概念和功能。参考博客 - sunwengang - sunwengang blog"><meta name="keywords" content="display"><meta property="article:published_time" content="2020-01-05T12:32:00.000Z"><meta property="article:modified_time" content="2020-03-08T10:24:30.225Z"><meta property="og:updated_time" content="2020-03-08T10:24:30.225Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="display"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/"
+    },
+    "headline": "Android LCD背光驱动节电技术LABC/CABC | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-01-05T12:32:00.000Z",
+    "dateModified": "2020-03-08T10:24:30.225Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "display",
+    "description": "LCD背光驱动节电技术LABC/CABC 手机屏幕大部分是LCD（还有OLED屏幕），而手机的部分电量就是LCD背光消耗的。随着分辨率/尺寸的增大，LCD的背光驱动电路也越来越复杂。而高分辨率、高显示颜色、大尺寸的LCD，需要大的背光系统、大的TFT-LCD 面版、高运算速度的驱动IC，这些都造成了高的功率消耗。主要了解一下背光驱动节电技术CABC的概念和功能。参考博客 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android LCD背光驱动节电技术LABC/CABC" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android LCD背光驱动节电技术LABC/CABC&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android LCD背光驱动节电技术LABC/CABC" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACPElEQVR42u2b0U7DQAwE8/8/Da+oxN7xqQiIJy9V0/ZukOJkvV6uj39wXEIKKaSQfwDyao7q83LR5nt377t9hdwNWW34dTHy+evrK1D3nTseIXdD3hVM2uDbhd4UW1r/Dl5IIcsvF5tXv7t7f7eWkEKeFk5XQK8ASVwIKSSF7B70nfilQD+qgoR8HCQVAu9+fWu3KORjIJFxVDRiqVnrGrG3u2pCPgayEghUvFaGQRIUSeAIKeRU1HaCoTo3OS/kbsgKtIKcmALpXPuHCbkSsmq2ugXIMIqaBN3eQu6EpDfYZE5RUUuHWELuhewuXrphEr/pJl6uI+RaSHLj7cRGehBUv8fGvpCrIGkIhDZbpIiSSBFSyK4QpoP1E4GMukUh10B2F38KjqSmioiRtuiEXAtJDKlp0RwP4mkjJuRjIeNgHIbjSdj47UERIR8JmYomFVIyn+iAFTkYQq6ATE3/ZHBEzIOJqSrkTkhioJLB0CR4Qpo2IYWkGxIjihj/RyFPIddARjPzGvxTBTAR6OBJyJ2QkzBH10iRYXu6ebeiV8hVkNOg8WlQLgmLtnCEXAVJzX1SBCQ8Qg0sIXdDEmN/at6nAomhUCFXQqbjNGx8IoTRAFTIx0OemkmkICZhptiICbkKMhVMKiAytCcBEvTEEXIN5CQQh4dF4QHQNXtCCjkJHNFma9rctWkWIYW8rpEwTgVHwiNCCkmDbQSM3swnhpeQeyGJkXQSQCaGWBsEEHIl5F8+hBRSSCF/8fgE+5QWRASDeI8AAAAASUVORK5CYII=" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android LCD背光驱动节电技术LABC/CABC</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-01-05</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android LCD背光驱动节电技术LABC/CABC&url=https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android LCD背光驱动节电技术LABC/CABC&url=https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACPElEQVR42u2b0U7DQAwE8/8/Da+oxN7xqQiIJy9V0/ZukOJkvV6uj39wXEIKKaSQfwDyao7q83LR5nt377t9hdwNWW34dTHy+evrK1D3nTseIXdD3hVM2uDbhd4UW1r/Dl5IIcsvF5tXv7t7f7eWkEKeFk5XQK8ASVwIKSSF7B70nfilQD+qgoR8HCQVAu9+fWu3KORjIJFxVDRiqVnrGrG3u2pCPgayEghUvFaGQRIUSeAIKeRU1HaCoTo3OS/kbsgKtIKcmALpXPuHCbkSsmq2ugXIMIqaBN3eQu6EpDfYZE5RUUuHWELuhewuXrphEr/pJl6uI+RaSHLj7cRGehBUv8fGvpCrIGkIhDZbpIiSSBFSyK4QpoP1E4GMukUh10B2F38KjqSmioiRtuiEXAtJDKlp0RwP4mkjJuRjIeNgHIbjSdj47UERIR8JmYomFVIyn+iAFTkYQq6ATE3/ZHBEzIOJqSrkTkhioJLB0CR4Qpo2IYWkGxIjihj/RyFPIddARjPzGvxTBTAR6OBJyJ2QkzBH10iRYXu6ebeiV8hVkNOg8WlQLgmLtnCEXAVJzX1SBCQ8Qg0sIXdDEmN/at6nAomhUCFXQqbjNGx8IoTRAFTIx0OemkmkICZhptiICbkKMhVMKiAytCcBEvTEEXIN5CQQh4dF4QHQNXtCCjkJHNFma9rctWkWIYW8rpEwTgVHwiNCCkmDbQSM3swnhpeQeyGJkXQSQCaGWBsEEHIl5F8+hBRSSCF/8fgE+5QWRASDeI8AAAAASUVORK5CYII=" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#LCD背光驱动节电技术LABC-CABC"><span class="post-toc-number">1.</span> <span class="post-toc-text">LCD背光驱动节电技术LABC&#x2F;CABC</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#OEM和ODM"><span class="post-toc-number">2.</span> <span class="post-toc-text">*OEM和ODM</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#背光节电技术"><span class="post-toc-number">3.</span> <span class="post-toc-text">背光节电技术</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#LABC"><span class="post-toc-number">4.</span> <span class="post-toc-text">LABC</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#CABC"><span class="post-toc-number">5.</span> <span class="post-toc-text">CABC</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#工作流程"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">工作流程</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="LCD背光驱动节电技术LABC-CABC"><a href="#LCD背光驱动节电技术LABC-CABC" class="headerlink" title="LCD背光驱动节电技术LABC/CABC"></a>LCD背光驱动节电技术LABC/CABC</h2><blockquote>
+<p>手机屏幕大部分是LCD（还有OLED屏幕），而手机的部分电量就是LCD背光消耗的。随着分辨率/尺寸的增大，LCD的背光驱动电路也越来越复杂。而高分辨率、高显示颜色、大尺寸的LCD，需要大的背光系统、大的TFT-LCD 面版、高运算速度的驱动IC，这些都造成了高的功率消耗。<br>主要了解一下背光驱动节电技术CABC的概念和功能。<a href="https://blog.csdn.net/sinat_30545941/article/details/72874775" target="_blank" rel="noopener">参考博客</a></p>
+</blockquote>
+<a id="more"></a>
+<hr>
+<h2 id="OEM和ODM"><a href="#OEM和ODM" class="headerlink" title="*OEM和ODM"></a>*OEM和ODM</h2><p><strong>Note:</strong></p>
+<ol>
+<li>OEM：自主加工，英文全称Original Equipment Manufacturer，即原设备生产商。原始设备生产商(OEM)是指拥有自己的产品或产品理念，但有时会为了开发和/或制造这些产品而购买某些服务的公司。</li>
+<li>ODM：自主设计，即ORIGINAL DESIGN MANUFACTURER，意为“原始设计制造商”，是指一家公司根据另一家公司的规格来设计和生产一个产品。例如，计算机公司如HP公司可能会就其想推向市场的一款笔记本电脑作出具体规格。它们会具体地列明产品的外观要求，如屏幕的尺寸和技术要求、输入/输出端口、键盘的前倾度、电脑包的外形和颜色、扬声器的位置等。它们还通常会具体列明对产品的主要内部细节如CPU或视频控制器的规格要求。但是，它们并不设计图样，不具体列明电源用的交换晶体管的型号，也不对背光变流器频率加以选择。这些都是ODM的工作。ODM根据计算机公司提出的规格要求来设计和生产笔记本电脑。有时候，ODM也可根据现有样品来生产。ODM方式往往更加注重合作，而在OEM的情形下，购买方对产品的具体规格基本不参与意见。</li>
+<li>OBM：自主品牌</li>
+</ol>
+<p><strong>OEM和ODM的区别:</strong></p>
+<p>OEM和ODM两者最大的区别不单单是名称而已。OEM产品是为品牌厂商度身订造的，生产后也只能使用该品牌名称，绝对不能冠上生产者自己的名称再进行生产。而ODM则要看品牌企业有没有买断该产品的版权。如果没有的话，制造商有权自己组织生产，只要没有企业公司的设计识别即可。</p>
+<p>在工业社会中，OEM和ODM可谓司空见惯。因为出于制造成本、运输方便性、节省开发时间等方面的考虑，知名品牌企业一般都愿意找其他厂商OEM或ODM。在找别的企业进行OEM或ODM时，知名品牌企业也要承担不少责任。毕竟产品冠的是自己的牌子，如果产品质量不佳的话，少则有顾客找上门投诉，重则可能要上法庭。所以，品牌企业在委托加工期间肯定会进行严格的质量控制。但代工结束后，质量不敢保证。故此，当有的商家告诉你某件产品的生产商是某大品牌的OEM或ODM产品时，绝不要相信其质量就等同于该品牌。你唯一能够相信的，是这家制造商有一定的生产能力。</p>
+<hr>
+<h2 id="背光节电技术"><a href="#背光节电技术" class="headerlink" title="背光节电技术"></a>背光节电技术</h2><p>显示屏在移动设备里一直的是耗电大户。目前手机背光节电技术，即对应性背光控制技术（Adaptive Brightness Control- ABC），主要有下面2种：</p>
+<ol>
+<li>LABC：(LightAdaptive Brightness Control) <code>环境光侦测适应背光控制</code>。根据环境光的变化来控制背光亮度。需要一个光传感器，感应环境光强。</li>
+<li>CABC：(ContentAdaptive Brightness Control）<code>显示内容对应背光控制</code>。根据显示内容来调节背光和gamma值，从而降低了背光LED的功耗。其中C是内容的意思，驱动IC新增了一个内容分析器电路。</li>
+</ol>
+<h2 id="LABC"><a href="#LABC" class="headerlink" title="LABC"></a>LABC</h2><p>LABC技术需要搭配光传感器实现，主机端处理器读取光感数值，然后处理器对数值进行处理，直接控制PMIC(MT6329)输出PWM控制背光的亮度。在比较暗光线下，降低背光达到省电效果</p>
+<h2 id="CABC"><a href="#CABC" class="headerlink" title="CABC"></a>CABC</h2><p>CABC功能需要在LCD驱动IC内新增一个内容分析器(imagecontent analyzer)电路，当手机处理器传送了一张图片数据到驱动IC，内容分析器会计算并统计图片的数据后依据设定与算法自动的将其灰阶亮度提高30%（此时图片变亮），再将背光亮度降低30%（此时图片变暗）。由于我们事先已经将图片经过分析器电路补偿亮度，因此使用者可以得到与原先电路相差无几的显示效果，但减少了30%的背光功耗。</p>
+<p>简单来说，CABC功能就是根据<code>显示内容</code>来降低背光，然后通过调<code>节gamma</code>(gamma越高灰度越低图像越暗)来补偿显示亮度。CABC就是通过增加内容灰阶标准同时降低背光亮度来达到省功耗的目的。</p>
+<p>CABC主要有四种状态：</p>
+<ol>
+<li>Off Mode，CABC功能全部关闭；</li>
+<li>UI Image Mode，优化显示UI图片时的功耗，尽可能的保证图片质量的同时可省10%的功耗；</li>
+<li>Still Image Mode，优化显示静态图片时的功耗，该模式下图片质量损耗在可接受的范围内，同时可省30%的功耗；</li>
+<li>Moving Image Mode，优化显示动态图片时的功耗，该模式下会最大限度的降低功耗，但是会带来图片质量的损耗，可省30%+的功耗。</li>
+</ol>
+<p>自然对应Off Mode，标准对应UI Mode，照片对应UI Mode，电影对应Still Image Mode。用户可根据实际情况自行选择。</p>
+<p>三种模式省电级别依次降低: <code>UI mode &lt; Movie mode &lt; Still mode</code>， 也就是说Still mode是最省电的模式。</p>
+<h3 id="工作流程"><a href="#工作流程" class="headerlink" title="工作流程"></a>工作流程</h3><p>工作流程如下：</p>
+<ol>
+<li>使能PMIC(MT6329)CABC功能;</li>
+<li>设置LCD驱动IC的相关配置(使能CABC和配置gamma参数，需要FAE协助)；</li>
+<li>CABC模块分析显示内容输出LED_PWM信号给PMIC，PMIC通过一定算法控制driver模块BL_DRV信号的输出波形；</li>
+<li>预期结果是背光亮度降低，LCD驱动IC降低gamma值以补偿屏幕亮度。</li>
+</ol>
+<p>CABC模块分析显示内容输出<code>PWM波形</code>，占空比越大，表示需要输出的电流越大。</p>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/">https://alonealive.github.io/Blog/2020/01/05/2020/200105_android_lcd_cabc/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-01-05T12:32:00.000Z" itemprop="datePublished">2020-01-05</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:24:30.225Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/display/" rel="tag">#&nbsp;display</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2020/02/22/2020/200222_android_systrace_study/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android Systrace如何抓取分析问题</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/12/22/2019/191222_android_HWC2/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android SurfaceFlinger和HWC2概述</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

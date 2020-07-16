@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android RC文件分析 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android RC文件分析 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/"><meta property="og:locale" content="zh-CN"><meta name="description" content="Android中最熟知的RC文件就是init.rc了，而在Hal接口服务定义中也会创建.rc文件。init.rc的语法分为行为(Actions),、命令(Commands) 、服务(Services)、选项(Options)。.rc文件是资源文件，包括比如对话框、菜单、图标、字符串等资源信息。使用.rc资源文件的目的是为了对程序中用到的大量的资源进行统一的管理。 - sunwengang - sunwengang blog"><meta name="keywords" content="android"><meta property="article:published_time" content="2020-03-20T15:32:00.000Z"><meta property="article:modified_time" content="2020-03-25T08:43:45.000Z"><meta property="og:updated_time" content="2020-03-25T08:43:45.000Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/"
+    },
+    "headline": "Android RC文件分析 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-03-20T15:32:00.000Z",
+    "dateModified": "2020-03-25T08:43:45.000Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android",
+    "description": "Android中最熟知的RC文件就是init.rc了，而在Hal接口服务定义中也会创建.rc文件。init.rc的语法分为行为(Actions),、命令(Commands) 、服务(Services)、选项(Options)。.rc文件是资源文件，包括比如对话框、菜单、图标、字符串等资源信息。使用.rc资源文件的目的是为了对程序中用到的大量的资源进行统一的管理。 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android RC文件分析" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android RC文件分析&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android RC文件分析" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACL0lEQVR42u2ay27DMAwE/f8/3Z5rmPtwUjQ1R5cgsGVNAlFeLnl8/YNxAAkkkEB+AOQhxo8Jp+/n+ednTXOv7p3WBXIv5LT4uKHND3Lz0nWB3A15XjB52NW1q0C6ut+tCySQCnI6nJPgGQ9qIIF8EfLqugu2KYCABDKBnF7006ZPAdUz3qaCgHwcpEqIfvPzbdkikI+CTJInlfhPYqIRyi+7akA+CtIJCQWcmFTqul0PyJWQk8mZGgStiEhMBSCBVC/8VBQ0QiJJyIAEMkm61EZPjNMkwIAE0hlLjYHgDnpVdLKBA+Q6SFWcvBM0SmAkRVYg90KqDe0SL3X4J4UDe7ADuRJSBUoqGhLDP0ncgASyOayTAEmDLW1MAXInpGswSgqbaYKVGK6jwAByFaQLBBdYiZhtDDAggZSbNxC5SZNd+icACWTahNkW65MCgStoAbkT0h3Eial617CKBQaQ6yBb4zR9ATTGV1QRA3IFZHrQJg1KqaGlnmkTMSAfD+nMpqbhSJmnbUMzkHshm4J6cl8iKtx3IIG8u+CdhrpKNAO5GjKBaE3+UTjcDRwgV0E2Cb9LplyxXhVEgQTSDdfg6cSzM2TlIQ/kSki3odsDvi3uV4kYkGsgVWAkxoEzsBrDNVJBQK6ATIqVjaHajEoFAQmkafxokrEELuqwAnI9ZGOotvPkHwHkasjELHVi9U5RqQocINdAJi9+FzRqjkvaxpcDkCshP3kACSSQQP7h+AYJsraVM9CUVQAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android RC文件分析</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-03-20</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android RC文件分析&url=https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android RC文件分析&url=https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACL0lEQVR42u2ay27DMAwE/f8/3Z5rmPtwUjQ1R5cgsGVNAlFeLnl8/YNxAAkkkEB+AOQhxo8Jp+/n+ednTXOv7p3WBXIv5LT4uKHND3Lz0nWB3A15XjB52NW1q0C6ut+tCySQCnI6nJPgGQ9qIIF8EfLqugu2KYCABDKBnF7006ZPAdUz3qaCgHwcpEqIfvPzbdkikI+CTJInlfhPYqIRyi+7akA+CtIJCQWcmFTqul0PyJWQk8mZGgStiEhMBSCBVC/8VBQ0QiJJyIAEMkm61EZPjNMkwIAE0hlLjYHgDnpVdLKBA+Q6SFWcvBM0SmAkRVYg90KqDe0SL3X4J4UDe7ADuRJSBUoqGhLDP0ncgASyOayTAEmDLW1MAXInpGswSgqbaYKVGK6jwAByFaQLBBdYiZhtDDAggZSbNxC5SZNd+icACWTahNkW65MCgStoAbkT0h3Eial617CKBQaQ6yBb4zR9ATTGV1QRA3IFZHrQJg1KqaGlnmkTMSAfD+nMpqbhSJmnbUMzkHshm4J6cl8iKtx3IIG8u+CdhrpKNAO5GjKBaE3+UTjcDRwgV0E2Cb9LplyxXhVEgQTSDdfg6cSzM2TlIQ/kSki3odsDvi3uV4kYkGsgVWAkxoEzsBrDNVJBQK6ATIqVjaHajEoFAQmkafxokrEELuqwAnI9ZGOotvPkHwHkasjELHVi9U5RqQocINdAJi9+FzRqjkvaxpcDkCshP3kACSSQQP7h+AYJsraVM9CUVQAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#android-rc文件分析"><span class="post-toc-number">1.</span> <span class="post-toc-text">android rc文件分析</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#模板"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">模板</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#class-lt-name-gt"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">class &lt;name&gt;</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#on-lt-name-gt"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">on &lt;name&gt;</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>Android中最熟知的RC文件就是<code>init.rc</code>了，而在Hal接口服务定义中也会创建<code>.rc</code>文件。<code>init.rc</code>的语法分为行为(Actions),、命令(Commands) 、服务(Services)、选项(Options)。<code>.rc</code>文件是资源文件，包括比如对话框、菜单、图标、字符串等资源信息。使用<code>.rc</code>资源文件的目的是为了对程序中用到的大量的资源进行统一的管理。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="android-rc文件分析"><a href="#android-rc文件分析" class="headerlink" title="android rc文件分析"></a>android rc文件分析</h2><h3 id="模板"><a href="#模板" class="headerlink" title="模板"></a>模板</h3><ul>
+<li><p>结构：service关键字声明了你要定义一个service，而test就是这个service的名字，至于后面的目录则是这个service对应的可执行文件在系统中的位置（<code>adb shell</code>，即编译后的系统目录）。</p>
+</li>
+<li><p>init是分段(section)解析init.rc的，在<code>keywords.h</code>中可以查看关键字的定义。结合init.rc的内容，可以看出，init是以on 和 service来分段标记的。</p>
+</li>
+</ul>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">service &lt;name&gt; &lt;pathname&gt; [ &lt;argument&gt; ]*</span><br><span class="line">   &lt;option&gt;</span><br><span class="line">   &lt;option&gt;</span><br><span class="line">   <span class="keyword">...</span></span><br></pre></td></tr></table></figure>
+
+<p>例如：</p>
+<figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">service test /system/bin/vold \</span><br><span class="line">        --blkid_context=u:r:blkid:s0 --blkid_untrusted_context=u:r:blkid_untrusted:s0 \</span><br><span class="line">        --fsck_context=u:r:fsck:s0 --fsck_untrusted_context=u:r:fsck_untrusted:s0</span><br><span class="line">    class core</span><br><span class="line">    socket vold stream <span class="number">0660</span> root mount</span><br><span class="line">    socket cryptd stream <span class="number">0660</span> root mount</span><br><span class="line">    ioprio be <span class="number">2</span></span><br><span class="line">    writepid /dev/cpuset/foreground/tasks</span><br></pre></td></tr></table></figure>
+
+<p><strong>关键字解释：</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">语法</th>
+<th align="center">关键字</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><code>SECTION</code></td>
+<td align="center">on</td>
+<td align="center">触发条件</td>
+</tr>
+<tr>
+<td align="center">同上..</td>
+<td align="center">service</td>
+<td align="center">解析service</td>
+</tr>
+<tr>
+<td align="center"><code>COMMAND</code></td>
+<td align="center">chdir</td>
+<td align="center">更改当前工作目录</td>
+</tr>
+<tr>
+<td align="center">同上..</td>
+<td align="center">chroot</td>
+<td align="center">更改参考的根目录位置</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">class_start <serviceclass></td>
+<td align="center">开启class start all services(启动某个设置了class名称的服务)</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">class_stop <servicelass></td>
+<td align="center">停止某个设置了class名称的服务</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">domainname <name></td>
+<td align="center">域名</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">exec [ <seclabel> [ <user> [ <group> ] * ] ]  – <command> [ <argument> ] *</td>
+<td align="center">调用程序并转移进程(Fork一个进程然后执行命令)</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">export</td>
+<td align="center">提交变量</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">hostname</td>
+<td align="center">主机名</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">ifup</td>
+<td align="center">激活网卡</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">insmod</td>
+<td align="center">挂载模块(安装一个module)</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">import <filename></td>
+<td align="center">引入init文件，比如etc下的一些rc文件，和java中的import差不多</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">mkdir <path> [mode] [owner] [group]</td>
+<td align="center">建立目录</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">mount</td>
+<td align="center">挂载文件系统</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">setkey</td>
+<td align="center">从源码看，应该是设置一个命令的关键字缩写，比如可以将domainname映射为dn</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">setprop</td>
+<td align="center">设置一个属性</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">setrlimit</td>
+<td align="center">设置当前程序可以打开的最大文件数到系统规定程序可以打开的最大文件数</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">start</td>
+<td align="center">启动服务</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">stop</td>
+<td align="center">停止服务</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">symlink</td>
+<td align="center">建立软链接</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">sysclktz</td>
+<td align="center">设置基准时间</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">loglevel</td>
+<td align="center">Log输出级别，低于这个级别的就输出</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">restart <service></td>
+<td align="center">重启服务,类似stop 但是不会disable service</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">bootchart_init</td>
+<td align="center">开启bootcharting</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">chmod <octal-mode> <path></td>
+<td align="center">改变文件执行权限</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">chown <owner> <group> <path></td>
+<td align="center">改变文件的owner group</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">enable <servicename></td>
+<td align="center">将一个disabled的service变成enabled。且start</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">load_all_props</td>
+<td align="center">加载system vendor的属性</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">load_persist_props</td>
+<td align="center">加载data下面的persist属性</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">mount_all <fstab></td>
+<td align="center">挂载fstab中的设备</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center"><code>mount &lt;type&gt; &lt;device&gt; &lt;dir&gt; [ &lt;flag&gt; ]* [&lt;option&gt;]</code></td>
+<td align="center">挂载设备</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">powerctl</td>
+<td align="center">对sys.powerctl属性的respond</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center"><code>restorecon &lt;path&gt; [ &lt;path&gt; ] *</code></td>
+<td align="center">恢复文件到sercurity context在file_contexts配置的</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center"><code>restorecon_recursive &lt;path&gt; [ &lt;path&gt; ]*</code></td>
+<td align="center">递归的恢复目录中的文件到sercurity context</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center"><code>trigger &lt;event&gt;</code></td>
+<td align="center">触发触发器</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center"><code>wait &lt;path&gt; [ &lt;timeout&gt; ]</code></td>
+<td align="center">poll for 给定的文件 或者 timeout时间到。如果时间没有设定，默认为5秒</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center"><code>write &lt;path&gt; &lt;content&gt;</code></td>
+<td align="center">打开文件，write string到给定文件。没有文件会被创建。有的话，会truncated</td>
+</tr>
+<tr>
+<td align="center"><code>OPTION</code>(用来初始化Service的)</td>
+<td align="center">capability</td>
+<td align="center">能力，也就是系统对进程的一种权限控制。</td>
+</tr>
+<tr>
+<td align="center">同上..</td>
+<td align="center">class</td>
+<td align="center">设置class name</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">console</td>
+<td align="center">启用控制台</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">critical</td>
+<td align="center">是否关键，也就是4分钟之内重启超过4次的话，重启之后就进入recovery模式</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">disabled</td>
+<td align="center">当它的class启动时，Service不会自动开启。必须显示的started by name(用其名字)</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">group <groupname> [ <groupname> ]*</td>
+<td align="center">组归属（改变username当执行这个Service之前）</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">oneshot</td>
+<td align="center">只启动一次，意外退出后不必重启</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">onrestart</td>
+<td align="center">执行一个命令，当Service重启时</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">setenv</td>
+<td align="center">增加环境变量</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">socket</td>
+<td align="center">申请socket资源</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">user<username></td>
+<td align="center">用户归属（改变username当执行这个Service之前）</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">ioprio</td>
+<td align="center">io调度优先级</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">writepid &lt;file…&gt;</td>
+<td align="center">当fork一个子进程时，写子进程的pid到一个给定的文件。是给cgroup/cpuset使用</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">Triggers</td>
+<td align="center">Triggers被用来匹配事件，然后加入执行队列。</td>
+</tr>
+<tr>
+<td align="center">..</td>
+<td align="center">boot</td>
+<td align="center">当init开启时，这是第一个执行的trigger</td>
+</tr>
+</tbody></table>
+<h3 id="class-lt-name-gt"><a href="#class-lt-name-gt" class="headerlink" title="class &lt;name&gt;"></a><code>class &lt;name&gt;</code></h3><blockquote>
+<p><code>class &lt;name&gt;</code>意思是为该服务定义一个类名，所有在这个类名下的服务都将一起启动和停止、<br>如果没有定义class选项，则默认<code>class deafult</code>。</p>
+</blockquote>
+<p>定义为核心service，当<code>class core</code>服务启动时，这个vold启动。<br>如果是定义<code>class hal</code>，是不会自动启动的。可以定义为<code>class main</code>能够自动启动。</p>
+<p>通过<code>adb shell ps -A|grep 关键字</code>查看进程服务。</p>
+<h3 id="on-lt-name-gt"><a href="#on-lt-name-gt" class="headerlink" title="on &lt;name&gt;"></a><code>on &lt;name&gt;</code></h3><figure class="highlight r"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">on &lt;trigger&gt;</span><br><span class="line">   &lt;command&gt;</span><br><span class="line">   &lt;command&gt;</span><br><span class="line">   &lt;command&gt;</span><br></pre></td></tr></table></figure>
+
+<p>on属于行为。</p>
+<ul>
+<li><code>on early-init</code>: init之前、加载完所有rc文件后即执行，在miui的rom中，init.rc在early-init执行的是<code>start ueventd</code>，根据keywords.h的定义，start是个命令(COMMAND)。</li>
+<li><code>on init</code>: 加载propety各项属性文件之前执行，在init变为propety service之前都属于init阶段。            </li>
+<li><code>on early-boot</code>: 启动属性服务后即执行。</li>
+<li><code>on boot</code>: boot的时候执行。</li>
+<li><code>on property:xxxxx=x</code>: 当某个属性设置为预期值时执行。 </li>
+</ul>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/">https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-25");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-03-20T15:32:00.000Z" itemprop="datePublished">2020-03-20</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-25T08:43:45.000Z" itemprop="dateModified">2020-03-25</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2020/03/25/2020/200325_android_sepolicy_study/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android SELinux权限笔记</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/03/17/2020/200317_adnroid_touchEvent/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android 触控事件分析</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

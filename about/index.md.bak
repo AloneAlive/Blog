@@ -1,0 +1,102 @@
+---
+title: about
+date: 2019-05-08 22:39:43
+type: "about"
+layout: single-column
+toc: false
+---
+
+## introduction  
+
+姑且称呼我`wizzie`吧，一部小众电影里面的白胡子巫师老爷爷。
+
+尤其喜欢霍格沃茨魔法学院的邓布利多，亲切和蔼，高超的魔法，深得学生和老师的尊重。
+
+当然也可以称呼我`sunwengang`，具体是什么汉字，猜猜看哦～
+
+`wizzie`在18年从南京角落的普通二本毕业，专业`软件嵌入式工程`，算是正儿八经的科班吧
+
+性格一贯平淡无奇，懒散随和。普通人的过完了大学四年，也拿过三年的国家励志奖学金和三好，也取到了CET6证书
+
+大四面试进了一家`小厂`，成了一名`java web程序员`，经历过很多大型商场的管理后台的后端开发，也对接过APP、微信公众号的接口，也写过一点前端
+
+毕业后辗转到了新的company，开始专注`Android Frameworks`，负责`Graphics`模块的工程。
+
+> email:  1332963488@qq.com  
+
+***
+
+## blog histroy
+
+17年从阿里云注册了`wizzie.top`域名，同时用学生价买了 __阿里云服务器__
+
+随后域名解析、服务器备案，完成后开始搭建动态个人博客网站
+
+依稀记得`SSM架构+bootstrap样式+MySQL数据库`，搭建了包含前后台的博客网站
+
+当时奔波于学校和实习公司之间，网站就很少打理、维护
+
+18年服务器到期后，在`博客园`主力写博客，ID就是[sunwengang](https://www.cnblogs.com/1996swg)
+
+19年上半年，在[github](https://github.com/AloneAlive?tab=repositories)发现了[hexo](https://hexo.io/zh-cn/)
+
+就着`github+hexo`，以及`wizzie.top`域名搭建了一个静态博客网站
+
+使用[Next](http://theme-next.iissnan.com/)主题,文章使用[markdown](http://www.markdown.cn/)编写
+
+`Next`改着改着，速度就慢下来了
+
+于20190728主题切换至[Maupassant](https://www.haomwei.com/technology/maupassant-hexo.html)
+
+于20190730主题切换至[fexo](https://github.com/forsigner/fexo)
+
+## ability
+
+1. Java web  
+
+2. Android Framework Graphics
+
+## technology
+
+> Android Framework  
+>> JNI Binder Service  
+>> AMS PMS WMS  
+>> Debug tips  
+>> CTS VTS  
+>> shell test  
+>> HAL*  
+>> Graphics  
++ SurfaceFlinger  
++ hardware Render  
++ message queue
++ BufferQueue
+
+Type|Name|priority|status
+:-:|:-:|:-:|:-:
+Basic|C++|high|in progress
+Basic|java|high|in progress
+Basic|python|normal|in progress
+Basic|data structure|high|in progress
+:-:|:-:|:-:|:-:
+Basic|Android Frameworks|high|in progress
+Basic|opengl|normal|in progress
+:-:|:-:|:-:|:-:
+Basic|linux|normal|in progress
+Basic|git|normal|in progress
+Basic|english|normal|in progress
+Basic|repo|normal|in progress
+Basic|gerrit|normal|in progress
+
+## books List
+
+type|book name
+:-:|:-:
+Lanuage|C++ primer plus
+Lanuage|程序语言设计
+Android|第一行代码
+Android|深入理解Android卷
+Debug|Shell脚本
+Debug|软件调试实战
+Debug|软件调试的艺术
+Technical documents|Bootstrap
+Technical documents|Git

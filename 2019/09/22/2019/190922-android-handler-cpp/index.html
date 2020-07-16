@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android Handler消息循环处理机制(例ActivityThread) | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android Handler消息循环处理机制(例ActivityThread) | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/"><meta property="og:locale" content="zh-CN"><meta name="description" content="整体流程 关键词：Handler、Looper、MessageQueue、handleMessage  消息被存放于消息队列，应用程序的主线程会围绕这个消息队列进入一个无限循环，知道应用程序退出。（消息循环过程是由Looper实现的）  如果队列中有消息，应用程序的主线程会把它取出来，分发给相应的Handler进行处理； 如果队列中没有消息，应用程序的主县城就会进入空闲等待状态，等待下一个消息的到 - sunwengang - sunwengang blog"><meta name="keywords" content="android"><meta property="og:image" content="https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/Handler-1.png"><meta property="article:published_time" content="2019-09-22T07:01:32.000Z"><meta property="article:modified_time" content="2020-03-08T10:14:08.790Z"><meta property="og:updated_time" content="2020-03-08T10:14:08.790Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/"
+    },
+    "headline": "Android Handler消息循环处理机制(例ActivityThread) | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-09-22T07:01:32.000Z",
+    "dateModified": "2020-03-08T10:14:08.790Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android",
+    "description": "整体流程 关键词：Handler、Looper、MessageQueue、handleMessage  消息被存放于消息队列，应用程序的主线程会围绕这个消息队列进入一个无限循环，知道应用程序退出。（消息循环过程是由Looper实现的）  如果队列中有消息，应用程序的主线程会把它取出来，分发给相应的Handler进行处理； 如果队列中没有消息，应用程序的主县城就会进入空闲等待状态，等待下一个消息的到 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android Handler消息循环处理机制(例ActivityThread)" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android Handler消息循环处理机制(例ActivityThread)&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android Handler消息循环处理机制(例ActivityThread)" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACKUlEQVR42u2bQW7DMAwE/f9Pp+cGEneoumhqji8xEkQcGaKyXDHX6x9cl5BCCinkB0BexfXtC5v3V5/tXt/fS3GFnAu5XLQLyNXg1Ri7ydC4Qs6GTIs/TWIb6G18GldIIStIuilXySKkkHcnTkdYVEmzewhCCkkFxi5pSEJVgvlWFSTk4yCrgug3X2+rFoV8FCQtnmjhT8TG7a6akI+CrBZyClJt4kkUo3hCjoWkCz2JDCIi6AMQUkhilLYChIRcTSiqICFHQSYDlYrZdJ8STEgh0QIO5lUlIKoYSYgIOROys6g7G3clMMiBlZCzIXcGfAVUJRlOjLSxCzkashK0nQlRAyGZW0LOhawKLpoQlaj40XhCjoQkptXJJk6Ls1JMCzkWsmMskQaQZGrh5BJyJGQynNIEiBlAxkTdLEKOgkwCtROImLOoYU/IkZCdJg/aVJIOQImIEVLIrllKDpXIPTashBwHSQqkToN8Sqy2qybkeMjOoVK1kZ82NAs5F7JTPBFBQRqRaRwhZ0N2Bu6Ij27SRHNAyHGQHcHRmSSZsJBCEpOKDkzEbmXkx2Z4IcdAUhMqGabkoJ00gwopZFrQSXSkwMnIb3ezCDkCMjWIJDO+2pg7jfToF0fIMZBdQ6kyUomoOFJBQgr5Yn/wIaYqSTJsogo5HpIUX53CDZuyQo6G7B48JUPrRGAci14hHweZfvjTgXpVuHVEcZk4Qo6B/ORLSCGFFPIPry+ycxVTXcU3AQAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android Handler消息循环处理机制(例ActivityThread)</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-09-22</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android Handler消息循环处理机制(例ActivityThread)&url=https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android Handler消息循环处理机制(例ActivityThread)&url=https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACKUlEQVR42u2bQW7DMAwE/f9Pp+cGEneoumhqji8xEkQcGaKyXDHX6x9cl5BCCinkB0BexfXtC5v3V5/tXt/fS3GFnAu5XLQLyNXg1Ri7ydC4Qs6GTIs/TWIb6G18GldIIStIuilXySKkkHcnTkdYVEmzewhCCkkFxi5pSEJVgvlWFSTk4yCrgug3X2+rFoV8FCQtnmjhT8TG7a6akI+CrBZyClJt4kkUo3hCjoWkCz2JDCIi6AMQUkhilLYChIRcTSiqICFHQSYDlYrZdJ8STEgh0QIO5lUlIKoYSYgIOROys6g7G3clMMiBlZCzIXcGfAVUJRlOjLSxCzkashK0nQlRAyGZW0LOhawKLpoQlaj40XhCjoQkptXJJk6Ls1JMCzkWsmMskQaQZGrh5BJyJGQynNIEiBlAxkTdLEKOgkwCtROImLOoYU/IkZCdJg/aVJIOQImIEVLIrllKDpXIPTashBwHSQqkToN8Sqy2qybkeMjOoVK1kZ82NAs5F7JTPBFBQRqRaRwhZ0N2Bu6Ij27SRHNAyHGQHcHRmSSZsJBCEpOKDkzEbmXkx2Z4IcdAUhMqGabkoJ00gwopZFrQSXSkwMnIb3ezCDkCMjWIJDO+2pg7jfToF0fIMZBdQ6kyUomoOFJBQgr5Yn/wIaYqSTJsogo5HpIUX53CDZuyQo6G7B48JUPrRGAci14hHweZfvjTgXpVuHVEcZk4Qo6B/ORLSCGFFPIPry+ycxVTXcU3AQAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#整体流程"><span class="post-toc-number">1.</span> <span class="post-toc-text">整体流程</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#消息循环（以ActivityThread为例）"><span class="post-toc-number">2.</span> <span class="post-toc-text">消息循环（以ActivityThread为例）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#消息发送"><span class="post-toc-number">3.</span> <span class="post-toc-text">消息发送</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#消息处理"><span class="post-toc-number">4.</span> <span class="post-toc-text">消息处理</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#SurfaceFlinger的消息处理机制"><span class="post-toc-number">5.</span> <span class="post-toc-text">SurfaceFlinger的消息处理机制</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="整体流程"><a href="#整体流程" class="headerlink" title="整体流程"></a>整体流程</h2><blockquote>
+<p>关键词：Handler、Looper、MessageQueue、handleMessage</p>
+</blockquote>
+<p>消息被存放于消息队列，应用程序的主线程会围绕这个消息队列进入一个无限循环，知道应用程序退出。（消息循环过程是由Looper实现的）</p>
+<ul>
+<li>如果队列中有消息，应用程序的主线程会把它取出来，分发给相应的Handler进行处理；</li>
+<li>如果队列中没有消息，应用程序的主县城就会进入空闲等待状态，等待下一个消息的到来；<a id="more"></a>
+<h2 id="消息循环（以ActivityThread为例）"><a href="#消息循环（以ActivityThread为例）" class="headerlink" title="消息循环（以ActivityThread为例）"></a>消息循环（以ActivityThread为例）</h2></li>
+</ul>
+<p>应用程序的消息循环是从 ActivityThread 的 main()函数入口的，在 main()函数中会调用<code>Looper.prepareMainLooper();</code>和<code>Looper.loop();</code></p>
+<blockquote>
+<p>代码： <a href="http://aosp.opersys.com/xref/android-10.0.0_r2/xref/frameworks/base/core/java/android/app/ActivityThread.java#7310" target="_blank" rel="noopener">http://aosp.opersys.com/xref/android-10.0.0_r2/xref/frameworks/base/core/java/android/app/ActivityThread.java#7310</a></p>
+</blockquote>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/app/ActivityThread.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"ActivityThreadMain"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Install selective syscall interception</span></span><br><span class="line">        AndroidOs.install();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// CloseGuard defaults to true and can be quite spammy.  We</span></span><br><span class="line">        <span class="comment">// disable it here, but selectively enable it later (via</span></span><br><span class="line">        <span class="comment">// StrictMode) on debug builds, but using DropBox, not logs.</span></span><br><span class="line">        CloseGuard.setEnabled(<span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">        Environment.initForCurrentUser();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Make sure TrustedCertificateStore looks in the right place for CA certificates</span></span><br><span class="line">        <span class="keyword">final</span> File configDir = Environment.getUserConfigDirectory(UserHandle.myUserId());</span><br><span class="line">        TrustedCertificateStore.setDefaultUserDirectory(configDir);</span><br><span class="line"></span><br><span class="line">        Process.setArgV0(<span class="string">"&lt;pre-initialized&gt;"</span>);</span><br><span class="line"></span><br><span class="line">        Looper.prepareMainLooper();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Find the value for &#123;@link #PROC_START_SEQ_IDENT&#125; if provided on the command line.</span></span><br><span class="line">        <span class="comment">// It will be in the format "seq=114"</span></span><br><span class="line">        <span class="keyword">long</span> startSeq = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (args != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = args.length - <span class="number">1</span>; i &gt;= <span class="number">0</span>; --i) &#123;</span><br><span class="line">                <span class="keyword">if</span> (args[i] != <span class="keyword">null</span> &amp;&amp; args[i].startsWith(PROC_START_SEQ_IDENT)) &#123;</span><br><span class="line">                    startSeq = Long.parseLong(</span><br><span class="line">                            args[i].substring(PROC_START_SEQ_IDENT.length()));</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        ActivityThread thread = <span class="keyword">new</span> ActivityThread();</span><br><span class="line">        thread.attach(<span class="keyword">false</span>, startSeq);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (sMainThreadHandler == <span class="keyword">null</span>) &#123;</span><br><span class="line">            sMainThreadHandler = thread.getHandler();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">false</span>) &#123;</span><br><span class="line">            Looper.myLooper().setMessageLogging(<span class="keyword">new</span></span><br><span class="line">                    LogPrinter(Log.DEBUG, <span class="string">"ActivityThread"</span>));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// End of event ActivityThreadMain.</span></span><br><span class="line">        Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</span><br><span class="line">        Looper.loop();  <span class="comment">//消息循环</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"Main thread loop unexpectedly exited"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建Looper对象的时候，会同时创建一个 MessageQueue，保存在 Looper 的成员变量 mQueue 中。Looper和MessageQueue就是这样关联起来的。</p>
+<p>JNI层创建 Looper 时会通过 pipe 系统调用来创建一个管道。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/os/Looper.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="title">Looper</span><span class="params">(<span class="keyword">boolean</span> quitAllowed)</span> </span>&#123;</span><br><span class="line">    mQueue = <span class="keyword">new</span> MessageQueue(quitAllowed);</span><br><span class="line">    mThread = Thread.currentThread();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该Looper对象创建好之后会保存在 NativeMessageQueue 对象的成员变量 mLooper 中，这个对象的作用是，通过管道实现以下功能：当Java层的消息队列中没有消息时，就使 Android 应用程序主线程进入等待状态，而当Java层的消息队列中来了消息时，就唤醒Android应用程序的主线程来处理这个消息。</p>
+<p>ActivityThread调用<code>Looper.loop()</code>才会进入消息循环。</p>
+<p>进入消息循环后，会不断地从消息队列<code>mQueue</code>中去获取下一个要处理的消息msg，如果消息的target为null，就表示要退出消息循环了，否则就会调用target对象的 dispatchMessage 函数来处理这个消息。</p>
+<p>调用 queue 的 next 函数去获取下一个要处理的消息，但调用这个函数有可能会让线程进入等待状态。一是当消息队列中没有消息时，它会使线程进入等待状态；二是消息队列中有消息，但是消息指定了执行的时间，而现在还没有到这个时间，线程也会进入等待状态。</p>
+<figure class="highlight java"><figcaption><span>/frameworks/base/core/java/android/os/Looper.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">loop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     <span class="keyword">final</span> Looper me = myLooper();</span><br><span class="line">     <span class="keyword">if</span> (me == <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">"No Looper; Looper.prepare() wasn't called on this thread."</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">final</span> MessageQueue queue = me.mQueue;</span><br><span class="line"></span><br><span class="line">     <span class="comment">// Make sure the identity of this thread is that of the local process,</span></span><br><span class="line">     <span class="comment">// and keep track of what that identity token actually is.</span></span><br><span class="line">     Binder.clearCallingIdentity();</span><br><span class="line">     <span class="keyword">final</span> <span class="keyword">long</span> ident = Binder.clearCallingIdentity();</span><br><span class="line"></span><br><span class="line">     <span class="comment">// Allow overriding a threshold with a system prop. e.g.</span></span><br><span class="line">     <span class="comment">// adb shell 'setprop log.looper.1000.main.slow 1 &amp;&amp; stop &amp;&amp; start'</span></span><br><span class="line">     <span class="keyword">final</span> <span class="keyword">int</span> thresholdOverride =</span><br><span class="line">             SystemProperties.getInt(<span class="string">"log.looper."</span></span><br><span class="line">                     + Process.myUid() + <span class="string">"."</span></span><br><span class="line">                     + Thread.currentThread().getName()</span><br><span class="line">                     + <span class="string">".slow"</span>, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">boolean</span> slowDeliveryDetected = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">         Message msg = queue.next(); <span class="comment">// might block</span></span><br><span class="line">         <span class="keyword">if</span> (msg == <span class="keyword">null</span>) &#123;</span><br><span class="line">             <span class="comment">// No message indicates that the message queue is quitting.</span></span><br><span class="line">             <span class="keyword">return</span>;</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         <span class="comment">// This must be in a local variable, in case a UI event sets the logger</span></span><br><span class="line">         <span class="keyword">final</span> Printer logging = me.mLogging;</span><br><span class="line">         <span class="keyword">if</span> (logging != <span class="keyword">null</span>) &#123;</span><br><span class="line">             logging.println(<span class="string">"&gt;&gt;&gt;&gt;&gt; Dispatching to "</span> + msg.target + <span class="string">" "</span> +</span><br><span class="line">                     msg.callback + <span class="string">": "</span> + msg.what);</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="comment">// Make sure the observer won't change while processing a transaction.</span></span><br><span class="line">         <span class="keyword">final</span> Observer observer = sObserver;</span><br><span class="line"></span><br><span class="line">         <span class="keyword">final</span> <span class="keyword">long</span> traceTag = me.mTraceTag;</span><br><span class="line">         <span class="keyword">long</span> slowDispatchThresholdMs = me.mSlowDispatchThresholdMs;</span><br><span class="line">         <span class="keyword">long</span> slowDeliveryThresholdMs = me.mSlowDeliveryThresholdMs;</span><br><span class="line">         <span class="keyword">if</span> (thresholdOverride &gt; <span class="number">0</span>) &#123;</span><br><span class="line">             slowDispatchThresholdMs = thresholdOverride;</span><br><span class="line">             slowDeliveryThresholdMs = thresholdOverride;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">final</span> <span class="keyword">boolean</span> logSlowDelivery = (slowDeliveryThresholdMs &gt; <span class="number">0</span>) &amp;&amp; (msg.when &gt; <span class="number">0</span>);</span><br><span class="line">         <span class="keyword">final</span> <span class="keyword">boolean</span> logSlowDispatch = (slowDispatchThresholdMs &gt; <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">         <span class="keyword">final</span> <span class="keyword">boolean</span> needStartTime = logSlowDelivery || logSlowDispatch;</span><br><span class="line">         <span class="keyword">final</span> <span class="keyword">boolean</span> needEndTime = logSlowDispatch;</span><br><span class="line"></span><br><span class="line">         <span class="keyword">if</span> (traceTag != <span class="number">0</span> &amp;&amp; Trace.isTagEnabled(traceTag)) &#123;</span><br><span class="line">             Trace.traceBegin(traceTag, msg.target.getTraceName(msg));</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         <span class="keyword">final</span> <span class="keyword">long</span> dispatchStart = needStartTime ? SystemClock.uptimeMillis() : <span class="number">0</span>;</span><br><span class="line">         <span class="keyword">final</span> <span class="keyword">long</span> dispatchEnd;</span><br><span class="line">         Object token = <span class="keyword">null</span>;</span><br><span class="line">         <span class="keyword">if</span> (observer != <span class="keyword">null</span>) &#123;</span><br><span class="line">             token = observer.messageDispatchStarting();</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">long</span> origWorkSource = ThreadLocalWorkSource.setUid(msg.workSourceUid);</span><br><span class="line">         <span class="keyword">try</span> &#123;</span><br><span class="line">             msg.target.dispatchMessage(msg);</span><br><span class="line">             <span class="keyword">if</span> (observer != <span class="keyword">null</span>) &#123;</span><br><span class="line">                 observer.messageDispatched(token, msg);</span><br><span class="line">             &#125;</span><br><span class="line">             dispatchEnd = needEndTime ? SystemClock.uptimeMillis() : <span class="number">0</span>;</span><br><span class="line">         &#125; <span class="keyword">catch</span> (Exception exception) &#123;</span><br><span class="line">             <span class="keyword">if</span> (observer != <span class="keyword">null</span>) &#123;</span><br><span class="line">                 observer.dispatchingThrewException(token, msg, exception);</span><br><span class="line">             &#125;</span><br><span class="line">             <span class="keyword">throw</span> exception;</span><br><span class="line">         &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">             ThreadLocalWorkSource.restore(origWorkSource);</span><br><span class="line">             <span class="keyword">if</span> (traceTag != <span class="number">0</span>) &#123;</span><br><span class="line">                 Trace.traceEnd(traceTag);</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">if</span> (logSlowDelivery) &#123;</span><br><span class="line">             <span class="keyword">if</span> (slowDeliveryDetected) &#123;</span><br><span class="line">                 <span class="keyword">if</span> ((dispatchStart - msg.when) &lt;= <span class="number">10</span>) &#123;</span><br><span class="line">                     Slog.w(TAG, <span class="string">"Drained"</span>);</span><br><span class="line">                     slowDeliveryDetected = <span class="keyword">false</span>;</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                 <span class="keyword">if</span> (showSlowLog(slowDeliveryThresholdMs, msg.when, dispatchStart, <span class="string">"delivery"</span>,</span><br><span class="line">                         msg)) &#123;</span><br><span class="line">                     <span class="comment">// Once we write a slow delivery log, suppress until the queue drains.</span></span><br><span class="line">                     slowDeliveryDetected = <span class="keyword">true</span>;</span><br><span class="line">                 &#125;</span><br><span class="line">             &#125;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">if</span> (logSlowDispatch) &#123;</span><br><span class="line">             showSlowLog(slowDispatchThresholdMs, dispatchStart, dispatchEnd, <span class="string">"dispatch"</span>, msg);</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         <span class="keyword">if</span> (logging != <span class="keyword">null</span>) &#123;</span><br><span class="line">             logging.println(<span class="string">"&lt;&lt;&lt;&lt;&lt; Finished to "</span> + msg.target + <span class="string">" "</span> + msg.callback);</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         <span class="comment">// Make sure that during the course of dispatching the</span></span><br><span class="line">         <span class="comment">// identity of the thread wasn't corrupted.</span></span><br><span class="line">         <span class="keyword">final</span> <span class="keyword">long</span> newIdent = Binder.clearCallingIdentity();</span><br><span class="line">         <span class="keyword">if</span> (ident != newIdent) &#123;</span><br><span class="line">             Log.wtf(TAG, <span class="string">"Thread identity changed from 0x"</span></span><br><span class="line">                     + Long.toHexString(ident) + <span class="string">" to 0x"</span></span><br><span class="line">                     + Long.toHexString(newIdent) + <span class="string">" while dispatching to "</span></span><br><span class="line">                     + msg.target.getClass().getName() + <span class="string">" "</span></span><br><span class="line">                     + msg.callback + <span class="string">" what="</span> + msg.what);</span><br><span class="line">         &#125;</span><br><span class="line"></span><br><span class="line">         msg.recycleUnchecked();</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用 queue 的 next 函数去获取下一个要处理的消息，但调用这个函数有可能会让线程进入等待状态。一是当消息队列中没有消息时，它会使线程进入等待状态；二是消息队列中有消息，但是消息指定了执行的时间，而现在还没有到这个时间，线程也会进入等待状态。</p>
+<p><img src="Handler-1.png" alt="消息处理流程"></p>
+<h2 id="消息发送"><a href="#消息发送" class="headerlink" title="消息发送"></a>消息发送</h2><p>从应用程序启动入口分析下消息发送流程。应用程序启动过程中会调用 sendMessage 函数向应用程序的消息队列中加入一个新的消息。<br>sendMessage将参数封装成Message，然后通过mH.sendMessage把该消息加入消息队列。mH是ActivityThread类的成员变量，它的类型为H，继承于<code>Handler</code>类。</p>
+<p>定义： <code>final H mH = new H();</code></p>
+<figure class="highlight java"><figcaption><span>/frameworks/base/core/java/android/app/ActivityThread.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(<span class="keyword">int</span> what, Object obj, <span class="keyword">int</span> arg1, <span class="keyword">int</span> arg2, <span class="keyword">boolean</span> async)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (DEBUG_MESSAGES) &#123;</span><br><span class="line">        Slog.v(TAG,</span><br><span class="line">                <span class="string">"SCHEDULE "</span> + what + <span class="string">" "</span> + mH.codeToString(what) + <span class="string">": "</span> + arg1 + <span class="string">" / "</span> + obj);</span><br><span class="line">    &#125;</span><br><span class="line">    Message msg = Message.obtain();</span><br><span class="line">    msg.what = what;</span><br><span class="line">    msg.obj = obj;</span><br><span class="line">    msg.arg1 = arg1;</span><br><span class="line">    msg.arg2 = arg2;</span><br><span class="line">    <span class="keyword">if</span> (async) &#123;</span><br><span class="line">        msg.setAsynchronous(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    mH.sendMessage(msg);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>sendMessage函数是继承于Handler的，Handler在它的构造函数中获取了Looper对象和MessageQueue 对象。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/os/Handler.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">sendMessage</span><span class="params">(@NonNull Message msg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> sendMessageDelayed(msg, <span class="number">0</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">sendMessageDelayed</span><span class="params">(@NonNull Message msg, <span class="keyword">long</span> delayMillis)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (delayMillis &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        delayMillis = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> sendMessageAtTime(msg, SystemClock.uptimeMillis() + delayMillis);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">sendMessageAtTime</span><span class="params">(@NonNull Message msg, <span class="keyword">long</span> uptimeMillis)</span> </span>&#123;</span><br><span class="line">    MessageQueue queue = mQueue;</span><br><span class="line">    <span class="keyword">if</span> (queue == <span class="keyword">null</span>) &#123;</span><br><span class="line">        RuntimeException e = <span class="keyword">new</span> RuntimeException(</span><br><span class="line">                <span class="keyword">this</span> + <span class="string">" sendMessageAtTime() called with no mQueue"</span>);</span><br><span class="line">        Log.w(<span class="string">"Looper"</span>, e.getMessage(), e);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> enqueueMessage(queue, msg, uptimeMillis);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>msg.target = this;</code>表示这个消息最终由这个Handler对象来处理，即由ActivityThread对象的mH成员变量来处理。最终会调到MessageQueue的<code>enqueueMessage</code>函数最后会调到<code>Looper.cpp</code>的<code>wake</code>函数。</p>
+<figure class="highlight java"><figcaption><span>/frameworks/base/core/java/android/os/Handler.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">enqueueMessage</span><span class="params">(@NonNull MessageQueue queue, @NonNull Message msg,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">long</span> uptimeMillis)</span> </span>&#123;</span><br><span class="line">    msg.target = <span class="keyword">this</span>;</span><br><span class="line">    msg.workSourceUid = ThreadLocalWorkSource.getUid();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mAsynchronous) &#123;</span><br><span class="line">        msg.setAsynchronous(<span class="keyword">true</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> queue.enqueueMessage(msg, uptimeMillis);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/os/MessageQueue.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">enqueueMessage</span><span class="params">(Message msg, <span class="keyword">long</span> when)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (msg.target == <span class="keyword">null</span>) &#123;</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Message must have a target."</span>);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">if</span> (msg.isInUse()) &#123;</span><br><span class="line">           <span class="keyword">throw</span> <span class="keyword">new</span> IllegalStateException(msg + <span class="string">" This message is already in use."</span>);</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">           <span class="keyword">if</span> (mQuitting) &#123;</span><br><span class="line">               IllegalStateException e = <span class="keyword">new</span> IllegalStateException(</span><br><span class="line">                       msg.target + <span class="string">" sending message to a Handler on a dead thread"</span>);</span><br><span class="line">               Log.w(TAG, e.getMessage(), e);</span><br><span class="line">               msg.recycle();</span><br><span class="line">               <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           msg.markInUse();</span><br><span class="line">           msg.when = when;</span><br><span class="line">           Message p = mMessages;</span><br><span class="line">           <span class="keyword">boolean</span> needWake;</span><br><span class="line">           <span class="keyword">if</span> (p == <span class="keyword">null</span> || when == <span class="number">0</span> || when &lt; p.when) &#123;</span><br><span class="line">               <span class="comment">// New head, wake up the event queue if blocked.</span></span><br><span class="line">               msg.next = p;</span><br><span class="line">               mMessages = msg;</span><br><span class="line">               needWake = mBlocked;</span><br><span class="line">           &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">               <span class="comment">// Inserted within the middle of the queue.  Usually we don't have to wake</span></span><br><span class="line">               <span class="comment">// up the event queue unless there is a barrier at the head of the queue</span></span><br><span class="line">               <span class="comment">// and the message is the earliest asynchronous message in the queue.</span></span><br><span class="line">               needWake = mBlocked &amp;&amp; p.target == <span class="keyword">null</span> &amp;&amp; msg.isAsynchronous();</span><br><span class="line">               Message prev;</span><br><span class="line">               <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">                   prev = p;</span><br><span class="line">                   p = p.next;</span><br><span class="line">                   <span class="keyword">if</span> (p == <span class="keyword">null</span> || when &lt; p.when) &#123;</span><br><span class="line">                       <span class="keyword">break</span>;</span><br><span class="line">                   &#125;</span><br><span class="line">                   <span class="keyword">if</span> (needWake &amp;&amp; p.isAsynchronous()) &#123;</span><br><span class="line">                       needWake = <span class="keyword">false</span>;</span><br><span class="line">                   &#125;</span><br><span class="line">               &#125;</span><br><span class="line">               msg.next = p; <span class="comment">// invariant: p == prev.next</span></span><br><span class="line">               prev.next = msg;</span><br><span class="line">           &#125;</span><br><span class="line"></span><br><span class="line">           <span class="comment">// We can assume mPtr != 0 because mQuitting is false.</span></span><br><span class="line">           <span class="keyword">if</span> (needWake) &#123;</span><br><span class="line">               nativeWake(mPtr);   <span class="comment">//此处调用JNI函数</span></span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><figcaption><span>/frameworks/base/core/jni/android_os_MessageQueue.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">android_os_MessageQueue_nativeWake</span><span class="params">(JNIEnv* env, jclass clazz, jlong ptr)</span> </span>&#123;</span><br><span class="line">    NativeMessageQueue* nativeMessageQueue = <span class="keyword">reinterpret_cast</span>&lt;NativeMessageQueue*&gt;(ptr);</span><br><span class="line">    nativeMessageQueue-&gt;wake();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="消息处理"><a href="#消息处理" class="headerlink" title="消息处理"></a>消息处理</h2><p>ActivityThread的main函数在<code>Looper.loop</code>函数中调用<code>msg.target.dispatchMessage(msg)</code>去处理消息。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/os/Looper.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">              msg.target.dispatchMessage(msg);   <span class="comment">//处理消息</span></span><br><span class="line">              <span class="keyword">if</span> (observer != <span class="keyword">null</span>) &#123;</span><br><span class="line">                  observer.messageDispatched(token, msg);</span><br><span class="line">              &#125;</span><br><span class="line">              dispatchEnd = needEndTime ? SystemClock.uptimeMillis() : <span class="number">0</span>;</span><br><span class="line">          &#125; <span class="keyword">catch</span> (Exception exception) &#123;</span><br><span class="line">              <span class="keyword">if</span> (observer != <span class="keyword">null</span>) &#123;</span><br><span class="line">                  observer.dispatchingThrewException(token, msg, exception);</span><br><span class="line">              &#125;</span><br><span class="line">              <span class="keyword">throw</span> exception;</span><br><span class="line">          &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">              ThreadLocalWorkSource.restore(origWorkSource);</span><br><span class="line">              <span class="keyword">if</span> (traceTag != <span class="number">0</span>) &#123;</span><br><span class="line">                  Trace.traceEnd(traceTag);</span><br><span class="line">              &#125;</span><br><span class="line">          &#125;</span><br></pre></td></tr></table></figure>
+
+<p>消息对象msg的成员变量<code>target</code>是在发送消息的时候设置好的，通过哪个Handler来发送消息，就通过哪个Handler来处理消息。</p>
+<p>当时是 H 类把消息加入消息队列的，现在也该由 H 类处理消息。 H类没有实现自己的<code>dispatchMessage</code>函数，但它继承了父类Handler的dispatchMessage函数。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/os/Handler.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dispatchMessage</span><span class="params">(@NonNull Message msg)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (msg.callback != <span class="keyword">null</span>) &#123;</span><br><span class="line">        handleCallback(msg);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (mCallback != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (mCallback.handleMessage(msg)) &#123;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        handleMessage(msg);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>最终调用<code>handleMessage</code>处理消息。此处既是调用<code>ActivityThread.java</code>的该函数。</p>
+<figure class="highlight java"><figcaption><span>/frameworks/base/core/java/android/app/ActivityThread.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">if</span> (DEBUG_MESSAGES) Slog.v(TAG, <span class="string">"&gt;&gt;&gt; handling: "</span> + codeToString(msg.what));</span><br><span class="line">          <span class="keyword">switch</span> (msg.what) &#123;</span><br><span class="line">              <span class="keyword">case</span> BIND_APPLICATION:</span><br><span class="line">                  Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, <span class="string">"bindApplication"</span>);</span><br><span class="line">                  AppBindData data = (AppBindData)msg.obj;</span><br><span class="line">                  handleBindApplication(data);</span><br><span class="line">                  Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);</span><br><span class="line">                  <span class="keyword">break</span>;</span><br><span class="line">                  .......</span><br></pre></td></tr></table></figure>
+
+<h2 id="SurfaceFlinger的消息处理机制"><a href="#SurfaceFlinger的消息处理机制" class="headerlink" title="SurfaceFlinger的消息处理机制"></a>SurfaceFlinger的消息处理机制</h2><blockquote>
+<p>类似的消息处理机制在SurfaceFlinger也存在，拥有独自的文件<code>frameworks/native/services/surfaceflinger/Scheduler/MessageQueue.cpp</code>等待消息、发送消息、处理消息。从而进行Layer合成事件。</p>
+</blockquote>
+<figure class="highlight c++"><figcaption><span>/frameworks/native/services/surfaceflinger/Scheduler/MessageQueue.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> MessageQueue::Handler::handleMessage(<span class="keyword">const</span> Message&amp; message) &#123;</span><br><span class="line">    <span class="keyword">switch</span> (message.what) &#123;</span><br><span class="line">        <span class="keyword">case</span> INVALIDATE:</span><br><span class="line">            android_atomic_and(~eventMaskInvalidate, &amp;mEventMask);</span><br><span class="line">            mQueue.mFlinger-&gt;onMessageReceived(message.what);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> REFRESH:</span><br><span class="line">            android_atomic_and(~eventMaskRefresh, &amp;mEventMask);</span><br><span class="line">            mQueue.mFlinger-&gt;onMessageReceived(message.what);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/">https://alonealive.github.io/Blog/2019/09/22/2019/190922-android-handler-cpp/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-09-22T07:01:32.000Z" itemprop="datePublished">2019-09-22</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:14:08.790Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/09/30/2019/190930_nReal_Sample/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">nReal搭建Samepl APK</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/09/21/2019/190921-android-wms-view-cpp/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android WMS和View基本理解</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

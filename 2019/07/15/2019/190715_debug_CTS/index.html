@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Use CTS | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Use CTS | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/"><meta property="og:locale" content="zh-CN"><meta name="description" content="OverviewCTS就是兼容性测试为了确保Android应用能够在所有兼容Android的设备上正确运行，并且保持相似的用户体验，在每个版本发布之时，Android提供了一套兼容性测试用例集合（Compatibility Test Suite, CTS）来认证运行Android系统的设备是否完全兼容Android规范，并附带有相关的兼容性标准文档（Compatibility Definition - sunwengang - sunwengang blog"><meta name="keywords" content="CTS"><meta property="article:published_time" content="2019-07-15T14:04:14.000Z"><meta property="article:modified_time" content="2020-03-08T09:48:56.623Z"><meta property="og:updated_time" content="2020-03-08T09:48:56.623Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="CTS"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/"
+    },
+    "headline": "Use CTS | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-07-15T14:04:14.000Z",
+    "dateModified": "2020-03-08T09:48:56.623Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "CTS",
+    "description": "OverviewCTS就是兼容性测试为了确保Android应用能够在所有兼容Android的设备上正确运行，并且保持相似的用户体验，在每个版本发布之时，Android提供了一套兼容性测试用例集合（Compatibility Test Suite, CTS）来认证运行Android系统的设备是否完全兼容Android规范，并附带有相关的兼容性标准文档（Compatibility Definition - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Use CTS" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Use CTS&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Use CTS" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMklEQVR42u2bQW7DMAwE/f9Pt1cjNblDt0VTc3QxkNjSCAjl5ZI5Pv7BOIQUUkgh3wDyaMb5nvP1csLTM1fzvD6L1hVyLWS1KP3+9d5uM3RdIYWsfugpWKpg+LJgM3/5jJBCAsirg56MKiCFFHIK2QXA1QbKg7nYvJBCTgVGd18FMd3At1WQkI+D7A7g37z+WLYo5KMgJwlTJ2K7oJkmaULuhqTJfweQBEO1mbQ5IYXsjNGJkVW9FDrT4FKECLkacjJ5Zxgks+pq3jLAhFwLOXnpJ1N/Ym6NEzEhV0EmY7QLim4eskEhhawSsYlA7RL+VIzCYkXItZDJsCKf000Rg0FIIWmSRAtGXeI22rCQayEngpYIiilYTMSEXAd5p3mOmqh35hBSSNqE1AVWKmziQnwX3UKugIzCE5jzqQlpIkqEFJKa9SRB64QI+SwW5YVcAZl+xHebipNpQISHkHshSTGIHPqTwzttVEghibjokqZJgOBCvZArIZN5moQtMa4mBoKQQpIiOmlWao2nY/6HYCGFTCI0NTlNGupwUV/I1ZApgIgRTwRKelFgB0PIx0N2hU5y2JOmelowEHI3JAkOUtSsXgBUfKACqJArIIk5ShbohMRUiAgpJDWu7habcMHzuPkPUCEfCUmK6hPRQRtIULFJSCHTIZuaM0MiR8SKkEJOAqcz+adFq3H1Qcg1kElg0CJnMmFp452QuyHJi582ddIAQiaskCsh33kIKaSQQv7h+ARilQRyhqXT9AAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Use CTS</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-07-15</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Use CTS&url=https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Use CTS&url=https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMklEQVR42u2bQW7DMAwE/f9Pt1cjNblDt0VTc3QxkNjSCAjl5ZI5Pv7BOIQUUkgh3wDyaMb5nvP1csLTM1fzvD6L1hVyLWS1KP3+9d5uM3RdIYWsfugpWKpg+LJgM3/5jJBCAsirg56MKiCFFHIK2QXA1QbKg7nYvJBCTgVGd18FMd3At1WQkI+D7A7g37z+WLYo5KMgJwlTJ2K7oJkmaULuhqTJfweQBEO1mbQ5IYXsjNGJkVW9FDrT4FKECLkacjJ5Zxgks+pq3jLAhFwLOXnpJ1N/Ym6NEzEhV0EmY7QLim4eskEhhawSsYlA7RL+VIzCYkXItZDJsCKf000Rg0FIIWmSRAtGXeI22rCQayEngpYIiilYTMSEXAd5p3mOmqh35hBSSNqE1AVWKmziQnwX3UKugIzCE5jzqQlpIkqEFJKa9SRB64QI+SwW5YVcAZl+xHebipNpQISHkHshSTGIHPqTwzttVEghibjokqZJgOBCvZArIZN5moQtMa4mBoKQQpIiOmlWao2nY/6HYCGFTCI0NTlNGupwUV/I1ZApgIgRTwRKelFgB0PIx0N2hU5y2JOmelowEHI3JAkOUtSsXgBUfKACqJArIIk5ShbohMRUiAgpJDWu7habcMHzuPkPUCEfCUmK6hPRQRtIULFJSCHTIZuaM0MiR8SKkEJOAqcz+adFq3H1Qcg1kElg0CJnMmFp452QuyHJi582ddIAQiaskCsh33kIKaSQQv7h+ARilQRyhqXT9AAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Overview"><span class="post-toc-number">1.</span> <span class="post-toc-text">Overview</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Achieve-CTS-Package"><span class="post-toc-number">2.</span> <span class="post-toc-text">Achieve CTS Package</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#环境配置"><span class="post-toc-number">3.</span> <span class="post-toc-text">环境配置</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#测试命令"><span class="post-toc-number">4.</span> <span class="post-toc-text">测试命令</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#测试结果"><span class="post-toc-number">5.</span> <span class="post-toc-text">测试结果</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>CTS就是兼容性测试为了确保Android应用能够在所有兼容Android的设备上正确运行，并且保持相似的用户体验，在每个版本发布之时，Android提供了一套兼容性测试用例集合（Compatibility Test Suite, CTS）来认证运行Android系统的设备是否完全兼容Android规范，并附带有相关的兼容性标准文档（Compatibility Definition Document, CDD）。  </p>
+<p>从 <a href="http://source.android.com/compatibility/downloads.html（" target="_blank" rel="noopener">http://source.android.com/compatibility/downloads.html（</a> 网络需要能进google）处下载最新的兼容性测试用例集合，并解压。大部分是基于Junit和仪表盘技术编写的。还扩展了自动化测试过程，可以自动执行用例，自动收集和汇总测试结果。CTS采用XML配置文件的方式将这些测试用例分组成多个测试计划（plan）,第三方也可以创建自己的plan。</p>
+<a id="more"></a>
+<h2 id="Achieve-CTS-Package"><a href="#Achieve-CTS-Package" class="headerlink" title="Achieve CTS Package"></a>Achieve CTS Package</h2><ol>
+<li>google官方下载<br>Link: <a href="http://source.android.com/compatibility/downloads.html" target="_blank" rel="noopener">http://source.android.com/compatibility/downloads.html</a></li>
+<li>编译源码  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CTS的代码在Android源码CTS目录下。  </span><br><span class="line">make cts -j4  </span><br><span class="line">编译好cts后生成的文件位置： &#x2F;out&#x2F;host&#x2F;linux-x86&#x2F;  </span><br><span class="line">在该目录下包含tools和rtestcases两个目录。</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><ol>
+<li>Android 调试桥 (adb)</li>
+<li>手机不能休眠<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">设置-&gt;开发人员选项：</span><br><span class="line">打开Settings-&gt;Accessibility-&gt;Developer options-&gt;USB debugging(USB 调试)</span><br><span class="line">打开Settings-&gt;Accessibility-&gt;Developer options-&gt;Stay Awake（保持唤醒）</span><br></pre></td></tr></table></figure></li>
+<li>系统语言最好保证英语<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">设置手机语言为英语：Setting-&gt;Language&amp;input-&gt;language-&gt;English(United States)。</span><br></pre></td></tr></table></figure>
+
+</li>
+</ol>
+<h2 id="测试命令"><a href="#测试命令" class="headerlink" title="测试命令"></a>测试命令</h2><ol>
+<li><p>在CTS/tools目录下执行  </p>
+<blockquote>
+<p>./cts-tradefed  进入cts-tf,进入的打印信息会提示连接到手机设备！</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">run  cts   --help   查看帮助</span><br><span class="line">help list</span><br><span class="line">help run</span><br></pre></td></tr></table></figure></li>
+<li><p>测试模块  </p>
+<blockquote>
+<p>run cts -s DeviceID -m CtsMediaTestCases  （在testcases目录下找apk）<br>测试模块下的一小模块： cts-tf &gt; run cts -m CtsMediaTestCases -a  armeabi-v7a</p>
+</blockquote>
+</li>
+<li><p>测试模块某个testcase</p>
+<blockquote>
+<p>run cts -s DeviceID -m &lt;模块名&gt; -t &lt;具体fail项&gt; </p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">run  cts   -</span><br><span class="line">兼容性（compatibility）选项：</span><br><span class="line">--include-filter     	请求包含的模块过滤器</span><br><span class="line"></span><br><span class="line">--exclude-filter        请求排出的模块过滤器（默认一大堆）</span><br><span class="line"></span><br><span class="line">--subplan  				运行子计划</span><br><span class="line"></span><br><span class="line">--serial&#x2F;-s &lt;deviceID&gt;	在特定设备上运行 CTS</span><br><span class="line"></span><br><span class="line">-d&#x2F;--device   &lt;devicedID&gt; 		设备</span><br><span class="line"></span><br><span class="line">-r &#x2F;--retry			重新尝试当前的session</span><br><span class="line"></span><br><span class="line">--skip-system-status-check    +  ...Check     跳过系统状态检查</span><br><span class="line"></span><br><span class="line">-–skip-preconditions&#x2F;-o	 跳过一些预置条件的检查，可以减少测试的时间</span><br><span class="line"></span><br><span class="line">–-skip-device-info 跳过手机信息的收集，可以减少测试的时间</span><br><span class="line"></span><br><span class="line">--continue-session  &lt;sessionId&gt;    继续被中断的任务</span><br></pre></td></tr></table></figure></li>
+<li><p>查看测试结果</p>
+<blockquote>
+<p>l r</p>
+</blockquote>
+</li>
+<li><p>查看等待执行的任务</p>
+<blockquote>
+<p>l c</p>
+</blockquote>
+</li>
+<li><p>查看所有执行的任务</p>
+<blockquote>
+<p>l i</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">l  -</span><br><span class="line">d	设备</span><br><span class="line">r	结果</span><br><span class="line">c	当前被等待执行的命令</span><br><span class="line">p	所有可获得的plan</span><br><span class="line">m	所有可获得的module</span><br><span class="line">i	 所有调用的线程（查看任务是否结束）</span><br><span class="line">config	所有可知的配置</span><br></pre></td></tr></table></figure></li>
+<li><p>全局测试</p>
+<blockquote>
+<p>run cts –plan CTS</p>
+</blockquote>
+</li>
+<li><p>继续被中断的测试</p>
+<blockquote>
+<p>l r<br>run cts –continue-session sessionID</p>
+</blockquote>
+</li>
+<li><p>重新跑测某个任务的失败项（节约时间）</p>
+<blockquote>
+<p>l r<br>run cts retry -s DeviceID –retry sessionID</p>
+</blockquote>
+</li>
+</ol>
+<h2 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h2><p>测试结束后在/results文件夹中，会看到以日期和时间命名的文件夹用于保存执行过的测试结果。还有一个同名的zip文件保存同样的内容。</p>
+<p>测试过程中的自动录log，测试结束后log自动保存在/logs里边以日期和时间命名的文件夹中。</p>
+<p>在测试结果文件夹中，所有的测试结果是以XML的形式保存的。<br>通常测试结果网页分成“Device Information”、“Test Summary”、“Test Summary by Package”、“Test Failures(xx)”和“Detailed Test Report”等四个区域。</p>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/">https://alonealive.github.io/Blog/2019/07/15/2019/190715_debug_CTS/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-07-15T14:04:14.000Z" itemprop="datePublished">2019-07-15</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T09:48:56.623Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/CTS/" rel="tag">#&nbsp;CTS</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/07/15/2019/190715_vscode_plugins/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">VS code常用插件</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/07/13/2019/190713_hexo-improve/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Hexo Next主题优化</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

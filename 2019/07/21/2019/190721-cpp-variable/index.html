@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>C++变量 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="C++变量 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/"><meta property="og:locale" content="zh-CN"><meta name="description" content="C++变量命名规则 只能使用字母、数字、下划线   第一个字符不能是数字   区分大小写 不能使用关键字 以两个下划线或下划线和大写字母打头的名称保留给实现（编译器及其使用的资源）使用，以一个下划线开头的名称被保留给实现，用作全局标识符 C++对命名的长度没有限制，但是有些平台会限制长度 - sunwengang - sunwengang blog"><meta name="keywords" content="cpp"><meta property="article:published_time" content="2019-07-21T13:11:47.000Z"><meta property="article:modified_time" content="2020-03-08T10:00:13.500Z"><meta property="og:updated_time" content="2020-03-08T10:00:13.500Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="cpp"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/"
+    },
+    "headline": "C++变量 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2019-07-21T13:11:47.000Z",
+    "dateModified": "2020-03-08T10:00:13.500Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "cpp",
+    "description": "C++变量命名规则 只能使用字母、数字、下划线   第一个字符不能是数字   区分大小写 不能使用关键字 以两个下划线或下划线和大写字母打头的名称保留给实现（编译器及其使用的资源）使用，以一个下划线开头的名称被保留给实现，用作全局标识符 C++对命名的长度没有限制，但是有些平台会限制长度 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=C++变量" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=C++变量&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=C++变量" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACRElEQVR42u2c0XLCMAwE8/8/3b5SsHUr007baP0SJpjJhrGc00lwffyDcQkppJBC/gHIqxhfPvBwbvf6ce7zcXeuuq6QcyGXi3ZxfnWx6vXqvdXnt/OFHA35vHCrBV5dJAUMva6QQibI1ZxVQOyC7WWjFlLIbwicXQCk4NiJDiGFPBEYu+MukHbBlYTIWypIyNtBVgnRTx6/LVsU8laQ0TQim24wFogQectVE/JWkCnhqhY5fRhUQrnc/IUcC5mMKLTxQiOrEh8vNyLkaEialJFgSnNXUEgFCTkGMsEmk54YU505Qs6G7CRJKQi6N5SEiJBCUiGcREIliIlpJeRsSApUJVJdEyGZsEIKSRuRSCCcJHbbmxByLORuwSf4buGJvCekkFQ4JDFBm/KSoEGGlZC3hjwphJ5u+impiwVQIcdCksakZOgT8wuLXiFHQZLkKzWOkAInMWxRAVTIEZCpgEkKRel8EitRBQk5BpIk+keLHhhZ7SeOkCMgk2lUNnJc/R9xpHkxWxRyBGRHzCbTijSUVA+R0lUTcgwkbVYiN9ARHvGLEnIsJDWsaLKWCkspqRNSyNPFnwyBTtEUCwwhx0B2kysKlOajhjohR0GmQcz9JIJJsGHDSsjbQ3aCoFOMIsWn40RMyNtDJnOAJlGkyeQ4cIQcB0mN/BQonYaQ2LQnpJCgkNQVu7SBKRabhBQSGqW0uE+E81EzvJC3hUyLfpvAX+wPXrvmq5CzIbuGfjJCU0MIaZASci7kXx5CCimkkL84PgHZ2TcVq8quzAAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">C++变量</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2019-07-21</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=C++变量&url=https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=C++变量&url=https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACRElEQVR42u2c0XLCMAwE8/8/3b5SsHUr007baP0SJpjJhrGc00lwffyDcQkppJBC/gHIqxhfPvBwbvf6ce7zcXeuuq6QcyGXi3ZxfnWx6vXqvdXnt/OFHA35vHCrBV5dJAUMva6QQibI1ZxVQOyC7WWjFlLIbwicXQCk4NiJDiGFPBEYu+MukHbBlYTIWypIyNtBVgnRTx6/LVsU8laQ0TQim24wFogQectVE/JWkCnhqhY5fRhUQrnc/IUcC5mMKLTxQiOrEh8vNyLkaEialJFgSnNXUEgFCTkGMsEmk54YU505Qs6G7CRJKQi6N5SEiJBCUiGcREIliIlpJeRsSApUJVJdEyGZsEIKSRuRSCCcJHbbmxByLORuwSf4buGJvCekkFQ4JDFBm/KSoEGGlZC3hjwphJ5u+impiwVQIcdCksakZOgT8wuLXiFHQZLkKzWOkAInMWxRAVTIEZCpgEkKRel8EitRBQk5BpIk+keLHhhZ7SeOkCMgk2lUNnJc/R9xpHkxWxRyBGRHzCbTijSUVA+R0lUTcgwkbVYiN9ARHvGLEnIsJDWsaLKWCkspqRNSyNPFnwyBTtEUCwwhx0B2kysKlOajhjohR0GmQcz9JIJJsGHDSsjbQ3aCoFOMIsWn40RMyNtDJnOAJlGkyeQ4cIQcB0mN/BQonYaQ2LQnpJCgkNQVu7SBKRabhBQSGqW0uE+E81EzvJC3hUyLfpvAX+wPXrvmq5CzIbuGfjJCU0MIaZASci7kXx5CCimkkL84PgHZ2TcVq8quzAAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#C-变量命名规则"><span class="post-toc-number">1.</span> <span class="post-toc-text">C++变量命名规则</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#整型"><span class="post-toc-number">2.</span> <span class="post-toc-text">整型</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#short、int、long、long-long"><span class="post-toc-number">3.</span> <span class="post-toc-text">short、int、long、long long</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#climits文件的符号常量"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">climits文件的符号常量</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#初始化"><span class="post-toc-number">4.</span> <span class="post-toc-text">初始化</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#无符号类型"><span class="post-toc-number">5.</span> <span class="post-toc-text">无符号类型</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#C-如何确定常量的类型"><span class="post-toc-number">6.</span> <span class="post-toc-text">C++如何确定常量的类型</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#char字符型"><span class="post-toc-number">7.</span> <span class="post-toc-text">char字符型</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#char的字面值"><span class="post-toc-number">7.1.</span> <span class="post-toc-text">char的字面值</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <h2 id="C-变量命名规则"><a href="#C-变量命名规则" class="headerlink" title="C++变量命名规则"></a>C++变量命名规则</h2><ul>
+<li>只能使用字母、数字、下划线  </li>
+<li>第一个字符不能是数字  </li>
+<li>区分大小写</li>
+<li>不能使用关键字</li>
+<li>以两个下划线或下划线和大写字母打头的名称保留给实现（编译器及其使用的资源）使用，以一个下划线开头的名称被保留给实现，用作全局标识符</li>
+<li>C++对命名的长度没有限制，但是有些平台会限制长度</li>
+</ul>
+<a id="more"></a>
+
+<blockquote>
+<p>常用描述类型或者变量的命名方式，比如： str或者sz（表示以空字符结束的字符串）、b（表示布尔值）、p（表示指针）、c（表示单个字符）</p>
+</blockquote>
+<h2 id="整型"><a href="#整型" class="headerlink" title="整型"></a>整型</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">C++的基本整型按照宽度递增（width,用于描述存储整型时候使用的内存量。内存越多，则越宽）的排序顺序分别是：char、short、int、long和C++11新增的long long。</span><br></pre></td></tr></table></figure>
+
+<h2 id="short、int、long、long-long"><a href="#short、int、long、long-long" class="headerlink" title="short、int、long、long long"></a>short、int、long、long long</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">计算机内存的基本单元是bit位。</span><br><span class="line">关表示0，开表示1.</span><br><span class="line">8位的内存内存块可以设置256种不同的组合（2的八次方）。</span><br><span class="line">因此，8位单元可以表示0-255或者-128到127。</span><br><span class="line"></span><br><span class="line">字节byte通常表示8位的内存单元。从这个意义来说，</span><br><span class="line">字节指的是描述计算机内存量的度量单位。</span><br><span class="line">1KB&#x3D;1024byte</span><br><span class="line">1MB&#x3D;1024KB</span><br><span class="line"></span><br><span class="line">在美国，基本字符集通常是ASCII和EBCDIC字符集，他们可以用8位表示一个字节。</span><br><span class="line">但是在国际编程中可能需要使用更大的字符集，如Unicode，因此有些实现可能使用16位甚至32位的字节。</span><br></pre></td></tr></table></figure>
+
+<p>当前很多系统都使用最小长度，即short是16位。<br>这为int提供了多种选择，可以是16位、24位、32位。甚至64位。<br>因为long和long long至少长64位。</p>
+<p>short是short int的简称。long是long int的简称。</p>
+<p>short、int、long、long long都是符号类型。这意味着每种类型的取值范围，负值和正值几乎相同。</p>
+<p><strong>示例代码：</strong></p>
+<figure class="highlight c++"><figcaption><span>limits.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;climits&gt; //use limits.h for older system</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">using</span> <span class="keyword">namespace</span> <span class="built_in">std</span>;</span><br><span class="line">        <span class="keyword">int</span> n_int = INT_MAX;</span><br><span class="line">        short n_short  = SHRT_MAX; <span class="comment">//symbols defined in climts file</span></span><br><span class="line">        <span class="keyword">long</span> n_long = LONG_MAX;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> n_llong = LLONG_MAX;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"int is"</span>&lt;&lt; <span class="keyword">sizeof</span>(n_int) &lt;&lt; <span class="string">" bytes"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"short is"</span>&lt;&lt; <span class="keyword">sizeof</span>(n_short) &lt;&lt; <span class="string">" bytes"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"long is"</span>&lt;&lt; <span class="keyword">sizeof</span>(n_long) &lt;&lt; <span class="string">" bytes"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"long long is"</span>&lt;&lt; <span class="keyword">sizeof</span>(n_llong) &lt;&lt; <span class="string">" bytes"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Maximum value:"</span>&lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"int : "</span> &lt;&lt; n_int &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"short : "</span> &lt;&lt; n_short &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"long : "</span> &lt;&lt; n_long &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"long long : "</span> &lt;&lt; n_llong &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line"></span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Minimum int value = "</span>&lt;&lt;INT_MIN&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"BNits per bytr = "</span>&lt;&lt; CHAR_BIT &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>执行结果：</strong></p>
+<figure class="highlight c++"><figcaption><span>Results</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> is <span class="number">4</span> bytes</span><br><span class="line">short is <span class="number">2</span> bytes</span><br><span class="line"><span class="keyword">long</span> is <span class="number">8</span> bytes</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> is <span class="number">8</span> bytes</span><br><span class="line"></span><br><span class="line">Maximum value:</span><br><span class="line"><span class="keyword">int</span> : <span class="number">2147483647</span></span><br><span class="line">short : <span class="number">32767</span></span><br><span class="line"><span class="keyword">long</span> : <span class="number">9223372036854775807</span></span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> : <span class="number">9223372036854775807</span></span><br><span class="line">Minimum <span class="keyword">int</span> value = <span class="number">-2147483648</span></span><br><span class="line">BNits per bytr = <span class="number">8</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="climits文件的符号常量"><a href="#climits文件的符号常量" class="headerlink" title="climits文件的符号常量"></a>climits文件的符号常量</h3><table>
+<thead>
+<tr>
+<th align="center">符号常量</th>
+<th align="center">极值意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">CHAR_INT</td>
+<td align="center">char的位数</td>
+</tr>
+<tr>
+<td align="center">CHAR_MAX</td>
+<td align="center">char的最大值</td>
+</tr>
+<tr>
+<td align="center">CHAR_INT</td>
+<td align="center">char的最小值</td>
+</tr>
+<tr>
+<td align="center">SCHAR_MAX</td>
+<td align="center">signed char的最大值</td>
+</tr>
+<tr>
+<td align="center">UCHAR_MAX</td>
+<td align="center">unsigned char的最大值</td>
+</tr>
+<tr>
+<td align="center">SHRT_MAX</td>
+<td align="center">short的最大值</td>
+</tr>
+<tr>
+<td align="center">USHRT_MAX</td>
+<td align="center">unsigned short的最大值</td>
+</tr>
+<tr>
+<td align="center">INT_MAX</td>
+<td align="center">int的最大值</td>
+</tr>
+<tr>
+<td align="center">LONG_MAX</td>
+<td align="center">long的最大值</td>
+</tr>
+<tr>
+<td align="center">LLONG_MAX</td>
+<td align="center">long long的最大值</td>
+</tr>
+</tbody></table>
+<h2 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h2><figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> n_int = INT_MAX;  </span><br><span class="line"></span><br><span class="line">short year;  </span><br><span class="line">year = <span class="number">1492</span>;  </span><br><span class="line"></span><br><span class="line"><span class="comment">//C++11的初始化方式</span></span><br><span class="line"><span class="keyword">int</span> hamburgers = &#123;<span class="number">24</span>&#125;;  <span class="comment">//set hanmburgers to 24</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> emus&#123;<span class="number">7</span>&#125;;  <span class="comment">//设置emus为7</span></span><br><span class="line"><span class="keyword">int</span> rheas = &#123;<span class="number">12</span>&#125;;  <span class="comment">//设置rheas为12</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> rocs = &#123;&#125;;  <span class="comment">//设置为0</span></span><br><span class="line"><span class="keyword">int</span> rocs&#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="无符号类型"><a href="#无符号类型" class="headerlink" title="无符号类型"></a>无符号类型</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">例如：</span><br><span class="line">short的unsigned无符号的表示范围是0-65535</span><br><span class="line">short的表示范围是-32768到+32767</span><br></pre></td></tr></table></figure>
+
+<h2 id="C-如何确定常量的类型"><a href="#C-如何确定常量的类型" class="headerlink" title="C++如何确定常量的类型"></a>C++如何确定常量的类型</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">例如：</span><br><span class="line"></span><br><span class="line">&#96;cout &lt;&lt; &quot;year&quot; &lt;&lt; 2019 &lt;&lt; endl;&#96;</span><br><span class="line"></span><br><span class="line">程序会把2019存储为int类型。</span><br><span class="line"></span><br><span class="line">整型后面的l或者L后缀表示为long；</span><br><span class="line"></span><br><span class="line">u或者U表示unsigned int常量；</span><br><span class="line"></span><br><span class="line">ul或者UL表示unsigned long；</span><br><span class="line"></span><br><span class="line">C++11还提供了ull, ULL, uLL和Ull。</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="char字符型"><a href="#char字符型" class="headerlink" title="char字符型"></a>char字符型</h2><blockquote>
+<p>char是专门存储字符（字母或者数字）的类型。</p>
+</blockquote>
+<figure class="highlight c++"><figcaption><span>testChar</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> ch = <span class="string">'M'</span>;</span><br><span class="line"></span><br><span class="line"><span class="built_in">cout</span>.<span class="built_in">put</span>(ch);</span><br></pre></td></tr></table></figure>
+
+<h3 id="char的字面值"><a href="#char的字面值" class="headerlink" title="char的字面值"></a>char的字面值</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">ASCII系统中对应的数值编码：</span><br><span class="line">&#39;A&#39; &#x3D; 65</span><br><span class="line">&#39;a&#39; &#x3D; 97</span><br><span class="line">&#39;5&#39; &#x3D; 53</span><br><span class="line">&#39;&#39; &#x3D; 32  &#x2F;&#x2F;空格字</span><br><span class="line">&#39;!&#39; &#x3D; 33</span><br></pre></td></tr></table></figure>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/">https://alonealive.github.io/Blog/2019/07/21/2019/190721-cpp-variable/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-03-08");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2019-07-21T13:11:47.000Z" itemprop="datePublished">2019-07-21</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-03-08T10:00:13.500Z" itemprop="dateModified">2020-03-08</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/cpp/'>cpp</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/cpp/" rel="tag">#&nbsp;cpp</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2019/07/22/2019/190722-git-stashing/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">git stash储藏命令</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2019/07/18/2019/190718-nextdebug-md/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Hexo Next主题优化（二）</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

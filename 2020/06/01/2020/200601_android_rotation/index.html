@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android 屏幕旋转流程 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android 屏幕旋转流程 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/"><meta property="og:locale" content="zh-CN"><meta name="description" content="Android支持横屏和竖屏，用户可以选择锁定(rotation lock)也可以选择让传感器来自动转屏。而转屏时为了使用户体验更流畅，会对屏幕截屏，然后使用截屏的图来做转屏动画，直到转屏动作结束。 - sunwengang - sunwengang blog"><meta name="keywords" content="display"><meta property="article:published_time" content="2020-06-01T15:52:00.000Z"><meta property="article:modified_time" content="2020-06-13T13:34:42.781Z"><meta property="og:updated_time" content="2020-06-13T13:34:42.781Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="display"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/"
+    },
+    "headline": "Android 屏幕旋转流程 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-06-01T15:52:00.000Z",
+    "dateModified": "2020-06-13T13:34:42.781Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "display",
+    "description": "Android支持横屏和竖屏，用户可以选择锁定(rotation lock)也可以选择让传感器来自动转屏。而转屏时为了使用户体验更流畅，会对屏幕截屏，然后使用截屏的图来做转屏动画，直到转屏动作结束。 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/tags" class="navbar-link">标签</a>
+    
+        <a href="/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android 屏幕旋转流程" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android 屏幕旋转流程&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android 屏幕旋转流程" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACN0lEQVR42u3aS3KDQAxFUe9/08koE4L0rvwp2+gycYpgOFCorZb69vMF202kSJEiPwB5a7a//x8/z/4+nuvfBQ/70nVF7kaevrQFLqE7UHfMmUfkbiQNmCpoyLHdTZ7hRYosD24uVg3w3bEiRT4aOCTx6BIMkSLvQbY/9EVgVMlE9QBelgWJvBxyOhF71udLZ4sivxaJi0cwGa6+mwLmKVU1kZdAVglCSlxTIpESipTgiNyLJC93CgqS/HaTvPK6Itcjp4NvSobJvvZmRa5FpsJoO+AOiwek+SRyN5L82KfmJUGRB4IqGCJXIEnxvQOS5KMbxMvilciVyOrg7oQkeSANKlzYF7kaSRYepab8pNDV3ojIlcj0wnfNIrIQhDRTUdIrcg2SJLJkEkUDKCUjKMEQuQKZktrJfjJJS418kbuRkwZmNfiSxcYkkESKJCemC+no5I4WGETuRqaJWFp8lOBpkncanCJXIx9pWpKiFl20hwdzkZdGpkLnpMmUmknkRkTuRqaCOx2IJ0UE2ngSKTJN8u9NFEghFnVpRa5G0mI+bVSR844DR+RlkakI1Q3sOAjA99vAEbkOOVncSYMnBUhKYkTuRKaNNOvpQqWUCOMGqMhLI+8pJtGAmCxmQhMxkWuQKSHoGugpEOKA3QWVyNXI6SQJNYvCJC8WbUWKDEhSsE8JMA04kSJpg50uFJk260WKHC1sA03P1ASYFA5EiiQTsWlRanKz5cMRuRL5yZtIkSJFvnH7BUzANxW4ffXyAAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android 屏幕旋转流程</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-06-01</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android 屏幕旋转流程&url=https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android 屏幕旋转流程&url=https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACN0lEQVR42u3aS3KDQAxFUe9/08koE4L0rvwp2+gycYpgOFCorZb69vMF202kSJEiPwB5a7a//x8/z/4+nuvfBQ/70nVF7kaevrQFLqE7UHfMmUfkbiQNmCpoyLHdTZ7hRYosD24uVg3w3bEiRT4aOCTx6BIMkSLvQbY/9EVgVMlE9QBelgWJvBxyOhF71udLZ4sivxaJi0cwGa6+mwLmKVU1kZdAVglCSlxTIpESipTgiNyLJC93CgqS/HaTvPK6Itcjp4NvSobJvvZmRa5FpsJoO+AOiwek+SRyN5L82KfmJUGRB4IqGCJXIEnxvQOS5KMbxMvilciVyOrg7oQkeSANKlzYF7kaSRYepab8pNDV3ojIlcj0wnfNIrIQhDRTUdIrcg2SJLJkEkUDKCUjKMEQuQKZktrJfjJJS418kbuRkwZmNfiSxcYkkESKJCemC+no5I4WGETuRqaJWFp8lOBpkncanCJXIx9pWpKiFl20hwdzkZdGpkLnpMmUmknkRkTuRqaCOx2IJ0UE2ngSKTJN8u9NFEghFnVpRa5G0mI+bVSR844DR+RlkakI1Q3sOAjA99vAEbkOOVncSYMnBUhKYkTuRKaNNOvpQqWUCOMGqMhLI+8pJtGAmCxmQhMxkWuQKSHoGugpEOKA3QWVyNXI6SQJNYvCJC8WbUWKDEhSsE8JMA04kSJpg50uFJk260WKHC1sA03P1ASYFA5EiiQTsWlRanKz5cMRuRL5yZtIkSJFvnH7BUzANxW4ffXyAAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#调试方法"><span class="post-toc-number">1.</span> <span class="post-toc-text">调试方法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#打开debug-log开关"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">打开debug log开关</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Settings设置开启-关闭自动旋转屏幕"><span class="post-toc-number">2.</span> <span class="post-toc-text">Settings设置开启&#x2F;关闭自动旋转屏幕</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#屏幕旋转"><span class="post-toc-number">3.</span> <span class="post-toc-text">屏幕旋转</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#updateRotationUnchecked函数"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">updateRotationUnchecked函数</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#updateDisplayAndOrientation函数"><span class="post-toc-number">3.1.1.</span> <span class="post-toc-text">updateDisplayAndOrientation函数</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#performTraversal处理显示Layer的大小宽高尺寸"><span class="post-toc-number">3.1.2.</span> <span class="post-toc-text">performTraversal处理显示Layer的大小宽高尺寸</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#sendNewConfiguration函数"><span class="post-toc-number">4.</span> <span class="post-toc-text">sendNewConfiguration函数</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#应用强制设置屏幕方向"><span class="post-toc-number">5.</span> <span class="post-toc-text">应用强制设置屏幕方向</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#应用Activity强制设置方向"><span class="post-toc-number">6.</span> <span class="post-toc-text">应用Activity强制设置方向</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>Android支持横屏和竖屏，用户可以选择锁定(rotation lock)也可以选择让传感器来自动转屏。而转屏时为了使用户体验更流畅，会对屏幕截屏，然后使用截屏的图来做转屏动画，直到转屏动作结束。</p>
+</blockquote>
+<a id="more"></a>
+<blockquote>
+<p>参考：<a href="https://blog.csdn.net/jinzhuojun/article/details/50085491" target="_blank" rel="noopener">https://blog.csdn.net/jinzhuojun/article/details/50085491</a><br>参考：<a href="https://blog.csdn.net/kc58236582/article/details/53741445" target="_blank" rel="noopener">https://blog.csdn.net/kc58236582/article/details/53741445</a></p>
+</blockquote>
+<h2 id="调试方法"><a href="#调试方法" class="headerlink" title="调试方法"></a>调试方法</h2><h3 id="打开debug-log开关"><a href="#打开debug-log开关" class="headerlink" title="打开debug log开关"></a>打开debug log开关</h3><figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/wm/WindowManagerDebugConfig.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> String TAG_WM = <span class="string">"WindowManager"</span>;</span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">boolean</span> DEBUG_ORIENTATION = <span class="keyword">false</span>;  <span class="comment">//true</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">boolean</span> DEBUG_APP_ORIENTATION = <span class="keyword">false</span>;  <span class="comment">//true</span></span><br></pre></td></tr></table></figure>
+
+<p><code>adb logcat -v threadtime|grep -Ei &quot;rotation|ActivityTaskManager|WindowOrientationListener&quot;</code></p>
+<h2 id="Settings设置开启-关闭自动旋转屏幕"><a href="#Settings设置开启-关闭自动旋转屏幕" class="headerlink" title="Settings设置开启/关闭自动旋转屏幕"></a>Settings设置开启/关闭自动旋转屏幕</h2><p>是否要自动转屏是在Setting中设置的。为了监听Setting中的改动，系统启动时，<code>PhoneWindowManager</code>的init()函数中创建了SettingsObserver对象。</p>
+<p>它的observe()方法会监听<code>Settings.System.USER_ROTATION</code>的值（Android Q中此处没有这个property了）。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">init</span><span class="params">(Context context, IWindowManager windowManager,</span></span></span><br><span class="line"><span class="function"><span class="params">          WindowManagerFuncs windowManagerFuncs)</span> </span>&#123;</span><br><span class="line">              ...</span><br><span class="line">              mSettingsObserver = <span class="keyword">new</span> SettingsObserver(mHandler);</span><br><span class="line">              mSettingsObserver.observe();</span><br><span class="line">      ...</span><br></pre></td></tr></table></figure>
+
+<p>当用户在Setting中设置自动转屏后，会触发以下流程：</p>
+<ol>
+<li><code>public boolean onPreferenceTreeClick(Preference preference)</code>：packages/apps/Settings/src/com/android/settings/accessibility/AccessibilitySettings.java</li>
+<li><code>handleLockScreenRotationPreferenceClick()</code>：被调用</li>
+<li><code>setRotationLockForAccessibility(Context context, final boolean enabled)</code></li>
+</ol>
+<figure class="highlight cpp"><figcaption><span>frameworks/base/core/java/com/android/internal/view/RotationPolicy.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setRotationLockForAccessibility</span><span class="params">(Context context, <span class="keyword">final</span> boolean enabled)</span> </span>&#123;</span><br><span class="line">    Settings.System.putIntForUser(context.getContentResolver(),</span><br><span class="line">            Settings.System.HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY, enabled ? <span class="number">1</span> : <span class="number">0</span>,</span><br><span class="line">                    UserHandle.USER_CURRENT);</span><br><span class="line"></span><br><span class="line">    setRotationLock(enabled, NATURAL_ROTATION);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><code>setRotationLockForAccessibility</code></li>
+</ol>
+<figure class="highlight cpp"><figcaption><span>frameworks/base/core/java/com/android/internal/view/RotationPolicy.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setRotationLockForAccessibility</span><span class="params">(Context context, <span class="keyword">final</span> boolean enabled)</span> </span>&#123;</span><br><span class="line">    Settings.System.putIntForUser(context.getContentResolver(),</span><br><span class="line">            Settings.System.HIDE_ROTATION_LOCK_TOGGLE_FOR_ACCESSIBILITY, enabled ? <span class="number">1</span> : <span class="number">0</span>,</span><br><span class="line">                    UserHandle.USER_CURRENT);</span><br><span class="line"></span><br><span class="line">    setRotationLock(enabled, NATURAL_ROTATION);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="5">
+<li><code>setRotationLock(final boolean enabled, final int rotation)</code>调用<code>wm.freezeRotation</code>或者<code>wm.thawRotation</code></li>
+</ol>
+<figure class="highlight cpp"><figcaption><span>frameworks/base/core/java/com/android/internal/view/RotationPolicy.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">setRotationLock</span><span class="params">(<span class="keyword">final</span> boolean enabled, <span class="keyword">final</span> <span class="keyword">int</span> rotation)</span> </span>&#123;</span><br><span class="line">    AsyncTask.execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">        @Override</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> run() &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                IWindowManager wm = WindowManagerGlobal.getWindowManagerService();</span><br><span class="line">                <span class="keyword">if</span> (enabled) &#123;</span><br><span class="line">                    wm.freezeRotation(rotation);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    wm.thawRotation();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (RemoteException exc) &#123;</span><br><span class="line">                Log.w(TAG, <span class="string">"Unable to save auto-rotate setting"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li><code>thawRotation()</code>，此处在Android Q中有变化。</li>
+</ol>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">thawRotation</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!checkCallingPermission(android.Manifest.permission.SET_ORIENTATION,</span><br><span class="line">                <span class="string">"thawRotation()"</span>)) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> SecurityException(<span class="string">"Requires SET_ORIENTATION permission"</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (DEBUG_ORIENTATION) Slog.v(TAG_WM, <span class="string">"thawRotation: mRotation="</span></span><br><span class="line">                + getDefaultDisplayRotation());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">long</span> origId = Binder.clearCallingIdentity();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            mPolicy.setUserRotationMode(WindowManagerPolicy.USER_ROTATION_FREE,</span><br><span class="line">                    <span class="number">777</span>); <span class="comment">// rot not used   free</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            Binder.restoreCallingIdentity(origId);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        updateRotationUnchecked(<span class="keyword">false</span>, <span class="keyword">false</span>);  <span class="comment">//查看下面第十步分析</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>而<code>freezeRotation函数</code>，只是调用PhoneWindowManager的setUserRotationMode的参数不一样，这里是Locked，而thawRotation传下去的参数是free。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">freezeRotation</span><span class="params">(<span class="keyword">int</span> rotation)</span> </span>&#123;</span><br><span class="line">     <span class="comment">// TODO(multi-display): Track which display is rotated.</span></span><br><span class="line">     <span class="keyword">if</span> (!checkCallingPermission(android.Manifest.permission.SET_ORIENTATION,</span><br><span class="line">             <span class="string">"freezeRotation()"</span>)) &#123;</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> SecurityException(<span class="string">"Requires SET_ORIENTATION permission"</span>);</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">if</span> (rotation &lt; -<span class="number">1</span> || rotation &gt; Surface.ROTATION_270) &#123;</span><br><span class="line">         <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"Rotation argument must be -1 or a valid "</span></span><br><span class="line">                 + <span class="string">"rotation constant."</span>);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     <span class="keyword">final</span> <span class="keyword">int</span> defaultDisplayRotation = getDefaultDisplayRotation();</span><br><span class="line">     <span class="keyword">if</span> (DEBUG_ORIENTATION) Slog.v(TAG_WM, <span class="string">"freezeRotation: mRotation="</span></span><br><span class="line">             + defaultDisplayRotation);</span><br><span class="line"></span><br><span class="line">     <span class="keyword">long</span> origId = Binder.clearCallingIdentity();</span><br><span class="line">     <span class="keyword">try</span> &#123;</span><br><span class="line">         mPolicy.setUserRotationMode(WindowManagerPolicy.USER_ROTATION_LOCKED,</span><br><span class="line">                 rotation == -<span class="number">1</span> ? defaultDisplayRotation : rotation);    <span class="comment">//lock</span></span><br><span class="line">     &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">         Binder.restoreCallingIdentity(origId);</span><br><span class="line">     &#125;</span><br><span class="line"></span><br><span class="line">     updateRotationUnchecked(<span class="keyword">false</span>, <span class="keyword">false</span>);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<ol start="7">
+<li><code>setUserRotationMode(int mode, int rot)</code>：此处是设置property（即Settings数据库），然后会触发到上面初始化的<code>mSettingsObserver</code>对象的<code>onChange</code>函数。</li>
+</ol>
+<p>触发监听<code>SettingsObserver.onChange()</code>， 其中主要调用了updateSettings()和updateRotation()两个函数。</p>
+<p>简单地说，主要的工作是根据需要监听传感器数据，据此判断是否要转屏。如果需要就是<strong>对configuration的各种更新</strong>。过程中会冻结屏幕，同时截屏并以此作为转屏动画。另外还需要将新configuration传给AMS，广播该事件给需要的模块，同时App也会被调度来响应变更。</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/base/services/core/java/com/android/server/policy/PhoneWindowManager.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">    <span class="comment">// User rotation: to be used when all else fails in assigning an orientation to the device</span></span><br><span class="line">    @Override</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setUserRotationMode</span><span class="params">(<span class="keyword">int</span> mode, <span class="keyword">int</span> rot)</span> </span>&#123;</span><br><span class="line">        ContentResolver res = mContext.getContentResolver();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// mUserRotationMode and mUserRotation will be assigned by the content observer</span></span><br><span class="line">        <span class="keyword">if</span> (mode == WindowManagerPolicy.USER_ROTATION_LOCKED) &#123;</span><br><span class="line">            Settings.System.putIntForUser(res,</span><br><span class="line">                    Settings.System.USER_ROTATION,</span><br><span class="line">                    rot,</span><br><span class="line">                    UserHandle.USER_CURRENT);</span><br><span class="line">            Settings.System.putIntForUser(res,</span><br><span class="line">                    Settings.System.ACCELEROMETER_ROTATION,</span><br><span class="line">                    <span class="number">0</span>,</span><br><span class="line">                    UserHandle.USER_CURRENT);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            Settings.System.putIntForUser(res,</span><br><span class="line">                    Settings.System.ACCELEROMETER_ROTATION,</span><br><span class="line">                    <span class="number">1</span>,</span><br><span class="line">                    UserHandle.USER_CURRENT);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">......</span><br><span class="line">       @<span class="function">Override <span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onChange</span><span class="params">(boolean selfChange)</span> </span>&#123;</span><br><span class="line">            updateSettings();    <span class="comment">//以下8,9步骤</span></span><br><span class="line">            updateRotation(<span class="literal">false</span>);  <span class="comment">//以下10-步骤</span></span><br><span class="line">        &#125;</span><br><span class="line">......</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateSettings</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        ContentResolver resolver = mContext.getContentResolver();</span><br><span class="line">        boolean updateRotation = <span class="literal">false</span>;</span><br><span class="line">        synchronized (mLock) &#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">int</span> userRotationMode = Settings.System.getIntForUser(resolver,</span><br><span class="line">                    Settings.System.ACCELEROMETER_ROTATION, <span class="number">0</span>, UserHandle.USER_CURRENT) != <span class="number">0</span> ?</span><br><span class="line">                            WindowManagerPolicy.USER_ROTATION_FREE :</span><br><span class="line">                                    WindowManagerPolicy.USER_ROTATION_LOCKED;</span><br><span class="line">            <span class="keyword">if</span> (mUserRotationMode != userRotationMode) &#123;</span><br><span class="line">                mUserRotationMode = userRotationMode;</span><br><span class="line">                updateRotation = <span class="literal">true</span>;</span><br><span class="line">                updateOrientationListenerLp();  <span class="comment">//传感器相关操作</span></span><br><span class="line">            &#125;</span><br></pre></td></tr></table></figure>
+
+<p>第一个函数<code>updateSettings()</code>如它的名字主要更新设置信息。</p>
+<p>如果UserRotation（朝向信息，如Surface.ROTATION_0）和UserRotationMode（USER_ROTATION_FREE vs. USER_ROTATION_LOCKED）有更新，就设置标记updateRotation为true，表示接下去需要更新rotation相关信息。</p>
+<p>此外，如果UserRotationMode的配置有变，由于需要传感器信息的配合，还需调用updateOrientationListenerLp()来设置或取消监听传感器。</p>
+<p>这里假设设置为自动旋转，那么PhoneWindowManager会通过MyOrientationListener来监听传感器信息。MyOrientationListener是WindowOrientationListener的继承类。它的enable()函数中调用SensorManager提供的registerListener()接口来设置Sensor信息的listener。</p>
+<ol start="8">
+<li><code>updateOrientationListenerLp()</code>：作用是enable和disable传感器</li>
+</ol>
+<p>其中的<code>mOrientationListener.enable</code>和<code>mOrientationListener.disable</code>是注册传感器回调和去除传感器回调。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">updateOrientationListenerLp</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!mOrientationListener.canDetectOrientation()) &#123;</span><br><span class="line">            <span class="comment">// If sensor is turned off or nonexistent for some reason</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (localLOGV) Slog.v(TAG, <span class="string">"mScreenOnEarly="</span> + mScreenOnEarly</span><br><span class="line">                + <span class="string">", mAwake="</span> + mAwake + <span class="string">", mCurrentAppOrientation="</span> + mCurrentAppOrientation</span><br><span class="line">                + <span class="string">", mOrientationSensorEnabled="</span> + mOrientationSensorEnabled</span><br><span class="line">                + <span class="string">", mKeyguardDrawComplete="</span> + mKeyguardDrawComplete</span><br><span class="line">                + <span class="string">", mWindowManagerDrawComplete="</span> + mWindowManagerDrawComplete);</span><br><span class="line"></span><br><span class="line">        boolean disable = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">if</span> (mScreenOnEarly &amp;&amp; mAwake &amp;&amp; ((mKeyguardDrawComplete &amp;&amp; mWindowManagerDrawComplete))) &#123;</span><br><span class="line">            <span class="keyword">if</span> (needSensorRunningLp()) &#123;</span><br><span class="line">                disable = <span class="literal">false</span>;</span><br><span class="line">                <span class="comment">//enable listener if not already enabled 启动传感器监听！！</span></span><br><span class="line">                <span class="keyword">if</span> (!mOrientationSensorEnabled) &#123;</span><br><span class="line">                    mOrientationListener.enable(<span class="literal">true</span> <span class="comment">/* clearCurrentRotation */</span>);</span><br><span class="line">                    <span class="keyword">if</span>(localLOGV) Slog.v(TAG, <span class="string">"Enabling listeners"</span>);</span><br><span class="line">                    mOrientationSensorEnabled = <span class="literal">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//check if sensors need to be disabled</span></span><br><span class="line">        <span class="keyword">if</span> (disable &amp;&amp; mOrientationSensorEnabled) &#123;</span><br><span class="line">            mOrientationListener.disable();   <span class="comment">//关闭传感器</span></span><br><span class="line">            <span class="keyword">if</span>(localLOGV) Slog.v(TAG, <span class="string">"Disabling listeners"</span>);</span><br><span class="line">            mOrientationSensorEnabled = <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="9">
+<li>mOrientationListener是MyOrientationListener对象，而MyOrientationListener类继承父类WindowOrientationListener，从而会调用父类的<code>enable</code>函数。</li>
+</ol>
+<p>该函数中会调用registerListener向SensorManager注册一个监听。</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/base/services/core/java/com/android/server/policy/WindowOrientationListener.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">enable</span><span class="params">(boolean clearCurrentRotation)</span> </span>&#123;</span><br><span class="line">       synchronized (mLock) &#123;</span><br><span class="line">           <span class="keyword">if</span> (mSensor == null) &#123;</span><br><span class="line">               Slog.w(TAG, <span class="string">"Cannot detect sensors. Not enabled"</span>);</span><br><span class="line">               <span class="keyword">return</span>;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">if</span> (mEnabled) &#123;</span><br><span class="line">               <span class="keyword">return</span>;</span><br><span class="line">           &#125;</span><br><span class="line">           <span class="keyword">if</span> (LOG) &#123;</span><br><span class="line">               Slog.d(TAG, <span class="string">"WindowOrientationListener enabled clearCurrentRotation="</span></span><br><span class="line">                       + clearCurrentRotation);</span><br><span class="line">           &#125;</span><br><span class="line">           mOrientationJudge.resetLocked(clearCurrentRotation);</span><br><span class="line">           <span class="keyword">if</span> (mSensor.getType() == Sensor.TYPE_ACCELEROMETER) &#123;</span><br><span class="line">               mSensorManager.registerListener(</span><br><span class="line">                       mOrientationJudge, mSensor, mRate, DEFAULT_BATCH_LATENCY, mHandler);   <span class="comment">//mOrientationJudge的回调</span></span><br><span class="line">           &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">               mSensorManager.registerListener(mOrientationJudge, mSensor, mRate, mHandler);</span><br><span class="line">           &#125;</span><br><span class="line">           mEnabled = <span class="literal">true</span>;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>registerListener()的具体实现在frameworks/base/core/java/android/hardware/SensorManager.java中。</p>
+<p>然后调用SystemSensorManager.java的registerListenerImpl()，其中会创建<code>SensorEventQueue</code>对象（基类为BaseEventQueue），它是传感器事件的队列，记录需要监听哪些传感器信息。</p>
+<p><code>SensorEventQueue queue = mSensorListeners.get(listener);</code></p>
+<p>同时它也负责与SensorService的连接和通信，可以说是SensorEventListener与SensorService间的桥梁。</p>
+<p>SensorEventListener和SensorEventQueue之间是1:1的关系，它们的映射关系保存在成员mSensorListeners中。如果这里注册的SensorEventListener还没有相应的SensorEventQueue，则新建一个，然后通过addSensor()方法将要关注的传感器进行注册。这个过程中addSensor()调用了enableSensor()，它最终是通过SensorService的enableDisable()方法来完成注册工作的。</p>
+<p>这样，SensorService就开始监听该Sensor，当底层有传感器数据来时，SensorService主线程中会调用相应SensorEventConnection的sendEvents()将之发给对应的Client。</p>
+<p>前面初始化SensorEventQueue时会创建Receiver，它是一个Looper的回调对象，在Client端收到从SensorService来的数据后被回调。</p>
+<p>当有数据收到时Receiver的handleEvent()被调用，继而通过JNI调用到SystemSensorManager::dispatchSensorEvent()。</p>
+<p><strong>接着就调到了<code>WindowOrientationListener的onSensorChanged()函数</code>。该函数计算是否需要转屏。如果需要转屏，将计算结果传给onProposedRotationChanged()。</strong></p>
+<p>比如以下函数的日志打印，在旋转手机，传感器会触发屏幕旋转打印这部分log：</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/policy/WindowOrientationListener.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onSensorChanged</span><span class="params">(SensorEvent event)</span> </span>&#123;</span><br><span class="line">     ......</span><br><span class="line">     <span class="comment">// Tell the listener.</span></span><br><span class="line">     <span class="keyword">if</span> (proposedRotation != oldProposedRotation &amp;&amp; proposedRotation &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">         <span class="keyword">if</span> (LOG) &#123;</span><br><span class="line">             Slog.v(TAG, <span class="string">"Proposed rotation changed!  proposedRotation="</span> + proposedRotation</span><br><span class="line">                     + <span class="string">", oldProposedRotation="</span> + oldProposedRotation);</span><br><span class="line">         &#125;</span><br><span class="line">         onProposedRotationChanged(proposedRotation);</span><br><span class="line">     &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<ol start="10">
+<li>另一处<code>updateRotation(false)</code>函数会调用到WMS.java，然后调用到<code>updateRotationUnchecked</code>函数。</li>
+</ol>
+<p>最终在该函数中调用<code>rotationChanged = displayContent.updateRotationUnchecked();</code></p>
+<h2 id="屏幕旋转"><a href="#屏幕旋转" class="headerlink" title="屏幕旋转"></a>屏幕旋转</h2><p>假设现在用户转了屏幕，期望转屏事件发生。如上面第九步的代码，<code>onProposedRotationChanged()</code>被调用。</p>
+<p>最后就调用其run函数，run函数先会提升性能（cpu频率），然后调用了updateRotation，这个函数一样就到WMS的updateRotationUnchecked函数。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/policy/PhoneWindowManager.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyOrientationListener</span> <span class="keyword">extends</span> <span class="title">WindowOrientationListener</span> </span>&#123;</span><br><span class="line">...</span><br><span class="line">        <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">UpdateRunnable</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">            <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span> mRotation;</span><br><span class="line">            UpdateRunnable(<span class="keyword">int</span> rotation) &#123;</span><br><span class="line">                mRotation = rotation;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="comment">// send interaction hint to improve redraw performance</span></span><br><span class="line">                mPowerManagerInternal.powerHint(PowerHint.INTERACTION, <span class="number">0</span>);</span><br><span class="line">                <span class="keyword">if</span> (isRotationChoicePossible(mCurrentAppOrientation)) &#123;</span><br><span class="line">                    <span class="keyword">final</span> <span class="keyword">boolean</span> isValid = isValidRotationChoice(mCurrentAppOrientation,</span><br><span class="line">                            mRotation);</span><br><span class="line">                    sendProposedRotationChangeToStatusBarInternal(mRotation, isValid);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    updateRotation(<span class="keyword">false</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onProposedRotationChanged</span><span class="params">(<span class="keyword">int</span> rotation)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (localLOGV) Slog.v(TAG, <span class="string">"onProposedRotationChanged, rotation="</span> + rotation);</span><br><span class="line">            Runnable r = mRunnableCache.get(rotation, <span class="keyword">null</span>);</span><br><span class="line">            <span class="keyword">if</span> (r == <span class="keyword">null</span>)&#123;</span><br><span class="line">                r = <span class="keyword">new</span> UpdateRunnable(rotation);</span><br><span class="line">                mRunnableCache.put(rotation, r);</span><br><span class="line">            &#125;</span><br><span class="line">            mHandler.post(r);  <span class="comment">//发送了一个消息</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>updateRotation()中主要是执行两个函数：updateRotationUnchecked()（<code>displayContent.updateRotationUnchecked()</code>）和sendNewConfiguration()。前者执行转屏动作，包含转屏动画<br>等。后者使AMS获取当前新的configuration，并且广播该事件给所有相应的listener。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"> <span class="meta">@Override</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateRotation</span><span class="params">(<span class="keyword">boolean</span> alwaysSendConfiguration, <span class="keyword">boolean</span> forceRelayout)</span> </span>&#123;</span><br><span class="line">        updateRotationUnchecked(alwaysSendConfiguration, forceRelayout);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> <span class="comment">//上面settings中设置自动旋转屏幕也会调用到（thawRotation和freezeRotation函数）</span></span><br><span class="line"> <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateRotationUnchecked</span><span class="params">(<span class="keyword">boolean</span> alwaysSendConfiguration, <span class="keyword">boolean</span> forceRelayout)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(DEBUG_ORIENTATION) Slog.v(TAG_WM, <span class="string">"updateRotationUnchecked:"</span></span><br><span class="line">                + <span class="string">" alwaysSendConfiguration="</span> + alwaysSendConfiguration</span><br><span class="line">                + <span class="string">" forceRelayout="</span> + forceRelayout);</span><br><span class="line">                ...</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// TODO(multi-display): Update rotation for different displays separately.</span></span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">boolean</span> rotationChanged;</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> displayId;</span><br><span class="line">            <span class="keyword">synchronized</span> (mWindowMap) &#123;</span><br><span class="line">                <span class="keyword">final</span> DisplayContent displayContent = getDefaultDisplayContentLocked();</span><br><span class="line">                Trace.traceBegin(TRACE_TAG_WINDOW_MANAGER, <span class="string">"updateRotation: display"</span>);</span><br><span class="line">                <span class="comment">//Step 1</span></span><br><span class="line">                rotationChanged = displayContent.updateRotationUnchecked();</span><br><span class="line">                ...</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (rotationChanged || alwaysSendConfiguration) &#123;</span><br><span class="line">                Trace.traceBegin(TRACE_TAG_WINDOW_MANAGER, <span class="string">"updateRotation: sendNewConfiguration"</span>);</span><br><span class="line">                <span class="comment">//Step 2</span></span><br><span class="line">                sendNewConfiguration(displayId);</span><br><span class="line">                Trace.traceEnd(TRACE_TAG_WINDOW_MANAGER);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            Binder.restoreCallingIdentity(origId);</span><br><span class="line">            Trace.traceEnd(TRACE_TAG_WINDOW_MANAGER);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Note:</strong>: 其它途径可能会触发转屏，比如应用请求转屏。例如需要横屏的游戏（通过frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java的<code>updateOrientationFromAppTokensLocked()</code>方法）。</p>
+<h3 id="updateRotationUnchecked函数"><a href="#updateRotationUnchecked函数" class="headerlink" title="updateRotationUnchecked函数"></a>updateRotationUnchecked函数</h3><figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/wm/DisplayContent.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">updateRotationUnchecked</span><span class="params">(<span class="keyword">boolean</span> forceUpdate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> oldRotation = mRotation;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> lastOrientation = mLastOrientation;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">boolean</span> oldAltOrientation = mAltOrientation;</span><br><span class="line">        <span class="comment">//先调用PhoneWindowManager的rotationForOrientationLw函数来获取rotation，然后与之前的mRotation对比是否有变化</span></span><br><span class="line">        <span class="comment">//没有变化直接返回false。有变化将mRotation重新赋值</span></span><br><span class="line">        <span class="comment">//函数rotationForOrientationLw作用：获取sensor的rotation，然后计算返回我们需要的rotation</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> rotation = mService.mPolicy.rotationForOrientationLw(lastOrientation, oldRotation,</span><br><span class="line">                isDefaultDisplay);</span><br><span class="line">        <span class="keyword">if</span> (DEBUG_ORIENTATION) Slog.v(TAG_WM, <span class="string">"Computed rotation="</span> + rotation + <span class="string">" for display id="</span></span><br><span class="line">                + mDisplayId + <span class="string">" based on lastOrientation="</span> + lastOrientation</span><br><span class="line">                + <span class="string">" and oldRotation="</span> + oldRotation);</span><br><span class="line">...</span><br><span class="line">        <span class="keyword">if</span> (oldRotation == rotation &amp;&amp; oldAltOrientation == altOrientation) &#123;  <span class="comment">//没有变化</span></span><br><span class="line">            <span class="comment">// No change.</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">        mRotation = rotation;   <span class="comment">//有变化则赋值</span></span><br><span class="line">        mAltOrientation = altOrientation; </span><br><span class="line">        ...</span><br><span class="line">        updateDisplayAndOrientation(getConfiguration().uiMode);</span><br><span class="line">        ...</span><br><span class="line">        mService.mDisplayManagerInternal.performTraversal(getPendingTransaction());</span><br><span class="line">        ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="updateDisplayAndOrientation函数"><a href="#updateDisplayAndOrientation函数" class="headerlink" title="updateDisplayAndOrientation函数"></a>updateDisplayAndOrientation函数</h4><p>还会调用到updateDisplayAndOrientation函数，会把<code>各种数据更新下放到DisplayInfo中</code>，最后调用了DisplayManagerService的<code>setDisplayInfoOverrideFromWindowManager</code>函数。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/wm/DisplayContent.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> DisplayInfo <span class="title">updateDisplayAndOrientation</span><span class="params">(<span class="keyword">int</span> uiMode)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Use the effective "visual" dimensions based on current rotation</span></span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> rotated = (mRotation == ROTATION_90 || mRotation == ROTATION_270);</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> realdw = rotated ? mBaseDisplayHeight : mBaseDisplayWidth;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> realdh = rotated ? mBaseDisplayWidth : mBaseDisplayHeight;</span><br><span class="line">    <span class="keyword">int</span> dw = realdw;</span><br><span class="line">    <span class="keyword">int</span> dh = realdh;</span><br><span class="line">    ...</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> appWidth = mService.mPolicy.getNonDecorDisplayWidth(dw, dh, mRotation, uiMode,</span><br><span class="line">            mDisplayId, displayCutout);</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">int</span> appHeight = mService.mPolicy.getNonDecorDisplayHeight(dw, dh, mRotation, uiMode,</span><br><span class="line">            mDisplayId, displayCutout);</span><br><span class="line">    mDisplayInfo.rotation = mRotation;</span><br><span class="line">    mDisplayInfo.logicalWidth = dw;</span><br><span class="line">    mDisplayInfo.logicalHeight = dh;</span><br><span class="line">    mDisplayInfo.logicalDensityDpi = mBaseDisplayDensity;</span><br><span class="line">    mDisplayInfo.appWidth = appWidth;</span><br><span class="line">    mDisplayInfo.appHeight = appHeight;</span><br><span class="line">    <span class="keyword">if</span> (isDefaultDisplay) &#123;</span><br><span class="line">        mDisplayInfo.getLogicalMetrics(mRealDisplayMetrics,</span><br><span class="line">                CompatibilityInfo.DEFAULT_COMPATIBILITY_INFO, <span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    mDisplayInfo.displayCutout = displayCutout.isEmpty() ? <span class="keyword">null</span> : displayCutout;</span><br><span class="line">    mDisplayInfo.getAppMetrics(mDisplayMetrics);</span><br><span class="line">    <span class="keyword">if</span> (mDisplayScalingDisabled) &#123;</span><br><span class="line">        mDisplayInfo.flags |= Display.FLAG_SCALING_DISABLED;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mDisplayInfo.flags &amp;= ~Display.FLAG_SCALING_DISABLED;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    mService.mDisplayManagerInternal.setDisplayInfoOverrideFromWindowManager(mDisplayId,</span><br><span class="line">        overrideDisplayInfo);</span><br><span class="line">    ...    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>setDisplayInfoOverrideFromWindowManager会调用setDisplayInfoOverrideFromWindowManagerInternal，然后调用<code>display.setDisplayInfoOverrideFromWindowManagerLocked(info)</code>函数，最后到LogicalDisplay的setDisplayInfoOverrideFromWindowManagerLocked函数中，把DisplayInfo数据放到了mOverrideDisplayInfo中。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/display/LogicalDisplay.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">setDisplayInfoOverrideFromWindowManagerLocked</span><span class="params">(DisplayInfo info)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">if</span> (info != <span class="keyword">null</span>) &#123;</span><br><span class="line">         <span class="keyword">if</span> (mOverrideDisplayInfo == <span class="keyword">null</span>) &#123;</span><br><span class="line">             mOverrideDisplayInfo = <span class="keyword">new</span> DisplayInfo(info);</span><br><span class="line">             mInfo = <span class="keyword">null</span>;</span><br><span class="line">             <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">         &#125;</span><br><span class="line">         <span class="keyword">if</span> (!mOverrideDisplayInfo.equals(info)) &#123;</span><br><span class="line">             mOverrideDisplayInfo.copyFrom(info); <span class="comment">//拷贝到mOverrideDisplayInfo中</span></span><br><span class="line">             mInfo = <span class="keyword">null</span>;</span><br><span class="line">             <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">         &#125;</span><br><span class="line">     &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mOverrideDisplayInfo != <span class="keyword">null</span>) &#123;</span><br><span class="line">         mOverrideDisplayInfo = <span class="keyword">null</span>;</span><br><span class="line">         mInfo = <span class="keyword">null</span>;</span><br><span class="line">         <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">     &#125;</span><br><span class="line">     <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="performTraversal处理显示Layer的大小宽高尺寸"><a href="#performTraversal处理显示Layer的大小宽高尺寸" class="headerlink" title="performTraversal处理显示Layer的大小宽高尺寸"></a>performTraversal处理显示Layer的大小宽高尺寸</h4><p>调用到DisplayManagerService.java中，然后调用performTraversalInternal函数。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">performTraversalInternal</span><span class="params">(SurfaceControl.Transaction t)</span> </span>&#123;</span><br><span class="line">      <span class="keyword">synchronized</span> (mSyncRoot) &#123;</span><br><span class="line">          <span class="keyword">if</span> (!mPendingTraversal) &#123;</span><br><span class="line">              <span class="keyword">return</span>;</span><br><span class="line">          &#125;</span><br><span class="line">          mPendingTraversal = <span class="keyword">false</span>;</span><br><span class="line">          <span class="comment">//遍历所有的Device</span></span><br><span class="line">          performTraversalLocked(t);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// List is self-synchronized copy-on-write.</span></span><br><span class="line">      <span class="keyword">for</span> (DisplayTransactionListener listener : mDisplayTransactionListeners) &#123;</span><br><span class="line">          listener.onDisplayTransaction();</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">performTraversalLocked</span><span class="params">(SurfaceControl.Transaction t)</span> </span>&#123;</span><br><span class="line">      <span class="comment">// Clear all viewports before configuring displays so that we can keep</span></span><br><span class="line">      <span class="comment">// track of which ones we have configured.</span></span><br><span class="line">      clearViewportsLocked();</span><br><span class="line"></span><br><span class="line">      <span class="comment">// 遍历所有的Device</span></span><br><span class="line">      <span class="keyword">final</span> <span class="keyword">int</span> count = mDisplayDevices.size();</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">          DisplayDevice device = mDisplayDevices.get(i);</span><br><span class="line">          <span class="comment">//step 1：找到那个LogicalDisplay 然后调用其configureDisplayInTransactionLocked函数（看上面的将参数赋值到mOverrideDisplayInfo中）</span></span><br><span class="line">          configureDisplayLocked(t, device);</span><br><span class="line">          <span class="comment">//step 2:调用了各个Device的performTraversalInTransactionLocked，而普通的Device的为空</span></span><br><span class="line">          device.performTraversalLocked(t);</span><br><span class="line">      &#125;</span><br><span class="line"></span><br><span class="line">      <span class="comment">// Tell the input system about these new viewports.</span></span><br><span class="line">      <span class="keyword">if</span> (mInputManagerInternal != <span class="keyword">null</span>) &#123;</span><br><span class="line">          mHandler.sendEmptyMessage(MSG_UPDATE_VIEWPORT);</span><br><span class="line">      &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">configureDisplayLocked</span><span class="params">(SurfaceControl.Transaction t, DisplayDevice device)</span> </span>&#123;</span><br><span class="line">      ...</span><br><span class="line">      <span class="comment">//设置长宽，旋转角度等</span></span><br><span class="line">      display.configureDisplayLocked(t, device, info.state == Display.STATE_OFF);</span><br><span class="line">      ...</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>configureDisplayLocked函数的这部分代码就是设置layer的显示大小，例如viewport，通过Dump SF可以查看layer。</strong></p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/display/LogicalDisplay.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//这部分代码就是设置layer的显示大小，例如viewport，通过Dump SF可以查看layer</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configureDisplayLocked</span><span class="params">(SurfaceControl.Transaction t,</span></span></span><br><span class="line"><span class="function"><span class="params">           DisplayDevice device,</span></span></span><br><span class="line"><span class="function"><span class="params">           <span class="keyword">boolean</span> isBlanked)</span> </span>&#123;</span><br><span class="line">               ...</span><br><span class="line">       <span class="comment">//step 1. 获取mInfo的数据，而mOverrideDisplayInfo如有数据就要copy到mInfo中去</span></span><br><span class="line">       <span class="keyword">final</span> DisplayInfo displayInfo = getDisplayInfoLocked(); </span><br><span class="line">       <span class="keyword">final</span> DisplayDeviceInfo displayDeviceInfo = device.getDisplayDeviceInfoLocked();</span><br><span class="line"></span><br><span class="line">       <span class="comment">// Set the viewport.</span></span><br><span class="line">       <span class="comment">// This is the area of the logical display that we intend to show on the</span></span><br><span class="line">       <span class="comment">// display device.  For now, it is always the full size of the logical display.</span></span><br><span class="line">       mTempLayerStackRect.set(<span class="number">0</span>, <span class="number">0</span>, displayInfo.logicalWidth, displayInfo.logicalHeight);</span><br><span class="line">       ...</span><br><span class="line">       mTempDisplayRect.left += mDisplayOffsetX;</span><br><span class="line">       mTempDisplayRect.right += mDisplayOffsetX;</span><br><span class="line">       mTempDisplayRect.top += mDisplayOffsetY;</span><br><span class="line">       mTempDisplayRect.bottom += mDisplayOffsetY;</span><br><span class="line">       <span class="comment">//step 2</span></span><br><span class="line">       device.setProjectionLocked(t, orientation, mTempLayerStackRect, mTempDisplayRect);</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> DisplayInfo <span class="title">getDisplayInfoLocked</span><span class="params">()</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (mInfo == <span class="keyword">null</span>) &#123;</span><br><span class="line">           mInfo = <span class="keyword">new</span> DisplayInfo();</span><br><span class="line">           mInfo.copyFrom(mBaseDisplayInfo);</span><br><span class="line">           <span class="keyword">if</span> (mOverrideDisplayInfo != <span class="keyword">null</span>) &#123;</span><br><span class="line">               mInfo.appWidth = mOverrideDisplayInfo.appWidth;</span><br><span class="line">               mInfo.appHeight = mOverrideDisplayInfo.appHeight;</span><br><span class="line">               mInfo.smallestNominalAppWidth = mOverrideDisplayInfo.smallestNominalAppWidth;</span><br><span class="line">               mInfo.smallestNominalAppHeight = mOverrideDisplayInfo.smallestNominalAppHeight;</span><br><span class="line">               mInfo.largestNominalAppWidth = mOverrideDisplayInfo.largestNominalAppWidth;</span><br><span class="line">               mInfo.largestNominalAppHeight = mOverrideDisplayInfo.largestNominalAppHeight;</span><br><span class="line">               mInfo.logicalWidth = mOverrideDisplayInfo.logicalWidth;</span><br><span class="line">               mInfo.logicalHeight = mOverrideDisplayInfo.logicalHeight;</span><br><span class="line">               mInfo.overscanLeft = mOverrideDisplayInfo.overscanLeft;</span><br><span class="line">               mInfo.overscanTop = mOverrideDisplayInfo.overscanTop;</span><br><span class="line">               mInfo.overscanRight = mOverrideDisplayInfo.overscanRight;</span><br><span class="line">               mInfo.overscanBottom = mOverrideDisplayInfo.overscanBottom;</span><br><span class="line">               mInfo.rotation = mOverrideDisplayInfo.rotation;</span><br><span class="line">               mInfo.displayCutout = mOverrideDisplayInfo.displayCutout;</span><br><span class="line">               mInfo.logicalDensityDpi = mOverrideDisplayInfo.logicalDensityDpi;</span><br><span class="line">               mInfo.physicalXDpi = mOverrideDisplayInfo.physicalXDpi;</span><br><span class="line">               mInfo.physicalYDpi = mOverrideDisplayInfo.physicalYDpi;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> mInfo;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<p>setProjectionLocked会调用SurfaceControl的SurfaceControl函数。然后在SurfaceControl中调用nativeSetDisplayProjection函数，通过JNI调用到Native层。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/display/DisplayDevice.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">void</span> <span class="title">setProjectionLocked</span><span class="params">(SurfaceControl.Transaction t, <span class="keyword">int</span> orientation,</span></span></span><br><span class="line"><span class="function"><span class="params">            Rect layerStackRect, Rect displayRect)</span> </span>&#123;</span><br><span class="line">...</span><br><span class="line">            t.setDisplayProjection(mDisplayToken,</span><br><span class="line">                    orientation, layerStackRect, displayRect);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>此时Java层的<code>updateRotationUnchecked</code>函数分析完。</p>
+<hr>
+<h2 id="sendNewConfiguration函数"><a href="#sendNewConfiguration函数" class="headerlink" title="sendNewConfiguration函数"></a>sendNewConfiguration函数</h2><p>从上面的updateRotation()函数中看到，除了调用updateRotationUnchecked()（即<code>displayContent.updateRotationUnchecked()</code>），还会调用sendNewConfiguration()。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sendNewConfiguration</span><span class="params">(<span class="keyword">int</span> displayId)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">boolean</span> configUpdated = mActivityManager.updateDisplayOverrideConfiguration(</span><br><span class="line">                    <span class="keyword">null</span> <span class="comment">/* values */</span>, displayId);</span><br><span class="line">...</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">updateDisplayOverrideConfiguration</span><span class="params">(Configuration values, <span class="keyword">int</span> displayId)</span> </span>&#123;</span><br><span class="line">        enforceCallingPermission(CHANGE_CONFIGURATION, <span class="string">"updateDisplayOverrideConfiguration()"</span>);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">synchronized</span> (<span class="keyword">this</span>) &#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">if</span> (values == <span class="keyword">null</span> &amp;&amp; mWindowManager != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// sentinel: fetch the current configuration from the window manager</span></span><br><span class="line">                <span class="comment">//Step 1 获取一些配置信息</span></span><br><span class="line">                values = mWindowManager.computeNewConfiguration(displayId);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">long</span> origId = Binder.clearCallingIdentity();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">if</span> (values != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    Settings.System.clearConfiguration(values);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//Step 2</span></span><br><span class="line">                updateDisplayOverrideConfigurationLocked(values, <span class="keyword">null</span> <span class="comment">/* starting */</span>,</span><br><span class="line">                        <span class="keyword">false</span> <span class="comment">/* deferResume */</span>, displayId, mTmpUpdateConfigurationResult);</span><br><span class="line">                <span class="keyword">return</span> mTmpUpdateConfigurationResult.changes != <span class="number">0</span>;</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                Binder.restoreCallingIdentity(origId);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">updateDisplayOverrideConfigurationLocked</span><span class="params">(Configuration values,</span></span></span><br><span class="line"><span class="function"><span class="params">            ActivityRecord starting, <span class="keyword">boolean</span> deferResume, <span class="keyword">int</span> displayId,</span></span></span><br><span class="line"><span class="function"><span class="params">            UpdateConfigurationResult result)</span> </span>&#123;</span><br><span class="line"> ...</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (values != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">if</span> (displayId == DEFAULT_DISPLAY) &#123;</span><br><span class="line">                    <span class="comment">//Step 1:调用</span></span><br><span class="line">                    changes = updateGlobalConfigurationLocked(values, <span class="keyword">false</span> <span class="comment">/* initLocale */</span>,</span><br><span class="line">                            <span class="keyword">false</span> <span class="comment">/* persistent */</span>, UserHandle.USER_NULL <span class="comment">/* userId */</span>, deferResume);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">//</span></span><br><span class="line">                    changes = performDisplayOverrideConfigUpdate(values, deferResume, displayId);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//Step 2</span></span><br><span class="line">            kept = ensureConfigAndVisibilityAfterUpdate(starting, changes);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (mWindowManager != <span class="keyword">null</span>) &#123;</span><br><span class="line">                mWindowManager.continueSurfaceLayout();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (result != <span class="keyword">null</span>) &#123;</span><br><span class="line">            result.changes = changes;</span><br><span class="line">            result.activityRelaunched = !kept;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> kept;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">updateGlobalConfigurationLocked</span><span class="params">(@NonNull Configuration values, <span class="keyword">boolean</span> initLocale,</span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">boolean</span> persistent, <span class="keyword">int</span> userId, <span class="keyword">boolean</span> deferResume)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//把Configuration数据保存在mTempConfig</span></span><br><span class="line">        mTempConfig.setTo(getGlobalConfiguration());</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> changes = mTempConfig.updateFrom(values);</span><br><span class="line">        <span class="keyword">if</span> (changes == <span class="number">0</span>) &#123;</span><br><span class="line">            performDisplayOverrideConfigUpdate(values, deferResume, DEFAULT_DISPLAY);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//会发送ACTION_CONFIGURATION_CHANGED广播，然后获取当前最上面活动的Activity，调用ActivityStack的ensureActivityConfigurationLocked函数和ActivityStackSupervisor的ensureActivitiesVisibleLocked函数。</span></span><br><span class="line">        Intent intent = <span class="keyword">new</span> Intent(Intent.ACTION_CONFIGURATION_CHANGED);</span><br><span class="line">        intent.addFlags(Intent.FLAG_RECEIVER_REGISTERED_ONLY | Intent.FLAG_RECEIVER_REPLACE_PENDING</span><br><span class="line">                | Intent.FLAG_RECEIVER_FOREGROUND</span><br><span class="line">                | Intent.FLAG_RECEIVER_VISIBLE_TO_INSTANT_APPS);</span><br><span class="line">        broadcastIntentLocked(<span class="keyword">null</span>, <span class="keyword">null</span>, intent, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="number">0</span>, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>,</span><br><span class="line">                OP_NONE, <span class="keyword">null</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, MY_PID, SYSTEM_UID,</span><br><span class="line">                UserHandle.USER_ALL);</span><br><span class="line">......</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">     <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">performDisplayOverrideConfigUpdate</span><span class="params">(Configuration values, <span class="keyword">boolean</span> deferResume,</span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">int</span> displayId)</span> </span>&#123;</span><br><span class="line">        mTempConfig.setTo(mStackSupervisor.getDisplayOverrideConfiguration(displayId));</span><br><span class="line">        <span class="comment">//把Configuration数据保存在mTempConfig</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> changes = mTempConfig.updateFrom(values);</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">ensureConfigAndVisibilityAfterUpdate</span><span class="params">(ActivityRecord starting, <span class="keyword">int</span> changes)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> kept = <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">final</span> ActivityStack mainStack = mStackSupervisor.getFocusedStack();</span><br><span class="line">        <span class="comment">// mainStack is null during startup.</span></span><br><span class="line">        <span class="keyword">if</span> (mainStack != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (changes != <span class="number">0</span> &amp;&amp; starting == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">// If the configuration changed, and the caller is not already</span></span><br><span class="line">                <span class="comment">// in the process of starting an activity, then find the top</span></span><br><span class="line">                <span class="comment">// activity to check if its configuration needs to change.</span></span><br><span class="line">                starting = mainStack.topRunningActivityLocked();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//先后调用两个函数</span></span><br><span class="line">            <span class="keyword">if</span> (starting != <span class="keyword">null</span>) &#123;</span><br><span class="line">                kept = starting.ensureActivityConfiguration(changes,</span><br><span class="line">                        <span class="keyword">false</span> <span class="comment">/* preserveWindow */</span>);</span><br><span class="line">                <span class="comment">// And we need to make sure at this point that all other activities</span></span><br><span class="line">                <span class="comment">// are made visible with the correct configuration.</span></span><br><span class="line">                mStackSupervisor.ensureActivitiesVisibleLocked(starting, changes,</span><br><span class="line">                        !PRESERVE_WINDOWS);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> kept;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="应用强制设置屏幕方向"><a href="#应用强制设置屏幕方向" class="headerlink" title="应用强制设置屏幕方向"></a>应用强制设置屏幕方向</h2><p>之前提过，其它途径可能会触发转屏，比如应用请求转屏。例如需要横屏的游戏（通过frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java的<code>updateOrientationFromAppTokensLocked()</code>方法）。</p>
+<p>首先调用AMS的<code>setRequestedOrientation</code>函数，然后调用到ActivityRecord的setRequestedOrientation函数。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/am/ActivityRecord.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">setRequestedOrientation</span><span class="params">(<span class="keyword">int</span> requestedOrientation)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> displayId = getDisplayId();</span><br><span class="line">        <span class="keyword">final</span> Configuration displayConfig =</span><br><span class="line">                mStackSupervisor.getDisplayOverrideConfiguration(displayId);</span><br><span class="line">        <span class="comment">//Step 1</span></span><br><span class="line">        <span class="keyword">final</span> Configuration config = mWindowContainerController.setOrientation(requestedOrientation,</span><br><span class="line">                displayId, displayConfig, mayFreezeScreenLocked(app));</span><br><span class="line">        <span class="keyword">if</span> (config != <span class="keyword">null</span>) &#123;</span><br><span class="line">            frozenBeforeDestroy = <span class="keyword">true</span>;</span><br><span class="line">            <span class="comment">//Step 2：当返回false，就是现在的状态要改变（比如重启Activity）</span></span><br><span class="line">            <span class="comment">//然后就调用ActivityStackSupervisor的resumeTopActivitiesLocked函数来启动最上面的Activity。</span></span><br><span class="line">            <span class="keyword">if</span> (!service.updateDisplayOverrideConfigurationLocked(config, <span class="keyword">this</span>,</span><br><span class="line">                    <span class="keyword">false</span> <span class="comment">/* deferResume */</span>, displayId)) &#123;</span><br><span class="line">                mStackSupervisor.resumeFocusedStackTopActivityLocked();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        service.mTaskChangeNotificationController.notifyActivityRequestedOrientationChanged(</span><br><span class="line">                task.taskId, requestedOrientation);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>其中调用到<code>frameworks/base/services/core/java/com/android/server/wm/AppWindowContainerController.java</code>的<code>mWindowContainerController.setOrientation</code>函数。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/wm/AppWindowContainerController.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> Configuration <span class="title">setOrientation</span><span class="params">(<span class="keyword">int</span> requestedOrientation, <span class="keyword">int</span> displayId,</span></span></span><br><span class="line"><span class="function"><span class="params">            Configuration displayConfig, <span class="keyword">boolean</span> freezeScreenIfNeeded)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span>(mWindowMap) &#123;</span><br><span class="line">            <span class="keyword">if</span> (mContainer == <span class="keyword">null</span>) &#123;</span><br><span class="line">                Slog.w(TAG_WM,</span><br><span class="line">                        <span class="string">"Attempted to set orientation of non-existing app token: "</span> + mToken);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            mContainer.setOrientation(requestedOrientation);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">final</span> IBinder binder = freezeScreenIfNeeded ? mToken.asBinder() : <span class="keyword">null</span>;</span><br><span class="line">            <span class="comment">//调用WMS的该函数旋转屏幕！！</span></span><br><span class="line">            <span class="keyword">return</span> mService.updateOrientationFromAppTokens(displayConfig, binder, displayId);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<p>该函数调用到WMS的<code>updateOrientationFromAppTokensLocked</code>函数。这个函数先调用另一个updateOrientationFromAppTokensLocked函数，根据这个函数的返回值，返回true代表要旋转，就调用computeNewConfigurationLocked计算Configuration返回。</p>
+<figure class="highlight java"><figcaption><span>WMS.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Configuration <span class="title">updateOrientationFromAppTokensLocked</span><span class="params">(Configuration currentConfig,</span></span></span><br><span class="line"><span class="function"><span class="params">            IBinder freezeThisOneIfNeeded, <span class="keyword">int</span> displayId, <span class="keyword">boolean</span> forceUpdate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!mDisplayReady) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        Configuration config = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (updateOrientationFromAppTokensLocked(displayId, forceUpdate)) &#123;</span><br><span class="line">            <span class="comment">// If we changed the orientation but mOrientationChangeComplete is already true,</span></span><br><span class="line">            <span class="comment">// we used seamless rotation, and we don't need to freeze the screen.</span></span><br><span class="line">            <span class="keyword">if</span> (freezeThisOneIfNeeded != <span class="keyword">null</span> &amp;&amp; !mRoot.mOrientationChangeComplete) &#123;</span><br><span class="line">                <span class="keyword">final</span> AppWindowToken atoken = mRoot.getAppWindowToken(freezeThisOneIfNeeded);</span><br><span class="line">                <span class="keyword">if</span> (atoken != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    atoken.startFreezingScreen();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            config = computeNewConfigurationLocked(displayId);</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (currentConfig != <span class="keyword">null</span>) &#123;</span><br><span class="line">           ......</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> config;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">updateOrientationFromAppTokensLocked</span><span class="params">(<span class="keyword">int</span> displayId, <span class="keyword">boolean</span> forceUpdate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> ident = Binder.clearCallingIdentity();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> DisplayContent dc = mRoot.getDisplayContent(displayId);</span><br><span class="line">            <span class="comment">//获取上次强制设置的方向</span></span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> req = dc.getOrientation();</span><br><span class="line">            <span class="comment">//如果和上次设置的方向不同</span></span><br><span class="line">            <span class="keyword">if</span> (req != dc.getLastOrientation() || forceUpdate) &#123;</span><br><span class="line">                dc.setLastOrientation(req);</span><br><span class="line">                <span class="comment">//send a message to Policy indicating orientation change to take</span></span><br><span class="line">                <span class="comment">//action like disabling/enabling sensors etc.,</span></span><br><span class="line">                <span class="comment">// TODO(multi-display): Implement policy for secondary displays.</span></span><br><span class="line">                <span class="keyword">if</span> (dc.isDefaultDisplay) &#123;</span><br><span class="line">                    mPolicy.setCurrentOrientationLw(req);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> dc.updateRotationUnchecked(forceUpdate);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            Binder.restoreCallingIdentity(ident);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="应用Activity强制设置方向"><a href="#应用Activity强制设置方向" class="headerlink" title="应用Activity强制设置方向"></a>应用Activity强制设置方向</h2><ol>
+<li>Activity：</li>
+</ol>
+<p>如果要强制设置一个Activity的横竖屏可以通过Manifest去设置，跟Activity相关的信息都会保存在ActivityInfo当中。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">android:screenOrientation&#x3D;[&quot;unspecified&quot; | &quot;user&quot; | &quot;behind&quot; |</span><br><span class="line">                                     &quot;landscape&quot; | &quot;portrait&quot; |</span><br><span class="line">                                     &quot;reverseLandscape&quot; | &quot;reversePortrait&quot; |</span><br><span class="line">                                     &quot;sensorLandscape&quot; | &quot;sensorPortrait&quot; |</span><br><span class="line">                                     &quot;sensor&quot; | &quot;fullSensor&quot; | &quot;nosensor&quot;]</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>Window</li>
+</ol>
+<p>如果是要强制设置一个Window的横竖屏可以通过<code>LayoutParams.screenOrientation</code>来设置。在通过<code>WindowManager.addView的时候把对应的LayoutParams</code>传递给WMS。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WindowManager.LayoutParams.screenOrientation</span><br></pre></td></tr></table></figure>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/">https://alonealive.github.io/Blog/2020/06/01/2020/200601_android_rotation/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-06-13");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-06-01T15:52:00.000Z" itemprop="datePublished">2020-06-01</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-06-13T13:34:42.781Z" itemprop="dateModified">2020-06-13</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/display/" rel="tag">#&nbsp;display</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2020/06/10/2020/200610_android_pointerDraw/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android 开发者选项的“指针位置”坐标值</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/05/20/2020/200520_android_input_notifyMotion/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android InputDispatcher获取点击事件</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>
