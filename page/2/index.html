@@ -334,6 +334,84 @@
                         <article class="post-entry container px-0 card">
         <div class="columns col-gapless">
             
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/11/23/2019/191121_android_debug2/" rel="bookmark">Android Graphics 调试技巧（十一月份更新）</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        更新adb
+更新命令：   sudo apt-get install android-tools-adb
+查看当前adb指令的目录: which adb
+查看版本：adb version
+
+    <a href="/Blog/2019/11/23/2019/191121_android_debug2/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-11-23</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/11/03/2019/191103_android_hideDoc/" rel="bookmark">Android @hide接口注释</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        @hide和{@hide}类或API是否开放是通过doc的注释｛＠hide｝来控制的
+比如android.media.Metadata这个类就是android没有公开的类
+因为在frameworks\base\media\libmedia\Metadata.java文件中，定义Metadata类之前有/*｛＠hide｝/doc注释，所以Metadata类被定义为了非公开类，即在android应用程序中无法直接访问的类
+    <a href="/Blog/2019/11/03/2019/191103_android_hideDoc/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-11-03</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
                 <div class="column column-thumbnail col-4 col-lg-12">
                     <a href="/Blog/2019/10/23/2019/191023_android_shell/">
                         <div class="post-thumbnail lazyload" data-bg="url(https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/shell.jpg)"></div>
@@ -1030,82 +1108,6 @@ makefile是和make命令一起使用，在Android中，可以使用mm、mmm、mm
         
             <span class="suka-devide-dot"></span>
             <a class="category-link" href="/Blog/categories/android/">android</a>
-        
-        
-    </div>
-
-                </div>
-            
-        </div>
-</article>
-
-                    
-                
-                    
-                        <article class="post-entry container px-0 card">
-        <div class="columns col-gapless">
-            
-                <div class="column col-12">
-                    
-    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/26/2019/190826_cpp_inline/" rel="bookmark">C++内联函数、引用变量、函数重载、函数模板</a></h2>
-
-
-<p class="mb-0 card-body">
-    
-        内联函数
-常规函数调用使程序跳到另一个地址（函数的地址），并在函数结束后返回。来回跳跃并记录跳跃位置意味着一定的开销。内联函数使得编译器将相应的函数代码替换函数调用。程序无需跳到另一个位置处执行代码，再调回来。因而，内联函数运行速度比常规函数快，但是代价是需要占用更多的内存。如果程序在10个不同的地方调用调用同一个内联函数，则该程序将包含该函数代码的10个副本。
-
-    <a href="/Blog/2019/08/26/2019/190826_cpp_inline/">阅读全文</a>
-</p>
-
-
-
-
-    <!-- Date & Category -->
-    <div class="card-footer post-entry-info text-gray">
-        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
-        <time>2019-08-26</time>
-        
-            <span class="suka-devide-dot"></span>
-            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
-        
-        
-    </div>
-
-                </div>
-            
-        </div>
-</article>
-
-                    
-                
-                    
-                        <article class="post-entry container px-0 card">
-        <div class="columns col-gapless">
-            
-                <div class="column col-12">
-                    
-    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/21/2019/190821_cpp_function/" rel="bookmark">C++函数模块（函数指针、递归）</a></h2>
-
-
-<p class="mb-0 card-body">
-    
-        
-本章节主要是围绕函数为圆心，涉及到字符串、指针、C++11特性auto、typedef。由于接触android源码、opengl，需将C++学习一遍，之前只是用过java、c、c#这些。涉及到android源码，例如frameworks/native的surfaceflinger,gui,ui, 以及vender,hardware都是需要仔细的阅读C++代码才能够理解。再如graphics的测量、绘制渲染、硬件加速、合成显示，私以为学习一些图形学是有必要的。人生在勤，不索何获。
-
-    <a href="/Blog/2019/08/21/2019/190821_cpp_function/">阅读全文</a>
-</p>
-
-
-
-
-    <!-- Date & Category -->
-    <div class="card-footer post-entry-info text-gray">
-        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
-        <time>2019-08-21</time>
-        
-            <span class="suka-devide-dot"></span>
-            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
         
         
     </div>

@@ -54,7 +54,7 @@
     <meta name="renderer" content="webkit">
 
     <!-- Title -->
-    <title>Android ANR traces.txt文件分析 | sunwengang blog</title>
+    <title>Android Native Crash分析方法 | sunwengang blog</title>
 
     <!-- Favicons -->
     <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
@@ -154,12 +154,12 @@
     <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!-- ### The Open Graph & Twitter Card Protocol ### -->
-    <meta property="og:title" content="Android ANR traces.txt文件分析 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/"><meta property="og:locale" content="zh-CN"><meta name="description" content="trace.txt生成:当APP(包括系统APP和用户APP)进程出现ANR、应用响应慢或WatchDog的监视没有得到回馈时,系统会dump此时的top进程,进程中Thread的运行状态就都dump到这个Trace文件中了。 - sunwengang - sunwengang blog"><meta name="keywords" content="display"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.4/2020_images/android07.jpg"><meta property="article:published_time" content="2020-06-11T15:52:00.000Z"><meta property="article:modified_time" content="2020-07-20T14:02:59.640Z"><meta property="og:updated_time" content="2020-07-20T14:02:59.640Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="display"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.4/2020_images/android07.jpg">
+    <meta property="og:title" content="Android Native Crash分析方法 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/"><meta property="og:locale" content="zh-CN"><meta name="description" content="TombstoneAndroid Native程序本质上就是一个Linux程序，因此当它在执行时发生严重错误，也会导致程序crash，然后产生一个记录crash的现场信息的文件，而这个文件在Android系统中就是tombstone文件。 - sunwengang - sunwengang blog"><meta name="keywords" content="android debug, android"><meta property="og:image" content="https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.4/2020_images/android07.jpg"><meta property="article:published_time" content="2020-07-15T15:52:00.000Z"><meta property="article:modified_time" content="2020-07-20T14:02:50.228Z"><meta property="og:updated_time" content="2020-07-20T14:02:50.228Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android debug, android"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:image" content="https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.4/2020_images/android07.jpg">
 
     
 
     <!-- ### Canonical link ### -->
-    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/">
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/">
 
     <meta name="generator" content="Hexo 4.2.0">
 
@@ -180,22 +180,22 @@
 <script type="application/ld+json">
 {
     "@context": "http://schema.org",
-    "url": "https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/",
+    "url": "https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/",
     "@type": "BlogPosting",
     "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/"
+        "@id": "https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/"
     },
-    "headline": "Android ANR traces.txt文件分析 | sunwengang blog",
+    "headline": "Android Native Crash分析方法 | sunwengang blog",
     
     "image": {
         "@type": "ImageObject",
         "url": "https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.4/2020_images/android07.jpg"
     },
     
-    "datePublished": "2020-06-11T15:52:00.000Z",
-    "dateModified": "2020-07-20T14:02:59.640Z",
+    "datePublished": "2020-07-15T15:52:00.000Z",
+    "dateModified": "2020-07-20T14:02:50.228Z",
     "author": {
         "@type": "Person",
         "name": "sunwengang",
@@ -220,8 +220,8 @@
         "query-input": "required name=search_term_string"
     },
     
-    "keywords": "display",
-    "description": "trace.txt生成:当APP(包括系统APP和用户APP)进程出现ANR、应用响应慢或WatchDog的监视没有得到回馈时,系统会dump此时的top进程,进程中Thread的运行状态就都dump到这个Trace文件中了。 - sunwengang - sunwengang blog"
+    "keywords": "android debug, android",
+    "description": "TombstoneAndroid Native程序本质上就是一个Linux程序，因此当它在执行时发生严重错误，也会导致程序crash，然后产生一个记录crash的现场信息的文件，而这个文件在Android系统中就是tombstone文件。 - sunwengang - sunwengang blog"
 }
 </script>
 
@@ -300,28 +300,28 @@
         <!-- Share LinkedIn -->
         
         <li class="menu-item">
-            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android ANR traces.txt文件分析" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android Native Crash分析方法" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
         </li>
         
 
         <!-- Share QQ -->
         
         <li class="menu-item">
-            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android ANR traces.txt文件分析&summary=&pics=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.4/2020_images/android07.jpg&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android Native Crash分析方法&summary=&pics=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.4/2020_images/android07.jpg&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
         </li>
         
 
         <!-- Share Telegram -->
         
         <li class="menu-item">
-            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android ANR traces.txt文件分析" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android Native Crash分析方法" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
         </li>
         
 
         <!-- QRCode -->
         
         <li class="menu-item">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACSElEQVR42u2aQW7DMAwE8/9Pt6cCbSFxh26CxuL44iCRrXFgSsslHx83OB5CCimkkG8A+SiOr9+rcT9uGn6rxq6uE3Iu5PKlLSB3QL/Pu+vIvEIKmW6WAoEEWQpIIYXEg4vJv39fBVgnIIUUkgZOd+FeLtBCCgkhy40+BEa1oK8+P10FCXkcJBUCzz6/JFsU8vaQbROpSMho4L3cVRPy1pA7gZAELjGl0iJfCQ0h50ImQUsSKSJ+qyRvK1aEHAtJL9yZ8x2TNQVdKTCEHAO5FZ3hRacmVmUSlMEm5EhIstmTQicJtEpoYAdDyOMhibnUmYQUn3Zzl9mikGMgSSNItdgT4z9tFJeqD0IeC0le4NREQhfvZPxHE1XIEZAdY4AUMa8U9ZHoFXIMJEmQSDKWgpCKkVIFCTkGstOglMwB2lRC/iQh50KmIlGVQCUDIQmPljkg5BhIYhKQ4lIS0qkxBHUOCDkGMl5wQejSB9mKEiFHQ1aJe0r0K9OfNp8sH0zIkZCdwlGnCTSJiHQ/IedC0sW1IzaI0UAKT0LOhKyMzFQougpAi6hCzoUkjXCVqKVFgFR4alUfhDwaksBRIfyXTaLdKCLk8ZDEvLoiNjrNKEIK2W0KIQ3wV4UwcnqFPB6SmEnJCCCJPjG9sGEl5PGQNGDSIt/dFGJQCTkasts4TEyBKsEjpoOQQiZTiTYhEZGBGveEFDIU2MmkRAAn41ZIIWNjGyh6pualZFQhE1XIMZC4SF4EUIJJQbIcL+RIyHc+hBRSSCH/8fgE4zyWtWRmhZwAAAAASUVORK5CYII=" alr="QRCode">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACPUlEQVR42u2aQXLDMAwD/f9Pt5eeUhMAnWSaGqtLJ24crWZEiQB5fP2DcQAJJJBAfgDkIcbjd379yM+zx3fOPqt3xnmBrIU83bQC6myyKBAG8HEOIKshp80+/f/ZxURBBiSQA6Q63KeDeLosgATylYGjkgv1ziYggQTSXfRpYJ0Finv2siwIyNtBKkH0zr8vU4tA3goyFU+JYaASja1oA7IXUm3kzSQuAVELGucDshLSbfwpcXXGqTIO0udAdkI60e+S4Y3Q2hpiQHZCpkanSiocaBqcoxADsg7SivRQ/KvCUhJoayEG5C0hVaCoQ3sTeMniIyEGZA3k9iDeBFHSTGIPcyCrITeF9I0Je+VSALITciuuNomDg7fmApCVkInwcvCuuO4aSsZ3gKyFdELKFQGcgZAYr3GVFsgKyE1iGyWrQbPIOukFsgZSCXfXZOwO6CS4pPADEshQ7LtGEGcwJAUsILsh3cZOmzuTItTlwxzIKki7gQ/fuL4JrEuGFZA1kM58Sg2ANAlOG5OBBNKZ8c8kH0nyHFVpgayDTIylrWhzppQMXiCrIZ2hmoj7Kw2iQAKZmKgrU2lYmDKvVHDaihiQt4d0Q4n7VKi5xuWVqwbk7SHdhlYHclo83QgwW6UFsgIyNa9cg0hyEVwOHCDrIJ2BnzYoHxdGnAUBCWR4MCcGQhJksYkKJJBBEisThbBAFRebgKyAdI1Mm4aSZGGXAgfIGkh38bvkVxVK1W/aYhaQlZCfPIAEEkgg/3B8AxXZFzXrTmeJAAAAAElFTkSuQmCC" alr="QRCode">
         </li>
         
 
@@ -344,7 +344,7 @@
                 <!-- # Post Header Info # -->
                 <div class="card-header">
                     
-    <h1 class="card-title h3 mb-2">Android ANR traces.txt文件分析</h1>
+    <h1 class="card-title h3 mb-2">Android Native Crash分析方法</h1>
 
 
 
@@ -352,7 +352,7 @@
 <div class="post-header-info">
     <p class="post-header-info-left text-gray">
         <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
-        <span>2020-06-11</span>
+        <span>2020-07-15</span>
         
             <span class="suka-devide-dot"></span>
             <a class="category-link" href="/Blog/categories/android/">android</a>
@@ -376,56 +376,56 @@
     <!-- Share Weibo -->
     
     <li class="menu-item">
-        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android ANR traces.txt文件分析&url=https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/&pic=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.4/2020_images/android07.jpg&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android Native Crash分析方法&url=https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/&pic=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.4/2020_images/android07.jpg&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
     </li>
     
 
     <!-- Share Twitter -->
     
     <li class="menu-item">
-        <a href="https://twitter.com/intent/tweet?text=Android ANR traces.txt文件分析&url=https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        <a href="https://twitter.com/intent/tweet?text=Android Native Crash分析方法&url=https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
     </li>
     
 
     <!-- Share Facebook -->
     
     <li class="menu-item">
-        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
     </li>
     
 
     <!-- Share Google+ -->
     
     <li class="menu-item">
-        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
     </li>
     
 
     <!-- Share LinkedIn -->
     
     <li class="menu-item">
-        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
     </li>
     
 
     <!-- Share QQ -->
     
     <li class="menu-item">
-        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.4/2020_images/android07.jpg&url=https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.4/2020_images/android07.jpg&url=https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
     </li>
     
 
     <!-- Share Telegram -->
     
     <li class="menu-item">
-        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
     </li>
     
 
     <!-- QRCode -->
     
     <li class="menu-item">
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACSElEQVR42u2aQW7DMAwE8/9Pt6cCbSFxh26CxuL44iCRrXFgSsslHx83OB5CCimkkG8A+SiOr9+rcT9uGn6rxq6uE3Iu5PKlLSB3QL/Pu+vIvEIKmW6WAoEEWQpIIYXEg4vJv39fBVgnIIUUkgZOd+FeLtBCCgkhy40+BEa1oK8+P10FCXkcJBUCzz6/JFsU8vaQbROpSMho4L3cVRPy1pA7gZAELjGl0iJfCQ0h50ImQUsSKSJ+qyRvK1aEHAtJL9yZ8x2TNQVdKTCEHAO5FZ3hRacmVmUSlMEm5EhIstmTQicJtEpoYAdDyOMhibnUmYQUn3Zzl9mikGMgSSNItdgT4z9tFJeqD0IeC0le4NREQhfvZPxHE1XIEZAdY4AUMa8U9ZHoFXIMJEmQSDKWgpCKkVIFCTkGstOglMwB2lRC/iQh50KmIlGVQCUDIQmPljkg5BhIYhKQ4lIS0qkxBHUOCDkGMl5wQejSB9mKEiFHQ1aJe0r0K9OfNp8sH0zIkZCdwlGnCTSJiHQ/IedC0sW1IzaI0UAKT0LOhKyMzFQougpAi6hCzoUkjXCVqKVFgFR4alUfhDwaksBRIfyXTaLdKCLk8ZDEvLoiNjrNKEIK2W0KIQ3wV4UwcnqFPB6SmEnJCCCJPjG9sGEl5PGQNGDSIt/dFGJQCTkasts4TEyBKsEjpoOQQiZTiTYhEZGBGveEFDIU2MmkRAAn41ZIIWNjGyh6pualZFQhE1XIMZC4SF4EUIJJQbIcL+RIyHc+hBRSSCH/8fgE4zyWtWRmhZwAAAAASUVORK5CYII=" alt="QRCode">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACPUlEQVR42u2aQXLDMAwD/f9Pt5eeUhMAnWSaGqtLJ24crWZEiQB5fP2DcQAJJJBAfgDkIcbjd379yM+zx3fOPqt3xnmBrIU83bQC6myyKBAG8HEOIKshp80+/f/ZxURBBiSQA6Q63KeDeLosgATylYGjkgv1ziYggQTSXfRpYJ0Finv2siwIyNtBKkH0zr8vU4tA3goyFU+JYaASja1oA7IXUm3kzSQuAVELGucDshLSbfwpcXXGqTIO0udAdkI60e+S4Y3Q2hpiQHZCpkanSiocaBqcoxADsg7SivRQ/KvCUhJoayEG5C0hVaCoQ3sTeMniIyEGZA3k9iDeBFHSTGIPcyCrITeF9I0Je+VSALITciuuNomDg7fmApCVkInwcvCuuO4aSsZ3gKyFdELKFQGcgZAYr3GVFsgKyE1iGyWrQbPIOukFsgZSCXfXZOwO6CS4pPADEshQ7LtGEGcwJAUsILsh3cZOmzuTItTlwxzIKki7gQ/fuL4JrEuGFZA1kM58Sg2ANAlOG5OBBNKZ8c8kH0nyHFVpgayDTIylrWhzppQMXiCrIZ2hmoj7Kw2iQAKZmKgrU2lYmDKvVHDaihiQt4d0Q4n7VKi5xuWVqwbk7SHdhlYHclo83QgwW6UFsgIyNa9cg0hyEVwOHCDrIJ2BnzYoHxdGnAUBCWR4MCcGQhJksYkKJJBBEisThbBAFRebgKyAdI1Mm4aSZGGXAgfIGkh38bvkVxVK1W/aYhaQlZCfPIAEEkgg/3B8AxXZFzXrTmeJAAAAAElFTkSuQmCC" alt="QRCode">
     </li>
     
 
@@ -439,52 +439,55 @@
                     
                         
                         
-                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ANR类型"><span class="post-toc-number">1.</span> <span class="post-toc-text">ANR类型</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#trace-txt获取"><span class="post-toc-number">2.</span> <span class="post-toc-text">trace.txt获取</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Trace分析"><span class="post-toc-number">3.</span> <span class="post-toc-text">Trace分析</span></a></li></ol></div>
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Tombstone"><span class="post-toc-number">1.</span> <span class="post-toc-text">Tombstone</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#使用addr2line命令定位堆栈地址"><span class="post-toc-number">2.</span> <span class="post-toc-text">使用addr2line命令定位堆栈地址</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#objdump"><span class="post-toc-number">3.</span> <span class="post-toc-text">objdump</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ndk-stack"><span class="post-toc-number">4.</span> <span class="post-toc-text">ndk-stack</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#readelf"><span class="post-toc-number">5.</span> <span class="post-toc-text">readelf</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#c-filt"><span class="post-toc-number">6.</span> <span class="post-toc-text">c++filt</span></a></li></ol></div>
                         
                     
                     <article id="post-content">
-                        <blockquote>
-<p><code>trace.txt</code>生成:当APP(包括系统APP和用户APP)进程出现ANR、应用响应慢或WatchDog的监视没有得到回馈时,系统会dump此时的top进程,进程中Thread的运行状态就都dump到这个Trace文件中了。</p>
-</blockquote>
+                        <h2 id="Tombstone"><a href="#Tombstone" class="headerlink" title="Tombstone"></a>Tombstone</h2><p>Android Native程序本质上就是一个Linux程序，因此当它在执行时发生严重错误，也会导致程序crash，然后产生一个记录crash的现场信息的文件，而这个文件在Android系统中就是tombstone文件。</p>
 <a id="more"></a>
 
-<p>ANR:Application Not Responding，即应用无响应</p>
-<h2 id="ANR类型"><a href="#ANR类型" class="headerlink" title="ANR类型"></a>ANR类型</h2><p>一般有三种类型:</p>
-<ol>
-<li>KeyDispatchTimeout(5 seconds) –主要类型：按键或触摸事件在特定时间内无响应</li>
-<li>BroadcastTimeout(10 seconds)  –BroadcastReceiver：在特定时间内无法处理完成</li>
-<li>ServiceTimeout(20 seconds) –小概率类型：Service在特定的时间内无法处理完成</li>
-</ol>
-<p>另外还有<code>ProviderTimeout</code>和<code>WatchDog看门狗</code>等导致的ANR。</p>
-<p>还有当系统内存或CPU资源不足时容易出现ANR， 一般这种情况会有<code>lowmemorykill</code>的log打印。</p>
-<p>应用ANR产生的时候，在<code>ActivityManagerService</code>中会调用<code>appNotResponding</code>方法, 然后在<code>/data/anr/traces.txt</code>文件中写入ANR相关信息。</p>
-<h2 id="trace-txt获取"><a href="#trace-txt获取" class="headerlink" title="trace.txt获取"></a>trace.txt获取</h2><ol>
-<li><code>adb shell</code>进入手机的<code>/data/anr</code>文件目录下面查看生成的<code>trace.txt</code>文件(如果<code>ls</code>查看文件列表没有权限,可以先<code>adb root</code>一下)</li>
-<li><code>adb pull /data/anr/</code> 将该文件导出,然后分析</li>
-</ol>
-<p>log打印了ANR的基本信息(<code>adb shell top</code>查看进程, <code>adb logcat -v process |grep PID</code>查看日志), 可以分析<code>CPU使用率</code>得知ANR的简单情况;</p>
-<p>如果CPU使用率很高,接近100%,可能是在进行大规模的计算更可能是陷入死循环;</p>
-<p>如果CUP使用率很低,说明主线程被阻塞了,并且当IOwait很高,可能是主线程在等待I/O操作的完成。</p>
-<p>对于ANR只是分析Log， 很难知道问题所在,我们还需要通过<code>Trace文件分析stack调用情况</code>,在log中显示的pid在traces文件中与之对应, 然后通过查看堆栈调用信息分析ANR的代码。</p>
-<p>注:trace 文件的分析参考 <a href="https://blog.csdn.net/qq_25804863/article/details/49111005" target="_blank" rel="noopener">https://blog.csdn.net/qq_25804863/article/details/49111005</a></p>
+<p>Tombstone英文的本意是墓碑，tombstone文件就像墓碑一样记录了死亡了的进程的基本信息（例如进程的进程号，线程号），死亡的地址（在哪个地址上发生了Crash），死亡时的现场是什么样的（记录了一系列的堆栈调用信息）等等。</p>
+<h2 id="使用addr2line命令定位堆栈地址"><a href="#使用addr2line命令定位堆栈地址" class="headerlink" title="使用addr2line命令定位堆栈地址"></a>使用addr2line命令定位堆栈地址</h2><p>发生Native Crash的堆栈中查看到栈顶的几个问题地址。</p>
+<p>该命令可以用来解析so动态链接库，分析单个pc地址对应的函数，然后参照代码寻找问题发生处。</p>
+<p>例如：（需要在Symbol目录下）</p>
+<p><code>addr2line -Cfe .so address</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;out&#x2F;target&#x2F;product&#x2F;product&#x2F;symbols&#x2F;system&#x2F;lib64$ addr2line -f -e libgui.so 00000000000c39a0</span><br><span class="line">_ZNK7android12SortedVectorINS_12DisplayStateEE16do_move_backwardEPvPKvm</span><br></pre></td></tr></table></figure>
+
+<p>解释：-e 后加上.so的文件名；-f 可同时输出函数名称</p>
+<h2 id="objdump"><a href="#objdump" class="headerlink" title="objdump"></a>objdump</h2><p><code>objdump –S **.so &gt; **.asm</code></p>
+<p>该命令是用来把相应的so变成汇编语言的asm文件，然后根据地址信息就可以找到更加详细的相关函数信息</p>
+<p>或者</p>
+<p><code>symbols/out/target/product/merlin/symbols$ objdump -tT system/lib64/libgui.so</code></p>
+<table>
+<thead>
+<tr>
+<th align="center">后缀</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-S 或 –source</td>
+<td align="center">尽可能反汇编出源代码，尤其当编译的时候指定了-g这种调试参数时，效果比较明显。隐含了-d参数</td>
+</tr>
+<tr>
+<td align="center">-t 或 –syms</td>
+<td align="center">显示文件的符号表入口。类似于nm -s提供的信息</td>
+</tr>
+<tr>
+<td align="center">-T 或 –dynamic-syms</td>
+<td align="center">显示文件的动态符号表入口，仅仅对动态目标文件意义，比如某些共享库。它显示的信息类似于`nm -D</td>
+</tr>
+</tbody></table>
 <hr>
-<h2 id="Trace分析"><a href="#Trace分析" class="headerlink" title="Trace分析"></a>Trace分析</h2><p>Traces中显示的线程状态都是C代码定义的，可以通过查看线程状态对应的信息分析ANR问题。</p>
-<p>如:</p>
-<ul>
-<li><code>TimedWaiting</code>对应的线程状态是TIMED_WAITING；</li>
-<li><code>kTimedWaiting, // TIMED_WAITING TS_WAIT in Object.wait() with a timeout</code>执行了无超时参数的wait函数；</li>
-<li><code>kSleeping, // TIMED_WAITING TS_SLEEPING in Thread.sleep()</code>执行了带有超时参数的 sleep 函数；</li>
-<li>ZOMBIE                    线程死亡,终止运行</li>
-<li>RUNNING/RUNNABLE          线程可运行或正在运行</li>
-<li>TIMED_WAIT                执行了带有超时参数的 wait、sleep 或 join 函数</li>
-<li>MONITOR                   线程阻塞,等待获取对象锁</li>
-<li>WAIT                      执行了无超时参数的 wait 函数</li>
-<li>INITIALIZING              新建,正在初始化,为其分配资源</li>
-<li>STARTING                  新建,正在启动</li>
-<li>NATIVE                    正在执行 JNI 本地函数</li>
-<li>VMWAIT                    正在等待 VM 资源</li>
-<li>SUSPENDED                 线程暂停,通常是由于 GC 或 debug 被暂停</li>
-</ul>
+<h2 id="ndk-stack"><a href="#ndk-stack" class="headerlink" title="ndk-stack"></a>ndk-stack</h2><blockquote>
+<p>用来把log信息全部翻译成更加详细的带源码行数信息的log，相当于是在整个crash堆栈信息都执行addr2line命令。</p>
+</blockquote>
+<p>ndk-stack -sym  […/obj/local/{ABI类型}/]   -dump crash.log</p>
+<hr>
+<h2 id="readelf"><a href="#readelf" class="headerlink" title="readelf"></a>readelf</h2><p>可以使用<code>readelf -a [.so/.bin]</code>解析库地址</p>
+<hr>
+<h2 id="c-filt"><a href="#c-filt" class="headerlink" title="c++filt"></a>c++filt</h2><p>根据解析结果查询函数，C++在linux系统编译后会变成类似<code>_ZNK...</code>的修饰名。使用<code>c++filt</code>获取函数的原始名称</p>
+<p><code>c++filt [_ZNK...函数修饰名]</code></p>
 
                     </article>
                     
@@ -497,7 +500,7 @@
                 本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
             </strong>
             <br>
-            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/">https://alonealive.github.io/Blog/2020/06/11/2020/200611_android_tracetxt/</a>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/">https://alonealive.github.io/Blog/2020/07/15/2020/200715_android_NativeCrash/</a>
         </p>
     </blockquote>
 
@@ -520,9 +523,9 @@
     </script>
 
 
-<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-06-11T15:52:00.000Z" itemprop="datePublished">2020-06-11</time>
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-07-15T15:52:00.000Z" itemprop="datePublished">2020-07-15</time>
 
-    , 最后修改于&nbsp;<time datetime="2020-07-20T14:02:59.640Z" itemprop="dateModified">2020-07-20</time>
+    , 最后修改于&nbsp;<time datetime="2020-07-20T14:02:50.228Z" itemprop="dateModified">2020-07-20</time>
 
 </p>
 <p class="post-footer-info mb-0 pt-2">
@@ -537,7 +540,9 @@
 
 <span class="post-tags-list mt-2">
 
-<a class="post-tags-list-item" href="/Blog/tags/display/" rel="tag">#&nbsp;display</a>
+<a class="post-tags-list-item" href="/Blog/tags/android-debug/" rel="tag">#&nbsp;android debug</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
 
 </span>
 
@@ -550,9 +555,9 @@
     <!-- Prev Nav -->
     
         <li class="page-item page-prev">
-            <a href="/Blog/2020/07/07/2020/200707_android_HWUI_Draw/" rel="prev">
+            <a href="/Blog/2020/07/15/2020/200715_cpp_ObjAndClass/" rel="prev">
                 <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
-                <div class="page-item-subtitle">Android HWUI绘制流程</div>
+                <div class="page-item-subtitle">C++ 对象和类（案例代码）</div>
             </a>
         </li>
     
@@ -560,9 +565,9 @@
     <!-- Next Nav -->
     
         <li class="page-item page-next">
-            <a href="/Blog/2020/06/10/2020/200610_android_pointerDraw/" rel="next">
+            <a href="/Blog/2020/07/07/2020/200707_android_HWUI_Draw/" rel="next">
                 <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
-                <div class="page-item-subtitle">Android 开发者选项的“指针位置”坐标值</div>
+                <div class="page-item-subtitle">Android HWUI绘制流程</div>
             </a>
         </li>
     

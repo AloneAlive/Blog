@@ -292,7 +292,12 @@
                     <article class="post-entry container px-0 card">
         <div class="columns col-gapless">
             
-                <div class="column col-12">
+                <div class="column column-thumbnail col-4 col-lg-12">
+                    <a href="/Blog/2020/07/07/2020/200707_android_HWUI_Draw/">
+                        <div class="post-thumbnail lazyload" data-bg="url(https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.4/2020_images/android07_Q.jpeg)"></div>
+                    </a>
+                </div>
+                <div class="column column-body col-8 col-lg-12">
                     
     <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2020/07/07/2020/200707_android_HWUI_Draw/" rel="bookmark">Android HWUI绘制流程</a></h2>
 
@@ -300,7 +305,7 @@
 <p class="mb-0 card-body">
     
         
-Android中绘图的API有很多，比如2D的绘图skia；3D的绘图OpenGLES，Vulkan等。Android在后来完善3D API支持的同时，也在更新View Widget渲染机制，提出了硬件加速机制。HWUI绘制的大致流程是先初始化绘制环境（创建rendernode、渲染线程RenderThread、Context上下文、RenderProxy代理对象），之后是创建DisplayList显示列表，然后开始视图绘制，视图绘制结束后开始同步帧数据。
+Android中绘图的API有很多，比如2D的绘图skia；3D的绘图OpenGLES，Vulkan等。Android在后来完善3D API支持的同时，也在更新View Widget渲染机制，提出了硬件加速机制。  
 
     <a href="/Blog/2020/07/07/2020/200707_android_HWUI_Draw/">阅读全文</a>
 </p>
