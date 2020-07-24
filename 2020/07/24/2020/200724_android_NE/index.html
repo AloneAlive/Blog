@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android NE分析（一） | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android NE分析（一） | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/"><meta property="og:locale" content="zh-CN"><meta name="description" content="任何软件都可能存在BUG，调试和修复BUG伴随着整个开发流程，因此异常分析非常重要。如果是native层发生异常，我们一般称之为叫NE（native exception） - sunwengang - sunwengang blog"><meta name="keywords" content="android, android debug"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/nativeLayer.png"><meta property="article:published_time" content="2020-07-24T12:52:00.000Z"><meta property="article:modified_time" content="2020-07-24T11:06:11.000Z"><meta property="og:updated_time" content="2020-07-24T11:06:11.000Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android, android debug"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/"
+    },
+    "headline": "Android NE分析（一） | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-07-24T12:52:00.000Z",
+    "dateModified": "2020-07-24T11:06:11.000Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android, android debug",
+    "description": "任何软件都可能存在BUG，调试和修复BUG伴随着整个开发流程，因此异常分析非常重要。如果是native层发生异常，我们一般称之为叫NE（native exception） - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/Blog/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/Blog/tags" class="navbar-link">标签</a>
+    
+        <a href="/Blog/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/Blog/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android NE分析（一）" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android NE分析（一）&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android NE分析（一）" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACOklEQVR42u2c0U7DQAwE8/8/DU9IqMTecWhFiedeItFwN6DYWa+tHh//YB1CCimkkG8AeTSr+vzxd6u9vn72/UrPFXI35OlD+wBZHXAGUt3f3XPGI+RuyO7gKoh+bFr8YSmgyv2EFLK4uXrQU/KvgIUU8hmBc5bUK+g2QQspJIRMG58dNBETL1VBQt4OMhVir7o+tVoU8jaQ2DwKBVknSDrh8lRXTchbQHYF08SAosm7E8HIsBLy9pC0CCPimATZJKiE3A2ZCiZSuBFzKyX/NnCEXAF5pchKL4CU7PHeQq6ETAZpt/mk6CdNLBTdQq6BnIhSajrRJF7uI+RKyGkjPQ2NUAPhcvdByNtDEpFBDM+JOdAFq5BCdiAkKFIjfjKcJ6SQpEhKD/ekYCNiuO0+CLkGkorUyZBdas6jf5CQQsLhN2r4T8xZIYVMjXc6OEyKMCpk0OSAkLeH7BItLepJEzQl8tPzhVwNmYY2komQEjwdPkHTLEKuhEwNzk6EpOILG2BCroScNtAnYoMaXGVgCrkSkjz4pMjvmqipeTUSvUKugEzG+1Ujiork0iATci0kHdygxj8RFShwhVwNeWmQozFRScMgDeQJuRMyLWLe0yZV1zxFXVohV0BSM4kGDTG0khEhpJBJrE7ECGmSEhNCSCHJC58U+pNhuhRoQgpJBoanpn16EbSBKqSQg4JrktRJs15IIanAIINH3RDIdFhPSCFJIfYrc/5gXyJ3er+QKyHfeQkppJBC/uH6BJN6VvW+rrXWAAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android NE分析（一）</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-07-24</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android NE分析（一）&url=https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android NE分析（一）&url=https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACOklEQVR42u2c0U7DQAwE8/8/DU9IqMTecWhFiedeItFwN6DYWa+tHh//YB1CCimkkG8AeTSr+vzxd6u9vn72/UrPFXI35OlD+wBZHXAGUt3f3XPGI+RuyO7gKoh+bFr8YSmgyv2EFLK4uXrQU/KvgIUU8hmBc5bUK+g2QQspJIRMG58dNBETL1VBQt4OMhVir7o+tVoU8jaQ2DwKBVknSDrh8lRXTchbQHYF08SAosm7E8HIsBLy9pC0CCPimATZJKiE3A2ZCiZSuBFzKyX/NnCEXAF5pchKL4CU7PHeQq6ETAZpt/mk6CdNLBTdQq6BnIhSajrRJF7uI+RKyGkjPQ2NUAPhcvdByNtDEpFBDM+JOdAFq5BCdiAkKFIjfjKcJ6SQpEhKD/ekYCNiuO0+CLkGkorUyZBdas6jf5CQQsLhN2r4T8xZIYVMjXc6OEyKMCpk0OSAkLeH7BItLepJEzQl8tPzhVwNmYY2komQEjwdPkHTLEKuhEwNzk6EpOILG2BCroScNtAnYoMaXGVgCrkSkjz4pMjvmqipeTUSvUKugEzG+1Ujiork0iATci0kHdygxj8RFShwhVwNeWmQozFRScMgDeQJuRMyLWLe0yZV1zxFXVohV0BSM4kGDTG0khEhpJBJrE7ECGmSEhNCSCHJC58U+pNhuhRoQgpJBoanpn16EbSBKqSQg4JrktRJs15IIanAIINH3RDIdFhPSCFJIfYrc/5gXyJ3er+QKyHfeQkppJBC/uH6BJN6VvW+rrXWAAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#NE简介"><span class="post-toc-number">1.</span> <span class="post-toc-text">NE简介</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#发生NE流程"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">发生NE流程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#信号处理"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">信号处理</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#debuggerd服务"><span class="post-toc-number">2.</span> <span class="post-toc-text">debuggerd服务</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#使用debuggerd命令查看指定tid的调用栈和tombstone"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">使用debuggerd命令查看指定tid的调用栈和tombstone</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#ptrace-attach-detach"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">ptrace attach&#x2F;detach</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#产生db文件"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">产生db文件</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#PROCESS-MAPS文件描述进程空间"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">PROCESS_MAPS文件描述进程空间</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Tombstone"><span class="post-toc-number">3.</span> <span class="post-toc-text">Tombstone</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#调用栈"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">调用栈</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#addr2line命令"><span class="post-toc-number">4.</span> <span class="post-toc-text">addr2line命令</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#objdump"><span class="post-toc-number">5.</span> <span class="post-toc-text">objdump</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#nm命令"><span class="post-toc-number">6.</span> <span class="post-toc-text">nm命令</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#ndk-stack"><span class="post-toc-number">7.</span> <span class="post-toc-text">ndk-stack</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#readelf"><span class="post-toc-number">8.</span> <span class="post-toc-text">readelf</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#c-filt"><span class="post-toc-number">9.</span> <span class="post-toc-text">c++filt</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">10.</span> <span class="post-toc-text">参考</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>任何软件都可能存在BUG，调试和修复BUG伴随着整个开发流程，因此异常分析非常重要。如果是native层发生异常，我们一般称之为叫NE（native exception）</p>
+</blockquote>
+<a id="more"></a>
+
+<p>异常可能发生任何一层，如果是：</p>
+<ul>
+<li>kernel层发生异常，叫KE（kernel exception）</li>
+<li>native层发生异常，叫NE（native exception）</li>
+<li>java成异常，叫JE（java exception）</li>
+</ul>
+<h2 id="NE简介"><a href="#NE简介" class="headerlink" title="NE简介"></a>NE简介</h2><blockquote>
+<p>Native层是由各种lib/binary组成，这一层发生异常，我们称之为NE（native exception）<br>一般我们用offline调试，通过coredump借助gdb或trace32来调试。首先要先熟悉下linux信号和ptrace机制，coredump是通过信号触发生成的。<code>coredump是进程空间保存到文件系统的镜像，因此能看到异常时刻的所有变量值，就可以知道问题出在哪里。</code><br>Android是基于linux的，发生异常时，Android扩展了调试机制，这个机制是debuggerd机制。在没有coredump下，debuggerd以log或者tombstone的方式输出异常信息。</p>
+</blockquote>
+<p>本地应用程序是指可以直接运行在操作系统上，并且处理器直接执行机器码的程序。</p>
+<p>在Android上，OS是linux，因此各种bin程序就是所谓的<code>natvie application</code>，比如/system/bin目录下的所有文件。</p>
+<p>这些应用程序都是由GCC(c/c++)编译生成。</p>
+<p>在Android软件架构里，这些应用程序组成了native layer:</p>
+<p><img src="nativeLayer.png" alt="Native Layer"></p>
+<p>native layer里的应用程序崩溃统称为Native Exception，即NE，比如空指针，非法指针，程序跑飞，内存踩坏等。</p>
+<h3 id="发生NE流程"><a href="#发生NE流程" class="headerlink" title="发生NE流程"></a>发生NE流程</h3><p>原始的linux，对于用户进程崩溃之后，处理方式有2种：</p>
+<ol>
+<li>直接终止进程；</li>
+<li>输出coredump再终止进程</li>
+</ol>
+<p>而在Android，为了方便调试，在收到崩溃信号后，会先输出tombstone，然后在根据设置是否抓取coredump，最后再终止进程。</p>
+<p><strong>如果发生NE，内核会抛出信号，可以通过kernel log搜索<code>sig 11/7</code>等几个可以导致进程崩溃的关键字判断。</strong></p>
+<p>此处的信号注册是发生在动态链接程序加载的时候，链接器（linker）负责将应用程序所需的库加载到进程空间内，然后跑应用程序大妈。linker在执行期间会注册信号。</p>
+<p>流程：__linker_init() -&gt; __linker_init_post_relocation() -&gt; debuggerd_init()</p>
+<h3 id="信号处理"><a href="#信号处理" class="headerlink" title="信号处理"></a>信号处理</h3><p>目前会产生native exception（NE）的几个信号需要特别掌握产生的原因，这样才能进一步分析问题所在。</p>
+<p>内核发送信号过来后会执行<code>debuggerd_init()</code>里注册的函数debugger_signal_handler()，该函数会打印基本信息到main log：</p>
+<p><code>logSignalSummary()</code>函数会输出基本异常信息，类似<code>libc: Fatal signal 11(SIGSEGV) at 0x000 ...</code>日志打印。</p>
+<p>然后连接debuggerd的socket，将pid等信息发送给debuggerd，请它帮忙后续的处理。之后将对应的信号恢复为默认，等待debuggerd处理完后抓取coredump。</p>
+<hr>
+<h2 id="debuggerd服务"><a href="#debuggerd服务" class="headerlink" title="debuggerd服务"></a>debuggerd服务</h2><p>关于上面的debuggerd服务，是由init.rc启动起来，具体代码在<code>system/core/debuggerd/</code>。</p>
+<p>debuggerd起来后会创建1个socket，然后监听，等待别人通过socket请求服务，服务可以是生成tombstone或调用栈。</p>
+<h3 id="使用debuggerd命令查看指定tid的调用栈和tombstone"><a href="#使用debuggerd命令查看指定tid的调用栈和tombstone" class="headerlink" title="使用debuggerd命令查看指定tid的调用栈和tombstone"></a>使用debuggerd命令查看指定tid的调用栈和tombstone</h3><ul>
+<li><code>adb shell debuggerd -b $tid</code>：抓取指定tid的调用栈</li>
+<li><code>adb shell debuggerd $tid</code>：抓取指定tid的tombstone</li>
+</ul>
+<h3 id="ptrace-attach-detach"><a href="#ptrace-attach-detach" class="headerlink" title="ptrace attach/detach"></a>ptrace attach/detach</h3><p>通过socket拿到tid等资料后，使用ptrace attach上目标tid，之后就可以通过ptrace访问目标进程空间，然后打印一些NE相关的寄存器/调用栈等信息。</p>
+<ol>
+<li>ptrace attach：ptrace attach会发送<code>sig 19</code>给对应的进程。在这里，我们将进程内所有线程都attach上，防止有线程提前退出。</li>
+<li>ptrace cont：attach之后还不能直接访问目标进程，因为目标进程还处于信号处理函数里面，我们需要让它恢复到异常现场，因此需要用ptrace cont让其继续执行。</li>
+<li>waitpid：程序接着往下跑必然会再次发生异常（如果是SIGABRT,SIGFPE,SIGPIPE,SIGSTKFLT，则会在信号处理函数重发一次信号），kernel会再次发出信号，只不过由于进程被ptrace了，信号会送给debuggerd。<strong>到这里，目标进程已经收到2次同样的信号了</strong></li>
+<li><code>tombstone</code>:debuggerd收到信号后，就可以生成tombstone了</li>
+<li>ptrace detach: 完成工作后，需要detach ptrace，然后发送<code>sig 18</code>让其继续奔跑。如果是访问空指针等错误，程序会再次发生异常，由于在信号处理函数里已经将对应信号恢复默认，因此可能会产生coredump。</li>
+</ol>
+<hr>
+<h3 id="产生db文件"><a href="#产生db文件" class="headerlink" title="产生db文件"></a>产生db文件</h3><blockquote>
+<p>debuggerd完成之后会通知aee，aee就开始了打包db的工作，具体生成在<code>/data/aee_exp</code>目录</p>
+</blockquote>
+<p>1个完整的NE的db，里面除了coredump还有其他文件，包含log文件(main/event/radio)，详细的NE信息文件(_exp_main/_exp_detail)等，这些文件绝大部分是通过aee_dumpstate保存起来的。</p>
+<h4 id="PROCESS-MAPS文件描述进程空间"><a href="#PROCESS-MAPS文件描述进程空间" class="headerlink" title="PROCESS_MAPS文件描述进程空间"></a>PROCESS_MAPS文件描述进程空间</h4><p>db中有些文件对分析NE是至关重要的，比如PROCESS_MAPS，这文件就是<code>/proc/$pid/maps</code>，里面是对进程空间的描述。</p>
+<p>例如以下部分截取的内容：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;1-进程里地址范围            2-虚拟内存的权限（r&#x3D;读&#x2F;w&#x3D;写&#x2F;x&#x3D;可执行&#x2F;s&#x3D;共享&#x2F;p&#x3D;私有）</span><br><span class="line">&#x2F;&#x2F;3-空间所映射的文件的偏移量    4-空间所映射的文件的主次设备号</span><br><span class="line">&#x2F;&#x2F;5-空间所映射的文件的节点号（0表示没有节点映射到内存）   6-空间所映射的文件的路径</span><br><span class="line">7ec808a000-7ec808b000 --xp 00001000 fd:01 3989                           &#x2F;system&#x2F;lib64&#x2F;libhardware.so</span><br><span class="line">7ec808b000-7ec808c000 rw-p 00002000 fd:01 3989                           &#x2F;system&#x2F;lib64&#x2F;libhardware.so</span><br><span class="line">7ec808c000-7ec808d000 r--p 00003000 fd:01 3989                           &#x2F;system&#x2F;lib64&#x2F;libhardware.so</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="Tombstone"><a href="#Tombstone" class="headerlink" title="Tombstone"></a>Tombstone</h2><blockquote>
+<p>Android Native程序本质上就是一个Linux程序，因此当它在执行时发生严重错误，也会导致程序crash，然后产生一个记录crash的现场信息的文件，而这个文件在Android系统中就是tombstone文件。</p>
+</blockquote>
+<p>从上面的分析看，发生NE的时候会创建tombstone文件，最多存在10个，如果已存在10个，会覆盖最旧的文件。</p>
+<p><strong>组成部分：</strong></p>
+<ol>
+<li>版本信息：主要是fingerprint，可以看出异常版本是eng还是user</li>
+<li>寄存器信息：主要查看是哪个进程崩溃，信号是什么。寄存器信息需要配合下面的调用栈信息及数据信息结合GNU的工具（<code>objdump -S反汇编</code>）分析。</li>
+<li>调用栈信息：是最直接可以看出异常的信息（可以使用addr2line定位地址的代码函数对应位置）</li>
+<li>其他线程信息：如果异常线程和其他线程有逻辑关系的话，可以查看对应线程的信息</li>
+<li>main log信息：全面的log建议还是查看main log</li>
+</ol>
+<h3 id="调用栈"><a href="#调用栈" class="headerlink" title="调用栈"></a>调用栈</h3><p>最直接查看栈的位置就是log和Tombstone文件中。</p>
+<p>C/C++语言的过程调用都需要栈，正在执行的函数有属于自己的栈帧，函数内部的局部变量就放在栈帧里，当然还会存放函数的返回地址，这样函数执行结束之后才知道返回到哪里。</p>
+<p>不同的栈帧关联在一起就会形成一个调用链，最顶端表示当前正在执行的函数，第2行表示调用它的函数，以此类推（先进后出）。</p>
+<p>例如以下栈：</p>
+<blockquote>
+<p><code>库里的偏移</code>：库默认都加载在0地址的，由OS随机加载在mmap区域，因此实际上库函数的地址都是<code>基址+偏移量</code>，其中的基址就是库加载的地址，这个地址可以从<code>/proc/$pid/maps</code>看到每个库的基址。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">backtrace:</span><br><span class="line">      #00 pc 00000000000e2f88  &#x2F;apex&#x2F;com.android.runtime&#x2F;lib64&#x2F;bionic&#x2F;libc.so (pthread_mutex_lock) (BuildId: ceedf0f98da575de138b0c631aceca44)</span><br><span class="line">    &#x2F;&#x2F;栈帧  +  地址       +       函数                                                 + 该函数的偏移量（+32） </span><br><span class="line">      #01 pc 00000000000c39a0  &#x2F;system&#x2F;lib64&#x2F;libgui.so (android::SurfaceControl::getHandle() const+32) (BuildId: d26a01ac90bf9cf5c7585e3fbbdbb327)</span><br><span class="line">      #02 pc 0000000000120a28  &#x2F;system&#x2F;lib64&#x2F;libandroid_runtime.so (android::nativeGetHandle(_JNIEnv*, _jclass*, long)+40) (BuildId: 5bd8af36fc54644383069436f63eec83)</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h2 id="addr2line命令"><a href="#addr2line命令" class="headerlink" title="addr2line命令"></a>addr2line命令</h2><p>针对发生Native Crash的堆栈，将地址转换为地址所在的文件及行数(显示所在函数)</p>
+<p>该命令可以用来解析so动态链接库（Symbol目录），分析单个pc地址对应的函数，然后参照代码寻找问题发生处。</p>
+<p>含有调试信息的库或程序必须和手机里的库或程序是同一次编译生成的，否则得到的PC值和库里的调试信息不匹配。</p>
+<blockquote>
+<p>如何确定库或程序含有调试信息呢？或者说如何确定库能不能用来调试呢？是不是symbol目录下的库呢？</p>
+</blockquote>
+<blockquote>
+<p>用file命令即可查看：<code>file xxx</code></p>
+</blockquote>
+<ul>
+<li>如果没有含debug信息的话，会显示：<code>xxx: ELF 32-bit LSB shared object, ARM, version 1 (SYSV), dynamically linked, stripped</code></li>
+<li>含有调试信息的话，则显示：<code>xxx: ELF 32-bit LSB shared object, ARM, version 1 (SYSV), dynamically linked, not stripped</code></li>
+</ul>
+<p>例如：（需要在Symbol目录下）</p>
+<p><code>addr2line -Cfe .so address</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;out&#x2F;target&#x2F;product&#x2F;product&#x2F;symbols&#x2F;system&#x2F;lib64$ addr2line -f -e libgui.so 00000000000c39a0</span><br><span class="line">_ZNK7android12SortedVectorINS_12DisplayStateEE16do_move_backwardEPvPKvm</span><br></pre></td></tr></table></figure>
+
+<p>解释：-e 后加上.so的文件名；-f 可同时输出函数名称</p>
+<ul>
+<li><code>-e --exe=&lt;executable&gt;</code>: 设置要查询地址的文件(默认: a.out)一般是<em>.so/</em>.a和可执行程序。此文件必须带有debug信息，在android codebase里是放在out/target/product/$project/symbols目录下</li>
+<li><code>-f –functions</code>: 显示地址所在的函数名</li>
+<li><code>-C --demangle[=style]</code>: 反重整函数名为可读方式</li>
+</ul>
+<h2 id="objdump"><a href="#objdump" class="headerlink" title="objdump"></a>objdump</h2><p><code>objdump –S **.so &gt; **.asm</code></p>
+<p>该命令是用来把相应的so变成汇编语言的asm文件，然后根据地址信息就可以找到更加详细的相关函数信息。</p>
+<p>即查看对象文件(<em>.so/</em>.a或应用程序)的内容信息</p>
+<p>或者</p>
+<p><code>symbols/out/target/product/merlin/symbols$ objdump -tT system/lib64/libgui.so</code></p>
+<table>
+<thead>
+<tr>
+<th align="center">后缀</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-S 或 –source</td>
+<td align="center">尽可能反汇编出源代码，尤其当编译的时候指定了-g这种调试参数时，效果比较明显。隐含了-d参数</td>
+</tr>
+<tr>
+<td align="center">-t 或 –syms</td>
+<td align="center">显示文件的符号表入口。类似于nm -s提供的信息</td>
+</tr>
+<tr>
+<td align="center">-T 或 –dynamic-syms</td>
+<td align="center">显示文件的动态符号表入口，仅仅对动态目标文件意义，比如某些共享库。它显示的信息类似于`nm -D</td>
+</tr>
+</tbody></table>
+<h2 id="nm命令"><a href="#nm命令" class="headerlink" title="nm命令"></a>nm命令</h2><p>作用是：列出该文件的符号(函数，变量，文件等)，包含名字、地址、大小</p>
+<hr>
+<h2 id="ndk-stack"><a href="#ndk-stack" class="headerlink" title="ndk-stack"></a>ndk-stack</h2><blockquote>
+<p>用来把log信息全部翻译成更加详细的带源码行数信息的log，相当于是在整个crash堆栈信息都执行addr2line命令。</p>
+</blockquote>
+<p>ndk-stack -sym  […/obj/local/{ABI类型}/]   -dump crash.log</p>
+<hr>
+<h2 id="readelf"><a href="#readelf" class="headerlink" title="readelf"></a>readelf</h2><p>查看elf文件(<em>.so/</em>.a或应用程序)的内容信息，可以使用<code>readelf -a [.so/.bin]</code>解析库地址。</p>
+<hr>
+<h2 id="c-filt"><a href="#c-filt" class="headerlink" title="c++filt"></a>c++filt</h2><p>反重整C++符号为可读方式。</p>
+<p>根据解析结果查询函数，C++在linux系统编译后会变成类似<code>_ZNK...</code>的修饰名。使用<code>c++filt</code>获取函数的原始名称。</p>
+<p><code>c++filt [_ZNK...函数修饰名]</code></p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li>关于不同版本aee db文件的抓取：<a href="https://blog.csdn.net/topsecrethhh/article/details/81453414" target="_blank" rel="noopener">https://blog.csdn.net/topsecrethhh/article/details/81453414</a></li>
+<li>coredump配置、产生、分析以及分析示例：<a href="https://www.cnblogs.com/arnoldlu/p/11160510.html" target="_blank" rel="noopener">https://www.cnblogs.com/arnoldlu/p/11160510.html</a></li>
+<li>Android Debuggerd 简要介绍和源码分析：<a href="https://www.cnblogs.com/lance-ehf/p/4249605.html" target="_blank" rel="noopener">https://www.cnblogs.com/lance-ehf/p/4249605.html</a></li>
+</ul>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/">https://alonealive.github.io/Blog/2020/07/24/2020/200724_android_NE/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-07-24");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-07-24T12:52:00.000Z" itemprop="datePublished">2020-07-24</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/android-debug/" rel="tag">#&nbsp;android debug</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/07/15/2020/200715_cpp_ObjAndClass/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">C++ 对象和类（案例代码）</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>
