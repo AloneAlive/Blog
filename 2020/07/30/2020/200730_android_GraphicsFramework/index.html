@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android 图形显示框架 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android 图形显示框架 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/"><meta property="og:locale" content="zh-CN"><meta name="description" content="本篇对Android图形显示框架做一个概述，内容主要包含：SurfaceSession创建和销毁（添加&#x2F;删除窗口），Surface创建和销毁，BufferQueue创建，以及BufferQueue的dequeueBuffer和queueBuffer、acquire和release大致流程梳理。 - sunwengang - sunwengang blog"><meta name="keywords" content="android, graphics, display"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/Android%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6-0-%E6%A6%82%E8%BF%B0.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/Android_GraphicsProcess.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/ActivityLifecycle.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/Android%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6-1-3-Activity_Destroy.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/Android%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6-1-2-Surface_Destroy.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/WMS_CreateSurfaceControl.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/Android%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6-1-1-Surface%E5%88%9B%E5%BB%BA.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/BufferQueue.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/BufferQueue_Create.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/Android%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6-2-%E6%B8%B2%E6%9F%93%E6%97%B6BufferQueue-dequeue-queue.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/Android%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6-3-BufferQueue-acquire-release.png"><meta property="article:published_time" content="2020-07-30T13:52:00.000Z"><meta property="article:modified_time" content="2020-07-30T09:15:39.000Z"><meta property="og:updated_time" content="2020-07-30T09:15:39.000Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android, graphics, display"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/"
+    },
+    "headline": "Android 图形显示框架 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-07-30T13:52:00.000Z",
+    "dateModified": "2020-07-30T09:15:39.000Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android, graphics, display",
+    "description": "本篇对Android图形显示框架做一个概述，内容主要包含：SurfaceSession创建和销毁（添加/删除窗口），Surface创建和销毁，BufferQueue创建，以及BufferQueue的dequeueBuffer和queueBuffer、acquire和release大致流程梳理。 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/Blog/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/Blog/tags" class="navbar-link">标签</a>
+    
+        <a href="/Blog/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/Blog/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android 图形显示框架" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android 图形显示框架&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android 图形显示框架" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACLUlEQVR42u2aS1bEMAwE5/6Xhv0Qq0tOeAxWeTN8ErvMs0yrpdfXPxgvIYUUUsgPgHwV4/LFi9+t3n3/fP9ZWlfIuZArmBXIauHVe1cbJOsKORuyOvSrr1eLpXfJukIKmS7iagPk8hdSyKcDZ3VJp42RZ4QUsiMwriZJgiKJk8dVkJDHQVYJ0W9+PpYtCnkUZDSNGsIiCY5KiNxy1YQ8CrI6yGlykox1TS4hhawMJmqAEiFCNvxjbSFHQ+5czCkwqrlIwifkTMhOsrRjaHXXEVLIrjGKL+IisKgxJuRMSGJOJRFCiqSkWFpmi0KOgayKQCkoqgSr8wdAl7mQYyA7RidpGMHiAQSlkDMhyT970uyxagypCgax+U7I0ZDVQSYFzWTcpzUuEz8hhQSGFb3Ud4pWuEor5NGQxEztXOS0YNUWvUKOhOw0JREDgTYzL4NNyJGQZDLaEEefocV9IedCViKAiFdq6t9y1YQcA1nB0YJRNxnDBVchR0ISwz2ZA3SDnYZmIYVMB70SuKQ5pPO9kEJWQqAqGnUb5YiJirv+hDwecsf8TOJh2QCyY+wLOQ6y07REnq2SNxJwQs6FTOPWZbwRcKXTK+QIyHSgKXi6rGkChhtFhDwashIBycxKxdJUVMKBI+Q4SJpQESOfiIqVUSakkN3GzhQ4pLCfClBCCkkgaeEywVcGhJBCEoHRbVYiAqMMFiGFbBhJpAGkM2favJAzIT95CCmkkEL+4fgGdAN21Rzo0vkAAAAASUVORK5CYII=" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android 图形显示框架</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-07-30</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android 图形显示框架&url=https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android 图形显示框架&url=https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACLUlEQVR42u2aS1bEMAwE5/6Xhv0Qq0tOeAxWeTN8ErvMs0yrpdfXPxgvIYUUUsgPgHwV4/LFi9+t3n3/fP9ZWlfIuZArmBXIauHVe1cbJOsKORuyOvSrr1eLpXfJukIKmS7iagPk8hdSyKcDZ3VJp42RZ4QUsiMwriZJgiKJk8dVkJDHQVYJ0W9+PpYtCnkUZDSNGsIiCY5KiNxy1YQ8CrI6yGlykox1TS4hhawMJmqAEiFCNvxjbSFHQ+5czCkwqrlIwifkTMhOsrRjaHXXEVLIrjGKL+IisKgxJuRMSGJOJRFCiqSkWFpmi0KOgayKQCkoqgSr8wdAl7mQYyA7RidpGMHiAQSlkDMhyT970uyxagypCgax+U7I0ZDVQSYFzWTcpzUuEz8hhQSGFb3Ud4pWuEor5NGQxEztXOS0YNUWvUKOhOw0JREDgTYzL4NNyJGQZDLaEEefocV9IedCViKAiFdq6t9y1YQcA1nB0YJRNxnDBVchR0ISwz2ZA3SDnYZmIYVMB70SuKQ5pPO9kEJWQqAqGnUb5YiJirv+hDwecsf8TOJh2QCyY+wLOQ6y07REnq2SNxJwQs6FTOPWZbwRcKXTK+QIyHSgKXi6rGkChhtFhDwashIBycxKxdJUVMKBI+Q4SJpQESOfiIqVUSakkN3GzhQ4pLCfClBCCkkgaeEywVcGhJBCEoHRbVYiAqMMFiGFbBhJpAGkM2favJAzIT95CCmkkEL+4fgGdAN21Rzo0vkAAAAASUVORK5CYII=" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#显示框架概述"><span class="post-toc-number">1.</span> <span class="post-toc-text">显示框架概述</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#显示过程的三个进程"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">显示过程的三个进程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Activity、Window、PhoneWindow、DecorView、View的对应关系"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">Activity、Window、PhoneWindow、DecorView、View的对应关系</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Activity生命周期"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">Activity生命周期</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#App进程中完成添加窗口操作"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">App进程中完成添加窗口操作</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#窗口移除序列图（Activity-destroy）"><span class="post-toc-number">1.3.2.</span> <span class="post-toc-text">窗口移除序列图（Activity destroy）</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Surface-Destroy（Activity-pause或者stop状态）"><span class="post-toc-number">1.3.3.</span> <span class="post-toc-text">Surface Destroy（Activity pause或者stop状态）</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#SurfaceSession创建"><span class="post-toc-number">2.</span> <span class="post-toc-text">SurfaceSession创建</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#mGlobal-addView中创建ViewRootImpl对象"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">mGlobal.addView中创建ViewRootImpl对象</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#mGlobal-addView中调用ViewRootImpl-setView"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">mGlobal.addView中调用ViewRootImpl.setView</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#Surface创建"><span class="post-toc-number">3.</span> <span class="post-toc-text">Surface创建</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#App进程请求创建Surface"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">App进程请求创建Surface</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#System-server进程-——-WMS"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">System_server进程 —— WMS</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#SurfaceFlinger进程"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">SurfaceFlinger进程</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#序列图"><span class="post-toc-number">4.</span> <span class="post-toc-text">序列图</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#BufferQueue"><span class="post-toc-number">5.</span> <span class="post-toc-text">BufferQueue</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BufferQueue概述"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">BufferQueue概述</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BufferQueue状态"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">BufferQueue状态</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#BufferQueue创建以及创建一个监听"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">BufferQueue创建以及创建一个监听</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DequeuBuffer"><span class="post-toc-number">5.4.</span> <span class="post-toc-text">DequeuBuffer</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#QueueBuffer"><span class="post-toc-number">5.5.</span> <span class="post-toc-text">QueueBuffer</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#序列图-1"><span class="post-toc-number">5.6.</span> <span class="post-toc-text">序列图</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#acquire-amp-release"><span class="post-toc-number">5.7.</span> <span class="post-toc-text">acquire &amp; release</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#序列图-2"><span class="post-toc-number">5.8.</span> <span class="post-toc-text">序列图</span></a></li></ol></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>本篇对Android图形显示框架做一个概述，内容主要包含：SurfaceSession创建和销毁（添加/删除窗口），Surface创建和销毁，BufferQueue创建，以及BufferQueue的dequeueBuffer和queueBuffer、acquire和release大致流程梳理。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="显示框架概述"><a href="#显示框架概述" class="headerlink" title="显示框架概述"></a>显示框架概述</h2><p>Android与用户进行图形界面的交互，例如各个应用程序，他们的对话框、按钮、菜单等图形窗口。这些窗口的管理都是由WindowManager负责，窗口管理位于Java层，真正的实现者是运行在System_server进程空间中的WindowManagerService。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/java/com/android/server/SystemServer.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Starts a miscellaneous grab bag of stuff that has yet to be refactored and organized.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startOtherServices</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    .......</span><br><span class="line">        traceBeginAndSlog(<span class="string">"StartWindowManagerService"</span>);</span><br><span class="line">        <span class="comment">// WMS needs sensor service ready</span></span><br><span class="line">        ConcurrentUtils.waitForFutureNoInterrupt(mSensorServiceStart, START_SENSOR_SERVICE);</span><br><span class="line">        mSensorServiceStart = <span class="keyword">null</span>;</span><br><span class="line">        wm = WindowManagerService.main(context, inputManager, !mFirstBoot, mOnlyCore,</span><br><span class="line">                <span class="keyword">new</span> PhoneWindowManager(), mActivityManagerService.mActivityTaskManager);</span><br><span class="line">        ServiceManager.addService(Context.WINDOW_SERVICE, wm, <span class="comment">/* allowIsolated= */</span> <span class="keyword">false</span>,</span><br><span class="line">                DUMP_FLAG_PRIORITY_CRITICAL | DUMP_FLAG_PROTO);</span><br><span class="line">        ServiceManager.addService(Context.INPUT_SERVICE, inputManager,</span><br><span class="line">                <span class="comment">/* allowIsolated= */</span> <span class="keyword">false</span>, DUMP_FLAG_PRIORITY_CRITICAL);</span><br><span class="line">        traceEnd();</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>应用程序负责修改绘制窗口中的内容，而WindowManager负责窗口的生命周期、几何属性、坐标变换信息、用户输入焦点、动画等功能。他还管理着窗口状态的变化，如窗口位置、大小、透明度以及Z-order（前后遮盖顺序）等一系列的逻辑判断。这些WindowManager功能由一系列接口或类构成，包括ViewManager、WindowManager、WindowManagerImpl、WindowManagerService等。</p>
+<p>SurfaceFlinger负责分配应用程序所需的图形缓冲区，并对系统中的整个图形窗口进行composition（合成）。</p>
+<p>最终，图形窗口会更新显示到Display显示器上。</p>
+<p><img src="Android%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6-0-%E6%A6%82%E8%BF%B0.png" alt="显示框架概述"></p>
+<hr>
+<h3 id="显示过程的三个进程"><a href="#显示过程的三个进程" class="headerlink" title="显示过程的三个进程"></a>显示过程的三个进程</h3><p>Android显示的整个过程由App进程、System_server进程、SurfaceFlinger进程一起配合完成。</p>
+<ol>
+<li><p>App进程： App需要将自己的内容显示在屏幕上，所以需要负责发起Surface创建的请求。同时触发对控件的测量、布局、绘制以及输入事件的派发处理，这些主要在ViewRootImpl中触发；</p>
+</li>
+<li><p>System_server进程： 主要是WindowManagerService，负责接收App请求，同时和SurfaceFlinger建立连接，向SurfaceFlinger发起具体请求创建Surface，并且创建Surace的辅助管理类SurfaceControl（和window一一对应）(AMS作用是统一调度所有App的Activity)；</p>
+</li>
+<li><p>SurfaceFlinger： 为App创建具体的Surface，在SurfaceFLinger对应成Layer，然后负责管理、合成所有图层，最终显示。</p>
+</li>
+</ol>
+<p><img src="Android_GraphicsProcess.png" alt="显示过程的三个进程"></p>
+<hr>
+<h3 id="Activity、Window、PhoneWindow、DecorView、View的对应关系"><a href="#Activity、Window、PhoneWindow、DecorView、View的对应关系" class="headerlink" title="Activity、Window、PhoneWindow、DecorView、View的对应关系"></a>Activity、Window、PhoneWindow、DecorView、View的对应关系</h3><ol>
+<li>Window：每一个Activity都包含一个Window对象（抽象类，提供了绘制窗口的一组通用API），通常由PhoneWindow实现。</li>
+</ol>
+<p>在Activity.java中定义：<code>private Window mWindow;</code></p>
+<ul>
+<li>一个Activity对应创建一个Surface</li>
+</ul>
+<ol start="2">
+<li>PhoneWindow:继承于Window，是Window类的具体实现。该类内部包含了一个DecorView对象，该DecorView对象是所有应用窗口（Activity界面）的根View。</li>
+</ol>
+<p>简而言之，PhoneWindow类是把一个FrameLayout类，即DecorView对象进行一定的包装，将他作为应用窗口的根View，并提供一组通用的窗口操作接口。</p>
+<p>PhoneWindow是Android中最基本的窗口系统，每个Activity都会创建一个PhoneWindow对象，是Activity和整个View系统交互的接口。</p>
+<p>在Activity.java的attach函数实例化：<code>mWindow = new PhoneWindow(this, window, activityConfigCallback);</code></p>
+<ol start="3">
+<li>DecorView：PhoneWindow构造函数中定义，继承FrameLayout类，是所有应用窗口的根View。</li>
+</ol>
+<p>在PhoneWindow.java中定义，构造函数中初始化：<code>private DecorView mDecor;</code></p>
+<p><strong>相关debug方法：</strong></p>
+<ul>
+<li>adb shell dumpsys activity</li>
+<li>adb shell dumpsys window</li>
+</ul>
+<p>![window包含关系]](phonewindow.png)</p>
+<hr>
+<h3 id="Activity生命周期"><a href="#Activity生命周期" class="headerlink" title="Activity生命周期"></a>Activity生命周期</h3><blockquote>
+<p>Activity onResume添加窗口</p>
+</blockquote>
+<p>onCreate方法中调用setContentView来设置布局，此时只是完成了View Tree的创建。<a href="https://wizzie.top/Blog/2020/07/07/2020/200707_android_HWUI_Draw/#%E7%BB%98%E5%88%B6%E5%BA%8F%E5%88%97%E5%9B%BE" target="_blank" rel="noopener">此处参考HWUI绘制文章</a></p>
+<p>真正通知WMS添加窗口，是在回调onResume完成的。</p>
+<p>调用onResume的方法在ActivityThread.java中是<code>handleResumeActivity</code>。之后调用到WMS.java的addWindow。</p>
+<p><img src="ActivityLifecycle.png" alt="Activity生命周期"></p>
+<hr>
+<h4 id="App进程中完成添加窗口操作"><a href="#App进程中完成添加窗口操作" class="headerlink" title="App进程中完成添加窗口操作"></a>App进程中完成添加窗口操作</h4><ol>
+<li>当一个新窗口(Window)被创建的时候，在ActivityThread.java的<code>handleResumeActivity</code>中调用addView(),然后调用到<code>WindowManagerImpl</code>的addView()函数。</li>
+</ol>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/view/WindowManagerImpl.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addView</span><span class="params">(@NonNull View view, @NonNull ViewGroup.LayoutParams params)</span> </span>&#123;</span><br><span class="line">    applyDefaultToken(params);</span><br><span class="line">    mGlobal.addView(view, params, mContext.getDisplay(), mParentWindow);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>这个函数将实际操作委托给mGlobal成员完成，这个成员随着WindowManagerImpl的创建而被初始化：<code>private final WindowManagerGlobal mGlobal = WindowManagerGlobal.getInstance();</code></li>
+</ol>
+<p><strong>WindowManagerGlobal是一个单例模式，即一个进程中最多仅有一个WindowManagerGlobal实例。</strong></p>
+<ol start="3">
+<li>调用mGlobal的addView函数后，将会创建一个ViewRootImpl对象，并且将窗口的控件、布局参数、ViewRootImpl对象入参到setView函数中，这个动作将导致<strong>ViewRootImpl向WMS添加新的窗口、申请Surface创建、绘制动作等</strong>。这才真正意义的完成了窗口的添加操作。</li>
+</ol>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/view/WindowManagerGlobal.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addView</span><span class="params">(View view, ViewGroup.LayoutParams params,</span></span></span><br><span class="line"><span class="function"><span class="params">        Display display, Window parentWindow)</span> </span>&#123;</span><br><span class="line">            ......</span><br><span class="line">        root = <span class="keyword">new</span> ViewRootImpl(view.getContext(), display);</span><br><span class="line"></span><br><span class="line">        view.setLayoutParams(wparams);</span><br><span class="line"></span><br><span class="line">        mViews.add(view);</span><br><span class="line">        mRoots.add(root);</span><br><span class="line">        mParams.add(wparams);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// do this last because it fires off messages to start doing things</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            root.setView(view, wparams, panelParentView);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (RuntimeException e) &#123;</span><br><span class="line">            <span class="comment">// BadTokenException or InvalidDisplayException, clean up.</span></span><br><span class="line">            <span class="keyword">if</span> (index &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                removeViewLocked(index, <span class="keyword">true</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">throw</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="窗口移除序列图（Activity-destroy）"><a href="#窗口移除序列图（Activity-destroy）" class="headerlink" title="窗口移除序列图（Activity destroy）"></a>窗口移除序列图（Activity destroy）</h4><p>窗口被删除，Activity执行了handleDestroyActivity函数：</p>
+<p><img src="Android%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6-1-3-Activity_Destroy.png" alt="Activity destroy"></p>
+<h4 id="Surface-Destroy（Activity-pause或者stop状态）"><a href="#Surface-Destroy（Activity-pause或者stop状态）" class="headerlink" title="Surface Destroy（Activity pause或者stop状态）"></a>Surface Destroy（Activity pause或者stop状态）</h4><blockquote>
+<p>可以结合以下<code>Surface创建部分</code>一起梳理，针对的情况是Surface被destroy，从framework/base到SurfaceFlinger模块Layer析构的流程。<br>但是就Activity而言，并没有被销毁，而是类似按了home键返回桌面，或者在后台运行的状态，具体可以通过日志观察。</p>
+</blockquote>
+<p><img src="Android%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6-1-2-Surface_Destroy.png" alt="Surface Destroy"></p>
+<hr>
+<h2 id="SurfaceSession创建"><a href="#SurfaceSession创建" class="headerlink" title="SurfaceSession创建"></a>SurfaceSession创建</h2><blockquote>
+<p>此处是接着上面添加窗口的流程，分为以下两部分。</p>
+</blockquote>
+<h3 id="mGlobal-addView中创建ViewRootImpl对象"><a href="#mGlobal-addView中创建ViewRootImpl对象" class="headerlink" title="mGlobal.addView中创建ViewRootImpl对象"></a>mGlobal.addView中创建ViewRootImpl对象</h3><ol>
+<li>新建ViewRootImpl对象的时候，调用构造函数，会从WindowManagerGlobal中获取一个窗口session。</li>
+</ol>
+<p><code>mWindowSession = WindowManagerGlobal.getWindowSession();</code></p>
+<ol start="2">
+<li>在WindowManagerGlobal中会通过Binder IPC跨进程创建一个session。</li>
+</ol>
+<p>Session主要用于进程间通信，其他应用程序想要和WMS通信就需要经过Session，每个应用程序进程都会对应一个Session，WMS保存这些Session用来记录所有向WMS提出窗口管理服务的客户端。</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/view/WindowManagerGlobal.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@UnsupportedAppUsage</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> IWindowSession <span class="title">getWindowSession</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (WindowManagerGlobal<span class="class">.<span class="keyword">class</span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (sWindowSession == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// Emulate the legacy behavior.  The global instance of InputMethodManager</span></span><br><span class="line">                    <span class="comment">// was instantiated here.</span></span><br><span class="line">                    <span class="comment">// TODO(b/116157766): Remove this hack after cleaning up @UnsupportedAppUsage</span></span><br><span class="line">                    InputMethodManager.ensureDefaultInstanceForDefaultDisplayIfNecessary();</span><br><span class="line">                    <span class="comment">//获取WMS对象</span></span><br><span class="line">                    IWindowManager windowManager = getWindowManagerService();</span><br><span class="line">                    <span class="comment">//创建Session</span></span><br><span class="line">                    sWindowSession = windowManager.openSession(</span><br><span class="line">                            <span class="keyword">new</span> IWindowSessionCallback.Stub() &#123;</span><br><span class="line">                                <span class="meta">@Override</span></span><br><span class="line">                                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onAnimatorScaleChanged</span><span class="params">(<span class="keyword">float</span> scale)</span> </span>&#123;</span><br><span class="line">                                    ValueAnimator.setDurationScale(scale);</span><br><span class="line">                                &#125;</span><br><span class="line">                            &#125;);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (RemoteException e) &#123;</span><br><span class="line">                    <span class="keyword">throw</span> e.rethrowFromSystemServer();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> sWindowSession;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>WMS继承IWindowManager.Stub，调用到openSessio函数，创建一个新的session对象, 返回值是IWindowSession类型。用于在APP进程和WMS之间建立联系。</li>
+</ol>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/wm/WindowManagerService.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">H</span> <span class="keyword">extends</span> <span class="title">android</span>.<span class="title">os</span>.<span class="title">Handler</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> IWindowSession <span class="title">openSession</span><span class="params">(IWindowSessionCallback callback)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> Session(<span class="keyword">this</span>, callback);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="mGlobal-addView中调用ViewRootImpl-setView"><a href="#mGlobal-addView中调用ViewRootImpl-setView" class="headerlink" title="mGlobal.addView中调用ViewRootImpl.setView"></a>mGlobal.addView中调用ViewRootImpl.setView</h3><p>在前面mGlobal创建ViewRootImpl对象之后，会调用ViewRootImpl对象的setView，然后通知到WMS创建一个SurfaceSession，建立WindowManagerService和Surfacelinger的连接。</p>
+<p>一个SurfaceSession代表着一个到SurfaceFlinger的连接会话，在这个连接会话里，可以创建一个或多个surface，最后这些surface被合成送到Display上显示。</p>
+<p>大致过程：（查看下面的序列图）</p>
+<ol>
+<li>在setView()中调用mWindowSession.addToDisplay, mWindowSession是IWindowSession接口类型，而Session.java实现了该接口；</li>
+<li>Session.java 中调用mService.addWindow(…), mService是WMS类型；</li>
+<li>WMS.java的addWindow()创建WindowState对象win，调用win.attach()</li>
+<li>frameworks/base/services/core/java/com/android/server/wm/WindowState.java  调用attach</li>
+<li>frameworks/base/services/core/java/com/android/server/wm/Session.java  调用windowAddedocked，创建SurfaceSession类型的mSurfaceSession</li>
+<li>frameworks/base/core/java/android/view/SurfaceSession.java  构造函数调用JNI，然后在android_view_SurfaceSession.cpp中的nativeCreate创建SurfaceComposerClient, 调用Refase的incStrong然后实现onFirstRef,通过调用CreateConnection()建立和SF的连接;</li>
+<li>SF.cpp  调用CreateConnection()返回SF的Client类的Binder代理BpSurfaceComposerClient;</li>
+</ol>
+<hr>
+<h2 id="Surface创建"><a href="#Surface创建" class="headerlink" title="Surface创建"></a>Surface创建</h2><h3 id="App进程请求创建Surface"><a href="#App进程请求创建Surface" class="headerlink" title="App进程请求创建Surface"></a>App进程请求创建Surface</h3><p>Surface是Android图形系统的核心部分，图形界面上的一个窗口或对话框等都对应着一个Surface。</p>
+<p>而这个Surface是一块绘制区域的抽象，它对应着Server服务端Surfacelinger中的一个图层Layer，这个图层的背后是一块图形缓冲区GraphicBuffer，Client客户端的应用程序的UI使用软件绘制、硬件绘制在Surface上各种渲染操作时，绘制操作的结果其实也就是在该图形缓冲区中。</p>
+<p>这部分的内容是梳理Surface创建的过程。</p>
+<ol>
+<li>在ViewRootImpl对象中，<code>setView到requestLayout函数请求布局，到调用scheduleTraversals</code>，该函数里面在Choreographer.java层层调用到<code>Message msg = mHandler.obtainMessage(MSG_DO_SCHEDULE_CALLBACK, action);</code></li>
+</ol>
+<p>此处的action即是新的线程启动。</p>
+<ol start="2">
+<li>启动ViewRootImp中单独的线程TraversalRunnable，然后调用到关键函数<code>performTraversals()</code>。</li>
+</ol>
+<p>这个关键函数有两个主要的函数:</p>
+<ul>
+<li>relayoutWindow()   -&gt;布局窗口</li>
+<li>performDraw()    -&gt;绘制渲染</li>
+</ul>
+<p>请求创建Surface就从relayoutWindow函数开始。</p>
+<p>在这个方法中调用IWindowSession的relayout，会调用到Session.java，然后调用到WMS的relayoutWindow从而达到跨进程：（流程图查看下面单独章节的序列图）</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/core/java/android/view/ViewRootImpl.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">relayoutWindow</span><span class="params">(WindowManager.LayoutParams params, <span class="keyword">int</span> viewVisibility,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">boolean</span> insetsPending)</span> <span class="keyword">throws</span> RemoteException </span>&#123;</span><br><span class="line">            ......</span><br><span class="line">    <span class="comment">//此处relayout会调用到WMS的relayoutWindow</span></span><br><span class="line">    <span class="keyword">int</span> relayoutResult = mWindowSession.relayout(mWindow, mSeq, params,</span><br><span class="line">            (<span class="keyword">int</span>) (mView.getMeasuredWidth() * appScale + <span class="number">0.5f</span>),</span><br><span class="line">            (<span class="keyword">int</span>) (mView.getMeasuredHeight() * appScale + <span class="number">0.5f</span>), viewVisibility,</span><br><span class="line">            insetsPending ? WindowManagerGlobal.RELAYOUT_INSETS_PENDING : <span class="number">0</span>, frameNumber,</span><br><span class="line">            mTmpFrame, mPendingOverscanInsets, mPendingContentInsets, mPendingVisibleInsets,</span><br><span class="line">            mPendingStableInsets, mPendingOutsets, mPendingBackDropFrame, mPendingDisplayCutout,</span><br><span class="line">            mPendingMergedConfiguration, mSurfaceControl, mTempInsets);</span><br><span class="line">    <span class="keyword">if</span> (mSurfaceControl.isValid()) &#123;</span><br><span class="line">        mSurface.copyFrom(mSurfaceControl);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        destroySurface();</span><br><span class="line">    &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="System-server进程-——-WMS"><a href="#System-server进程-——-WMS" class="headerlink" title="System_server进程 —— WMS"></a>System_server进程 —— WMS</h3><ol>
+<li>跨进程到WMS后，从relayoutWindow函数调用到<code>createSurfaceControl(outSurfaceControl)</code>。</li>
+</ol>
+<p>（1）然后先是在WindowStateAnimator创建一个WindowSurfaceController对象，作为调用到WindowStateAnimator.java的<code>createSurfaceLocked</code>函数的返回值。</p>
+<p>在createSurfaceLocked函数中，会new一个WindowSurfaceController对象，从而调用他的构造函数。</p>
+<p>在他的构造函数中会创建一个SurfaceControl内部类Builder对象，调用该对象的build函数；</p>
+<p>(2) WMS.java中调用WindowStateAnimator.java的<code>createSurfaceLocked</code>函数之后，会执行以下逻辑：</p>
+<p>a. 如果surfaceController不为空，调用WindowSurfaceController的getSurfaceControl；</p>
+<p>b. WindowSurfaceController.java调用getSurfaceControl, <code>outSurfaceControl.copyFrom(mSurfaceControl);</code>，而mSurfaceControl就是之前的构造函数创建的。此处的copyFrom会经过JNI调用到Native层, 然后读取SurfaeControl。</p>
+<ol start="2">
+<li><p>在Builder内部类的build函数中<code>创建Java层的SurfaceControl对象</code>，在SurfaceControl的构造函数中调用JNI层的nativeCreate函数；</p>
+</li>
+<li><p>android_view_SurfaceControl.cpp的nativeCreate函数会调用SurfaceComposerClient.cpp的<code>createSurfaceChecked</code>函数，<code>创建一个surface（实际上是SurfaceControl）</code>，然后将surface返回。</p>
+</li>
+</ol>
+<p><img src="WMS_CreateSurfaceControl.png" alt="创建Surface之Java层和Native层联系"></p>
+<hr>
+<h3 id="SurfaceFlinger进程"><a href="#SurfaceFlinger进程" class="headerlink" title="SurfaceFlinger进程"></a>SurfaceFlinger进程</h3><p>SurfaceComposerClinet.cpp位于frameworks/native/libs/gui模块。而<code>libgui库主要被JNI层中的代码调用，从而和Surfacelinger进程进行交互</code>，可以看做是Java层的Bn端，是SurfaceFlinger的Bp端。</p>
+<p>比如此处的SurfaceComposerClinet通过Binder IPC（ISurfaceComposerClinet.cpp），跨进程到SurfaceFlinger进程。</p>
+<ol>
+<li>SurfaceComposerClinet作为Bp客户端调用：</li>
+</ol>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/libs/gui/SurfaceComposerClient.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">SurfaceComposerClient::createSurfaceChecked</span><span class="params">(<span class="keyword">const</span> String8&amp; name, <span class="keyword">uint32_t</span> w, <span class="keyword">uint32_t</span> h,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                     PixelFormat format,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                     sp&lt;SurfaceControl&gt;* outSurface, <span class="keyword">uint32_t</span> flags,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                     SurfaceControl* parent,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                     LayerMetadata metadata)</span> </span>&#123;</span><br><span class="line">    sp&lt;SurfaceControl&gt; sur;</span><br><span class="line">    <span class="keyword">status_t</span> err = mStatus;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mStatus == NO_ERROR) &#123;</span><br><span class="line">        sp&lt;IBinder&gt; handle;</span><br><span class="line">        sp&lt;IBinder&gt; parentHandle;</span><br><span class="line">        sp&lt;IGraphicBufferProducer&gt; gbp;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (parent != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            parentHandle = parent-&gt;getHandle();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        err = mClient-&gt;createSurface(name, w, h, format, flags, parentHandle, <span class="built_in">std</span>::move(metadata),</span><br><span class="line">                                     &amp;handle, &amp;gbp);</span><br><span class="line">        ALOGE_IF(err, <span class="string">"SurfaceComposerClient::createSurface error %s"</span>, strerror(-err));</span><br><span class="line">        <span class="keyword">if</span> (err == NO_ERROR) &#123;</span><br><span class="line">            *outSurface = <span class="keyword">new</span> SurfaceControl(<span class="keyword">this</span>, handle, gbp, <span class="literal">true</span> <span class="comment">/* owned */</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>Bn服务端是surfaceflinger模块的Client.cpp，此时跨进程到SurfaceFlinger进程，调用createSurface，从而请求到SurfaceFlinger创建Surface：</li>
+</ol>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/Client.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">Client::createSurface</span><span class="params">(<span class="keyword">const</span> String8&amp; name, <span class="keyword">uint32_t</span> w, <span class="keyword">uint32_t</span> h, PixelFormat format,</span></span></span><br><span class="line"><span class="function"><span class="params">                               <span class="keyword">uint32_t</span> flags, <span class="keyword">const</span> sp&lt;IBinder&gt;&amp; parentHandle,</span></span></span><br><span class="line"><span class="function"><span class="params">                               LayerMetadata metadata, sp&lt;IBinder&gt;* handle,</span></span></span><br><span class="line"><span class="function"><span class="params">                               sp&lt;IGraphicBufferProducer&gt;* gbp)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// We rely on createLayer to check permissions.</span></span><br><span class="line">    <span class="keyword">return</span> mFlinger-&gt;createLayer(name, <span class="keyword">this</span>, w, h, format, flags, <span class="built_in">std</span>::move(metadata), handle, gbp,</span><br><span class="line">                                 parentHandle);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>在SurfaceFlinger::createLayer中创建Layer（创建surface的请求到SurfaceFlinger进程中就是创建Layer），创建的Layer有四种：</li>
+</ol>
+<p>（1）createBufferQueueLayer<br>（2）createBufferStateLayer<br>（3）createColorLayer<br>（4）createContainerLayer</p>
+<p>通常情况下创建的是第一种Layer——BufferQueueLayer（在P中是BufferLayer），会创建一个<code>&lt;sp&gt;BufferQueueLayer强指针对象</code>。</p>
+<figure class="highlight cpp"><figcaption><span>SF.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">SurfaceFlinger::createBufferQueueLayer</span><span class="params">(<span class="keyword">const</span> sp&lt;Client&gt;&amp; client, <span class="keyword">const</span> String8&amp; name,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                <span class="keyword">uint32_t</span> w, <span class="keyword">uint32_t</span> h, <span class="keyword">uint32_t</span> flags,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                LayerMetadata metadata, PixelFormat&amp; format,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                sp&lt;IBinder&gt;* handle,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                sp&lt;IGraphicBufferProducer&gt;* gbp,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                sp&lt;Layer&gt;* outLayer)</span> </span>&#123;</span><br><span class="line">.....</span><br><span class="line">    sp&lt;BufferQueueLayer&gt; layer = getFactory().createBufferQueueLayer(</span><br><span class="line">            LayerCreationArgs(<span class="keyword">this</span>, client, name, w, h, flags, <span class="built_in">std</span>::move(metadata)));</span><br><span class="line">    <span class="keyword">status_t</span> err = layer-&gt;setDefaultBufferProperties(w, h, format);</span><br><span class="line">    <span class="keyword">if</span> (err == NO_ERROR) &#123;</span><br><span class="line">        *handle = layer-&gt;getHandle();</span><br><span class="line">        *gbp = layer-&gt;getProducer();</span><br><span class="line">        *outLayer = layer;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ALOGE_IF(err, <span class="string">"createBufferQueueLayer() failed (%s)"</span>, strerror(-err));</span><br><span class="line">                                                &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="序列图"><a href="#序列图" class="headerlink" title="序列图"></a>序列图</h2><blockquote>
+<p>该序列图包含上面部分的流程，包含APP进程和WMS进程之间的Session创建、SurfaceSession创建、<strong>Surface创建</strong>。</p>
+</blockquote>
+<p><img src="Android%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6-1-1-Surface%E5%88%9B%E5%BB%BA.png" alt="Surface创建"></p>
+<hr>
+<h2 id="BufferQueue"><a href="#BufferQueue" class="headerlink" title="BufferQueue"></a>BufferQueue</h2><blockquote>
+<p>关于BufferQueue只大致梳理他的创建流程，以及在渲染过程中的dequeuebuffer和queuebuffer流程、在合成过程中的acquire和release流程。关于和GraphicsBuffer和再底层的逻辑，暂时不梳理。</p>
+</blockquote>
+<h3 id="BufferQueue概述"><a href="#BufferQueue概述" class="headerlink" title="BufferQueue概述"></a>BufferQueue概述</h3><p>创建BuffeQueueLayer对象的onFirstRef中会创建一个BufferQueue。BufferQueue是buffer流转的中转站。具体分成四个步骤：</p>
+<ol>
+<li>生产者dequeue一块buffer，buffer状态-&gt;DEQUEUED，持有者-&gt;Producer，之后生产者可以填充数据（渲染绘制）。在dequeueBuffer之前，buffer状态是free，持有者是BufferQueue；</li>
+<li>生产者填充完数据后，进行queue操作，buffer-&gt;QUEUED，持有者-&gt;BufferQueue。操作后producer会回调BufferQueue的onFrameAvailable函数，通知消费者有可用的buffer;</li>
+<li>消费者进行acquire取出Buffer，buffer-&gt;ACQUIRED，持有者-&gt;Consumer;</li>
+<li>消费者消费完这块buffer（已经合成），进行release操作释放，归还给BufferQueue</li>
+</ol>
+<p><img src="BufferQueue.png" alt="BufferQueue处理流程"></p>
+<hr>
+<h3 id="BufferQueue状态"><a href="#BufferQueue状态" class="headerlink" title="BufferQueue状态"></a>BufferQueue状态</h3><ul>
+<li>DEQUEUED 状态：</li>
+</ul>
+<p>Producer dequeue一个Buffer后，这个Buffer就变为DEQUEUED状态，release Fence发信号后，Producer就可以修改Buffer的内容，我们称为release Fence。此时Buffer被Producer占用。</p>
+<p>DEQUEUED状态的Buffer可以迁移到 QUEUED 状态，通过queueBuffer或attachBuffer流程。也可以迁移到FREE装，通过cancelBuffer或detachBuffer流程。</p>
+<ul>
+<li>QUEUED 状态：</li>
+</ul>
+<p>Buffer绘制完后，queue到BufferQueue中，给Consumer进行消费。此时Buffer可能还没有真正绘制完成，必现要等对应的Fence发信号出来后，才真正完成。此时Buffer是BufferQueue持有，可以迁移到ACQUIRED状态，通过acquireBuffer流程。而且可以迁移到FREE状态，如果另外一个Buffer被异步的queue进来。</p>
+<ul>
+<li>ACQUIRED 状态：</li>
+</ul>
+<p>Buffer已经被Consumer获取，但是也必须要等对应的Fence发信号才能被Consumer读写，找个Fence是从Producer那边，queueBuffer的时候传过来的。我们将其称为acquire fence。此时，Buffer被Consumer持有。状态可以迁移到FREE状态，通过releaseBuffer或detachBuffer流程。除了从acquireBuffer流程可以迁移到ACQUIRED状态，attachBuffer流程也可以迁移到ACQUIRED状态。</p>
+<ul>
+<li>FREE 状态：</li>
+</ul>
+<p>FREE状态，说明Buffer被BufferQueue持有，可以被Producer dequeue，它将迁移到DEQUEUED状态，通过dequeueBuffer流程。</p>
+<ul>
+<li>SHARED状态：</li>
+</ul>
+<p>SHARED状态是一个特殊的状态，SHARED的Buffer并不参与前面所说的状态迁移。它说明Buffer被用与共享Buffer模式。除了FREE状态，它可以是其他的任何状态。它可以被多次dequeued, queued, 或者 acquired。这中共享Buffer的模式，主要用于VR等低延迟要求的场合。</p>
+<hr>
+<h3 id="BufferQueue创建以及创建一个监听"><a href="#BufferQueue创建以及创建一个监听" class="headerlink" title="BufferQueue创建以及创建一个监听"></a>BufferQueue创建以及创建一个监听</h3><p>在<code>BufferQueueLayer::onFirstRef</code>调用BufferQueue::createBufferQueue()创建了bufferQueue、生产者、消费者，在创建生产者和消费者的过程中，将他们绑定到同一个BufferQueue上。</p>
+<p>之后会创建一个BufferLayerConsumer对象mConsumer，这个对象继承了ConsumerBase类，所以会回调基类的构造函数，注册一个监听对象到BufferQueue（空对象）。</p>
+<p>真正的监听是在<code>mConsumer-&gt;setContentsChangedListener(this)</code>基类构造函数中还会调用consumerConnect将消费者关联到BufferQueue中。此时监听对象就赋给了BufferQueue的mConsumerListener成员（调用BufferQueueConsumer的connect函数）。</p>
+<p>这个监听对象会在queueBuffer是触发，由生产者回调注册到BufferQueue的帧可用通知。</p>
+<p><img src="BufferQueue_Create.png" alt="BufferQueue创建"></p>
+<hr>
+<h3 id="DequeuBuffer"><a href="#DequeuBuffer" class="headerlink" title="DequeuBuffer"></a>DequeuBuffer</h3><p>BufferQueue创建后，首先由生产者执行dequeueBuffer请求一块Buffer。</p>
+<p>Dequeue和Queue的操作都是在硬件渲染(软件绘制暂不考虑)的过程中，在<code>ThreadedRenderer::draw</code>函数中，updateRootDisplayList创建好一个RootDisplayList后，开始渲染一帧，在这时调用父类的syncAndDrawFrame函数，这个函数层层调到CanvasContext::draw函数，然后依次调用三个函数：</p>
+<ol>
+<li>mRenderPipeline-&gt;getFrame            执行dequeueBuffer请求一块buffer</li>
+<li>draw                                 填充buffer</li>
+<li>mRenderPipeline-&gt;swapBuffers         执行queueBuffer送到BufferQueue</li>
+</ol>
+<p>在此处dequeuBuffer和queueBuffer两个操作调到gui/Surface.cpp的两个对应函数，这个流程基本一样。</p>
+<p>大致都从<code>SkiaOpenPipeline.cpp -&gt; EglManager.cpp -&gt; eglApi.cpp -&gt; ANativeWindow.cpp</code>，之后到Bp客户端libgui库的Surface.cpp，执行具体操作。</p>
+<p>Surface::dequeueBuffer中调用IGraphicBufferProducer::dequeueBuffer。然后<code>remote()-&gt;transact(DEQUEUE_BUFFER,data,&amp;reply)</code>调用到Bn端BufferQueueProducer::dequeueBuffer函数。</p>
+<ol>
+<li>首先查找mSlots[found]的序列号found，mSlots是存放Buffer的地方，他的数量是64。即至多存放64个buffer。</li>
+<li>found是从waitForFreeSlotThenRelock中获取：</li>
+</ol>
+<ul>
+<li>从非Free的buffer中统计dequeue和acquire的数量；</li>
+<li>判断dequeueBufferCount数量不能大于最大允许dequeueBuffer的数量；</li>
+<li>slot的获取主要来自两个集合，mFreeSlots和mFreeBuffers；两者包含的所有状态都是free，区别在于前者没有attached，后者以及attached；如果调用来自dequeueBuffer优先选择前者，如果调用来自attachBuffer，优先选择后者；</li>
+<li>如果没找到符合要求的buffer或者queue的buffer还有太多没有完成，就要等待这个buffer被acquired或者released，或者修改最大的buffer数量。</li>
+</ul>
+<ol start="3">
+<li>找到可用的slot，还要判断是否重新分配空间：如果Buffer（本质上是GraphicBuffer）是空，并且需要重新分配空间，则对这个mSlots[found]初始化；</li>
+<li>new GraphicBuffer为mSlots分配一个GraphicBuffer，赋值给BufferQueueCore中的变量mSlots[]的mGraphicBuffer；</li>
+</ol>
+<p><code>mSlots[*outSlot].mGraphicBuffer = graphicBuffer;</code></p>
+<p><code>Surface::dequeueBuffer</code>从服务端申请到Buffer后，通过<code>requestBuffer</code>将客户端的buffer和服务端的buffer指向同一块物理内存。</p>
+<p>具体是IGraphicBufferPruducer代理中通过REQUEST_BUFFER状态，在onTransact中将申请的GraphicBuffer，即<code>mSlots[slot].mGraphicBuffer</code>。将其写入reply，等待客户端读取。</p>
+<hr>
+<h3 id="QueueBuffer"><a href="#QueueBuffer" class="headerlink" title="QueueBuffer"></a>QueueBuffer</h3><p>queueBuffer是在渲染一帧后通过<code>mRenderPipeline-&gt;swapBuffers</code>调用到Surface::queueBuffer。将填充完数据的buffer放入BufferQueue，并且通过监听者通知消费者对象开始消费。</p>
+<p>在Bn端BufferQueueProducer::queueBuffer L977中调用：<code>frameAvailableListener-&gt;onFrameAvailable(item);</code></p>
+<p>通知消费者，在BufferQueueLayer::onFrameAvailable中调用：<code>mFlinger-&gt;signalLayerUpdate();</code></p>
+<p>触发SurfaceFlinger的消息循环机制，开始处理SurfaceFlinger合成事件。</p>
+<hr>
+<h3 id="序列图-1"><a href="#序列图-1" class="headerlink" title="序列图"></a>序列图</h3><p><img src="Android%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6-2-%E6%B8%B2%E6%9F%93%E6%97%B6BufferQueue-dequeue-queue.png" alt="渲染时BufferQueue的dequeue和queue操作"></p>
+<h3 id="acquire-amp-release"><a href="#acquire-amp-release" class="headerlink" title="acquire &amp; release"></a>acquire &amp; release</h3><p>消费者SurfaceFlinger通过acquire从BufferQueue取出一块buffer消费。消费（合成）之后释放。</p>
+<h3 id="序列图-2"><a href="#序列图-2" class="headerlink" title="序列图"></a>序列图</h3><p><img src="Android%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6-3-BufferQueue-acquire-release.png" alt="合成时BufferQueue的acquire和release"></p>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/">https://alonealive.github.io/Blog/2020/07/30/2020/200730_android_GraphicsFramework/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-07-30");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-07-30T13:52:00.000Z" itemprop="datePublished">2020-07-30</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/graphics/" rel="tag">#&nbsp;graphics</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/display/" rel="tag">#&nbsp;display</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/07/28/2020/200727_android_NE_Two/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android NE分析（二）</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>
