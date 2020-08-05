@@ -154,7 +154,7 @@
     <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!-- ### The Open Graph & Twitter Card Protocol ### -->
-    <meta property="og:title" content="Android RC文件分析 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/"><meta property="og:locale" content="zh-CN"><meta name="description" content="Android中最熟知的RC文件就是init.rc了，而在Hal接口服务定义中也会创建.rc文件。init.rc的语法分为行为(Actions),、命令(Commands) 、服务(Services)、选项(Options)。.rc文件是资源文件，包括比如对话框、菜单、图标、字符串等资源信息。使用.rc资源文件的目的是为了对程序中用到的大量的资源进行统一的管理。 - sunwengang - sunwengang blog"><meta name="keywords" content="android"><meta property="article:published_time" content="2020-03-20T15:32:00.000Z"><meta property="article:modified_time" content="2020-03-25T08:43:45.000Z"><meta property="og:updated_time" content="2020-03-25T08:43:45.000Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android"><meta name="twitter:card" content="summary">
+    <meta property="og:title" content="Android RC文件分析 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/03/20/2020/200320_android_rcFile_study/"><meta property="og:locale" content="zh-CN"><meta name="description" content="Android中最熟知的RC文件就是init.rc了，而在Hal接口服务定义中也会创建.rc文件。init.rc的语法分为行为(Actions),、命令(Commands) 、服务(Services)、选项(Options)。.rc文件是资源文件，包括比如对话框、菜单、图标、字符串等资源信息。使用.rc资源文件的目的是为了对程序中用到的大量的资源进行统一的管理。 - sunwengang - sunwengang blog"><meta name="keywords" content="android"><meta property="article:published_time" content="2020-03-20T15:32:00.000Z"><meta property="article:modified_time" content="2020-08-05T11:50:21.492Z"><meta property="og:updated_time" content="2020-08-05T11:50:21.492Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android"><meta name="twitter:card" content="summary">
 
     
 
@@ -195,7 +195,7 @@
     },
     
     "datePublished": "2020-03-20T15:32:00.000Z",
-    "dateModified": "2020-03-25T08:43:45.000Z",
+    "dateModified": "2020-08-05T11:50:21.492Z",
     "author": {
         "@type": "Person",
         "name": "sunwengang",
@@ -741,11 +741,11 @@
 
 <p>on属于行为。</p>
 <ul>
-<li><code>on early-init</code>: init之前、加载完所有rc文件后即执行，在miui的rom中，init.rc在early-init执行的是<code>start ueventd</code>，根据keywords.h的定义，start是个命令(COMMAND)。</li>
-<li><code>on init</code>: 加载propety各项属性文件之前执行，在init变为propety service之前都属于init阶段。            </li>
+<li><code>on early-init</code>: init之前、加载完所有rc文件后即执行，init.rc在early-init执行的是<code>start ueventd</code>，根据keywords.h的定义，start是个命令(COMMAND)。</li>
+<li><code>on init</code>: 加载propety各项属性文件之前执行，在init变为propety service之前都属于init阶段。</li>
 <li><code>on early-boot</code>: 启动属性服务后即执行。</li>
 <li><code>on boot</code>: boot的时候执行。</li>
-<li><code>on property:xxxxx=x</code>: 当某个属性设置为预期值时执行。 </li>
+<li><code>on property:xxxxx=x</code>: 当某个属性设置为预期值时执行。</li>
 </ul>
 
                     </article>
@@ -768,7 +768,7 @@
     <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
     <script>
     (function() {
-        var dateUpdate = Date.parse("2020-03-25");
+        var dateUpdate = Date.parse("2020-08-05");
         var nowDate = new Date();
         var a = nowDate.getTime();
         var b = a - dateUpdate;
@@ -784,7 +784,7 @@
 
 <p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-03-20T15:32:00.000Z" itemprop="datePublished">2020-03-20</time>
 
-    , 最后修改于&nbsp;<time datetime="2020-03-25T08:43:45.000Z" itemprop="dateModified">2020-03-25</time>
+    , 最后修改于&nbsp;<time datetime="2020-08-05T11:50:21.492Z" itemprop="dateModified">2020-08-05</time>
 
 </p>
 <p class="post-footer-info mb-0 pt-2">
