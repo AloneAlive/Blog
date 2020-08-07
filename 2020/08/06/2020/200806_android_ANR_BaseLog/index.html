@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android ANR基本Log分析 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android ANR基本Log分析 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/"><meta property="og:locale" content="zh-CN"><meta name="description" content="ANR（Application Not Responding），字面意思是应用无响应，即用户的一些操作无法从应用中获取反馈。关于发生ANR的trace.txt文件的请参考Android ANR traces.txt文件分析 - sunwengang - sunwengang blog"><meta name="keywords" content="android, graphics, display"><meta property="article:published_time" content="2020-08-06T13:52:00.000Z"><meta property="article:modified_time" content="2020-08-07T13:40:32.855Z"><meta property="og:updated_time" content="2020-08-07T13:40:32.855Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android, graphics, display"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/"
+    },
+    "headline": "Android ANR基本Log分析 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-08-06T13:52:00.000Z",
+    "dateModified": "2020-08-07T13:40:32.855Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android, graphics, display",
+    "description": "ANR（Application Not Responding），字面意思是应用无响应，即用户的一些操作无法从应用中获取反馈。关于发生ANR的trace.txt文件的请参考Android ANR traces.txt文件分析 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/Blog/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/Blog/tags" class="navbar-link">标签</a>
+    
+        <a href="/Blog/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/Blog/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android ANR基本Log分析" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android ANR基本Log分析&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android ANR基本Log分析" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACO0lEQVR42u3czU4DMQxF4b7/S5cNq5L4Hk8HUeIzG6TSGb5KieufiMfzH1wPkSJFivwA5KO4Xt/z4yHfr73es7q/umf7d0WORS4X7eb1FXwHWv1udc/2/SJHI1eLf/fgaiNV+LSBRIqkyIQlaJEi70ZWgbz6YOQ9IkV2EoyUCFcJ7i7I354FiTwOWRVEv/nztmpR5FHI2DQCxVO1QXbPurWrJvIoZLWQO9iqCVA9r0yaRY5EVouaoEnySjbP8m+IHImsCnaasKYCjiYuqLEvcgQyDZZoUtz5QGkYJXI2kgwt04CT3J82WtzdIkcgUyDvBHfavMJDVpEjkWQRk0Mfu9fSYZJyw4kciSSDpQ6g8wFTA0vkXCQJxGihg6Y92UgiZyOrQp8eauo09XeF3tIiciwyQWkyTAbz9EtApMi0kOmBd3KA7q3MXOTxSDpgby960HCNCbfIkci0IXZFWeeDpWfgBEPkCGQK6KTZSofwbzesRI5AdoabqaAiG48cahI5G5kWOAnanQEqPZgsci6SFEtXmk/Va/iLQ+RoZBpQlkG3UbBVSHyaReQoZLcAI4eQYsElUmQRzK82n2hCkgai6BtH5NFI0kytgjc59FRCqiAvciQyLWi6oVJSSwuwVgdD5LFI2ixNg1Fyz+WNI3Ic8kogJg19cuEsSKTI0FztHCQhmywGc5Ein/yfvpGAXzVZ0cFjkaOQVZCmw6V3E4zLSa/I45BkME8ap93iLjW+RM5EfvIlUqRIkX94fQH+J7aVeJ+MyQAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android ANR基本Log分析</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-08-06</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android ANR基本Log分析&url=https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android ANR基本Log分析&url=https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACO0lEQVR42u3czU4DMQxF4b7/S5cNq5L4Hk8HUeIzG6TSGb5KieufiMfzH1wPkSJFivwA5KO4Xt/z4yHfr73es7q/umf7d0WORS4X7eb1FXwHWv1udc/2/SJHI1eLf/fgaiNV+LSBRIqkyIQlaJEi70ZWgbz6YOQ9IkV2EoyUCFcJ7i7I354FiTwOWRVEv/nztmpR5FHI2DQCxVO1QXbPurWrJvIoZLWQO9iqCVA9r0yaRY5EVouaoEnySjbP8m+IHImsCnaasKYCjiYuqLEvcgQyDZZoUtz5QGkYJXI2kgwt04CT3J82WtzdIkcgUyDvBHfavMJDVpEjkWQRk0Mfu9fSYZJyw4kciSSDpQ6g8wFTA0vkXCQJxGihg6Y92UgiZyOrQp8eauo09XeF3tIiciwyQWkyTAbz9EtApMi0kOmBd3KA7q3MXOTxSDpgby960HCNCbfIkci0IXZFWeeDpWfgBEPkCGQK6KTZSofwbzesRI5AdoabqaAiG48cahI5G5kWOAnanQEqPZgsci6SFEtXmk/Va/iLQ+RoZBpQlkG3UbBVSHyaReQoZLcAI4eQYsElUmQRzK82n2hCkgai6BtH5NFI0kytgjc59FRCqiAvciQyLWi6oVJSSwuwVgdD5LFI2ixNg1Fyz+WNI3Ic8kogJg19cuEsSKTI0FztHCQhmywGc5Ein/yfvpGAXzVZ0cFjkaOQVZCmw6V3E4zLSa/I45BkME8ap93iLjW+RM5EfvIlUqRIkX94fQH+J7aVeJ+MyQAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#触发原因"><span class="post-toc-number">1.</span> <span class="post-toc-text">触发原因</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#基本log解读"><span class="post-toc-number">2.</span> <span class="post-toc-text">基本log解读</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#系统耗时分析方案"><span class="post-toc-number">3.</span> <span class="post-toc-text">系统耗时分析方案</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#kswapd0-CPU占用率很高"><span class="post-toc-number">4.</span> <span class="post-toc-text">kswapd0 CPU占用率很高</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#proc-meminfo内存使用信息"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">&#x2F;proc&#x2F;meminfo内存使用信息</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#dumpsys-meminfo"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">dumpsys meminfo</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>ANR（Application Not Responding），字面意思是应用无响应，即用户的一些操作无法从应用中获取反馈。关于发生ANR的trace.txt文件的请参考<a href="https://wizzie.top/Blog/2020/06/11/2020/200611_android_tracetxt/" target="_blank" rel="noopener">Android ANR traces.txt文件分析</a></p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="触发原因"><a href="#触发原因" class="headerlink" title="触发原因"></a>触发原因</h2><p>Android系统中的应用被Activity Manager及Window Manager两个系统服务监控着，Android系统会在如下情况触发ANR：</p>
+<ul>
+<li>Input事件超过5s没有被处理完，即5秒内无法对输入事件（按键及触摸）做出响应</li>
+<li>Service处理超时，前台20s，后台200s</li>
+<li>BroadcastReceiver（广播接收器）处理超时，前台10S，后台60s</li>
+<li>ContentProvider执行超时，比较少见</li>
+</ul>
+<p>出现ANR之后一个直观现象就是系统会展示出一个ANR弹框。</p>
+<p>从发生的原因分：</p>
+<ul>
+<li>主线程有耗时操作，如有复杂的layout布局，IO操作等。</li>
+<li>被Binder对端block</li>
+<li>被子线程同步锁block</li>
+<li>Binder被占满导致主线程无法和SystemServer通信</li>
+<li>得不到系统资源（CPU/RAM/IO）</li>
+</ul>
+<p>从进程的角度分：</p>
+<ul>
+<li>问题出在当前进程:</li>
+<li>主线程本身耗时, 或则主线程的消息队列存在耗时操作;</li>
+<li>主线程被本进程的其他子线程所blocked;</li>
+<li>问题出在远端进程(一般是binder call或socket等通信方式)</li>
+</ul>
+<h2 id="基本log解读"><a href="#基本log解读" class="headerlink" title="基本log解读"></a>基本log解读</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;进程是30970</span><br><span class="line">&#x2F;&#x2F;特殊情况下，如果PID是0，说明发生ANR之前，这个进程被LowMemoryKiller杀死了或者出现了Crash。这种情况下，是无法接收到系统的广播或者按键消息的，故而出现ANR</span><br><span class="line">&#x2F;&#x2F;ANR具体发生的包名</span><br><span class="line">08-01 19:17:05.155  1000  1304  1328 I am_anr  : [0,30970,com.android.systemui,551042573,Input dispatching timed out (StatusBar, Waiting to send non-key event because the touched window has not finished processing certain input events that were delivered to it over 500.0ms ago.  Wait queue length: 54.  Wait queue head age: 9044.8ms.)]</span><br><span class="line">&#x2F;&#x2F;ANR具体发生的包名</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager: ANR in com.android.systemui</span><br><span class="line">&#x2F;&#x2F;ANR发生的原因是Input dispatching timed out</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager: PID: 30970</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager: Reason: Input dispatching timed out (StatusBar, Waiting to send non-key event because the touched window has not finished processing certain input events that were delivered to it over 500.0ms ago.  Wait queue length: 54.  Wait queue head age: 9044.8ms.)</span><br><span class="line">&#x2F;&#x2F;三个数字分别是1分钟、5分钟、15分钟内系统的平均负荷</span><br><span class="line">&#x2F;&#x2F;当CPU完全空闲的时候，平均负荷为0；当CPU工作量饱和的时候，平均负荷为1，通过Load可以判断系统负荷是否过重</span><br><span class="line">&#x2F;&#x2F;大致可以这样区分：</span><br><span class="line">&#x2F;&#x2F;当系统负荷持续大于0.7，你必须开始调查了，问题出在哪里，防止情况恶化。</span><br><span class="line">&#x2F;&#x2F;当系统负荷持续大于1.0，你必须动手寻找解决办法，把这个值降下来。</span><br><span class="line">&#x2F;&#x2F;当系统负荷达到5.0，就表明你的系统有很严重的问题</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager: Load: 46.53 &#x2F; 37.82 &#x2F; 34.77</span><br><span class="line">&#x2F;&#x2F;ANR发生的时候，Top进程的Cpu占用情况，user代表是用户空间，kernel是内核空间</span><br><span class="line">&#x2F;&#x2F;查看每个CPU的使用频度：adb shell cat &#x2F;sys&#x2F;devices&#x2F;system&#x2F;cpu&#x2F;cpu1&#x2F;cpufreq&#x2F;stats&#x2F;time_in_state</span><br><span class="line">&#x2F;&#x2F;一般如下规律：</span><br><span class="line">&#x2F;&#x2F;1. kswapd0 cpu占用率偏高，系统整体运行会缓慢，从而引起各种ANR。把问题转给&quot;内存优化&quot;，请他们进行优化</span><br><span class="line">&#x2F;&#x2F;2. logd　CPU占用率偏高，也会引起系统卡顿和ANR，因为各个进程输出LOG的操作被阻塞从而执行的极为缓慢</span><br><span class="line">&#x2F;&#x2F;3. Vold占用CPU过高，会引起系统卡顿和ANR，请负责存储的同学先调查</span><br><span class="line">&#x2F;&#x2F;4. qcom.sensor CPU占用率过高，会引起卡顿，请系统同学调查</span><br><span class="line">&#x2F;&#x2F;5. 应用自身CPU占用率较高，高概率应用自身问题</span><br><span class="line">&#x2F;&#x2F;6. 应用处于D状态，发生ANR，如果最后的操作是refriger，那么是应用被冻结了，正常情况下是功耗优化引起的。</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager: CPU usage from 0ms to 23321ms later (2020-08-01 19:17:04.850 to 2020-08-01 19:17:28.171) with 99% awake:</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager:   36% 30970&#x2F;com.android.systemui: 25% user + 10% kernel &#x2F; faults: 11945 minor 24 major</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager:   35% 20903&#x2F;com.tencent.mobileqq:video: 28% user + 6.4% kernel &#x2F; faults: 6413 minor 23 major</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager:   28% 555&#x2F;surfaceflinger: 16% user + 12% kernel &#x2F; faults: 1846 minor 2 major</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager:   26% 498&#x2F;android.hardware.audio@5.0-service-***: 21% user + 4.9% kernel &#x2F; faults: 13 minor</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager:   18% 1304&#x2F;system_server: 9.5% user + 8.7% kernel &#x2F; faults: 9666 minor 329 major</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager:   17% 3919&#x2F;com.***.service: 10% user + 6.7% kernel &#x2F; faults: 8604 minor 30 major</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager:   16% 28827&#x2F;com.tencent.qqmusic: 9.2% user + 7.3% kernel &#x2F; faults: 9299 minor 18 major</span><br><span class="line">08-01 19:17:28.258  1000  1304  1328 E ActivityManager:   16% 142&#x2F;kswapd0: 0% user + 16% kernel</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="系统耗时分析方案"><a href="#系统耗时分析方案" class="headerlink" title="系统耗时分析方案"></a>系统耗时分析方案</h2><p>系统做一些耗时分析的操作会有一些Log标志：</p>
+<ol>
+<li><code>binder_sample</code>：</li>
+</ol>
+<ul>
+<li>功能说明: 监控每个进程的主线程的binder transaction的耗时情况, 当超过阈值时,则输出相应的目标调用信息，默认1000ms打开。</li>
+<li>log格式: <code>52004 binder_sample (descriptor|3),(method_num|1|5),(time|1|3),(blocking_package|3),(sample_percent|1|6)</code></li>
+<li>log实例:</li>
+</ul>
+<p><code>2754 2754 I binder_sample: [android.app.IActivityManager,35,2900,android.process.media,5]</code></p>
+<p>从上面的log中可以得出:</p>
+<ul>
+<li>主线程2754;</li>
+<li>执行android.app.IActivityManager接口</li>
+<li>所对应方法code =35(即STOP_SERVICE_TRANSACTION),</li>
+<li>所花费时间为2900ms</li>
+</ul>
+<p>该block所在package为 android.process.media，最后一个参数是sample比例(没有太大价值)</p>
+<ol start="2">
+<li><code>dvm_lock_sample</code></li>
+</ol>
+<ul>
+<li>功能说明: 当某个线程等待lock的时间blocked超过阈值,则输出当前的持锁状态 ;</li>
+<li>log格式: <code>20003 dvm_lock_sample (process|3),(main|1|5),(thread|3),(time|1|3),(file|3),(line|1|5),(ownerfile|3),(ownerline|1|5),(sample_percent|1|6)</code></li>
+</ul>
+<p><code>进程名，主线程？线程名，锁等待时间，下个持有者文件名，行号，上个持有者文件名（如果和下个相同，则是-），行号，等待百分比</code></p>
+<ul>
+<li>log实例:</li>
+</ul>
+<p><code>dvm_lock_sample: [system_server,1,Binder_9,1500,ActivityManagerService.java,6403,-,1448,0]</code></p>
+<p>意思是system_server: Binder_9,执行到ActivityManagerService.java的6403行代码,一直在等待AMS锁, 而该锁所同一文件的1448行代码所持有, 从而导致Binder_9线程被阻塞1500ms.</p>
+<ol start="3">
+<li><code>binder starved</code></li>
+</ol>
+<ul>
+<li>功能说明:当system_server等进程的线程池使用完, 无空闲线程时, 则binder通信都处于饥饿状态, 则饥饿状态超过一定阈值则输出信息;</li>
+<li>云控参数: persist.sys.binder.starvation  (默认值16ms)</li>
+<li>log实例:</li>
+</ul>
+<p><code>1232 1232 &quot;binder thread pool (16 threads) starved for 100 ms&quot;</code></p>
+<p>解析: system_server进程的 线程池已满的持续长达100ms</p>
+<hr>
+<h2 id="kswapd0-CPU占用率很高"><a href="#kswapd0-CPU占用率很高" class="headerlink" title="kswapd0 CPU占用率很高"></a>kswapd0 CPU占用率很高</h2><p>如果出现kswapd0 cpu 占用率很高，可以先查看内存使用情况。</p>
+<h3 id="proc-meminfo内存使用信息"><a href="#proc-meminfo内存使用信息" class="headerlink" title="/proc/meminfo内存使用信息"></a>/proc/meminfo内存使用信息</h3><p>例如以下，可用内存只有62MB。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br></pre></td><td class="code"><pre><span class="line">------ MEMORY INFO (&#x2F;proc&#x2F;meminfo) ------</span><br><span class="line">&#x2F;&#x2F;所有可用RAM大小 （即物理内存减去一些预留位和内核的二进制代码大小）</span><br><span class="line">&#x2F;&#x2F;可以认为是系统可供分配的内存总大小, 通常大小会比实际物理内存小</span><br><span class="line">MemTotal:        3844700 kB</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;LowFree与HighFree的总和</span><br><span class="line">&#x2F;&#x2F;当前系统空闲的内存大小，对应所有处于NR_FREE_PAGES状态的页框</span><br><span class="line">MemFree:           62100 kB</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;MemFree + Active(file) + Inactive(file) + SReclaimable 此外还考虑了内存压力水位(watermark)的情况，计算比较复杂，详细见 si_mem_available(). 这只是理论上系统可用的内存，即理论上可回收的内存，但是实际上能用的达不到这么多</span><br><span class="line">MemAvailable:     396584 kB</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;用来给块设备做的缓冲大小（只记录文件系统的metadata以及 tracking in-flight pages，就是说 buffers是用来存储，目录里面有什么内容，权限等等。）</span><br><span class="line">Buffers:           10160 kB</span><br><span class="line">&#x2F;&#x2F;用来给文件做缓冲大小（直接用来记忆我们打开的文件）. 它不包括SwapCached</span><br><span class="line">Cached:           554704 kB</span><br><span class="line">&#x2F;&#x2F;已经被交换出来的内存，但仍然被存放在swapfile中。用来在需要的时候很快的被替换而不需要再次打开I&#x2F;O端口</span><br><span class="line">SwapCached:        25312 kB</span><br><span class="line">&#x2F;&#x2F;最近经常被使用的内存，除非非常必要否则不会被移作他用</span><br><span class="line">Active:          1317228 kB</span><br><span class="line">&#x2F;&#x2F;最近不经常被使用的内存，非常用可能被用于其他途径</span><br><span class="line">Inactive:         659868 kB</span><br><span class="line">Active(anon):    1179772 kB</span><br><span class="line">Inactive(anon):   403532 kB</span><br><span class="line">Active(file):     137456 kB</span><br><span class="line">Inactive(file):   256336 kB</span><br><span class="line">Unevictable:      162512 kB</span><br><span class="line">Mlocked:          162512 kB</span><br><span class="line">&#x2F;&#x2F;交换空间的总和</span><br><span class="line">SwapTotal:       2113488 kB</span><br><span class="line">&#x2F;&#x2F;从RAM中被替换出暂时存在磁盘上的空间大小</span><br><span class="line">SwapFree:         405628 kB</span><br><span class="line">&#x2F;&#x2F;等待被写回到磁盘的内存大小</span><br><span class="line">Dirty:              1652 kB</span><br><span class="line">&#x2F;&#x2F;正在被写回到磁盘的内存大小</span><br><span class="line">Writeback:            20 kB</span><br><span class="line">AnonPages:       1571688 kB</span><br><span class="line">&#x2F;&#x2F;影射文件的大小</span><br><span class="line">Mapped:           340044 kB</span><br><span class="line">Shmem:              9360 kB</span><br><span class="line">&#x2F;&#x2F;内核数据结构缓存</span><br><span class="line">Slab:             233948 kB</span><br><span class="line">SReclaimable:      66952 kB</span><br><span class="line">SUnreclaim:       166996 kB</span><br><span class="line">KernelStack:       72480 kB</span><br><span class="line">PageTables:       109660 kB</span><br><span class="line">NFS_Unstable:          0 kB</span><br><span class="line">Bounce:                0 kB</span><br><span class="line">WritebackTmp:          0 kB</span><br><span class="line">CommitLimit:     4035836 kB</span><br><span class="line">Committed_AS:   125397000 kB</span><br><span class="line">&#x2F;&#x2F;vmalloc内存大小</span><br><span class="line">VmallocTotal:   263061440 kB</span><br><span class="line">&#x2F;&#x2F;已经被使用的虚拟内存大小</span><br><span class="line">VmallocUsed:           0 kB</span><br><span class="line">VmallocChunk:          0 kB</span><br><span class="line">CmaTotal:         344064 kB</span><br><span class="line">CmaFree:            2736 kB</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<h3 id="dumpsys-meminfo"><a href="#dumpsys-meminfo" class="headerlink" title="dumpsys meminfo"></a>dumpsys meminfo</h3><p>直接dumpsys meminfo，是查看整体的内存占用情况，具体的还是需要加上process name。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;对应上面MemTotal</span><br><span class="line">Total RAM: 3,844,700K (status normal)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;cached pss对应变量cachedPss的值。这部分进程占用的内存并没有被释放，而由于他们都已切换到后台，且adj较低，系统认为可以释放掉这部分内存。所以对于这部分进程，系统最好有机制能及时清理掉从而释放内存。</span><br><span class="line">&#x2F;&#x2F;cached kernel对应&quot;Buffers+Cached+SReclaimable-Mapped&quot;这部分的内存由于理论上是可以被Kernel回收的，所以这里也计算在free中，但是这是一个理论上的值，实际上很难做到全部回收。</span><br><span class="line">&#x2F;&#x2F;free对应MemFree</span><br><span class="line"> Free RAM: 1,003,024K (  400,796K cached pss +   509,892K cached kernel +     1,136K cached ion +    91,200K free)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;kernel对应&quot;Shmem+SUnreclaim+VmallocUsed+PageTables+KernelStack&quot;,其中VmallocUsed是统计&#x2F;proc&#x2F;vmallocinfo中除ioremap,map_lowmem,vm_map_ram之外的和</span><br><span class="line">&#x2F;&#x2F;详细见&quot;Debug.get_allocated_vmalloc_memory()&quot;这部分即是对kernel的内存占用的一个统计，如果要统计kernel的内存占用，这个稍微准确一些</span><br><span class="line"> Used RAM: 4,340,042K (3,862,614K used pss +   477,428K kernel)</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;对应MemTotal - (totalPss - totalSwapPss) - MemFree - (cached kernel) - (kernel) - zramtotal</span><br><span class="line"> Lost RAM:   135,889K</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;第一个数 用变量zramtotal来代替，表示zram实际占用的物理内存，是从&#x2F;sys&#x2F;block&#x2F;zram0&#x2F;mm_stat中统计而来</span><br><span class="line">&#x2F;&#x2F;第二个数 对应 SwapTotal - SwapFree , 是已经在swap区的内存大小</span><br><span class="line">&#x2F;&#x2F;第三个数 对应 SwapTotal， 是整个swap区的大小</span><br><span class="line">     ZRAM:   528,592K physical used for 1,757,284K in swap (2,113,488K total swap)</span><br><span class="line">   Tuning: 384 (large 512), oom   645,120K, restore limit   107,520K (high-end-gfx)</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://www.imooc.com/article/280763" target="_blank" rel="noopener">应用与系统稳定性第一篇—ANR问题分析的一般套路</a></li>
+<li><a href="https://www.jianshu.com/p/30c1a5ad63a3" target="_blank" rel="noopener">Android应用ANR分析</a></li>
+<li><a href="https://blog.csdn.net/shift_wwx/article/details/42490863" target="_blank" rel="noopener">android 查看内存使用情况</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/90076117" target="_blank" rel="noopener">Android内存占用分析</a></li>
+</ul>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/">https://alonealive.github.io/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-08-07");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-08-06T13:52:00.000Z" itemprop="datePublished">2020-08-06</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-08-07T13:40:32.855Z" itemprop="dateModified">2020-08-07</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/graphics/" rel="tag">#&nbsp;graphics</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/display/" rel="tag">#&nbsp;display</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/07/30/2020/200730_android_GraphicsFramework/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android 图形显示框架</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>
