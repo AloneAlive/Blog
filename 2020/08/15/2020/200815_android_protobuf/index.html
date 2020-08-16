@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android protobuf(.proto文件) | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android protobuf(.proto文件) | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/"><meta property="og:locale" content="zh-CN"><meta name="description" content="最近碰到一个关于frameworks&#x2F;base&#x2F;core&#x2F;proto&#x2F;android&#x2F;providers&#x2F;settings&#x2F;secure.proto文件中修改某个属性的问题，所以针对protobuf(.proto文件)进行一个学习了解。Google Protocol Buffers，（简称Protobuf，协议缓冲区），类似json或XML，Google开源的支持多语言、跨平台的结构化数据序列化项 - sunwengang - sunwengang blog"><meta name="keywords" content="android"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/protoType.png"><meta property="article:published_time" content="2020-08-15T13:42:00.000Z"><meta property="article:modified_time" content="2020-08-16T11:49:53.973Z"><meta property="og:updated_time" content="2020-08-16T11:49:53.973Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/"
+    },
+    "headline": "Android protobuf(.proto文件) | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-08-15T13:42:00.000Z",
+    "dateModified": "2020-08-16T11:49:53.973Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android",
+    "description": "最近碰到一个关于frameworks/base/core/proto/android/providers/settings/secure.proto文件中修改某个属性的问题，所以针对protobuf(.proto文件)进行一个学习了解。Google Protocol Buffers，（简称Protobuf，协议缓冲区），类似json或XML，Google开源的支持多语言、跨平台的结构化数据序列化项 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/Blog/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/Blog/tags" class="navbar-link">标签</a>
+    
+        <a href="/Blog/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/Blog/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android protobuf(.proto文件)" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android protobuf(.proto文件)&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android protobuf(.proto文件)" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACLklEQVR42u3a0W6DMAxGYd7/pbdbhIj/45SpXX24qcRo+ZiS4Ng+fv7BcYgUKVLkByCP4jhfc/68++71/Op753PxviLHIm8H7c15gl+Br98n9xU5G3kduNfzCbyaOKvfSfcVKbJCxgEewOkFIVLkU8jqBtUEEimSIKsFuQpyadCxuu6RKEjk1yGrDdFffj62WxT5VciYNALBcLoZCUReyqqJ/CpkdSOK3QmK0UOJHIusBvpOcnQnqXD7ICJF0gHdLAbQwAVFQSJHIKsNfJWYX222UqK/ukakyM4Eag36kEBoTRyR45CrCbECkkW+KqKmpJVIkaRwmQrwtJBa/QPiYi5yBJJOiJ0EQnqoWCQQORKZEkjdhbx6QaQJKVIkaeggidCqKEB+f1nUFzkWSRrgOkV8kuQiRSqRs5EJSpL8Kan6UmQucgySDGQadKTFmzTYlcUmkWOQO81xZCGnL4MYYIgchyQJ0QpLEgqdCSdyNhIn2UFDXSeBsJ2wEjkG2VnAyeLdCTaW9xU5EtktaJImEtqYFxMOIsciSSGo07DUSRqUE1GkyGZivvp7a8O1M3FEjkHSJD9BVdeiRieRI5Hp6Ax22gxabc5EikwDmhSWUnKhswGLGzGRI5CkyN5p+kwPuDVxRI5D0mJl2kzRoKJKPIgUSZCoKbMZKMdErEiRoYGjs/HvFkvLhjqRI5Gdhg6SVCBBbXviiByDJC9+usF/YnMncjbykw+RIkWKfOPxCykXNxWuWGSCAAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android protobuf(.proto文件)</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-08-15</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android protobuf(.proto文件)&url=https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android protobuf(.proto文件)&url=https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACLklEQVR42u3a0W6DMAxGYd7/pbdbhIj/45SpXX24qcRo+ZiS4Ng+fv7BcYgUKVLkByCP4jhfc/68++71/Op753PxviLHIm8H7c15gl+Br98n9xU5G3kduNfzCbyaOKvfSfcVKbJCxgEewOkFIVLkU8jqBtUEEimSIKsFuQpyadCxuu6RKEjk1yGrDdFffj62WxT5VciYNALBcLoZCUReyqqJ/CpkdSOK3QmK0UOJHIusBvpOcnQnqXD7ICJF0gHdLAbQwAVFQSJHIKsNfJWYX222UqK/ukakyM4Eag36kEBoTRyR45CrCbECkkW+KqKmpJVIkaRwmQrwtJBa/QPiYi5yBJJOiJ0EQnqoWCQQORKZEkjdhbx6QaQJKVIkaeggidCqKEB+f1nUFzkWSRrgOkV8kuQiRSqRs5EJSpL8Kan6UmQucgySDGQadKTFmzTYlcUmkWOQO81xZCGnL4MYYIgchyQJ0QpLEgqdCSdyNhIn2UFDXSeBsJ2wEjkG2VnAyeLdCTaW9xU5EtktaJImEtqYFxMOIsciSSGo07DUSRqUE1GkyGZivvp7a8O1M3FEjkHSJD9BVdeiRieRI5Hp6Ax22gxabc5EikwDmhSWUnKhswGLGzGRI5CkyN5p+kwPuDVxRI5D0mJl2kzRoKJKPIgUSZCoKbMZKMdErEiRoYGjs/HvFkvLhjqRI5Gdhg6SVCBBbXviiByDJC9+usF/YnMncjbykw+RIkWKfOPxCykXNxWuWGSCAAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#proto模块介绍"><span class="post-toc-number">1.</span> <span class="post-toc-text">proto模块介绍</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#README-md文件内容"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">README.md文件内容</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#编写proto文件"><span class="post-toc-number">2.</span> <span class="post-toc-text">编写proto文件</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#范例helloworld-proto"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">范例helloworld.proto</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#protobuf和其他编程语言的类型比较"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">protobuf和其他编程语言的类型比较</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#字段编号"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">字段编号</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#限定符说明"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">限定符说明</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#包package"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">包package</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#修改规则"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">修改规则</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#嵌套类型"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">嵌套类型</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#repeated修饰符"><span class="post-toc-number">2.8.</span> <span class="post-toc-text">repeated修饰符</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#保留字段reserved"><span class="post-toc-number">2.9.</span> <span class="post-toc-text">保留字段reserved</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Any和OneOf字段"><span class="post-toc-number">2.10.</span> <span class="post-toc-text">Any和OneOf字段</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#枚举"><span class="post-toc-number">2.11.</span> <span class="post-toc-text">枚举</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#类型默认值"><span class="post-toc-number">2.12.</span> <span class="post-toc-text">类型默认值</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#import-public的传递引用功能"><span class="post-toc-number">2.13.</span> <span class="post-toc-text">import public的传递引用功能</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#option选项"><span class="post-toc-number">2.14.</span> <span class="post-toc-text">option选项</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#protoBuf缺点"><span class="post-toc-number">3.</span> <span class="post-toc-text">protoBuf缺点</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考文献"><span class="post-toc-number">4.</span> <span class="post-toc-text">参考文献</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>最近碰到一个关于<code>frameworks/base/core/proto/android/providers/settings/secure.proto</code>文件中修改某个属性的问题，所以针对protobuf(.proto文件)进行一个学习了解。<br>Google Protocol Buffers，（简称Protobuf，协议缓冲区），类似json或XML，Google开源的支持多语言、跨平台的结构化数据序列化项目，但是比它们更小、更快、更简单。<br>Protobuf通过编写proto文件来定义消息格式或RPC服务定义。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="proto模块介绍"><a href="#proto模块介绍" class="headerlink" title="proto模块介绍"></a>proto模块介绍</h2><p>在Framework模块中有个单独的模块：<code>frameworks/base/core/proto/</code></p>
+<p>查看该模块下的README.md和OWNDER文件有简单介绍。OWNER劝告开发人员需要熟悉该功能，谨慎修改。</p>
+<h3 id="README-md文件内容"><a href="#README-md文件内容" class="headerlink" title="README.md文件内容"></a>README.md文件内容</h3><ol>
+<li>Android其他版本中，使用四个空格缩进，而非两个</li>
+<li>基于Java文件的protos文件，使用该Java文件相同名称的包。例如<code>com.android.server.thing</code>代替<code>com.android.server.thing.proto</code></li>
+<li>如果proto描述了dumpsys的顶级输出，他就应该包含dump。这样更容易理解他是作为某个服务的dump输出，而不是该服务的数据结构。例如<code>WindowManagerServiceDumpProto</code>和<code>WindowManagerServiceProto</code></li>
+</ol>
+<ul>
+<li>含有poroto后缀的message名称，他的内嵌的message的名称不需要有proto后缀，例如：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">message FooProto &#123;</span><br><span class="line">    message Bar &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&amp;&amp;</span><br><span class="line"></span><br><span class="line">message FooProto &#123;</span><br><span class="line">    message BarProto &#123;  <span class="comment">//没必要有proto后缀</span></span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p>如果proto代表一个对象的结构，后缀应该要有<code>proto</code>。并且还请包含该原是对象的完整包路径，来作为对这个proto message的注释。</p>
+<ol start="4">
+<li><p>在字段中包含单位名字，例如：<code>screen_time_ms</code> VS <code>screen_time</code>, or <code>file_size_bytes</code> or <code>file_size_mebibytes</code> VS <code>file_size</code></p>
+</li>
+<li><p>保留字段号50000-100000，供原始设备制造商使用。</p>
+</li>
+</ol>
+<hr>
+<h2 id="编写proto文件"><a href="#编写proto文件" class="headerlink" title="编写proto文件"></a>编写proto文件</h2><h3 id="范例helloworld-proto"><a href="#范例helloworld-proto" class="headerlink" title="范例helloworld.proto"></a>范例helloworld.proto</h3><blockquote>
+<p>代码在<a href="https://github.com/grpc/grpc/blob/master/examples/protos/helloworld.proto" target="_blank" rel="noopener">https://github.com/grpc/grpc/blob/master/examples/protos/helloworld.proto</a></p>
+</blockquote>
+<figure class="highlight plain"><figcaption><span>helloworld.proto</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;版本号，默认版本是2</span><br><span class="line">syntax &#x3D; &quot;proto3&quot;;</span><br><span class="line"> </span><br><span class="line">option java_multiple_files &#x3D; true;</span><br><span class="line">option java_package &#x3D; &quot;io.grpc.examples.helloworld&quot;;</span><br><span class="line">option java_outer_classname &#x3D; &quot;HelloWorldProto&quot;;</span><br><span class="line">option objc_class_prefix &#x3D; &quot;HLW&quot;;</span><br><span class="line"> </span><br><span class="line">package helloworld;</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; The greeting service definition.</span><br><span class="line">service Greeter &#123;</span><br><span class="line">  &#x2F;&#x2F; Sends a greeting</span><br><span class="line">  rpc SayHello (HelloRequest) returns (HelloReply) &#123;&#125;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line">&#x2F;&#x2F; The request message containing the user&#39;s name.</span><br><span class="line">&#x2F;&#x2F; 一个message类型看上去像是Java class，由多个字段组成</span><br><span class="line">&#x2F;&#x2F;每一个字段都由类型、名称组成，位于等号右边的值不是字段默认值，而是字段编号，可以理解为字段身份的标识符，类似于数据库中的主键，不可重复</span><br><span class="line">&#x2F;&#x2F;标识符用于在编译后的二进制消息格式中对字段进行识别，一旦投入使用，字段的标识就不应该再改变。</span><br><span class="line">&#x2F;&#x2F;数字标签的范围是[1, 536870911]，其中19000～19999是保留数字。</span><br><span class="line">message HelloRequest &#123;</span><br><span class="line">  string name &#x3D; 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; The response message containing the greetings</span><br><span class="line">message HelloReply &#123;</span><br><span class="line">  string message &#x3D; 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message SearchRequest &#123;</span><br><span class="line">  required string query &#x3D; 1; </span><br><span class="line">  required int32 page_number &#x3D; 2;</span><br><span class="line">  optional int32 result_per_page &#x3D; 3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="protobuf和其他编程语言的类型比较"><a href="#protobuf和其他编程语言的类型比较" class="headerlink" title="protobuf和其他编程语言的类型比较"></a>protobuf和其他编程语言的类型比较</h3><p><img src="protoType.png" alt="protobuf和其他编程语言的类型比较"></p>
+<h3 id="字段编号"><a href="#字段编号" class="headerlink" title="字段编号"></a>字段编号</h3><p>字段编号是Protobuf的重要组成部分。它们用于标识二进制编码数据中的字段，这意味着它们不能从版本更改为服务版本。优点在于可以实现向后兼容性和向前兼容性。只要处理丢失值的可能性，客户端和服务就会忽略他们不知道的字段编号。</p>
+<p>在二进制格式中，字段号与类型标识符组合在一起。1到15之间的字段编号可以使用其类型编码为单字节。从16到2047的数字需要2个字节。如果出于任何原因需要将超过2047个字段，则可以更高。字段号1到15的单字节标识符提供更好的性能，因此，你应将其用于最基本的常用字段。</p>
+<h3 id="限定符说明"><a href="#限定符说明" class="headerlink" title="限定符说明"></a>限定符说明</h3><table>
+<thead>
+<tr>
+<th align="center">限定符</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">required</td>
+<td align="center">必须字段，必须设置该字段的值</td>
+</tr>
+<tr>
+<td align="center">optional</td>
+<td align="center">可选字段，有选择性的设置或者不设置该字段的值</td>
+</tr>
+<tr>
+<td align="center">repeated</td>
+<td align="center">表示该字段可以被重复任意多次包含</td>
+</tr>
+</tbody></table>
+<h3 id="包package"><a href="#包package" class="headerlink" title="包package"></a>包package</h3><p>可以用指定package以避免类型命名冲突：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">package foo.bar;</span><br><span class="line">message Open &#123; ... &#125;</span><br></pre></td></tr></table></figure>
+
+<p>也可以用类型的全限定名来引用它：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">message Foo &#123;</span><br><span class="line">  ...</span><br><span class="line">  foo.bar.Open open &#x3D; 1;</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Note:</strong>指定包名后，会对生成的代码产生影响，以Java为例，生成的类会以你指定的package作为包名。</p>
+<h3 id="修改规则"><a href="#修改规则" class="headerlink" title="修改规则"></a>修改规则</h3><p>如果修改正在使用的proto文件，比如为类型增加一个字段，protobuf支持这种修改而不影响已有的服务，不过需要遵循一定的规则：</p>
+<ol>
+<li>不改变已有字段的字段编号 </li>
+<li>当增加一个新的字段的时候，老系统序列化后的数据依然可以被新的格式所解析，只不过需要处理新加字段的缺省值。 </li>
+<li>字段也可以被移除，但是建议<code>Reserved</code>这个字段，避免将来会使用这个字段 </li>
+<li>int32, uint32, int64, uint64 和 bool类型都是兼容的 </li>
+<li>sint32 和 sint64兼容，但是不和其它整数类型兼容 </li>
+<li>string 和 bytes兼容，如果 bytes 是合法的UTF-8 bytes的话 </li>
+<li>嵌入类型和bytes兼容，如果bytes包含一个消息的编码版本的话 </li>
+<li>fixed32和sfixed32, fixed64和sfixed64 enum和int32, uint32, int64, uint64格式兼容</li>
+</ol>
+<h3 id="嵌套类型"><a href="#嵌套类型" class="headerlink" title="嵌套类型"></a>嵌套类型</h3><p>通过协议缓冲区（Protobuf）可以在其他消息中嵌套消息定义。 下面的示例演示如何创建嵌套消息类型：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">message Outer &#123;</span><br><span class="line">    message Inner &#123;</span><br><span class="line">        string text &#x3D; 1;</span><br><span class="line">    &#125;</span><br><span class="line">    Inner inner &#x3D; 1;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="repeated修饰符"><a href="#repeated修饰符" class="headerlink" title="repeated修饰符"></a>repeated修饰符</h3><p>如果一个字段被repeated修饰，则表示它是一个列表类型的字段，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">message SearchRequest &#123;</span><br><span class="line">  repeated string args &#x3D; 1 &#x2F;&#x2F; 等价于java中的List&lt;string&gt; args</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果希望可以预留一些数字标签或者字段可以使用reserved修饰符：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">message Foo &#123;</span><br><span class="line">  reserved 2, 15, 9 to 11;</span><br><span class="line">  reserved &quot;foo&quot;, &quot;bar&quot;;</span><br><span class="line">  &#x2F;&#x2F; string foo &#x3D; 3  &#x2F;&#x2F;编译报错，因为‘foo’已经被标为保留字段</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="保留字段reserved"><a href="#保留字段reserved" class="headerlink" title="保留字段reserved"></a>保留字段reserved</h3><p>Protobuf中的向后兼容性保证依赖于始终表示相同数据项的字段编号。如果从服务新版本中的消息中删除了字段，则不应重复使用该字段编号。</p>
+<p>可以使用reserved关键字强制执行此情况。</p>
+<p>如果定义Stock的消息中删除某字段，则应保留其字段编号，如以下示例所示。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">syntax &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">message Stock &#123;</span><br><span class="line"></span><br><span class="line">    reserved 3, 4;</span><br><span class="line">    int32 id &#x3D; 1;</span><br><span class="line">    string symbol &#x3D; 2;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>还可以将reserved关键字用作将来可能添加的字段的占位符。 您可以使用<code>to</code>关键字将连续字段数表示为范围。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">syntax &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">message Info &#123;</span><br><span class="line"></span><br><span class="line">    reserved 2, 9 to 11, 15;</span><br><span class="line">    &#x2F;&#x2F; ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Any和OneOf字段"><a href="#Any和OneOf字段" class="headerlink" title="Any和OneOf字段"></a>Any和OneOf字段</h3><p>Protobuf提供了两个用于处理可能属于多个类型的值的更简单选项。</p>
+<p>Any类型可以表示任何已知的Protobuf消息类型。</p>
+<p>使用oneof关键字来指定在任何消息中只能设置一个字段范围中的一个字段。</p>
+<ol>
+<li>Any是Protobuf的”已知类型”：一系列有用的可重复使用的消息类型，具有所有支持语言的实现。若要使用Any类型，必须导入<code>google/protobuf/any.proto</code>定义</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">syntax &quot;proto3&quot;</span><br><span class="line"></span><br><span class="line">import &quot;google&#x2F;protobuf&#x2F;any.proto&quot;</span><br><span class="line"></span><br><span class="line">message Stock &#123;</span><br><span class="line">    &#x2F;&#x2F; Stock-specific data</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message Currency &#123;</span><br><span class="line">    &#x2F;&#x2F; Currency-specific data</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message ChangeNotification &#123;</span><br><span class="line">    int32 id &#x3D; 1;</span><br><span class="line">    google.protobuf.Any instrument &#x3D; 2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>Oneof是一项语言功能：编译器在生成message类时处理oneof关键字。使用oneof指定ChangeNotification消息可能如下所示：</li>
+</ol>
+<p>在整个消息声明中，oneof集内的字段必须具有唯一的字段编号。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">message Stock &#123;</span><br><span class="line">    &#x2F;&#x2F; Stock-specific data</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message Currency &#123;</span><br><span class="line">    &#x2F;&#x2F; Currency-specific data</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message ChangeNotification &#123;</span><br><span class="line">  int32 id &#x3D; 1;</span><br><span class="line">  oneof instrument &#123;</span><br><span class="line">    Stock stock &#x3D; 2;</span><br><span class="line">    Currency currency &#x3D; 3;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Note:</strong></p>
+<ul>
+<li>设置属于oneof集一部分的任何字段都将自动清除该集中的任何其他字段。不能将repeated与oneof一起使用。相反，可以创建包含重复字段或oneof集的嵌套消息，以解决此限制。</li>
+<li>oneof块中的字段不支持repeated。</li>
+</ul>
+<h3 id="枚举"><a href="#枚举" class="headerlink" title="枚举"></a>枚举</h3><p>上面使用枚举来确定Oneof字段的类型。可以定义自己的枚举类型，Protobuf将它们编译为C#（或者其他语言）枚举类型。</p>
+<p>由于Protobuf可以用于各种语言，因此枚举的命名约定与C#约定不同。</p>
+<p>但是，代码生成器将名称转换为传统的C#大小写。如果字段名称的Pascal大小写以枚举名称开头，则将其删除。</p>
+<p>例如，在下面的Protobuf枚举中，字段用预缀为ACCOUNT_STATUS。</p>
+<p><strong>第一个枚举值的数值必须是0且至少有一个枚举值，否则编译报错。编译后编译器会为你生成对应语言的枚举类。</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">enum AccountStatus &#123;</span><br><span class="line">  ACCOUNT_STATUS_UNKNOWN &#x3D; 0;</span><br><span class="line">  ACCOUNT_STATUS_PENDING &#x3D; 1;</span><br><span class="line">  ACCOUNT_STATUS_ACTIVE &#x3D; 2;</span><br><span class="line">  ACCOUNT_STATUS_SUSPENDED &#x3D; 3;</span><br><span class="line">  ACCOUNT_STATUS_CLOSED &#x3D; 4;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>由于编码原因，出于效率考虑，官方不推荐使用负数作为枚举值的数值。</p>
+<h3 id="类型默认值"><a href="#类型默认值" class="headerlink" title="类型默认值"></a>类型默认值</h3><ol>
+<li>string类型的默认值是空字符串</li>
+<li>bytes类型的默认值是空字节</li>
+<li>bool类型的默认值是false</li>
+<li>数字类型的默认值是0</li>
+<li>enum类型的默认值是第一个定义的枚举值</li>
+<li>message类型的默认值与语言相关</li>
+<li>repeated修饰的字段默认值是空列表</li>
+</ol>
+<h3 id="import-public的传递引用功能"><a href="#import-public的传递引用功能" class="headerlink" title="import public的传递引用功能"></a>import public的传递引用功能</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 文件：new.proto</span><br><span class="line">&#x2F;&#x2F; 原来在old.proto文件中的定义移到这里</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 文件：old.proto</span><br><span class="line">import public &quot;new.proto&quot;; &#x2F;&#x2F; 把引用传递给上层使用方</span><br><span class="line">import &quot;other.proto&quot;; &#x2F;&#x2F; 引用old.proto本身使用的定义</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;&#x2F;</span><br><span class="line">&#x2F;&#x2F; 文件：client.proto</span><br><span class="line">import &quot;old.proto&quot;;</span><br><span class="line">&#x2F;&#x2F; 此处可以引用old.proto和new.proto中的定义，但不能使用other.proto中的定义</span><br></pre></td></tr></table></figure>
+
+<p>从这个例子中可以看到<code>import</code>关键字导入的定义仅在当前文件有效，不能被上层使用方引用（client.proto无法使用other.proto中的定义）</p>
+<p>而<code>import public</code>关键字导入的定义可以被上层使用方引用（client.proto可以使用new.proto中的定义），<code>import public</code>的功能可以看作是import的超集，在import的功能上还具有传递引用的作用。</p>
+<h3 id="option选项"><a href="#option选项" class="headerlink" title="option选项"></a>option选项</h3><p>选项不对message的定义产生任何的效果，只会在一些特定的场景中起到作用：</p>
+<ol>
+<li><code>option java_package = &quot;com.example.foo&quot;;</code> 编译器为以此作为生成的Java类的包名，如果没有该选项，则会以pb的package作为包名。</li>
+<li><code>option java_multiple_files = true;</code> 该选项为true时，生成的Java类将是包级别的，否则会在一个包装类中。</li>
+<li><code>option optimize_for = CODE_SIZE;</code> 该选项会对生成的类产生影响，作用是根据指定的选项对代码进行不同方面的优化。</li>
+<li><code>int32 old_field = 6 [deprecated=true];</code> 把字段标为过时的。</li>
+</ol>
+<hr>
+<h2 id="protoBuf缺点"><a href="#protoBuf缺点" class="headerlink" title="protoBuf缺点"></a>protoBuf缺点</h2><p>Protbuf相比XML来说，主要优点是性能高。也有不足之处，功能简单，无法用来表示复杂的概念。</p>
+<p>由于文本并不适合用来描述数据结构，所以Protobuf也不适合用来对基于文本的标记文档（如HTML建模。另外，由于XML具有某种程度上的自解释性，它可以被人直接读取编辑，在这一点上Protobuf以二进制的方式存储，除非有<code>.proto</code>定义，否则无法直接读出Protobuf的任何内容。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://developers.google.com/protocol-buffers/docs/overview" target="_blank" rel="noopener">Google官方文档</a></li>
+<li><a href="https://developers.google.com/protocol-buffers/docs/overview" target="_blank" rel="noopener">Protobuf Github项目文档地址</a></li>
+<li><a href="https://docs.microsoft.com/zh-cn/dotnet/architecture/grpc-for-wcf-developers/protobuf-reserved" target="_blank" rel="noopener">Protobuf 保留字段</a></li>
+<li><a href="https://studygolang.com/articles/2540" target="_blank" rel="noopener">在Golang中安装使用Protobuf</a></li>
+<li><a href="https://www.jianshu.com/p/ea656dc9b037" target="_blank" rel="noopener">Protobuf3学习笔记</a></li>
+</ul>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/">https://alonealive.github.io/Blog/2020/08/15/2020/200815_android_protobuf/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-08-16");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-08-15T13:42:00.000Z" itemprop="datePublished">2020-08-15</time>
+
+    , 最后修改于&nbsp;<time datetime="2020-08-16T11:49:53.973Z" itemprop="dateModified">2020-08-16</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/08/06/2020/200806_android_ANR_BaseLog/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android ANR基本Log分析</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

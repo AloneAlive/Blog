@@ -336,6 +336,49 @@
             
                 <div class="column col-12">
                     
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/21/2019/190721-cpp-variable/" rel="bookmark">C++变量</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        C++变量命名规则
+只能使用字母、数字、下划线  
+第一个字符不能是数字  
+区分大小写
+不能使用关键字
+以两个下划线或下划线和大写字母打头的名称保留给实现（编译器及其使用的资源）使用，以一个下划线开头的名称被保留给实现，用作全局标识符
+C++对命名的长度没有限制，但是有些平台会限制长度
+
+    <a href="/Blog/2019/07/21/2019/190721-cpp-variable/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-21</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
     <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/18/2019/190718-nextdebug-md/" rel="bookmark">Hexo Next主题优化（二）</a></h2>
 
 
@@ -493,13 +536,14 @@ _config.xml12345# Schemes#scheme: Muse#scheme: Mist#scheme: Piscesscheme: Gemini
             
                 <div class="column col-12">
                     
-    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/15/2019/190715_debug_VTS/" rel="bookmark">Use VTS</a></h2>
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/15/2019/190715_debug_CTS/" rel="bookmark">Use CTS</a></h2>
 
 
 <p class="mb-0 card-body">
     
-        Overview来源为了能更快的将设备升级到新的Android版本，Android O 开始新引入了 Project Treble，Project Treble 适用于搭载 Android O 及后续版本的所有新设备。 
-    <a href="/Blog/2019/07/15/2019/190715_debug_VTS/">阅读全文</a>
+        OverviewCTS就是兼容性测试为了确保Android应用能够在所有兼容Android的设备上正确运行，并且保持相似的用户体验，在每个版本发布之时，Android提供了一套兼容性测试用例集合（Compatibility Test Suite, CTS）来认证运行Android系统的设备是否完全兼容Android规范，并附带有相关的兼容性标准文档（Compatibility Definition Document, CDD）。  
+从 http://source.android.com/compatibility/downloads.html（ 网络需要能进google）处下载最新的兼容性测试用例集合，并解压。大部分是基于Junit和仪表盘技术编写的。还扩展了自动化测试过程，可以自动执行用例，自动收集和汇总测试结果。CTS采用XML配置文件的方式将这些测试用例分组成多个测试计划（plan）,第三方也可以创建自己的plan。
+    <a href="/Blog/2019/07/15/2019/190715_debug_CTS/">阅读全文</a>
 </p>
 
 
@@ -570,14 +614,13 @@ markdownlint
             
                 <div class="column col-12">
                     
-    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/15/2019/190715_debug_CTS/" rel="bookmark">Use CTS</a></h2>
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/15/2019/190715_debug_VTS/" rel="bookmark">Use VTS</a></h2>
 
 
 <p class="mb-0 card-body">
     
-        OverviewCTS就是兼容性测试为了确保Android应用能够在所有兼容Android的设备上正确运行，并且保持相似的用户体验，在每个版本发布之时，Android提供了一套兼容性测试用例集合（Compatibility Test Suite, CTS）来认证运行Android系统的设备是否完全兼容Android规范，并附带有相关的兼容性标准文档（Compatibility Definition Document, CDD）。  
-从 http://source.android.com/compatibility/downloads.html（ 网络需要能进google）处下载最新的兼容性测试用例集合，并解压。大部分是基于Junit和仪表盘技术编写的。还扩展了自动化测试过程，可以自动执行用例，自动收集和汇总测试结果。CTS采用XML配置文件的方式将这些测试用例分组成多个测试计划（plan）,第三方也可以创建自己的plan。
-    <a href="/Blog/2019/07/15/2019/190715_debug_CTS/">阅读全文</a>
+        Overview来源为了能更快的将设备升级到新的Android版本，Android O 开始新引入了 Project Treble，Project Treble 适用于搭载 Android O 及后续版本的所有新设备。 
+    <a href="/Blog/2019/07/15/2019/190715_debug_VTS/">阅读全文</a>
 </p>
 
 
@@ -607,15 +650,16 @@ markdownlint
             
                 <div class="column col-12">
                     
-    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/13/2019/190713_use_gitalk/" rel="bookmark">Hexo Next主题集成gitalk评论系统</a></h2>
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/13/2019/190713_hexo-improve/" rel="bookmark">Hexo Next主题优化</a></h2>
 
 
 <p class="mb-0 card-body">
     
-        
-在我的Github+hexo搭建的网站中，使用github的gitalk评论系统。gitalk官方示例、官方文档
+        首页预览加入图片
+在根目录下的images文件夹加入图片
 
-    <a href="/Blog/2019/07/13/2019/190713_use_gitalk/">阅读全文</a>
+12345678---title: Hexo Next主题优化categories: Webtags: - Hexophotos:     - /images/background.jpg---
+    <a href="/Blog/2019/07/13/2019/190713_hexo-improve/">阅读全文</a>
 </p>
 
 
@@ -645,16 +689,15 @@ markdownlint
             
                 <div class="column col-12">
                     
-    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/13/2019/190713_hexo-improve/" rel="bookmark">Hexo Next主题优化</a></h2>
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/13/2019/190713_use_gitalk/" rel="bookmark">Hexo Next主题集成gitalk评论系统</a></h2>
 
 
 <p class="mb-0 card-body">
     
-        首页预览加入图片
-在根目录下的images文件夹加入图片
+        
+在我的Github+hexo搭建的网站中，使用github的gitalk评论系统。gitalk官方示例、官方文档
 
-12345678---title: Hexo Next主题优化categories: Webtags: - Hexophotos:     - /images/background.jpg---
-    <a href="/Blog/2019/07/13/2019/190713_hexo-improve/">阅读全文</a>
+    <a href="/Blog/2019/07/13/2019/190713_use_gitalk/">阅读全文</a>
 </p>
 
 
