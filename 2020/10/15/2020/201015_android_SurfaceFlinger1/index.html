@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android Q SurfaceFlinger合成（一） | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android Q SurfaceFlinger合成（一） | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/"><meta property="og:locale" content="zh-CN"><meta name="description" content="在HWUI渲染完成后，Buffer会在frameworks&#x2F;native&#x2F;libs&#x2F;gui&#x2F;BufferQueueProducer.cpp中通过queueBuffer放入BufferQueue，在该函数中调用frameAvailableListener-&amp;gt;onFrameAvailable(item)通知consumer消费者，从而触发SurfaceFlinger合成。 - sunwengang - sunwengang blog"><meta name="keywords" content="android, graphics, display"><meta property="og:image" content="https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/SF-%E6%B6%88%E8%B4%B9%E8%80%85onFrameAvailable.png"><meta property="article:published_time" content="2020-10-15T12:52:00.000Z"><meta property="article:modified_time" content="2020-10-15T12:44:00.005Z"><meta property="og:updated_time" content="2020-10-15T12:44:00.005Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android, graphics, display"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/"
+    },
+    "headline": "Android Q SurfaceFlinger合成（一） | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2020-10-15T12:52:00.000Z",
+    "dateModified": "2020-10-15T12:44:00.005Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android, graphics, display",
+    "description": "在HWUI渲染完成后，Buffer会在frameworks/native/libs/gui/BufferQueueProducer.cpp中通过queueBuffer放入BufferQueue，在该函数中调用frameAvailableListener-&amp;amp;gt;onFrameAvailable(item)通知consumer消费者，从而触发SurfaceFlinger合成。 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/Blog/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/Blog/tags" class="navbar-link">标签</a>
+    
+        <a href="/Blog/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/Blog/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android Q SurfaceFlinger合成（一）" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android Q SurfaceFlinger合成（一）&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android Q SurfaceFlinger合成（一）" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMklEQVR42u3a226DMBBFUf7/p9vXKrLn7AlUTT2bl0oRgUWFnbldX//guESKFCnyA5BXcVTnpO++nvfzWvi+Iscily/ty+cJjhbCBr67r8jZyN3LvoLtblKhVw9Z3VekSIJcnU9xIkU+jawCg9W1qgcSKZIgdz/0aYHsoGmTfzQKEnkckiRRv/H3sWxR5FFIkjxVSdUuOUuJ2KNVNZFHIUngQJKpclNeXA/dT+RIZJX474qmu+90gg3yuciZyFSor4KE9IBVgSD9Q0TORdJNuVtsJZv4buMXORtJLkIKounGqUHQaoCKHIHsBLu0MEWC4bcTMZFHI6vgld6QFvd3wQwuooo8HhkbPnCDbgcPpEkgciQS/dA3k6uU4JEFK3IuMjUx04AHLdxXBdNt0UHkWGRaDGnwmASz3WuLnI0kiDjUAYLZx4JekWOQtNhPh+uqpA4leiJHIsnJ3cLW3YKCyNnIO4V5tCEXAcmtgpXIo5EESweOO82qVlVN5BgkbbKnIIEsns5As0iRtODUWUxV4z8FHSJnI2lRPg2XpCCZFFFR90HkGGQVHKSXPkHKhEukyDBQVzVGycKiwW4MbESORKaDBgMkgE5NU9QAFXk8Mr3QCZGKr6mQ384WRY5ApkI++Yw2k95eOCLHIVOzsioipIFPGmCIFNlBxo0XDDGRASicLYoUCYZGOo2BhBcpkgzLdYoInSA3NuVFjkOSBdFt0NNhkrKBIHIk8pMPkSJFivzD4xuhdPdGQx0mfwAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android Q SurfaceFlinger合成（一）</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2020-10-15</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android Q SurfaceFlinger合成（一）&url=https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android Q SurfaceFlinger合成（一）&url=https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMklEQVR42u3a226DMBBFUf7/p9vXKrLn7AlUTT2bl0oRgUWFnbldX//guESKFCnyA5BXcVTnpO++nvfzWvi+Iscily/ty+cJjhbCBr67r8jZyN3LvoLtblKhVw9Z3VekSIJcnU9xIkU+jawCg9W1qgcSKZIgdz/0aYHsoGmTfzQKEnkckiRRv/H3sWxR5FFIkjxVSdUuOUuJ2KNVNZFHIUngQJKpclNeXA/dT+RIZJX474qmu+90gg3yuciZyFSor4KE9IBVgSD9Q0TORdJNuVtsJZv4buMXORtJLkIKounGqUHQaoCKHIHsBLu0MEWC4bcTMZFHI6vgld6QFvd3wQwuooo8HhkbPnCDbgcPpEkgciQS/dA3k6uU4JEFK3IuMjUx04AHLdxXBdNt0UHkWGRaDGnwmASz3WuLnI0kiDjUAYLZx4JekWOQtNhPh+uqpA4leiJHIsnJ3cLW3YKCyNnIO4V5tCEXAcmtgpXIo5EESweOO82qVlVN5BgkbbKnIIEsns5As0iRtODUWUxV4z8FHSJnI2lRPg2XpCCZFFFR90HkGGQVHKSXPkHKhEukyDBQVzVGycKiwW4MbESORKaDBgMkgE5NU9QAFXk8Mr3QCZGKr6mQ384WRY5ApkI++Yw2k95eOCLHIVOzsioipIFPGmCIFNlBxo0XDDGRASicLYoUCYZGOo2BhBcpkgzLdYoInSA3NuVFjkOSBdFt0NNhkrKBIHIk8pMPkSJFivzD4xuhdPdGQx0mfwAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#onFrameAvailable触发合成"><span class="post-toc-number">1.</span> <span class="post-toc-text">onFrameAvailable触发合成</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#类图"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">类图</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#MessageQueue消息队列"><span class="post-toc-number">2.</span> <span class="post-toc-text">MessageQueue消息队列</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#setEventThread变更"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">setEventThread变更</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#signalLayerUpdate通知Layer更新信息"><span class="post-toc-number">3.</span> <span class="post-toc-text">signalLayerUpdate通知Layer更新信息</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#VSYNC事件到来"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">VSYNC事件到来</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#Hotplug事件到来"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">Hotplug事件到来</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#dispatchEvent分发事件"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">dispatchEvent分发事件</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#MessageQueue处理Message"><span class="post-toc-number">3.4.</span> <span class="post-toc-text">MessageQueue处理Message</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#onMessageReceived处理INVALIDATE消息"><span class="post-toc-number">4.</span> <span class="post-toc-text">onMessageReceived处理INVALIDATE消息</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#一、丢帧处理frameMissed"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">一、丢帧处理frameMissed</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#二、handleMessageTransaction处理Transaction"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">二、handleMessageTransaction处理Transaction</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#mCurrentState和mDrawingState"><span class="post-toc-number">4.2.1.</span> <span class="post-toc-text">mCurrentState和mDrawingState</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#handleTransactionLocked"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">handleTransactionLocked</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-检查mCurrentState的Layer的可见区域"><span class="post-toc-number">4.3.1.</span> <span class="post-toc-text">1. 检查mCurrentState的Layer的可见区域</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-检查显示设备是否变化"><span class="post-toc-number">4.3.2.</span> <span class="post-toc-text">2. 检查显示设备是否变化</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-更新mCurrentState中Layer的transform-hint信息"><span class="post-toc-number">4.3.3.</span> <span class="post-toc-text">3. 更新mCurrentState中Layer的transform hint信息</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-更新Layer信息"><span class="post-toc-number">4.3.4.</span> <span class="post-toc-text">4. 更新Layer信息</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#5-信息更新完成，mCurrentState提交到mDrawingState"><span class="post-toc-number">4.3.5.</span> <span class="post-toc-text">5. 信息更新完成，mCurrentState提交到mDrawingState</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#三、handleMessageInvalidate"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">三、handleMessageInvalidate</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#handlePageFlip"><span class="post-toc-number">4.4.1.</span> <span class="post-toc-text">handlePageFlip</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#latchBuffer-gt-updateTexImage-gt-acquireBuffer"><span class="post-toc-number">4.4.2.</span> <span class="post-toc-text">latchBuffer-&gt;updateTexImage-&gt;acquireBuffer</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#四、Invalidate流程小结（正式合成刷新前的准备工作）"><span class="post-toc-number">4.5.</span> <span class="post-toc-text">四、Invalidate流程小结（正式合成刷新前的准备工作）</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考文章"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考文章</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>在HWUI渲染完成后，Buffer会在<code>frameworks/native/libs/gui/BufferQueueProducer.cpp</code>中通过queueBuffer放入BufferQueue，在该函数中调用<code>frameAvailableListener-&gt;onFrameAvailable(item)</code>通知consumer消费者，从而触发SurfaceFlinger合成。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="onFrameAvailable触发合成"><a href="#onFrameAvailable触发合成" class="headerlink" title="onFrameAvailable触发合成"></a>onFrameAvailable触发合成</h2><ol>
+<li>上面的frameAvailableListener对象类型是<code>sp&lt;IConsumerListener&gt; frameAvailableListener;</code></li>
+</ol>
+<p>参考<a href="https://wizzie.top/Blog/2020/07/30/2020/200730_android_GraphicsFramework/" target="_blank" rel="noopener">Android 图形显示框架</a>中的《Surface创建流程》，在该流程中会创建BufferQueue，调用<code>BufferQueue::createBufferQueue</code>函数。</p>
+<ol start="2">
+<li>而<code>class ProxyConsumerListener : public BnConsumerListener...</code>是IConsumerListener接口的Bn端，所以会调用到下面代码：</li>
+</ol>
+<p>BufferQueue中的frameAvailableListener，是一个IConsumerListener的接口，对应的Binder的Bn端实现为ProxyConsumerListener。</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/libs/gui/BufferQueue.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//头文件中</span></span><br><span class="line">wp&lt;ConsumerListener&gt; mConsumerListener;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> BufferQueue::ProxyConsumerListener::onFrameAvailable(</span><br><span class="line">        <span class="keyword">const</span> BufferItem&amp; item) &#123;</span><br><span class="line">    <span class="function">sp&lt;ConsumerListener&gt; <span class="title">listener</span><span class="params">(mConsumerListener.promote())</span></span>;</span><br><span class="line">    <span class="keyword">if</span> (listener != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        listener-&gt;onFrameAvailable(item);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>在ConsumerBase.h中该类继承ConsumerListener。所以此处的mConsumerListener是ConsumerBase中的实现。</li>
+</ol>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/libs/gui/include/gui/ConsumerBase.h</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ConsumerBase</span> :</span> <span class="keyword">public</span> <span class="keyword">virtual</span> RefBase,</span><br><span class="line">        <span class="keyword">protected</span> ConsumerListener &#123;...&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><figcaption><span>frameworks/native/libs/gui/ConsumerBase.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">ConsumerBase::onFrameAvailable</span><span class="params">(<span class="keyword">const</span> BufferItem&amp; item)</span> </span>&#123;</span><br><span class="line">    CB_LOGV(<span class="string">"onFrameAvailable"</span>);</span><br><span class="line"></span><br><span class="line">    sp&lt;FrameAvailableListener&gt; listener;</span><br><span class="line">    &#123; <span class="comment">// scope for the lock</span></span><br><span class="line">        <span class="function">Mutex::Autolock <span class="title">lock</span><span class="params">(mFrameAvailableMutex)</span></span>;</span><br><span class="line">        listener = mFrameAvailableListener.promote();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (listener != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">        CB_LOGV(<span class="string">"actually calling onFrameAvailable"</span>);</span><br><span class="line">        listener-&gt;onFrameAvailable(item);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li>在BufferQueueLayer中，<code>class BufferQueueLayer : public BufferLayer, public BufferLayerConsumer::ContentsChangedListener{......}</code>。</li>
+</ol>
+<p>而<code>class BufferLayerConsumer : public ConsumerBase...</code></p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/BufferQueueLayer.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BufferQueueLayer::onFrameAvailable</span><span class="params">(<span class="keyword">const</span> BufferItem&amp; item)</span> </span>&#123;</span><br><span class="line">    ATRACE_CALL();</span><br><span class="line">    <span class="comment">// Add this buffer from our internal queue tracker</span></span><br><span class="line">    &#123; <span class="comment">// Autolock scope</span></span><br><span class="line">        <span class="keyword">if</span> (mFlinger-&gt;mUseSmart90ForVideo) &#123;</span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">nsecs_t</span> presentTime = item.mIsAutoTimestamp ? <span class="number">0</span> : item.mTimestamp;</span><br><span class="line">            mFlinger-&gt;mScheduler-&gt;addLayerPresentTimeAndHDR(mSchedulerLayerHandle, presentTime,</span><br><span class="line">                                                            item.mHdrMetadata.validTypes != <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function">Mutex::Autolock <span class="title">lock</span><span class="params">(mQueueItemLock)</span></span>;</span><br><span class="line">        <span class="comment">// FrameNumber被重置时，同时重置mLastFrameNumberReceived</span></span><br><span class="line">        <span class="keyword">if</span> (item.mFrameNumber == <span class="number">1</span>) &#123;</span><br><span class="line">            mLastFrameNumberReceived = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//确保mFrameNumber的顺序</span></span><br><span class="line">        <span class="keyword">while</span> (item.mFrameNumber != mLastFrameNumberReceived + <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">status_t</span> result = mQueueItemCondition.waitRelative(mQueueItemLock, ms2ns(<span class="number">500</span>));</span><br><span class="line">            <span class="keyword">if</span> (result != NO_ERROR) &#123;</span><br><span class="line">                ALOGE(<span class="string">"[%s] Timed out waiting on callback"</span>, mName.<span class="built_in">string</span>());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//将新的buffer放入Layer队列中，同时对mQueuedFrames+1操作</span></span><br><span class="line">        mQueueItems.push_back(item);</span><br><span class="line">        mQueuedFrames++;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Wake up any pending callbacks</span></span><br><span class="line">        mLastFrameNumberReceived = item.mFrameNumber;</span><br><span class="line">        mQueueItemCondition.broadcast();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//buffer属性保存到mInterceptor中</span></span><br><span class="line">    mFlinger-&gt;mInterceptor-&gt;saveBufferUpdate(<span class="keyword">this</span>, item.mGraphicBuffer-&gt;getWidth(),</span><br><span class="line">                                             item.mGraphicBuffer-&gt;getHeight(), item.mFrameNumber);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (isRemovedFromCurrentState()) &#123;</span><br><span class="line">        fakeVsync();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">//触发LayerUpdate</span></span><br><span class="line">        mFlinger-&gt;signalLayerUpdate();</span><br><span class="line">    &#125;</span><br><span class="line">    mConsumer-&gt;onBufferAvailable(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h3><ol>
+<li>BufferQueueLayer有专门的Consumer，即BufferLayerConsumer。BufferLayerConsumer继承ConsumerBase。ConsumerBase通过IGraphicBufferConsumer和BufferQueue进行通信。  </li>
+<li>BufferQueue中的frameAvailableListener，是一个IConsumerListener的接口，对应的Binder的Bn端实现为<code>ProxyConsumerListener</code>。</li>
+<li>BufferQueueLayer实现了ContentsChangedListener，ContentsChangedListener继承FrameAvailableListener。BufferQueueLayer的Listener实现，被传给了ConsumerBase。  </li>
+<li><code>ConsumerBase实现ConsumerListener接口，构建ConsumerBase时，会创建ProxyConsumerListener</code>，将ConsumerBase实现的Listener接口传给ProxyConsumerListener。</li>
+<li>BufferQueue中Listener回调时，会回调到ConsumerBase中。ConsumerBase中再通过BufferQueueLayer实现的，传下来的Listener回调到BufferLayer中。</li>
+</ol>
+<p><img src="SF-%E6%B6%88%E8%B4%B9%E8%80%85onFrameAvailable.png" alt="消费者onFrameAvailable触发类图"></p>
+<hr>
+<h2 id="MessageQueue消息队列"><a href="#MessageQueue消息队列" class="headerlink" title="MessageQueue消息队列"></a>MessageQueue消息队列</h2><blockquote>
+<p>Android的消息处理机制请参考：<a href="https://wizzie.top/Blog/2019/09/22/2019/190922-android-handler-cpp/#SurfaceFlinger%E7%9A%84%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6" target="_blank" rel="noopener">Android Handler消息循环处理机制(例ActivityThread)</a></p>
+</blockquote>
+<p>在SurfaceFlinger模块有单独的MessageQueue处理流程。在SF创建的时候，构造函数会创建<code>meventqueue</code>对象。在其onFirstRef函数中调用<code>mEventQueue-&gt;init(this);</code>进行初始化。</p>
+<p>MessageQueue初始化时，创建了一个Looper和Handler。</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/Scheduler/MessageQueue.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MessageQueue::init</span><span class="params">(<span class="keyword">const</span> sp&lt;SurfaceFlinger&gt;&amp; flinger)</span> </span>&#123;</span><br><span class="line">    mFlinger = flinger;</span><br><span class="line">    mLooper = <span class="keyword">new</span> Looper(<span class="literal">true</span>);</span><br><span class="line">    mHandler = <span class="keyword">new</span> Handler(*<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="setEventThread变更"><a href="#setEventThread变更" class="headerlink" title="setEventThread变更"></a>setEventThread变更</h3><p>在Android Q中，EventThread的<code>setEventThread</code>操作具体在<code>SurfaceFlinger::enableVSyncInjections</code>中进行。</p>
+<p>而非之前的是在SurfaceFlinger的init初始化函数中。</p>
+<figure class="highlight cpp"><figcaption><span>SF.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//头文件</span></span><br><span class="line"><span class="comment">//mEventQueue是MessageQueue的一个栈对象</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">unique_ptr</span>&lt;MessageQueue&gt; mEventQueue;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">SurfaceFlinger::enableVSyncInjections</span><span class="params">(<span class="keyword">bool</span> enable)</span> </span>&#123;</span><br><span class="line">    postMessageSync(<span class="keyword">new</span> LambdaMessage([&amp;] &#123;</span><br><span class="line">        ......</span><br><span class="line"></span><br><span class="line">        <span class="comment">// TODO(b/128863962): Part of the Injector should be refactored, so that it</span></span><br><span class="line">        <span class="comment">// can be passed to Scheduler.</span></span><br><span class="line">        <span class="keyword">if</span> (enable) &#123;</span><br><span class="line">            ALOGV(<span class="string">"VSync Injections enabled"</span>);</span><br><span class="line">            <span class="keyword">if</span> (mVSyncInjector.get() == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">                mVSyncInjector = <span class="built_in">std</span>::make_unique&lt;InjectVSyncSource&gt;();</span><br><span class="line">                mInjectorEventThread = <span class="built_in">std</span>::make_unique&lt;</span><br><span class="line">                        impl::EventThread&gt;(mVSyncInjector.get(),</span><br><span class="line">                                           impl::EventThread::InterceptVSyncsCallback(),</span><br><span class="line">                                           <span class="string">"injEventThread"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            mEventQueue-&gt;setEventThread(mInjectorEventThread.get(), <span class="built_in">std</span>::move(resyncCallback));</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            ALOGV(<span class="string">"VSync Injections disabled"</span>);</span><br><span class="line">            mEventQueue-&gt;setEventThread(mScheduler-&gt;getEventThread(mSfConnectionHandle),</span><br><span class="line">                                        <span class="built_in">std</span>::move(resyncCallback));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mInjectVSyncs = enable;</span><br><span class="line">    &#125;));</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> NO_ERROR;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>setEventThread函数做了两件事：</p>
+<ol>
+<li>创建一个BitTube对象mEventTube</li>
+<li>创建一个EventConnection</li>
+</ol>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/Scheduler/MessageQueue.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//头文件，是BitTube对象</span></span><br><span class="line">gui::BitTube mEventTube;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MessageQueue::setEventThread</span><span class="params">(android::EventThread* eventThread,</span></span></span><br><span class="line"><span class="function"><span class="params">                                  ResyncCallback resyncCallback)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mEventThread == eventThread) &#123;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mEventTube.getFd() &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">        mLooper-&gt;removeFd(mEventTube.getFd());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mEventThread = eventThread;</span><br><span class="line">    mEvents = eventThread-&gt;createEventConnection(<span class="built_in">std</span>::move(resyncCallback));</span><br><span class="line">    <span class="comment">//将mEventTube和EventConnection关联</span></span><br><span class="line">    mEvents-&gt;stealReceiveChannel(&amp;mEventTube);</span><br><span class="line">    <span class="comment">//将fd添加到MessageQueue的Looper中</span></span><br><span class="line">    <span class="comment">//Looper的callback（入参）为MessageQueue::cb_eventReceiver</span></span><br><span class="line">    <span class="comment">//一旦有数据到来就会调用cb_eventReceiver</span></span><br><span class="line">    mLooper-&gt;addFd(mEventTube.getFd(), <span class="number">0</span>, Looper::EVENT_INPUT, MessageQueue::cb_eventReceiver,</span><br><span class="line">                   <span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//data为MessageQueue本身有数据到来就会调用，作用是负责处理EventThread发送过来的信号</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MessageQueue::cb_eventReceiver</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> events, <span class="keyword">void</span>* data)</span> </span>&#123;</span><br><span class="line">    MessageQueue* <span class="built_in">queue</span> = <span class="keyword">reinterpret_cast</span>&lt;MessageQueue*&gt;(data);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">queue</span>-&gt;eventReceiver(fd, events);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/Scheduler/EventThread.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建connection</span></span><br><span class="line"><span class="function">sp&lt;EventThreadConnection&gt; <span class="title">EventThread::createEventConnection</span><span class="params">(ResyncCallback resyncCallback)</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> EventThreadConnection(<span class="keyword">const_cast</span>&lt;EventThread*&gt;(<span class="keyword">this</span>), <span class="built_in">std</span>::move(resyncCallback));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Connection创建的时候先调用OnFirstRef进行注册</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">EventThreadConnection::onFirstRef</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// <span class="doctag">NOTE:</span> mEventThread doesn't hold a strong reference on us</span></span><br><span class="line">    mEventThread-&gt;registerDisplayEventConnection(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//注册，将Connection将会被添加到mDisplayEventConnections 中</span></span><br><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">EventThread::registerDisplayEventConnection</span><span class="params">(<span class="keyword">const</span> sp&lt;EventThreadConnection&gt;&amp; connection)</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::lock_guard&lt;<span class="built_in">std</span>::mutex&gt; <span class="title">lock</span><span class="params">(mMutex)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// this should never happen</span></span><br><span class="line">    <span class="keyword">auto</span> it = <span class="built_in">std</span>::find(mDisplayEventConnections.cbegin(),</span><br><span class="line">            mDisplayEventConnections.cend(), connection);</span><br><span class="line">    <span class="keyword">if</span> (it != mDisplayEventConnections.cend()) &#123;</span><br><span class="line">        ALOGW(<span class="string">"DisplayEventConnection %p already exists"</span>, connection.get());</span><br><span class="line">        mCondition.notify_all();</span><br><span class="line">        <span class="keyword">return</span> ALREADY_EXISTS;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mDisplayEventConnections.push_back(connection); <span class="comment">//添加</span></span><br><span class="line">    mCondition.notify_all();</span><br><span class="line">    <span class="keyword">return</span> NO_ERROR;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>创建BitTube对象，构造函数会调用init函数：</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/libs/gui/BitTube.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> <span class="keyword">const</span> <span class="keyword">size_t</span> DEFAULT_SOCKET_BUFFER_SIZE = <span class="number">4</span> * <span class="number">1024</span>;</span><br><span class="line"></span><br><span class="line">BitTube::BitTube(<span class="keyword">size_t</span> bufsize) &#123;</span><br><span class="line">    init(bufsize, bufsize);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//默认创建一个4k的BitTube，BitTube封装的是一对socket，一个发送，一个接收，可传输的Buffer大小为4K</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">BitTube::init</span><span class="params">(<span class="keyword">size_t</span> rcvbuf, <span class="keyword">size_t</span> sndbuf)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> sockets[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">if</span> (socketpair(AF_UNIX, SOCK_SEQPACKET, <span class="number">0</span>, sockets) == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">size_t</span> size = DEFAULT_SOCKET_BUFFER_SIZE;</span><br><span class="line">        setsockopt(sockets[<span class="number">0</span>], SOL_SOCKET, SO_RCVBUF, &amp;rcvbuf, <span class="keyword">sizeof</span>(rcvbuf));</span><br><span class="line">        setsockopt(sockets[<span class="number">1</span>], SOL_SOCKET, SO_SNDBUF, &amp;sndbuf, <span class="keyword">sizeof</span>(sndbuf));</span><br><span class="line">        <span class="comment">// since we don't use the "return channel", we keep it small...</span></span><br><span class="line">        setsockopt(sockets[<span class="number">0</span>], SOL_SOCKET, SO_SNDBUF, &amp;size, <span class="keyword">sizeof</span>(size));</span><br><span class="line">        setsockopt(sockets[<span class="number">1</span>], SOL_SOCKET, SO_RCVBUF, &amp;size, <span class="keyword">sizeof</span>(size));</span><br><span class="line">        fcntl(sockets[<span class="number">0</span>], F_SETFL, O_NONBLOCK);</span><br><span class="line">        fcntl(sockets[<span class="number">1</span>], F_SETFL, O_NONBLOCK);</span><br><span class="line">        mReceiveFd.reset(sockets[<span class="number">0</span>]);</span><br><span class="line">        mSendFd.reset(sockets[<span class="number">1</span>]);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        mReceiveFd.reset();</span><br><span class="line">        ALOGE(<span class="string">"BitTube: pipe creation failed (%s)"</span>, strerror(errno));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">BitTube::getFd</span><span class="params">()</span> <span class="keyword">const</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> mReceiveFd;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="signalLayerUpdate通知Layer更新信息"><a href="#signalLayerUpdate通知Layer更新信息" class="headerlink" title="signalLayerUpdate通知Layer更新信息"></a>signalLayerUpdate通知Layer更新信息</h2><p>接着上面第一部分的流程，触发SF的合成从signalLayerUpdate开始。</p>
+<figure class="highlight cpp"><figcaption><span>SF.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::signalLayerUpdate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    mScheduler-&gt;resetIdleTimer();</span><br><span class="line">    mEventQueue-&gt;invalidate();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用到MessageQueue的invalidate函数。</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/Scheduler/MessageQueue.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MessageQueue::invalidate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    mEvents-&gt;requestNextVsync();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>请求下一个Vsync（垂直同步机制），主要作用是通知Vsync机制在下一个SF的Vsync到来的时候唤醒SF进行工作，从而进行合成处理。</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/Scheduler/EventThread.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">EventThreadConnection::requestNextVsync</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ATRACE_NAME(<span class="string">"requestNextVsync"</span>);</span><br><span class="line">    mEventThread-&gt;requestNextVsync(<span class="keyword">this</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">EventThread::requestNextVsync</span><span class="params">(<span class="keyword">const</span> sp&lt;EventThreadConnection&gt;&amp; connection)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (connection-&gt;resyncCallback) &#123;</span><br><span class="line">        connection-&gt;resyncCallback();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="built_in">std</span>::lock_guard&lt;<span class="built_in">std</span>::mutex&gt; <span class="title">lock</span><span class="params">(mMutex)</span></span>;</span><br><span class="line">    <span class="comment">//如果为空，则赋值，并且触发notify</span></span><br><span class="line">    <span class="keyword">if</span> (connection-&gt;vsyncRequest == VSyncRequest::None) &#123;</span><br><span class="line">        connection-&gt;vsyncRequest = VSyncRequest::Single;</span><br><span class="line">        mCondition.notify_all();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//头文件</span></span><br><span class="line"><span class="keyword">enum</span> <span class="class"><span class="keyword">class</span> <span class="title">VSyncRequest</span> &#123;</span></span><br><span class="line">    None = <span class="number">-1</span>,</span><br><span class="line">    Single = <span class="number">0</span>,</span><br><span class="line">    Periodic = <span class="number">1</span>,</span><br><span class="line">    <span class="comment">// Subsequent values are periods.</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>然后会触发threadmain函数，这个和Android P上的threadloop流程是不同的。</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/Scheduler/EventThread.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">EventThread::threadMain</span><span class="params">(<span class="built_in">std</span>::unique_lock&lt;<span class="built_in">std</span>::mutex&gt;&amp; lock)</span> </span>&#123;</span><br><span class="line">    DisplayEventConsumers consumers;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (mState != State::Quit) &#123;</span><br><span class="line">        <span class="built_in">std</span>::optional&lt;DisplayEventReceiver::Event&gt; event;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Determine next event to dispatch.</span></span><br><span class="line">        <span class="keyword">if</span> (!mPendingEvents.empty()) &#123;</span><br><span class="line">            event = mPendingEvents.front();</span><br><span class="line">            mPendingEvents.pop_front();</span><br><span class="line">            <span class="comment">//event处理两种事件：</span></span><br><span class="line">            <span class="comment">//1. 热插拔事件</span></span><br><span class="line">            <span class="comment">//2. vsync事件</span></span><br><span class="line">            <span class="keyword">switch</span> (event-&gt;header.type) &#123;</span><br><span class="line">                <span class="keyword">case</span> DisplayEventReceiver::DISPLAY_EVENT_HOTPLUG:</span><br><span class="line">                    <span class="keyword">if</span> (event-&gt;hotplug.connected &amp;&amp; !mVSyncState) &#123;</span><br><span class="line">                        mVSyncState.emplace(event-&gt;header.displayId);</span><br><span class="line">                    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (!event-&gt;hotplug.connected &amp;&amp; mVSyncState &amp;&amp;</span><br><span class="line">                               mVSyncState-&gt;displayId == event-&gt;header.displayId) &#123;</span><br><span class="line">                        mVSyncState.reset();</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">case</span> DisplayEventReceiver::DISPLAY_EVENT_VSYNC:</span><br><span class="line">                    <span class="keyword">if</span> (mInterceptVSyncsCallback) &#123;</span><br><span class="line">                        <span class="comment">//有vsync事件要分发</span></span><br><span class="line">                        mInterceptVSyncsCallback(event-&gt;header.timestamp);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">bool</span> vsyncRequested = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Find connections that should consume this event.</span></span><br><span class="line">        <span class="keyword">auto</span> it = mDisplayEventConnections.begin();</span><br><span class="line">        <span class="keyword">while</span> (it != mDisplayEventConnections.end()) &#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">const</span> <span class="keyword">auto</span> connection = it-&gt;promote()) &#123;</span><br><span class="line">                vsyncRequested |= connection-&gt;vsyncRequest != VSyncRequest::None;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">if</span> (event &amp;&amp; shouldConsumeEvent(*event, connection)) &#123;</span><br><span class="line">                    consumers.push_back(connection);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                ++it;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                it = mDisplayEventConnections.erase(it);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!consumers.empty()) &#123;</span><br><span class="line">            <span class="comment">//分发事件</span></span><br><span class="line">            dispatchEvent(*event, consumers);</span><br><span class="line">            consumers.clear();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        State nextState;</span><br><span class="line">        <span class="keyword">if</span> (mVSyncState &amp;&amp; vsyncRequested) &#123;</span><br><span class="line">            nextState = mVSyncState-&gt;synthetic ? State::SyntheticVSync : State::VSync;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            ALOGW_IF(!mVSyncState, <span class="string">"Ignoring VSYNC request while display is disconnected"</span>);</span><br><span class="line">            nextState = State::Idle;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (mState != nextState) &#123;</span><br><span class="line">            <span class="keyword">if</span> (mState == State::VSync) &#123;</span><br><span class="line">                mVSyncSource-&gt;setVSyncEnabled(<span class="literal">false</span>);</span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nextState == State::VSync) &#123;</span><br><span class="line">                mVSyncSource-&gt;setVSyncEnabled(<span class="literal">true</span>);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            mState = nextState;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (event) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Wait for event or client registration/request.</span></span><br><span class="line">        <span class="keyword">if</span> (mState == State::Idle) &#123;</span><br><span class="line">            mCondition.wait(lock);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// Generate a fake VSYNC after a long timeout in case the driver stalls. When the</span></span><br><span class="line">            <span class="comment">// display is off, keep feeding clients at 60 Hz.</span></span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">auto</span> timeout = mState == State::SyntheticVSync ? <span class="number">16</span>ms : <span class="number">1000</span>ms;</span><br><span class="line">            <span class="keyword">if</span> (mCondition.wait_for(lock, timeout) == <span class="built_in">std</span>::cv_status::timeout) &#123;</span><br><span class="line">                ALOGW_IF(mState == State::VSync, <span class="string">"Faking VSYNC due to driver stall"</span>);</span><br><span class="line"></span><br><span class="line">                LOG_FATAL_IF(!mVSyncState);</span><br><span class="line">                mPendingEvents.push_back(makeVSync(mVSyncState-&gt;displayId,</span><br><span class="line">                                                   systemTime(SYSTEM_TIME_MONOTONIC),</span><br><span class="line">                                                   ++mVSyncState-&gt;count));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//头文件</span></span><br><span class="line">    <span class="comment">// State machine for event loop.</span></span><br><span class="line">    <span class="keyword">enum</span> <span class="class"><span class="keyword">class</span> <span class="title">State</span> &#123;</span></span><br><span class="line">        Idle,</span><br><span class="line">        Quit,</span><br><span class="line">        SyntheticVSync,</span><br><span class="line">        VSync,</span><br><span class="line">    &#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="VSYNC事件到来"><a href="#VSYNC事件到来" class="headerlink" title="VSYNC事件到来"></a>VSYNC事件到来</h3><p>将会回调onVSyncEvent：</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/Scheduler/EventThread.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">EventThread::onVSyncEvent</span><span class="params">(<span class="keyword">nsecs_t</span> timestamp)</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::lock_guard&lt;<span class="built_in">std</span>::mutex&gt; <span class="title">lock</span><span class="params">(mMutex)</span></span>;</span><br><span class="line"></span><br><span class="line">    LOG_FATAL_IF(!mVSyncState);</span><br><span class="line">    mPendingEvents.push_back(makeVSync(mVSyncState-&gt;displayId, timestamp, ++mVSyncState-&gt;count));</span><br><span class="line">    mCondition.notify_all();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="Hotplug事件到来"><a href="#Hotplug事件到来" class="headerlink" title="Hotplug事件到来"></a>Hotplug事件到来</h3><p>将会回调onHotplugReceived：</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/Scheduler/EventThread.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">EventThread::onHotplugReceived</span><span class="params">(PhysicalDisplayId displayId, <span class="keyword">bool</span> connected)</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="built_in">std</span>::lock_guard&lt;<span class="built_in">std</span>::mutex&gt; <span class="title">lock</span><span class="params">(mMutex)</span></span>;</span><br><span class="line"></span><br><span class="line">    mPendingEvents.push_back(makeHotplug(displayId, systemTime(), connected));</span><br><span class="line">    mCondition.notify_all();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="dispatchEvent分发事件"><a href="#dispatchEvent分发事件" class="headerlink" title="dispatchEvent分发事件"></a>dispatchEvent分发事件</h3><p>从上面的threadMain函数会调用dispatchEvent函数分发事件：</p>
+<p>Connection通过postEvent将Event抛出来后，通过sendEvents将事件发出去。</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/Scheduler/EventThread.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">EventThread::dispatchEvent</span><span class="params">(<span class="keyword">const</span> DisplayEventReceiver::Event&amp; event,</span></span></span><br><span class="line"><span class="function"><span class="params">                                <span class="keyword">const</span> DisplayEventConsumers&amp; consumers)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; consumer : consumers) &#123;</span><br><span class="line">        <span class="comment">//</span></span><br><span class="line">        <span class="keyword">switch</span> (consumer-&gt;postEvent(event)) &#123;</span><br><span class="line">            <span class="keyword">case</span> NO_ERROR:</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">case</span> -EAGAIN:</span><br><span class="line">                <span class="comment">// <span class="doctag">TODO:</span> Try again if pipe is full.</span></span><br><span class="line">                ALOGW(<span class="string">"Failed dispatching %s for %s"</span>, toString(event).c_str(),</span><br><span class="line">                      toString(*consumer).c_str());</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="comment">// Treat EPIPE and other errors as fatal.</span></span><br><span class="line">                removeDisplayEventConnectionLocked(consumer);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">EventThreadConnection::postEvent</span><span class="params">(<span class="keyword">const</span> DisplayEventReceiver::Event&amp; event)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//</span></span><br><span class="line">    <span class="keyword">ssize_t</span> size = DisplayEventReceiver::sendEvents(&amp;mChannel, &amp;event, <span class="number">1</span>);</span><br><span class="line">    <span class="keyword">return</span> size &lt; <span class="number">0</span> ? <span class="keyword">status_t</span>(size) : <span class="keyword">status_t</span>(NO_ERROR);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>DisplayEventReceiver中是通过BitTube将事件发出去，sendObjects注意这里的参数:</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/libs/gui/DisplayEventReceiver.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">ssize_t</span> <span class="title">DisplayEventReceiver::sendEvents</span><span class="params">(gui::BitTube* dataChannel,</span></span></span><br><span class="line"><span class="function"><span class="params">        Event <span class="keyword">const</span>* events, <span class="keyword">size_t</span> count)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> gui::BitTube::sendObjects(dataChannel, events, count);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="MessageQueue处理Message"><a href="#MessageQueue处理Message" class="headerlink" title="MessageQueue处理Message"></a>MessageQueue处理Message</h3><p>SF的线程run时，有一个死循环，循环等待事件：</p>
+<figure class="highlight cpp"><figcaption><span>SF.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        waitForEvent();</span><br><span class="line">    &#125; <span class="keyword">while</span> (<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::waitForEvent</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    mEventQueue-&gt;waitMessage();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在MessageQueue中，会有looper一直循环等待消息。</p>
+<p>waitMessage，通过采用一个死循环，处理Looper的pollOnce。Looper内部的主要是采用epoll_wait对fd进行监听，BitTube发送Event对象后，epoll_wait结束，调用callback，处理事件。</p>
+<p>可参考Handler文章：<a href="https://wizzie.top/Blog/2019/09/22/2019/190922-android-handler-cpp/#%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81" target="_blank" rel="noopener">Android Handler消息循环处理机制</a></p>
+<figure class="highlight cpp"><figcaption><span>MessageQueue.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">MessageQueue::waitMessage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        IPCThreadState::self()-&gt;flushCommands();</span><br><span class="line">        <span class="keyword">int32_t</span> ret = mLooper-&gt;pollOnce(<span class="number">-1</span>);</span><br><span class="line">        <span class="keyword">switch</span> (ret) &#123;</span><br><span class="line">            <span class="keyword">case</span> Looper::POLL_WAKE:</span><br><span class="line">            <span class="keyword">case</span> Looper::POLL_CALLBACK:</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">case</span> Looper::POLL_ERROR:</span><br><span class="line">                ALOGE(<span class="string">"Looper::POLL_ERROR"</span>);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">case</span> Looper::POLL_TIMEOUT:</span><br><span class="line">                <span class="comment">// timeout (should not happen)</span></span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="comment">// should not happen</span></span><br><span class="line">                ALOGE(<span class="string">"Looper::pollOnce() returned unknown status %d"</span>, ret);</span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">while</span> (<span class="literal">true</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>MessageQueue对应的callback为cb_eventReceiver：</p>
+<figure class="highlight cpp"><figcaption><span>MessageQueue.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//头文件</span></span><br><span class="line">    <span class="keyword">enum</span> &#123;</span><br><span class="line">        INVALIDATE = <span class="number">0</span>,</span><br><span class="line">        REFRESH = <span class="number">1</span>,</span><br><span class="line">    &#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MessageQueue::cb_eventReceiver</span><span class="params">(<span class="keyword">int</span> fd, <span class="keyword">int</span> events, <span class="keyword">void</span>* data)</span> </span>&#123;</span><br><span class="line">    MessageQueue* <span class="built_in">queue</span> = <span class="keyword">reinterpret_cast</span>&lt;MessageQueue*&gt;(data);</span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">queue</span>-&gt;eventReceiver(fd, events);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MessageQueue::eventReceiver</span><span class="params">(<span class="keyword">int</span> <span class="comment">/*fd*/</span>, <span class="keyword">int</span> <span class="comment">/*events*/</span>)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">ssize_t</span> n;</span><br><span class="line">    DisplayEventReceiver::Event buffer[<span class="number">8</span>];</span><br><span class="line">    <span class="keyword">while</span> ((n = DisplayEventReceiver::getEvents(&amp;mEventTube, buffer, <span class="number">8</span>)) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (buffer[i].header.type == DisplayEventReceiver::DISPLAY_EVENT_VSYNC) &#123;</span><br><span class="line">                mHandler-&gt;dispatchInvalidate();</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> MessageQueue::Handler::dispatchInvalidate() &#123;</span><br><span class="line">    <span class="keyword">if</span> ((android_atomic_or(eventMaskInvalidate, &amp;mEventMask) &amp; eventMaskInvalidate) == <span class="number">0</span>) &#123;</span><br><span class="line">        mQueue.mLooper-&gt;sendMessage(<span class="keyword">this</span>, Message(MessageQueue::INVALIDATE));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>sendMessage</code>在Handler.java中调用到MessageQueue.java的<code>enqueueMessage</code>函数，然后调用JNI函数nativeWake，唤醒Looper.java的loop函数。</p>
+<p>调用其中的dispatchMessage处理消息。</p>
+<p>dispatchMessage函数会调用handleMessage函数，开始处理消息。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">void</span> MessageQueue::Handler::handleMessage(<span class="keyword">const</span> Message&amp; message) &#123;</span><br><span class="line">    <span class="keyword">switch</span> (message.what) &#123;</span><br><span class="line">        <span class="keyword">case</span> INVALIDATE:</span><br><span class="line">            android_atomic_and(~eventMaskInvalidate, &amp;mEventMask);</span><br><span class="line">            mQueue.mFlinger-&gt;onMessageReceived(message.what);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> REFRESH:</span><br><span class="line">            android_atomic_and(~eventMaskRefresh, &amp;mEventMask);</span><br><span class="line">            mQueue.mFlinger-&gt;onMessageReceived(message.what);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="onMessageReceived处理INVALIDATE消息"><a href="#onMessageReceived处理INVALIDATE消息" class="headerlink" title="onMessageReceived处理INVALIDATE消息"></a>onMessageReceived处理INVALIDATE消息</h2><p>MessageQueue触发Handler消息处理机制，开始触发INVALIDATE消息合成。</p>
+<p><strong>大体分成两部分：</strong></p>
+<ol>
+<li>SF更新合成相关的信息（即handleMessageTransaction）</li>
+<li>SF执行合成相关的操作并显示</li>
+</ol>
+<figure class="highlight cpp"><figcaption><span>SurfaceFlinger.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::onMessageReceived</span><span class="params">(<span class="keyword">int32_t</span> what)</span> NO_THREAD_SAFETY_ANALYSIS </span>&#123;</span><br><span class="line">    <span class="comment">//systrace抓取</span></span><br><span class="line">    ATRACE_CALL();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (what) &#123;</span><br><span class="line">        <span class="keyword">case</span> MessageQueue::INVALIDATE: &#123;</span><br><span class="line">            <span class="comment">//丢帧处理</span></span><br><span class="line">            <span class="keyword">bool</span> frameMissed = previousFrameMissed();</span><br><span class="line">            <span class="keyword">bool</span> hwcFrameMissed = mHadDeviceComposition &amp;&amp; frameMissed;</span><br><span class="line">            <span class="keyword">bool</span> gpuFrameMissed = mHadClientComposition &amp;&amp; frameMissed;</span><br><span class="line">            ATRACE_INT(<span class="string">"FrameMissed"</span>, <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(frameMissed));</span><br><span class="line">            ATRACE_INT(<span class="string">"HwcFrameMissed"</span>, <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(hwcFrameMissed));</span><br><span class="line">            ATRACE_INT(<span class="string">"GpuFrameMissed"</span>, <span class="keyword">static_cast</span>&lt;<span class="keyword">int</span>&gt;(gpuFrameMissed));</span><br><span class="line">            <span class="keyword">if</span> (frameMissed) &#123;</span><br><span class="line">                mFrameMissedCount++;</span><br><span class="line">                mTimeStats-&gt;incrementMissedFrames();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (hwcFrameMissed) &#123;</span><br><span class="line">                mHwcFrameMissedCount++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (gpuFrameMissed) &#123;</span><br><span class="line">                mGpuFrameMissedCount++;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (mUseSmart90ForVideo) &#123;</span><br><span class="line">                <span class="comment">// This call is made each time SF wakes up and creates a new frame. It is part</span></span><br><span class="line">                <span class="comment">// of video detection feature.</span></span><br><span class="line">                mScheduler-&gt;updateFpsBasedOnContent();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (performSetActiveConfig()) &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (frameMissed &amp;&amp; mPropagateBackpressure) &#123;</span><br><span class="line">                <span class="keyword">if</span> ((hwcFrameMissed &amp;&amp; !gpuFrameMissed) ||</span><br><span class="line">                    mPropagateBackpressureClientComposition) &#123;</span><br><span class="line">                    signalLayerUpdate();</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//更新VR</span></span><br><span class="line">            updateVrFlinger();</span><br><span class="line"></span><br><span class="line">            <span class="comment">//处理Transition，在合成前更新Layer的信息</span></span><br><span class="line">            <span class="keyword">bool</span> refreshNeeded = handleMessageTransaction();</span><br><span class="line">            <span class="comment">//</span></span><br><span class="line">            refreshNeeded |= handleMessageInvalidate();</span><br><span class="line"></span><br><span class="line">            updateCursorAsync();</span><br><span class="line">            updateInputFlinger();</span><br><span class="line"></span><br><span class="line">            refreshNeeded |= mRepaintEverything;</span><br><span class="line">            <span class="keyword">if</span> (refreshNeeded &amp;&amp; CC_LIKELY(mBootStage != BootStage::BOOTLOADER)) &#123;</span><br><span class="line">                <span class="comment">//如果Transaction事务修改了窗口状态，则发出刷新信号</span></span><br><span class="line">                <span class="comment">//一个新的buffer将被请求</span></span><br><span class="line">                signalRefresh();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> MessageQueue::REFRESH: &#123;</span><br><span class="line">            handleMessageRefresh();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="一、丢帧处理frameMissed"><a href="#一、丢帧处理frameMissed" class="headerlink" title="一、丢帧处理frameMissed"></a>一、丢帧处理frameMissed</h3><p>如果丢帧，则<code>mPropagateBackpressure</code>为true。</p>
+<p>该变量是在SurfaceFlinger的构造函数中，由<code>debug.sf.disable_backpressure</code>属性控制。</p>
+<figure class="highlight cpp"><figcaption><span>SF.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">property_get(<span class="string">"debug.sf.disable_backpressure"</span>, value, <span class="string">"0"</span>);</span><br><span class="line"> mPropagateBackpressure = !atoi(value);</span><br><span class="line"> ALOGI_IF(!mPropagateBackpressure, <span class="string">"Disabling backpressure propagation"</span>);</span><br><span class="line"></span><br><span class="line"> property_get(<span class="string">"debug.sf.enable_gl_backpressure"</span>, value, <span class="string">"0"</span>);</span><br><span class="line"> mPropagateBackpressureClientComposition = atoi(value);</span><br><span class="line"> ALOGI_IF(mPropagateBackpressureClientComposition,</span><br><span class="line">          <span class="string">"Enabling backpressure propagation for Client Composition"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>例如我的一加六 Android Q设备：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb shell getprop debug.sf.disable_backpressure</span><br><span class="line">1</span><br></pre></td></tr></table></figure>
+
+<h3 id="二、handleMessageTransaction处理Transaction"><a href="#二、handleMessageTransaction处理Transaction" class="headerlink" title="二、handleMessageTransaction处理Transaction"></a>二、handleMessageTransaction处理Transaction</h3><p>Vsync到来后，触发INVALIDATE消息时会先处理Transition。</p>
+<p>如上代码先调用<code>handleMessageTransaction</code>。这个过程就是处理应用传过来的各种Transaction。</p>
+<p><strong>大致函数调用流程：</strong></p>
+<p><strong>handleMessageTransaction -&gt; handleTransaction -&gt; <code>handleTransactionLocked</code> -&gt; (processDisplayChangesLocked) -&gt; commitTransaction()</strong></p>
+<p>handleMessageTransaction主要处理Layer属性变化，显示设备变化等情况，最终将变化的信息mCurrentState提交到mDrawingState, 等待合成处理.</p>
+<p>即最终<code>commitTransaction</code>函数会有个状态更替，将mCurrentState赋值给了mDrawingState。</p>
+<figure class="highlight cpp"><figcaption><span>SF.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::commitTransaction</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    .....</span><br><span class="line">     withTracingLock([&amp;]() &#123;</span><br><span class="line">        mDrawingState = mCurrentState;</span><br><span class="line">        <span class="comment">// clear the "changed" flags in current state</span></span><br><span class="line">        mCurrentState.colorMatrixChanged = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">        mDrawingState.traverseInZOrder([&amp;](Layer* layer) &#123;</span><br><span class="line">            layer-&gt;commitChildList();</span><br><span class="line">            <span class="keyword">if</span> (mOffscreenLayers.count(layer)) &#123;</span><br><span class="line">                mOffscreenLayers.erase(layer);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        commitOffscreenLayers();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    mTransactionPending = <span class="literal">false</span>;</span><br><span class="line">    mAnimTransactionPending = <span class="literal">false</span>;</span><br><span class="line">    mTransactionCV.broadcast();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="mCurrentState和mDrawingState"><a href="#mCurrentState和mDrawingState" class="headerlink" title="mCurrentState和mDrawingState"></a>mCurrentState和mDrawingState</h4><blockquote>
+<p>可参考：<a href="https://wizzie.top/Blog/2019/12/22/2019/191222_android_HWC2/#mCurrentState%E5%92%8CmDrawingState" target="_blank" rel="noopener">Android SurfaceFlinger和HWC2概述 - mCurrentState和mDrawingState</a></p>
+</blockquote>
+<ul>
+<li>mCurrentState状态：准备数据，应用传过来的数据保存在mCurrentState中。</li>
+<li>mDrawingState状态：进程合成状态，需要进行合成的数据保存在mDrawingState中。</li>
+</ul>
+<p>即每次合成时，先更新一下状态数据。每一层Layer也需要去更新状态数据。</p>
+<h3 id="handleTransactionLocked"><a href="#handleTransactionLocked" class="headerlink" title="handleTransactionLocked"></a>handleTransactionLocked</h3><h4 id="1-检查mCurrentState的Layer的可见区域"><a href="#1-检查mCurrentState的Layer的可见区域" class="headerlink" title="1. 检查mCurrentState的Layer的可见区域"></a>1. 检查mCurrentState的Layer的可见区域</h4><p><strong>该函数第一部分就是遍历mCurrentState的Layer，并检查Layer的可见区域VisableRegion是否发生变化。</strong></p>
+<ul>
+<li>如果没发生变化则不需要检查layer</li>
+<li>如果发生变化，则对比该Layer的显示区域和原来的显示区域是否发生变化，若变化则设置mVisibleRegionsDirty为true</li>
+</ul>
+<figure class="highlight cpp"><figcaption><span>SF.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::handleTransactionLocked</span><span class="params">(<span class="keyword">uint32_t</span> transactionFlags)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//第一部分</span></span><br><span class="line">    <span class="comment">// Notify all layers of available frames</span></span><br><span class="line">    mCurrentState.traverseInZOrder([](Layer* layer) &#123;</span><br><span class="line">        layer-&gt;notifyAvailableFrames();</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//遍历mCurrentState中的所有的layer</span></span><br><span class="line">    <span class="keyword">if</span> ((transactionFlags &amp; eTraversalNeeded) || mTraversalNeededMainThread) &#123;</span><br><span class="line">        mCurrentState.traverseInZOrder([&amp;](Layer* layer) &#123;</span><br><span class="line">            <span class="comment">//根据eTransactionNeeded判断Layer是否发生变化（如果Layer发生变化则会设置这个flag）</span></span><br><span class="line">            <span class="keyword">uint32_t</span> trFlags = layer-&gt;getTransactionFlags(eTransactionNeeded);</span><br><span class="line">            <span class="keyword">if</span> (!trFlags) <span class="keyword">return</span>;</span><br><span class="line">            <span class="comment">//对发生变化的layer执行doTransaction函数，对比Layer旧的状态和新的状态是否发生变化</span></span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">uint32_t</span> flags = layer-&gt;doTransaction(<span class="number">0</span>);</span><br><span class="line">            <span class="comment">//判断Layer的可见区域是否发生变化</span></span><br><span class="line">            <span class="comment">//当Layer的可见区域大小发生变化之后，设置mVisibleRegionsDirty为true</span></span><br><span class="line">            <span class="keyword">if</span> (flags &amp; Layer::eVisibleRegion)</span><br><span class="line">                mVisibleRegionsDirty = <span class="literal">true</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (flags &amp; Layer::eInputInfoChanged) &#123;</span><br><span class="line">                mInputInfoChanged = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        mTraversalNeededMainThread = <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    ......</span><br><span class="line">    <span class="comment">//第二部分</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="2-检查显示设备是否变化"><a href="#2-检查显示设备是否变化" class="headerlink" title="2. 检查显示设备是否变化"></a>2. 检查显示设备是否变化</h4><p><strong>该函数第二部分先调用<code>processDisplayChangesLocked</code>函数。</strong></p>
+<figure class="highlight cpp"><figcaption><span>SF.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::handleTransactionLocked</span><span class="params">(<span class="keyword">uint32_t</span> transactionFlags)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">//第一部分</span></span><br><span class="line">    ......</span><br><span class="line">    <span class="comment">//第二部分</span></span><br><span class="line">    <span class="comment">//如果需要，执行显示自己的事务</span></span><br><span class="line">    <span class="comment">//遍历并检查所有的显示设备，检查显示设备是否发生了增加或者减少.并做相应的处理</span></span><br><span class="line">    <span class="keyword">if</span> (transactionFlags &amp; eDisplayTransactionNeeded) &#123;</span><br><span class="line">        processDisplayChangesLocked();</span><br><span class="line">        processDisplayHotplugEventsLocked();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (transactionFlags &amp; (eDisplayLayerStackChanged|eDisplayTransactionNeeded)) &#123;</span><br><span class="line">    ...&#125;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::processDisplayChangesLocked</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//定义两个列表保存上次合成时显示设备的信息和当前显示设备的信息</span></span><br><span class="line">    <span class="comment">//当前显示设备的信息</span></span><br><span class="line">    const KeyedVector&lt;wp&lt;IBinder&gt;, DisplayDeviceState&gt;&amp; curr(mCurrentState.displays);</span><br><span class="line">    <span class="comment">//上次合成时的显示设备的信息（上次合成的mDrawingState信息，本地还未开始正式合成操作）</span></span><br><span class="line">    const KeyedVector&lt;wp&lt;IBinder&gt;, DisplayDeviceState&gt;&amp; draw(mDrawingState.displays);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//判断当前和上次的设备信息是否发生变化</span></span><br><span class="line">    <span class="keyword">if</span> (!curr.isIdenticalTo(draw)) &#123;</span><br><span class="line">        mVisibleRegionsDirty = <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">const</span> <span class="keyword">size_t</span> cc = curr.size();</span><br><span class="line">        <span class="keyword">size_t</span> dc = draw.size();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//找到被删除的显示设备(在draw状态而不是current状态的列表中，说明有设备删除)</span></span><br><span class="line">        <span class="comment">//处理发生变化的设备（两个列表都存在该设备）</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; dc;) &#123;</span><br><span class="line">            <span class="keyword">const</span> <span class="keyword">ssize_t</span> j = curr.indexOfKey(draw.keyAt(i));</span><br><span class="line">            <span class="keyword">if</span> (j &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">// 1. 删除显示设备：in drawing state but not in current state</span></span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">const</span> <span class="keyword">auto</span> display = getDisplayDeviceLocked(draw.keyAt(i))) &#123;</span><br><span class="line">                    <span class="comment">// 断开前保存设备ID（Save display ID before disconnecting.）</span></span><br><span class="line">                    <span class="keyword">const</span> <span class="keyword">auto</span> displayId = display-&gt;getId();</span><br><span class="line">                    display-&gt;disconnect();</span><br><span class="line"></span><br><span class="line">                    <span class="keyword">if</span> (!display-&gt;isVirtual()) &#123;</span><br><span class="line">                        LOG_ALWAYS_FATAL_IF(!displayId);</span><br><span class="line">                        dispatchDisplayHotplugEvent(displayId-&gt;value, <span class="literal">false</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                mDisplays.erase(draw.keyAt(i));</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//设备在两个列表都存在，但是有信息发生变化</span></span><br><span class="line">                <span class="keyword">const</span> DisplayDeviceState&amp; state(curr[j]);</span><br><span class="line">                <span class="keyword">const</span> wp&lt;IBinder&gt;&amp; displayToken = curr.keyAt(j);</span><br><span class="line">                <span class="keyword">const</span> sp&lt;IBinder&gt; state_binder = IInterface::asBinder(state.surface);</span><br><span class="line">                <span class="keyword">const</span> sp&lt;IBinder&gt; draw_binder = IInterface::asBinder(draw[i].surface);</span><br><span class="line">                <span class="keyword">if</span> (state_binder != draw_binder) &#123;</span><br><span class="line">                    <span class="comment">// changing the surface is like destroying and</span></span><br><span class="line">                    <span class="comment">// recreating the DisplayDevice, so we just remove it</span></span><br><span class="line">                    <span class="comment">// from the drawing state, so that it get re-added</span></span><br><span class="line">                    <span class="comment">// below.</span></span><br><span class="line">                    <span class="keyword">if</span> (<span class="keyword">const</span> <span class="keyword">auto</span> display = getDisplayDeviceLocked(displayToken)) &#123;</span><br><span class="line">                        display-&gt;disconnect();</span><br><span class="line">                    &#125;</span><br><span class="line">                    mDisplays.erase(displayToken);</span><br><span class="line">                    mDrawingState.displays.removeItemsAt(i);</span><br><span class="line">                    dc--;</span><br><span class="line">                    <span class="comment">// at this point we must loop to the next item</span></span><br><span class="line">                    <span class="keyword">continue</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//更新显示设备信息</span></span><br><span class="line">                <span class="keyword">if</span> (<span class="keyword">const</span> <span class="keyword">auto</span> display = getDisplayDeviceLocked(displayToken)) &#123;</span><br><span class="line">                    <span class="keyword">if</span> (state.layerStack != draw[i].layerStack) &#123;   <span class="comment">//Layer栈</span></span><br><span class="line">                        display-&gt;setLayerStack(state.layerStack);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> ((state.orientation != draw[i].orientation) || </span><br><span class="line">                        (state.viewport != draw[i].viewport) || (state.frame != draw[i].frame)) &#123;  <span class="comment">//旋转状态、viewport、frame帧</span></span><br><span class="line">                        display-&gt;setProjection(state.orientation, state.viewport, state.frame);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">if</span> (state.width != draw[i].width || state.height != draw[i].height) &#123;  <span class="comment">//宽高</span></span><br><span class="line">                        display-&gt;setDisplaySize(state.width, state.height);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            ++i;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//找到新添加的Display设备（在current状态列表，而不再draw列表中）</span></span><br><span class="line">        <span class="comment">//即创建主屏对应的DisplayDevice</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">size_t</span> i = <span class="number">0</span>; i &lt; cc; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (draw.indexOfKey(curr.keyAt(i)) &lt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="function"><span class="keyword">const</span> DisplayDeviceState&amp; <span class="title">state</span><span class="params">(curr[i])</span></span>;</span><br><span class="line"></span><br><span class="line">                sp&lt;compositionengine::DisplaySurface&gt; dispSurface;</span><br><span class="line">                sp&lt;IGraphicBufferProducer&gt; producer;</span><br><span class="line">                sp&lt;IGraphicBufferProducer&gt; bqProducer;</span><br><span class="line">                sp&lt;IGraphicBufferConsumer&gt; bqConsumer;</span><br><span class="line">                getFactory().createBufferQueue(&amp;bqProducer, &amp;bqConsumer, <span class="literal">false</span>);   <span class="comment">//创建BufferQueue</span></span><br><span class="line"></span><br><span class="line">                <span class="built_in">std</span>::optional&lt;DisplayId&gt; displayId;</span><br><span class="line">                <span class="comment">//虚拟显示设备</span></span><br><span class="line">                <span class="keyword">if</span> (state.isVirtual()) &#123;</span><br><span class="line">                    ......</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    ALOGE_IF(state.surface != <span class="literal">nullptr</span>,</span><br><span class="line">                             <span class="string">"adding a supported display, but rendering "</span></span><br><span class="line">                             <span class="string">"surface is provided (%p), ignoring it"</span>,</span><br><span class="line">                             state.surface.get());</span><br><span class="line">                    <span class="comment">//给新的显示设备添加Display id，并且创建framebufferSurface消费者</span></span><br><span class="line">                    displayId = state.displayId;</span><br><span class="line">                    LOG_ALWAYS_FATAL_IF(!displayId);</span><br><span class="line">                    dispSurface = <span class="keyword">new</span> FramebufferSurface(getHwComposer(), *displayId, bqConsumer);</span><br><span class="line">                    producer = bqProducer;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">const</span> wp&lt;IBinder&gt;&amp; displayToken = curr.keyAt(i);</span><br><span class="line">                <span class="keyword">if</span> (dispSurface != <span class="literal">nullptr</span>) &#123;</span><br><span class="line">                    mDisplays.emplace(displayToken,</span><br><span class="line">                                      setupNewDisplayDeviceInternal(displayToken, displayId, state,</span><br><span class="line">                                                                    dispSurface, producer));</span><br><span class="line">                    <span class="keyword">if</span> (!state.isVirtual()) &#123;</span><br><span class="line">                        LOG_ALWAYS_FATAL_IF(!displayId);</span><br><span class="line">                        dispatchDisplayHotplugEvent(displayId-&gt;value, <span class="literal">true</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mDrawingState.displays = mCurrentState.displays;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="3-更新mCurrentState中Layer的transform-hint信息"><a href="#3-更新mCurrentState中Layer的transform-hint信息" class="headerlink" title="3. 更新mCurrentState中Layer的transform hint信息"></a>3. 更新mCurrentState中Layer的transform hint信息</h4><p><strong>第三部分：继续执行<code>handleTransactionLocked</code>函数，更新transform hint相关信息</strong></p>
+<h4 id="4-更新Layer信息"><a href="#4-更新Layer信息" class="headerlink" title="4. 更新Layer信息"></a>4. 更新Layer信息</h4><p><strong>第四部分：更新Layer信息</strong></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::handleTransactionLocked</span><span class="params">(<span class="keyword">uint32_t</span> transactionFlags)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ......</span><br><span class="line">    <span class="comment">//第三部分</span></span><br><span class="line">    <span class="comment">//当显示设备发生变化或者Layer发生变化，需要修改layer的transform hint，使得Layer视图的矩阵变化</span></span><br><span class="line">    <span class="keyword">if</span> (transactionFlags &amp; (eDisplayLayerStackChanged|eDisplayTransactionNeeded)) &#123;</span><br><span class="line">        ......</span><br><span class="line">        <span class="comment">//遍历mCurrentState所有layer</span></span><br><span class="line">        mCurrentState.traverseInZOrder([&amp;](Layer* layer) &#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">if</span> (!hintDisplay) &#123;</span><br><span class="line">                <span class="comment">//如果显示在过个显示设备上，则使用默认显示设备</span></span><br><span class="line">                hintDisplay = getDefaultDisplayDeviceLocked();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (hintDisplay) &#123;</span><br><span class="line">                <span class="comment">//更新layer的transform hint</span></span><br><span class="line">                layer-&gt;updateTransformHint(hintDisplay);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            first = <span class="literal">false</span>;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (mLayersAdded) &#123;</span><br><span class="line">        mLayersAdded = <span class="literal">false</span>;</span><br><span class="line">        <span class="comment">// Layers have been added.</span></span><br><span class="line">        mVisibleRegionsDirty = <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//=============================</span></span><br><span class="line">    <span class="comment">//第四部分：更新Layer信息</span></span><br><span class="line">    <span class="comment">//如果有Layer移除， 该Layer原先的显示区域就是需要更新显示区域</span></span><br><span class="line">    <span class="keyword">if</span> (mLayersRemoved) &#123;</span><br><span class="line">        mLayersRemoved = <span class="literal">false</span>;</span><br><span class="line">        mVisibleRegionsDirty = <span class="literal">true</span>;</span><br><span class="line">        mDrawingState.traverseInZOrder([&amp;](Layer* layer) &#123;</span><br><span class="line">            <span class="keyword">if</span> (mLayersPendingRemoval.indexOf(layer) &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">// this layer is not visible anymore</span></span><br><span class="line">                Region visibleReg;</span><br><span class="line">                visibleReg.<span class="built_in">set</span>(layer-&gt;getScreenBounds());</span><br><span class="line">                invalidateLayerStack(layer, visibleReg);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    commitInputWindowCommands();</span><br><span class="line">    <span class="comment">//所有变化的信息更新完成后，mCurrentState提交到mDrawingState中</span></span><br><span class="line">    commitTransaction();</span><br><span class="line">    &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-信息更新完成，mCurrentState提交到mDrawingState"><a href="#5-信息更新完成，mCurrentState提交到mDrawingState" class="headerlink" title="5. 信息更新完成，mCurrentState提交到mDrawingState"></a>5. 信息更新完成，mCurrentState提交到mDrawingState</h4><p>执行到commitTransaction函数就代表所有Layer信息更新完成，下一步开始合成显示这些变化后的内容（mDrawingState）</p>
+<hr>
+<h3 id="三、handleMessageInvalidate"><a href="#三、handleMessageInvalidate" class="headerlink" title="三、handleMessageInvalidate"></a>三、handleMessageInvalidate</h3><figure class="highlight cpp"><figcaption><span>SF.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SurfaceFlinger::handleMessageInvalidate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ATRACE_CALL();</span><br><span class="line">    <span class="comment">//调用handlePageFlip，见下一小节的流程，该函数会从BufferQueue中获取Buffer</span></span><br><span class="line">    <span class="keyword">bool</span> refreshNeeded = handlePageFlip();</span><br><span class="line"></span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; layer : mLayersPendingRefresh) &#123;</span><br><span class="line">        Region visibleReg;</span><br><span class="line">        visibleReg.<span class="built_in">set</span>(layer-&gt;getScreenBounds());</span><br><span class="line">        <span class="comment">//见下</span></span><br><span class="line">        invalidateLayerStack(layer, visibleReg);</span><br><span class="line">    &#125;</span><br><span class="line">    mLayersPendingRefresh.clear();</span><br><span class="line">    <span class="keyword">return</span> refreshNeeded;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//Android支持多个屏幕，layer可以定制化的只显示到某个显示屏幕上。其中就是靠layerStack(Layer栈)来实现的</span></span><br><span class="line"><span class="comment">//Layer的stack值如果和DisplayDevice的stack值一样，说明这个layer是属于这个显示屏幕的</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::invalidateLayerStack</span><span class="params">(<span class="keyword">const</span> sp&lt;<span class="keyword">const</span> Layer&gt;&amp; layer, <span class="keyword">const</span> Region&amp; dirty)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; [token, displayDevice] : mDisplays) &#123;</span><br><span class="line">        <span class="keyword">auto</span> display = displayDevice-&gt;getCompositionDisplay();</span><br><span class="line">        <span class="keyword">if</span> (display-&gt;belongsInOutput(layer-&gt;getLayerStack(), layer-&gt;getPrimaryDisplayOnly())) &#123;</span><br><span class="line">            display-&gt;editState().dirtyRegion.orSelf(dirty);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="handlePageFlip"><a href="#handlePageFlip" class="headerlink" title="handlePageFlip"></a>handlePageFlip</h4><p>mLayersWithQueuedFrames用于标记有Frame的Layer，详细处理查看上面对<code>BufferQueueLayer::onFrameAvailable</code>函数的注解。</p>
+<figure class="highlight cpp"><figcaption><span>SF.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">SurfaceFlinger::handlePageFlip</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ATRACE_CALL();</span><br><span class="line">    ALOGV(<span class="string">"handlePageFlip"</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">nsecs_t</span> latchTime = systemTime();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">bool</span> visibleRegions = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">bool</span> frameQueued = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">bool</span> newDataLatched = <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//遍历mDrawingState的Layer，将需要合成的layer添加到mLayersWithQueuedFrames列表中</span></span><br><span class="line">    mDrawingState.traverseInZOrder([&amp;](Layer* layer) &#123;</span><br><span class="line">        <span class="keyword">if</span> (layer-&gt;hasReadyFrame()) &#123;</span><br><span class="line">            frameQueued = <span class="literal">true</span>;</span><br><span class="line">            <span class="keyword">nsecs_t</span> expectedPresentTime;</span><br><span class="line">            expectedPresentTime = mScheduler-&gt;expectedPresentTime();</span><br><span class="line">            <span class="comment">//frameworks/native/services/surfaceflinger/BufferQueueLayer.cpp:BufferQueueLayer::shouldPresentNow()</span></span><br><span class="line">            <span class="comment">//此处shouldPresentNow的判断逻辑：</span></span><br><span class="line">            <span class="comment">//1. 计算期望显示的时间，然后看Buffer的时间戳和期望显示的时间。</span></span><br><span class="line">            <span class="comment">//如果Buffer的时间还没到，且和期望显示的时间差不到1秒，则该shouldPresentNow逻辑成立</span></span><br><span class="line">            <span class="comment">//否则使用空的DamageRegion</span></span><br><span class="line">            <span class="keyword">if</span> (layer-&gt;shouldPresentNow(expectedPresentTime)) &#123;</span><br><span class="line">                <span class="comment">//</span></span><br><span class="line">                mLayersWithQueuedFrames.push_back(layer);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ATRACE_NAME(<span class="string">"!layer-&gt;shouldPresentNow()"</span>);</span><br><span class="line">                layer-&gt;useEmptyDamage();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            layer-&gt;useEmptyDamage();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (!mLayersWithQueuedFrames.empty()) &#123;</span><br><span class="line">        <span class="function">Mutex::Autolock <span class="title">lock</span><span class="params">(mStateLock)</span></span>;</span><br><span class="line">        <span class="comment">//遍历mLayersWithQueuedFrames中的Layer</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">auto</span>&amp; layer : mLayersWithQueuedFrames) &#123;</span><br><span class="line">            <span class="comment">//latchBuffer是从BufferQueue中获取Buffer，并将其绑定到Layer对应的纹理中</span></span><br><span class="line">            <span class="keyword">if</span> (layer-&gt;latchBuffer(visibleRegions, latchTime)) &#123;</span><br><span class="line">                <span class="comment">//添加到mLayersPendingRefresh列表中</span></span><br><span class="line">                mLayersPendingRefresh.push_back(layer);</span><br><span class="line">            &#125; </span><br><span class="line">            <span class="comment">//更新Surface的Damage</span></span><br><span class="line">            layer-&gt;useSurfaceDamage();</span><br><span class="line">            <span class="keyword">if</span> (layer-&gt;isBufferLatched()) &#123;</span><br><span class="line">                newDataLatched = <span class="literal">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    mVisibleRegionsDirty |= visibleRegions;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//有BufferQueue过来，但是还没有到显示时间（mLayersWithQueuedFrames为空），或者没有获取到Buffer，则重新触发一次更新</span></span><br><span class="line">    <span class="keyword">if</span> (frameQueued &amp;&amp; (mLayersWithQueuedFrames.empty() || !newDataLatched)) &#123;</span><br><span class="line">        signalLayerUpdate();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// enter boot animation on first buffer latch</span></span><br><span class="line">    <span class="keyword">if</span> (CC_UNLIKELY(mBootStage == BootStage::BOOTLOADER &amp;&amp; newDataLatched)) &#123;</span><br><span class="line">        ALOGI(<span class="string">"Enter boot animation"</span>);</span><br><span class="line">        mBootStage = BootStage::BOOTANIMATION;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> !mLayersWithQueuedFrames.empty() &amp;&amp; newDataLatched;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>Note:</strong>注意，所有的mLayersWithQueuedFrames都会走上面和下面的流程，每个Layer有自己的BufferLayerConsumer和BufferQueue。</p>
+<h4 id="latchBuffer-gt-updateTexImage-gt-acquireBuffer"><a href="#latchBuffer-gt-updateTexImage-gt-acquireBuffer" class="headerlink" title="latchBuffer-&gt;updateTexImage-&gt;acquireBuffer"></a>latchBuffer-&gt;updateTexImage-&gt;acquireBuffer</h4><blockquote>
+<p>详细流程可参考：<a href="https://wizzie.top/Blog/2020/07/30/2020/200730_android_GraphicsFramework/#BufferQueue" target="_blank" rel="noopener">Android 图形显示框架之BufferQueue-acquire&amp;release</a></p>
+</blockquote>
+<p>该函数中调用<code>updateTexImage</code>，而这个关键函数回去获取Buffer。</p>
+<p>拿到Buffer后，将Buffer保存在<code>mSlots[slot].mGraphicBuffer</code>中。同时更新mFrameNumber和mFence。</p>
+<p>该函数<code>updateTexImage</code>有几种返回处理结果：</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/BufferQueueLayer.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">BufferQueueLayer::updateTexImage</span><span class="params">(<span class="keyword">bool</span>&amp; recomputeVisibleRegions, <span class="keyword">nsecs_t</span> latchTime)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">status_t</span> updateResult = mConsumer-&gt;updateTexImage(&amp;r, expectedPresentTime, &amp;mAutoRefresh,</span><br><span class="line">                                                      &amp;queuedBuffer, maxFrameNumberToAcquire);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//PRESENT_LATER：稍后显示，暂时不显示，并且触发SurfaceFlinger刷新（更新Layer数据）</span></span><br><span class="line">    <span class="keyword">if</span> (updateResult == BufferQueue::PRESENT_LATER) &#123;</span><br><span class="line">        mFlinger-&gt;signalLayerUpdate();</span><br><span class="line">        <span class="keyword">return</span> BAD_VALUE;</span><br><span class="line">    <span class="comment">//BUFFER_REJECTED：Buffer被Reject掉，这一帧数据不再显示，从mQueueItems中删除这一帧，同时mQueuedFrames减一</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (updateResult == BufferLayerConsumer::BUFFER_REJECTED) &#123;</span><br><span class="line">        <span class="keyword">if</span> (queuedBuffer) &#123;</span><br><span class="line">            Mutex::Autolock lock(mQueueItemLock);</span><br><span class="line">            mFlinger-&gt;mTimeStats-&gt;removeTimeRecord(layerID, mQueueItems[<span class="number">0</span>].mFrameNumber);</span><br><span class="line">            mQueueItems.removeAt(<span class="number">0</span>);</span><br><span class="line">            mQueuedFrames--;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> BAD_VALUE;</span><br><span class="line">    <span class="comment">//更新失败或出错</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (updateResult != NO_ERROR || mUpdateTexImageFailed) &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用BufferLayerConsumer的updateTexImage，在acquireBufferLocked请求Buffer后，释放上一个Buffer，更新Buffer</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/services/surfaceflinger/BufferLayerConsumer.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">BufferLayerConsumer::updateTexImage</span><span class="params">(BufferRejecter* rejecter, <span class="keyword">nsecs_t</span> expectedPresentTime,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             <span class="keyword">bool</span>* autoRefresh, <span class="keyword">bool</span>* queuedBuffer,</span></span></span><br><span class="line"><span class="function"><span class="params">                                             <span class="keyword">uint64_t</span> maxFrameNumber)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">status_t</span> err = acquireBufferLocked(&amp;item, expectedPresentTime, maxFrameNumber);</span><br><span class="line">    ......</span><br><span class="line">    <span class="comment">//释放上一个Buffer， 更新Buffer</span></span><br><span class="line">    err = updateAndReleaseLocked(item, &amp;mPendingRelease);</span><br><span class="line">    ...</span><br><span class="line">                                             &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">BufferLayerConsumer::updateAndReleaseLocked</span><span class="params">(<span class="keyword">const</span> BufferItem&amp; item,</span></span></span><br><span class="line"><span class="function"><span class="params">                                                     PendingRelease* pendingRelease)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">int</span> slot = item.mSlot;                                                        </span><br><span class="line">    ......</span><br><span class="line">    <span class="comment">//释放旧的Buffer - release old buffer</span></span><br><span class="line">    <span class="keyword">if</span> (mCurrentTexture != BufferQueue::INVALID_BUFFER_SLOT) &#123;</span><br><span class="line">        <span class="keyword">if</span> (pendingRelease == <span class="literal">nullptr</span>) &#123;</span><br><span class="line">            <span class="keyword">status_t</span> status =</span><br><span class="line">                    releaseBufferLocked(mCurrentTexture, mCurrentTextureBuffer-&gt;graphicBuffer());</span><br><span class="line">            <span class="keyword">if</span> (status &lt; NO_ERROR) &#123;</span><br><span class="line">                BLC_LOGE(<span class="string">"updateAndRelease: failed to release buffer: %s (%d)"</span>, strerror(-status),</span><br><span class="line">                         status);</span><br><span class="line">                err = status;</span><br><span class="line">                <span class="comment">// keep going, with error raised [?]</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            pendingRelease-&gt;currentTexture = mCurrentTexture;</span><br><span class="line">            pendingRelease-&gt;graphicBuffer = mCurrentTextureBuffer-&gt;graphicBuffer();</span><br><span class="line">            pendingRelease-&gt;isPending = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//更新Buffer - Update the BufferLayerConsumer state.</span></span><br><span class="line">    mCurrentTexture = slot;</span><br><span class="line">    mCurrentTextureBuffer = nextTextureBuffer;</span><br><span class="line">    mCurrentCrop = item.mCrop;</span><br><span class="line">    mCurrentTransform = item.mTransform;</span><br><span class="line">    mCurrentScalingMode = item.mScalingMode;</span><br><span class="line">    mCurrentTimestamp = item.mTimestamp;</span><br><span class="line">    mCurrentDataSpace = <span class="keyword">static_cast</span>&lt;ui::Dataspace&gt;(item.mDataSpace);</span><br><span class="line">    mCurrentHdrMetadata = item.mHdrMetadata;</span><br><span class="line">    mCurrentFence = item.mFence;</span><br><span class="line">    mCurrentFenceTime = item.mFenceTime;</span><br><span class="line">    mCurrentFrameNumber = item.mFrameNumber;</span><br><span class="line">    mCurrentTransformToDisplayInverse = item.mTransformToDisplayInverse;</span><br><span class="line">    mCurrentSurfaceDamage = item.mSurfaceDamage;</span><br><span class="line">    mCurrentApi = item.mApi;</span><br><span class="line"></span><br><span class="line">    computeCurrentTransformMatrixLocked();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br></pre></td></tr></table></figure>
+
+<p>然后将通过消费者<code>acquireBufferLocked</code>函数请求Buffer。</p>
+<figure class="highlight cpp"><figcaption><span>frameworks/native/libs/gui/ConsumerBase.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">status_t</span> <span class="title">ConsumerBase::acquireBufferLocked</span><span class="params">(BufferItem *item,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">nsecs_t</span> presentWhen, <span class="keyword">uint64_t</span> maxFrameNumber)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (mAbandoned) &#123;</span><br><span class="line">        CB_LOGE(<span class="string">"acquireBufferLocked: ConsumerBase is abandoned!"</span>);</span><br><span class="line">        <span class="keyword">return</span> NO_INIT;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">status_t</span> err = mConsumer-&gt;acquireBuffer(item, presentWhen, maxFrameNumber);</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">return</span> OK;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="四、Invalidate流程小结（正式合成刷新前的准备工作）"><a href="#四、Invalidate流程小结（正式合成刷新前的准备工作）" class="headerlink" title="四、Invalidate流程小结（正式合成刷新前的准备工作）"></a>四、Invalidate流程小结（正式合成刷新前的准备工作）</h3><figure class="highlight cpp"><figcaption><span>SF.cpp</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SurfaceFlinger::onMessageReceived</span><span class="params">(<span class="keyword">int32_t</span> what)</span> NO_THREAD_SAFETY_ANALYSIS </span>&#123;</span><br><span class="line">    <span class="comment">//systrace抓取</span></span><br><span class="line">    ATRACE_CALL();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">switch</span> (what) &#123;</span><br><span class="line">        <span class="keyword">case</span> MessageQueue::INVALIDATE: &#123;</span><br><span class="line">            ......</span><br><span class="line">            <span class="comment">//处理Transition，在合成前更新Layer的信息</span></span><br><span class="line">            <span class="keyword">bool</span> refreshNeeded = handleMessageTransaction();</span><br><span class="line">            <span class="comment">//</span></span><br><span class="line">            refreshNeeded |= handleMessageInvalidate();</span><br><span class="line"></span><br><span class="line">            updateCursorAsync();</span><br><span class="line">            updateInputFlinger();</span><br><span class="line"></span><br><span class="line">            refreshNeeded |= mRepaintEverything;</span><br><span class="line">            <span class="keyword">if</span> (refreshNeeded &amp;&amp; CC_LIKELY(mBootStage != BootStage::BOOTLOADER)) &#123;</span><br><span class="line">                <span class="comment">//如果Transaction事务修改了窗口状态，则发出刷新信号</span></span><br><span class="line">                <span class="comment">//一个新的buffer将被请求</span></span><br><span class="line">                signalRefresh();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">case</span> MessageQueue::REFRESH: &#123;</span><br><span class="line">            handleMessageRefresh();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面的分析就是INVALIDATE的基本流程，该过程主要处理SurfaceFlinger距上次合成后的一些变化信息：</p>
+<ol>
+<li>handleMessageTransaction处理Layer属性变化、显示设备变化、更新显示设备的transform hint信息、处理Layer移除和增加等相关的信息等情况，将变化信息mCurrentState提交到mDrawingState，等待合成处理</li>
+<li>handleMessageInvalidate更新了Layer的Buffer内容（通过LatchBuffer函数从BufferQueue中获取）到Layer的纹理</li>
+<li>mRepaintEverything表示HWC硬件要求强制刷新</li>
+</ol>
+<hr>
+<h2 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h2><ul>
+<li><a href="https://www.jianshu.com/p/fa115146949f" target="_blank" rel="noopener">SurfaceFlinger合成流程(一)</a></li>
+<li><a href="https://www.jianshu.com/p/fd16dcb4dfb6" target="_blank" rel="noopener">SurfaceFlinger合成流程(二)</a></li>
+<li><a href="https://wizzie.top/Blog/2019/09/22/2019/190922-android-handler-cpp/#SurfaceFlinger%E7%9A%84%E6%B6%88%E6%81%AF%E5%A4%84%E7%90%86%E6%9C%BA%E5%88%B6" target="_blank" rel="noopener">Android Handler消息循环处理机制</a></li>
+<li><a href="https://wizzie.top/Blog/2020/07/30/2020/200730_android_GraphicsFramework/" target="_blank" rel="noopener">Android 图形显示框架</a></li>
+<li><a href="https://blog.csdn.net/u013686019/article/details/51614774" target="_blank" rel="noopener">Android BitTube</a></li>
+<li><a href="https://blog.csdn.net/dabenxiong666/article/details/80629316" target="_blank" rel="noopener">Android之BitTube</a></li>
+<li><a href="https://blog.csdn.net/weixin_41054077/article/details/105735639" target="_blank" rel="noopener">基于Android Q分析SurfaceFlinger启动过程</a></li>
+<li><a href="https://wizzie.top/Blog/2019/12/22/2019/191222_android_HWC2/#mCurrentState%E5%92%8CmDrawingState" target="_blank" rel="noopener">Android SurfaceFlinger和HWC2概述 - mCurrentState和mDrawingState</a></li>
+<li><a href="https://www.jianshu.com/p/b0928eaaeb1c" target="_blank" rel="noopener">SurfaceFlinger图像合成[1]</a></li>
+</ul>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/">https://alonealive.github.io/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2020-10-15");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-10-15T12:52:00.000Z" itemprop="datePublished">2020-10-15</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/graphics/" rel="tag">#&nbsp;graphics</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/display/" rel="tag">#&nbsp;display</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/08/15/2020/200815_android_protobuf/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android protobuf(.proto文件)</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

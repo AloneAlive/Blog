@@ -296,6 +296,44 @@
             
                 <div class="column col-12">
                     
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/" rel="bookmark">Android Q SurfaceFlinger合成（一）</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+在HWUI渲染完成后，Buffer会在frameworks/native/libs/gui/BufferQueueProducer.cpp中通过queueBuffer放入BufferQueue，在该函数中调用frameAvailableListener-&gt;onFrameAvailable(item)通知consumer消费者，从而触发SurfaceFlinger合成。
+
+    <a href="/Blog/2020/10/15/2020/201015_android_SurfaceFlinger1/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2020-10-15</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
     <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2020/08/15/2020/200815_android_protobuf/" rel="bookmark">Android protobuf(.proto文件)</a></h2>
 
 
@@ -1066,23 +1104,642 @@ Binder通信是Android用的比较多的一种通信机制，它是一种client-
 
                     </div>
                 
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/11/23/2019/191121_android_debug2/" rel="bookmark">Android Graphics 调试技巧（十一月份更新）</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        更新adb
+更新命令：   sudo apt-get install android-tools-adb
+查看当前adb指令的目录: which adb
+查看版本：adb version
+
+    <a href="/Blog/2019/11/23/2019/191121_android_debug2/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-11-23</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/11/03/2019/191103_android_hideDoc/" rel="bookmark">Android @hide接口注释</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        @hide和{@hide}类或API是否开放是通过doc的注释｛＠hide｝来控制的
+比如android.media.Metadata这个类就是android没有公开的类
+因为在frameworks\base\media\libmedia\Metadata.java文件中，定义Metadata类之前有/*｛＠hide｝/doc注释，所以Metadata类被定义为了非公开类，即在android应用程序中无法直接访问的类
+    <a href="/Blog/2019/11/03/2019/191103_android_hideDoc/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-11-03</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column column-thumbnail col-4 col-lg-12">
+                    <a href="/Blog/2019/10/23/2019/191023_android_shell/">
+                        <div class="post-thumbnail lazyload" data-bg="url(https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/shell.jpg)"></div>
+                    </a>
+                </div>
+                <div class="column column-body col-8 col-lg-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/10/23/2019/191023_android_shell/" rel="bookmark">Android Shell脚本应用</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        基本结构.sh（系统中文.ch.sh）#!/bin/bash 脚本开头
+#!/bin/csh 是 C shell 的命令解
+    <a href="/Blog/2019/10/23/2019/191023_android_shell/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-10-23</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column column-thumbnail col-4 col-lg-12">
+                    <a href="/Blog/2019/10/21/2019/191021_android_basis/">
+                        <div class="post-thumbnail lazyload" data-bg="url(https://cdn.jsdelivr.net/gh/AloneAlive/alonealive.github.com_images@1.0.1/2020_images/colorspace.jpeg)"></div>
+                    </a>
+                </div>
+                <div class="column column-body col-8 col-lg-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/10/21/2019/191021_android_basis/" rel="bookmark">Android色彩空间（ColorSpace）</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        色彩空间Color Space广色域WCGWCG（Wide Color Gamut），是Adobe System开发的一种RGB色彩空间，使用纯光谱原色提供较大的色域。与Adove RGB和sRGB相比，能够存储更大范围的颜色值。相比之下，WCG包含CIELAB色彩空间可见颜色的77.6%，而Adobe RGB色彩空间仅覆盖52.1%，sRGB仅覆盖35.9%。
+    <a href="/Blog/2019/10/21/2019/191021_android_basis/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-10-21</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/10/16/2019/191016_adndroid_property_setTypes/" rel="bookmark">Android Property</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        property的相关生成文件和设置
+android通过SystemProperties的set和get方法来控制很多东西，一般上层添加一个控制开关可以使用这个方法，在系统里面存在很多个prop文件。它们分别是system/build.prop,system/etc/prop.default,vendor/build.prop,vendor/default.prop。下面分别来说下这几个文件的构成。
+
+    <a href="/Blog/2019/10/16/2019/191016_adndroid_property_setTypes/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-10-16</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/10/12/2019/191012_android_debug1/" rel="bookmark">Android Graphics 调试技巧（十月份更新）</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        readelf命令查看ELF格式的文件信息常见的文件比如动态库(*.so)、静态库（*.a），常用命令：readelf -a libgui.so | grep test_string
+    <a href="/Blog/2019/10/12/2019/191012_android_debug1/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-10-12</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/22/2019/190922-android-handler-cpp/" rel="bookmark">Android Handler消息循环处理机制(例ActivityThread)</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        整体流程
+关键词：Handler、Looper、MessageQueue、handleMessage
+
+消息被存放于消息队列，应用程序的主线程会围绕这个消息队列进入一个无限循环，知道应用程序退出。（消息循环过程是由Looper实现的）
+
+如果队列中有消息，应用程序的主线程会把它取出来，分发给相应的Handler进行处理；
+如果队列中没有消息，应用程序的主县城就会进入空闲等待状态，等待下一个消息的到来；
+    <a href="/Blog/2019/09/22/2019/190922-android-handler-cpp/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-22</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/21/2019/190921-android-wms-view-cpp/" rel="bookmark">Android WMS和View基本理解</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        概述
+Window 可以看做是Surface的一个包装，本质上，Window的本体就是一片Surface。将操作对象Surface，对象关联属性集以及操作方法等组合在一起便是 Window。Surface 其实是一块画布，应用可以随心所欲地通过 Canvas 或者 OpenGL 在其上作画，然后通过 SurfaceFlinger 将多块 Surface 的内容按照特定的顺序(ZOrder)进行混合并输出到 FrameBuffer，从而将 Android 漂亮的脸蛋显示给用户。既然每个窗口都有一块 Surface 供自己涂鸦，所以必然需要一个角色对所有窗口的 Surface 进行协调管理。于是,WMS 应运而生。
+
+
+代码： http://aosp.opersys.com/xref/android-10.0.0_r2/xref/frameworks/base/core/java/android/view/
+
+    <a href="/Blog/2019/09/21/2019/190921-android-wms-view-cpp/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-21</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/10/2019/190910_android_zygote_systemserver/" rel="bookmark">Android zygote和SystemServer进程</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        zygote和system_server在Android中的Java层很重要。
+zygote分析
+zygote由init进程根据init.rc的配置项创建的。最初叫app_process，但是在运行过程中，通过Linux的pctrl系统调用将其换成了zygote。通过adb shell ps -ef|grep zygote查看到该进程。
+
+    <a href="/Blog/2019/09/10/2019/190910_android_zygote_systemserver/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-10</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/09/2019/190909_android_init_service/" rel="bookmark">Android init进程</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        概述
+init是Linux系统中用户空间的第一个进程。通过adb shell ps -rf查看我的一加手机进程信息。
+
+12UID            PID  PPID C STIME TTY          TIME CMDroot             1     0 0 12:43:34 ?     00:00:10 init
+
+
+init进程负责创建系统中的几个关键进程，例如zygote
+init提供了一个property service（属性服务）来管理Android系统的众多属性
+    <a href="/Blog/2019/09/09/2019/190909_android_init_service/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-09</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/29/2019/190829_android_JNI/" rel="bookmark">Android JNI理解</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        概述
+JNI,即Java Native Interface，Java本地调用。通过JNI可以实现：  
+
+Java程序函数可以调用Natvie语言（C/C++）写的函数
+Natvie程序函数可以调用Java层的函数
+
+
+    <a href="/Blog/2019/08/29/2019/190829_android_JNI/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-29</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/08/28/2019/190828_android_makefile/" rel="bookmark">Android中的makefile（Android.mk）</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+makefile是和make命令一起使用，在Android中，可以使用mm、mmm、mma进行编译。Makefile可以组织项目中各种库和代码之间的依赖，构建项目，和maven、gradle一样属于构建工具。常用于大型项目。
+
+    <a href="/Blog/2019/08/28/2019/190828_android_makefile/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-08-28</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/17/2019/190717_debug_adb_commonds/" rel="bookmark">Use ADB</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+ADB是连接手机设备和电脑设备的调试桥。这种工具命令用于Android调试是基础而且重要的。
+
+Overview
+Install: sudo apt-get install adb
+Function:123456通过adb可以管理、操作模拟器和设备，如安装软件、查看设备软硬件参数、系统升级、运行shell命令等。手机启动USB调试模式，设备连接电脑。注：我的手机一加6的USB调试模式打开方式如下：       （1）在手机设置的关于手机找到版本号，双击七次打开开发者模式;       （2）在开发者选项中打开USB调试选项;       （3）设备连接
+    <a href="/Blog/2019/07/17/2019/190717_debug_adb_commonds/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-17</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/16/2019/190716_debug_ancdoid_callstack/" rel="bookmark">在Android源码调试函数的堆栈</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+在Android代码中可以通过了解函数的CallStack加速调试和分析过程，本文说明如何在Android运行时加入CallStack及Android P上的注意点。
+
+Java12import android.util.Log; Log.d("yourTag", Log.getStackTraceString(new Exception()));
+    <a href="/Blog/2019/07/16/2019/190716_debug_ancdoid_callstack/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-16</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/15/2019/190715_debug_VTS/" rel="bookmark">Use VTS</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        Overview来源为了能更快的将设备升级到新的Android版本，Android O 开始新引入了 Project Treble，Project Treble 适用于搭载 Android O 及后续版本的所有新设备。 
+    <a href="/Blog/2019/07/15/2019/190715_debug_VTS/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-15</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
+                    <div class="grid-item">
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/15/2019/190715_debug_CTS/" rel="bookmark">Use CTS</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        OverviewCTS就是兼容性测试为了确保Android应用能够在所有兼容Android的设备上正确运行，并且保持相似的用户体验，在每个版本发布之时，Android提供了一套兼容性测试用例集合（Compatibility Test Suite, CTS）来认证运行Android系统的设备是否完全兼容Android规范，并附带有相关的兼容性标准文档（Compatibility Definition Document, CDD）。  
+从 http://source.android.com/compatibility/downloads.html（ 网络需要能进google）处下载最新的兼容性测试用例集合，并解压。大部分是基于Junit和仪表盘技术编写的。还扩展了自动化测试过程，可以自动执行用例，自动收集和汇总测试结果。CTS采用XML配置文件的方式将这些测试用例分组成多个测试计划（plan）,第三方也可以创建自己的plan。
+    <a href="/Blog/2019/07/15/2019/190715_debug_CTS/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-07-15</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    </div>
+                
             </div>
         </main>
         
-<nav>
-<ul class="pagination">
-    
-    
-        <li class="page-item page-next">
-            <a href="/Blog/categories/android/page/2/" rel="next">
-                <span class="page-item-title">下一页</span>
-                <span class="page-item-subtitle"><i class="icon icon-forward" aria-hidden="true"></i></span>
-            </a>
-        </li>
-    
-</ul>
-</nav>
-
 
     </div>
 </div>

@@ -336,6 +336,49 @@
             
                 <div class="column col-12">
                     
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2020/03/17/2020/200317_adnroid_touchEvent/" rel="bookmark">Android 触控事件分析</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        
+我们常见的触摸事件除了按下，弹起，移动之外还有很多，诸如长按，双击，Scroll，Fling等，他们是怎么判断的，还有这些长按，双击等事件的时间能否自由设置。可以在开发者选项中打开“显示点按操作反馈”和“指针位置”，同时可以打开inputflinger模块的log开关做一些调试，分析TP报点。
+
+一般当我们需要处理触摸事件时有两种方式：
+
+委托式 ： 将事件委托给监听器来进行处理。即定义一个View.onTouchListener()子类的监听器，由其onTouch()方法来处理。
+回调式 ： 通过重写View类自己的onTouchEvent()方法来处理，在执行时会回调该方法，在其中执行自定义的代码。
+
+    <a href="/Blog/2020/03/17/2020/200317_adnroid_touchEvent/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2020-03-17</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
     <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2020/02/22/2020/200222_android_systrace_study/" rel="bookmark">Android Systrace如何抓取分析问题</a></h2>
 
 
@@ -1071,46 +1114,6 @@ init提供了一个property service（属性服务）来管理Android系统的�
     <div class="card-footer post-entry-info text-gray">
         <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
         <time>2019-09-04</time>
-        
-            <span class="suka-devide-dot"></span>
-            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
-        
-        
-    </div>
-
-                </div>
-            
-        </div>
-</article>
-
-                    
-                
-                    
-                        <article class="post-entry container px-0 card">
-        <div class="columns col-gapless">
-            
-                <div class="column col-12">
-                    
-    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/01/2019/190901_cpp_namespace/" rel="bookmark">C++头文件、作用域、内存模型和名称空间</a></h2>
-
-
-<p class="mb-0 card-body">
-    
-        单独编译C++提供#include语法，因而可以将程序划分，大致可以分成三部分：  
-
-头文件a.h：包含结构声明和使用这些结构的函数原型
-源代码文件a.cpp：包含与结构相关的函数的代码
-源代码文件b.cpp：包含调用与结构相关的函数的代码
-    <a href="/Blog/2019/09/01/2019/190901_cpp_namespace/">阅读全文</a>
-</p>
-
-
-
-
-    <!-- Date & Category -->
-    <div class="card-footer post-entry-info text-gray">
-        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
-        <time>2019-09-01</time>
         
             <span class="suka-devide-dot"></span>
             <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
