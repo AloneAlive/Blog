@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android Systrace的部分Tag含义 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android Systrace的部分Tag含义 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/"><meta property="og:locale" content="zh-CN"><meta name="description" content="ystrace的一些tag标签的含义和作用。 - sunwengang - sunwengang blog"><meta name="keywords" content="android, display, graphics"><meta property="article:published_time" content="2021-03-09T13:52:00.000Z"><meta property="article:modified_time" content="2021-03-09T13:02:57.632Z"><meta property="og:updated_time" content="2021-03-09T13:02:57.632Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android, display, graphics"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/"
+    },
+    "headline": "Android Systrace的部分Tag含义 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2021-03-09T13:52:00.000Z",
+    "dateModified": "2021-03-09T13:02:57.632Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android, display, graphics",
+    "description": "ystrace的一些tag标签的含义和作用。 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/Blog/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/Blog/tags" class="navbar-link">标签</a>
+    
+        <a href="/Blog/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/Blog/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android Systrace的部分Tag含义" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android Systrace的部分Tag含义&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android Systrace的部分Tag含义" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACLUlEQVR42u2aQW7DMAwE/f9Pt6ceakjcoeOgqTm6BIljaQxI9HLJ4+sfjENIIYUU8gMgj2L8umHx/ee38z2r7+d5yLpCzoVcbtrTxOfJV9eq+VbzxHWFHA252+xk068O4e4euq6QQlaQVbDeBf/d/4QU8s6DQwL97jNdE1JIKjCSmCACg/5PSCFJQvTOz9uyRSEfBRlNoyAOKkFRJWK3umpCPgqy2sjJnKqCc/USSOsJORuyuoEaBEnoksOzfBAhR0Kmg0OSM/Jg9KFwtijkoyEJ1C5Yk8PVScqEFDKJVmpgdQRGMmuFnA1JDE8iDpIhmg4JTsSEHAOZgnun4EkOBknohJwJ2dnMBJaIB2JCCDkXsrNYEsMdkwsFfiFHQhLxijY5eIDUQFq6akKOgaQAxNiihXnaBCXkTEhq0ldB/ZJ4uCJ6hRwB2THguwE6XYtGmJCjIbvCgDTOJcOqJTCEHAOZBAU5XJWpUBWyLr1xhBwB2R3dwlMSz1vzTMiRkJ2Ei4qNq40iQgqZknqyyauNn+aNLwIhR0N2m5OI6X/l0KBGESHHQNLiJVmolXAJKSQwBzpNyJXQrebczS3kbEiadJFiPAnaxFAVcjZk2tApCBPh20nAYpVWyBGQ1JRKwTwFffoAQgrZKczjxL4xWipISCFBoZMkcuSQxWAupJCgSP9Kw1Msqgo5GpKY8ZWRunuwtnEqpJDwxf9K4ztpUsbd0UI+HvKTh5BCCinkH45v4EXXZtX5k4kAAAAASUVORK5CYII=" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android Systrace的部分Tag含义</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2021-03-09</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android Systrace的部分Tag含义&url=https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android Systrace的部分Tag含义&url=https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACLUlEQVR42u2aQW7DMAwE/f9Pt6ceakjcoeOgqTm6BIljaQxI9HLJ4+sfjENIIYUU8gMgj2L8umHx/ee38z2r7+d5yLpCzoVcbtrTxOfJV9eq+VbzxHWFHA252+xk068O4e4euq6QQlaQVbDeBf/d/4QU8s6DQwL97jNdE1JIKjCSmCACg/5PSCFJQvTOz9uyRSEfBRlNoyAOKkFRJWK3umpCPgqy2sjJnKqCc/USSOsJORuyuoEaBEnoksOzfBAhR0Kmg0OSM/Jg9KFwtijkoyEJ1C5Yk8PVScqEFDKJVmpgdQRGMmuFnA1JDE8iDpIhmg4JTsSEHAOZgnun4EkOBknohJwJ2dnMBJaIB2JCCDkXsrNYEsMdkwsFfiFHQhLxijY5eIDUQFq6akKOgaQAxNiihXnaBCXkTEhq0ldB/ZJ4uCJ6hRwB2THguwE6XYtGmJCjIbvCgDTOJcOqJTCEHAOZBAU5XJWpUBWyLr1xhBwB2R3dwlMSz1vzTMiRkJ2Ei4qNq40iQgqZknqyyauNn+aNLwIhR0N2m5OI6X/l0KBGESHHQNLiJVmolXAJKSQwBzpNyJXQrebczS3kbEiadJFiPAnaxFAVcjZk2tApCBPh20nAYpVWyBGQ1JRKwTwFffoAQgrZKczjxL4xWipISCFBoZMkcuSQxWAupJCgSP9Kw1Msqgo5GpKY8ZWRunuwtnEqpJDwxf9K4ztpUsbd0UI+HvKTh5BCCinkH45v4EXXZtX5k4kAAAAASUVORK5CYII=" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#CPU-（0-7）"><span class="post-toc-number">1.</span> <span class="post-toc-text">CPU*（0-7）</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#HW-VSYNC-ON-XXX"><span class="post-toc-number">2.</span> <span class="post-toc-text">HW_VSYNC_ON_XXX</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#fence同步机制简单释义"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">fence同步机制简单释义</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#HW-VSYNC-XXX"><span class="post-toc-number">3.</span> <span class="post-toc-text">HW_VSYNC_XXX</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#hasClientComposition"><span class="post-toc-number">4.</span> <span class="post-toc-text">hasClientComposition</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#FrameMissed-GpuFrameMissed-HwcFrameMissed"><span class="post-toc-number">5.</span> <span class="post-toc-text">FrameMissed&#x2F;GpuFrameMissed&#x2F;HwcFrameMissed</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#VSYNC-sf-VSYNC-app"><span class="post-toc-number">6.</span> <span class="post-toc-text">VSYNC-sf&#x2F;VSYNC-app</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#VSYNC-app基本不变化的原因"><span class="post-toc-number">6.1.</span> <span class="post-toc-text">VSYNC-app基本不变化的原因</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#queueBuffer"><span class="post-toc-number">7.</span> <span class="post-toc-text">queueBuffer</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#FenceMonitor"><span class="post-toc-number">7.1.</span> <span class="post-toc-text">FenceMonitor</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">8.</span> <span class="post-toc-text">参考</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>systrace的一些tag标签的含义和作用。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="CPU-（0-7）"><a href="#CPU-（0-7）" class="headerlink" title="CPU*（0-7）"></a>CPU*（0-7）</h2><p>Kernel内核模块，可以查看各个CPU执行了什么进程任务。</p>
+<p>cpu信息的目录是<code>/sys/devices/system/cpu</code>，例如我的一加六老设备：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">OnePlus6:&#x2F;sys&#x2F;devices&#x2F;system&#x2F;cpu $ ls</span><br><span class="line">core_ctl_isolated cpu4    cpuidle               isolated   possible </span><br><span class="line">cpu0              cpu5    gladiator_hang_detect kernel_max power    </span><br><span class="line">cpu1              cpu6    hang_detect_gold      modalias   present  </span><br><span class="line">cpu2              cpu7    hang_detect_silver    offline    uevent   </span><br><span class="line">cpu3              cpufreq hotplug               online</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="HW-VSYNC-ON-XXX"><a href="#HW-VSYNC-ON-XXX" class="headerlink" title="HW_VSYNC_ON_XXX"></a>HW_VSYNC_ON_XXX</h2><ul>
+<li>值：1表示HW VSYNC信号被打开，0关闭</li>
+<li>出现时间：HW VSYNC硬件信号被打开/关闭的时候</li>
+<li>含义：</li>
+</ul>
+<ol>
+<li>HW_VSYNC_ON_XXX后面的XXX表示display id（可通过dump SurfaceFlinger查看），用于区分不同屏幕的HW VSYNC硬件信号</li>
+<li>HW VSYNC硬件信号之所以会有时候被打开/关闭，是因为目前Android Graphics/Display依赖的信号不是硬件信号，而是软件信号 —— DispSync。<code>硬件信号的主要作用是用于校准，打开的时机是当软件VSYNC的误差超过一定值后，DispSync会打开HW VSYNC硬件信号进行校准</code>。</li>
+</ol>
+<ul>
+<li>作用：用作分析硬件模块导致的BUG的时间点</li>
+</ul>
+<hr>
+<h3 id="fence同步机制简单释义"><a href="#fence同步机制简单释义" class="headerlink" title="fence同步机制简单释义"></a>fence同步机制简单释义</h3><blockquote>
+<p>BufferQueue中的Buffer在整个绘制、合成、显示的过程中，一直在 CPU，GPU 和 HWC 之前传递，某一方要使用 Buffer 之前，需要检查之前的使用者是否已经移交了 Buffer 的“使用权”。而这里的“使用权”，就是fence。当fence释放（即signal）的时候，说明 Buffer 的上一个使用者已经交出了使用权，对于 Buffer 进行操作是安全的。</p>
+</blockquote>
+<p>在 Android 里面，总共有三类fence：<code>acquire fence，release fence 和 present fence</code>。其中acquire fence和release fence隶属于Layer，present fence隶属于帧（即 Layers）：</p>
+<ul>
+<li><code>acquire fence</code>：App将Buffer通过queueBuffer()还给BufferQueue的时候，此时该Buffer的GPU侧其实是还没有完成的，此时会带上一个fence，这个fence就是acquire fence。当SurfaceFlinger/HWC要读取Buffer以进行合成操作的时候，需要等acquire fence释放之后才行</li>
+<li><code>release fence</code>：当App通过dequeueBuffer()从BufferQueue申请Buffer，要对Buffer进行绘制的时候，需要保证HWC已经不再需要这个Buffer了，即需要等release fence signal才能对 Buffer进行写操作。</li>
+<li><code>present fence</code>：在HWC1的时候称为retire fence，在HWC2中改名为present fence。当前帧成功显示到屏幕的时候，<code>present fence就会signal</code>。</li>
+</ul>
+<hr>
+<h2 id="HW-VSYNC-XXX"><a href="#HW-VSYNC-XXX" class="headerlink" title="HW_VSYNC_XXX"></a>HW_VSYNC_XXX</h2><ul>
+<li>值：值发生变化（0-&gt;1 / 1-&gt;0）是表示当前时刻发出了HW VSYNC硬件信号</li>
+<li>出现时间：上面HW_VSYNC_ON_XXX打开的时候</li>
+<li>含义：</li>
+</ul>
+<ol>
+<li>HW_VSYNC_XXX记录的是当前时刻收到了HW VYSNC硬件信号</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//frameworks/native/services/surfaceflinger/DisplayHardware/HWComposer.cpp</span></span><br><span class="line"><span class="comment">//Step 1: 当收到硬件信号后，回调该函数</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">HWComposer::onVsync</span><span class="params">(hal::HWDisplayId hwcDisplayId, <span class="keyword">int64_t</span> timestamp)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> displayId = toPhysicalDisplayId(hwcDisplayId);</span><br><span class="line">    ......</span><br><span class="line">    <span class="keyword">const</span> <span class="keyword">auto</span> tag = <span class="string">"HW_VSYNC_"</span> + to_string(*displayId);</span><br><span class="line">    ATRACE_INT(tag.c_str(), displayData.vsyncTraceToggle);</span><br><span class="line">    <span class="comment">//Step 2: 取反赋值给HW_VSYNC_XXX，即systrace中该值0和1之间的变化</span></span><br><span class="line">    displayData.vsyncTraceToggle = !displayData.vsyncTraceToggle;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="hasClientComposition"><a href="#hasClientComposition" class="headerlink" title="hasClientComposition"></a>hasClientComposition</h2><ul>
+<li>值：布尔值，1表示本次SurfaceFlinger合成存在GPU合成的layer，0表示本次合成的所有layer都不是GPU合成</li>
+<li>出现时间：SurfaceFlinger的doComposition合成开始</li>
+<li>含义：</li>
+</ul>
+<ol>
+<li>Client合成（GPU合成）是通过CompositionEngine调用一系列的OpenGLES接口完成合成</li>
+<li>Device合成（硬件合成）是使用Hardware Composer进行合成。</li>
+</ol>
+<p><strong>优势</strong>：省电</p>
+<p><strong>劣势</strong>：某些场景无法进行Device合成，比如Layer是圆角的，Layer的总数超过硬件上限</p>
+<ul>
+<li>作用：如果发现本应该是Device合成的场景出现hasClientComposition值为1的情况，则可结合dump SurfaceFlinger信息分析合成策略是否有问题</li>
+</ul>
+<hr>
+<h2 id="FrameMissed-GpuFrameMissed-HwcFrameMissed"><a href="#FrameMissed-GpuFrameMissed-HwcFrameMissed" class="headerlink" title="FrameMissed/GpuFrameMissed/HwcFrameMissed"></a>FrameMissed/GpuFrameMissed/HwcFrameMissed</h2><ul>
+<li><p>值：1表示<code>上一次合成</code>有FrameMissed/GpuFrameMissed/HwcFrameMissed，0则没有</p>
+</li>
+<li><p>出现时间：SurfaceFlinger的INVALIDATE阶段开始</p>
+</li>
+<li><p>含义：<code>FrameMissed/GpuFrameMissed/HwcFrameMissed表示的是上一次合成的结果，当SurfaceFlinger合成后显示到屏幕上显示一帧，present fence就会signal。因此可以将present fence signal作为一次合成完结的标志。</code>SurfaceFlinger每次开始被Vysnc-sf唤醒时，会先检查上一次合成情况，方式就是检查上一次合成的present fence有没有signal。如果没有，则认为是FrameMissed，并结合上一次合成方式是否有GPU或者HWC参与，同步GpuFrameMissed/HwcFrameMissed信息。</p>
+</li>
+<li><p>present fence没有及时signal主要有两种原因：</p>
+</li>
+</ul>
+<ol>
+<li>Display问题</li>
+<li>APP/游戏的GPU负载过高：上层GPU负载过高会导致底层大部分时间都在等GPU渲染工作完成，延迟了present fence的signal，导致FrameMissed</li>
+</ol>
+<ul>
+<li>FrameMissed作用：</li>
+</ul>
+<ol>
+<li>统计丢帧</li>
+<li>Android有一个debug开关，可以在检测到上一帧有FrameMissed出现的时候，跳过本次的合成，留给底层更多的时间去显示。这个初衷是好的，不让底层过于繁忙，通过主动跳过合成来减缓底层的工作量。但是由于跳过合成就相当于主动丢帧，在某些场景下会导致到持续性的掉帧。因此这个开关一般是不会打开的。</li>
+</ol>
+<hr>
+<h2 id="VSYNC-sf-VSYNC-app"><a href="#VSYNC-sf-VSYNC-app" class="headerlink" title="VSYNC-sf/VSYNC-app"></a>VSYNC-sf/VSYNC-app</h2><ul>
+<li>值：表示SurfaceFlinger和APP发出Vsync信号（刷新率60是16.67ms，刷新率90是11.11ms）</li>
+<li>出现时间：DispSync分发的时候</li>
+<li>作用：分别针对SurfaceFlinger合成和APP应用渲染的起点。<code>如果一处没有Vsync-sf，则说明此处有丢帧情况，原因可能是上面的FrameMissed，或者是APP没有及时完成渲染导致丢帧</code></li>
+</ul>
+<h3 id="VSYNC-app基本不变化的原因"><a href="#VSYNC-app基本不变化的原因" class="headerlink" title="VSYNC-app基本不变化的原因"></a>VSYNC-app基本不变化的原因</h3><p>现在绝大部分手游都使用游戏引擎，例如Unity、Unreal，这些引擎会自己去控制刷新率。</p>
+<p>例如和平精英、王者荣耀可以有多个帧率档位选择，所以就不会通过Vsync-app的速率进行绘制刷新。</p>
+<hr>
+<h2 id="queueBuffer"><a href="#queueBuffer" class="headerlink" title="queueBuffer"></a>queueBuffer</h2><p>Systrace中抓取的都是CPU侧的，例如每个CPU核的频率、C-State、运行了什么线程、线程间的调用关系、运行时长等。</p>
+<p>而生产者通过dequeuebuffer获取buffer后，会最终交给GPU渲染绘制，然后通过queuebuffer将buffer还给BufferQueue。</p>
+<p><code>如果GPU渲染的时间长，则可以初步判断性能问题是出自于GPU侧</code></p>
+<h3 id="FenceMonitor"><a href="#FenceMonitor" class="headerlink" title="FenceMonitor"></a>FenceMonitor</h3><p>Android Q在libgui库引入新的内部类FenceMonitor，作用是跟踪Fence的生命周期，在Systrace中展示一个Fence从产生到signal需要的时间。</p>
+<ol>
+<li><strong>在Systrace中GPU Completion的每个<code>waiting for GPU completion ×××</code>的长度，大致可以作为GPU渲染所花费的时间（即acquire fence释放的总时间），但是并不严谨（解释如下）。</strong></li>
+</ol>
+<p>通过这个时间，可以判断是否有GPU bound的现象。</p>
+<ol start="2">
+<li><strong>相对应的，<code>waiting for HWC release ×××</code>的长度大致可以作为release fence的释放总时间参考。在release fence signal之前，GPU是无法对dequeuebuffer拿到的Buffer进行读写的（因为此时Buffer还是归HWC所有）。</strong></li>
+</ol>
+<p>通过这点，可以判断Display是否有问题。</p>
+<p><strong>注</strong>：systrace上的fence信息只能准确反映出signal的时间点，但无法反应出gpu/display开始干活的时间点。</p>
+<p>再说原因：systrace上等待GPU fence的起始时间是从queueBuffer开始算的，而不是gpu真正开始干活时才算的。queueBuffer执行完成并不意味着gpu就能马上开始干活，有可能这个时候是因为display还没有释放（即signal）该buffer导致gpu不得不等在那里。所以我们不能说等待gpu的fence耗时就是gpu渲染的时间。同样的，HWC release fence也是一样的道理。</p>
+<p>但有时候我们可以变相的计算出gpu的耗时：GPU complete signal的时间点，减去上一帧HWC release fence signal的时间点，这样计算出来的结果也只能是个近似值，因为从display buffer释放到gpu真正开始干活，这中间还有额外的准备时间。当然，有的时候systrace上反应不出HWC release fence signal的时间点，因为在dequeueBuffer的时候该release fence就已经释放了，所以上面的公式就排不上用场了。</p>
+<hr>
+<p>FenceMonitor相关代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//frameworks/native/libs/gui/Surface.cpp</span></span><br><span class="line"><span class="comment">//内部类</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FenceMonitor</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    explicit FenceMonitor(const char* name) : mName(name), mFencesQueued(0), mFencesSignaled(0) &#123;</span><br><span class="line">        <span class="function"><span class="built_in">std</span>::thread <span class="title">thread</span><span class="params">(&amp;FenceMonitor::loop, <span class="keyword">this</span>)</span></span>;</span><br><span class="line">        pthread_setname_np(thread.native_handle(), mName);</span><br><span class="line">        thread.detach();</span><br><span class="line">    &#125;</span><br><span class="line">    ......</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Surface::dequeueBuffer</span><span class="params">(<span class="keyword">android_native_buffer_t</span>** buffer, <span class="keyword">int</span>* fenceFd)</span> </span>&#123;</span><br><span class="line">    ATRACE_CALL();</span><br><span class="line">    ALOGV(<span class="string">"Surface::dequeueBuffer"</span>);</span><br><span class="line">    .....</span><br><span class="line">    <span class="keyword">if</span> (CC_UNLIKELY(atrace_is_tag_enabled(ATRACE_TAG_GRAPHICS))) &#123;</span><br><span class="line">        <span class="comment">//申请到Buffer</span></span><br><span class="line">        <span class="function"><span class="keyword">static</span> FenceMonitor <span class="title">hwcReleaseThread</span><span class="params">(<span class="string">"HWC release"</span>)</span></span>;</span><br><span class="line">        hwcReleaseThread.queueFence(fence);</span><br><span class="line">    &#125;</span><br><span class="line">    .....</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Surface::queueBuffer</span><span class="params">(<span class="keyword">android_native_buffer_t</span>* buffer, <span class="keyword">int</span> fenceFd)</span> </span>&#123;</span><br><span class="line">    ATRACE_CALL();</span><br><span class="line">    ALOGV(<span class="string">"Surface::queueBuffer"</span>);</span><br><span class="line">    .....</span><br><span class="line">    <span class="keyword">if</span> (CC_UNLIKELY(atrace_is_tag_enabled(ATRACE_TAG_GRAPHICS))) &#123;</span><br><span class="line">        <span class="comment">//GPU绘制完成</span></span><br><span class="line">        <span class="function"><span class="keyword">static</span> FenceMonitor <span class="title">gpuCompletionThread</span><span class="params">(<span class="string">"GPU completion"</span>)</span></span>;</span><br><span class="line">        gpuCompletionThread.queueFence(fence);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://wizzie.top/Blog/2020/02/22/2020/200222_android_systrace_study/" target="_blank" rel="noopener">Android Systrace如何抓取分析问题</a></li>
+<li><a href="https://mp.weixin.qq.com/s/xgnXjhjPpJo27bbcDPW5RQ" target="_blank" rel="noopener">Systrace 中的这些 tag 究竟是什么意思（一）</a></li>
+<li><a href="https://mp.weixin.qq.com/s/dFAVVXUu1FkY7taZbNKCjQ" target="_blank" rel="noopener">如何通过 Systrace 查看 GPU 渲染花费的时间</a></li>
+</ul>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/">https://alonealive.github.io/Blog/2021/03/09/2021/210309_android_systraceTAG/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2021-03-09");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2021-03-09T13:52:00.000Z" itemprop="datePublished">2021-03-09</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/display/" rel="tag">#&nbsp;display</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/graphics/" rel="tag">#&nbsp;graphics</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2021/04/14/2021/210414_android_VsyncStudy/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android R Vsync相关梳理</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2020/10/31/2020/201031_android_SurfaceFlinger2/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android Q SurfaceFlinger合成（二）</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

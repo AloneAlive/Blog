@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>Android R背光调节流程梳理 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="Android R背光调节流程梳理 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/"><meta property="og:locale" content="zh-CN"><meta name="description" content="参考Android R源码，对背光手动调节、自动调节的流程作简单梳理。 - sunwengang - sunwengang blog"><meta name="keywords" content="android, display, graphics"><meta property="og:image" content="https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/setBrightness.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/CreateMappingSpline.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/CreateMappingSplineCode.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/userChangeBrightness.png"><meta property="article:published_time" content="2021-05-07T14:32:00.000Z"><meta property="article:modified_time" content="2021-05-07T09:08:29.000Z"><meta property="og:updated_time" content="2021-05-07T09:08:29.000Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android, display, graphics"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/"
+    },
+    "headline": "Android R背光调节流程梳理 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2021-05-07T14:32:00.000Z",
+    "dateModified": "2021-05-07T09:08:29.000Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "android, display, graphics",
+    "description": "参考Android R源码，对背光手动调节、自动调节的流程作简单梳理。 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/Blog/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/Blog/tags" class="navbar-link">标签</a>
+    
+        <a href="/Blog/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/Blog/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=Android R背光调节流程梳理" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=Android R背光调节流程梳理&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=Android R背光调节流程梳理" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACL0lEQVR42u2a0W4CMQwE+f+fbl8Rxd5xoCo9T15AXLibSOdkvfbt6x+Mm5BCCinkB0DemnE/5/7zx83C/OpafK6QayGrB1dzHq+dzEXPFXI15OOLW/3eLe7ZPZ59J88VUsgEmUCeLaS7LqSQr0BOBUV170p8CCnkRGCQTb4THNWB8FYVJOTlILuE6Dc/35YtCnkpyGgaNYIiLTQdAm9z1YS8FGT3IiexMDEXug2+XJSQKyE74dolYBSEBs/T/wu5ErJMgopAScKXCAmSkAkpZPfCE3hidtEAFFLISdGTmPakIHUUOEKugaSbNxG6qchJBLOQuyGJcdUF0YlBRQJWSCEnDRxpk6ZCOjaZCCkkFBAVQBcYyYxFxr6QayCnBXiSjHWL6IR0GThCroVECVIjZidNTKMCqJCrIE9MAmIWpAb5l5W5kJeGTIl+l4CRAicJ0HHngJCXhCQCIhpLg4J9OgiEFDKJ0w4wmf+dSB5v5kKugayEaAJO/+kOiHQICCkkMUOTsZ+aTqYNzULuhiTmKSlmJkN/XFAVcjUk/Z6MJmICpLlCCjlpSuqKTcRUICJZSCFpoYgmU6dNKK2DIeQaSGqmEgOLbuypAUrI3ZDphZ4sYJKgHWeLQq6AnBqkSRynwudR4Ai5DnJarCQJPx1jFSSkkNDEp6YraSAVUsgkWFNxfVIExY1TQq6GTKZ9KsxPDNPjwBFyDeTEqKemABUTbWOokCshP3kIKaSQQv7h+AaWRnXkvdOTNQAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">Android R背光调节流程梳理</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2021-05-07</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android R背光调节流程梳理&url=https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=Android R背光调节流程梳理&url=https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACL0lEQVR42u2a0W4CMQwE+f+fbl8Rxd5xoCo9T15AXLibSOdkvfbt6x+Mm5BCCinkB0DemnE/5/7zx83C/OpafK6QayGrB1dzHq+dzEXPFXI15OOLW/3eLe7ZPZ59J88VUsgEmUCeLaS7LqSQr0BOBUV170p8CCnkRGCQTb4THNWB8FYVJOTlILuE6Dc/35YtCnkpyGgaNYIiLTQdAm9z1YS8FGT3IiexMDEXug2+XJSQKyE74dolYBSEBs/T/wu5ErJMgopAScKXCAmSkAkpZPfCE3hidtEAFFLISdGTmPakIHUUOEKugaSbNxG6qchJBLOQuyGJcdUF0YlBRQJWSCEnDRxpk6ZCOjaZCCkkFBAVQBcYyYxFxr6QayCnBXiSjHWL6IR0GThCroVECVIjZidNTKMCqJCrIE9MAmIWpAb5l5W5kJeGTIl+l4CRAicJ0HHngJCXhCQCIhpLg4J9OgiEFDKJ0w4wmf+dSB5v5kKugayEaAJO/+kOiHQICCkkMUOTsZ+aTqYNzULuhiTmKSlmJkN/XFAVcjUk/Z6MJmICpLlCCjlpSuqKTcRUICJZSCFpoYgmU6dNKK2DIeQaSGqmEgOLbuypAUrI3ZDphZ4sYJKgHWeLQq6AnBqkSRynwudR4Ai5DnJarCQJPx1jFSSkkNDEp6YraSAVUsgkWFNxfVIExY1TQq6GTKZ9KsxPDNPjwBFyDeTEqKemABUTbWOokCshP3kIKaSQQv7h+AaWRnXkvdOTNQAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#SystemUI-settings手动背光调节"><span class="post-toc-number">1.</span> <span class="post-toc-text">SystemUI-settings手动背光调节</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#函数调用流程"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">函数调用流程</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#部分代码梳理"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">部分代码梳理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#异步任务机制AsyncTask"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">异步任务机制AsyncTask</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#异步任务主要方法"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">异步任务主要方法</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#自动背光调节"><span class="post-toc-number">2.</span> <span class="post-toc-text">自动背光调节</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#主要变量"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">主要变量</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#DisplayPowerController初始化背光属性变量"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">DisplayPowerController初始化背光属性变量</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#创建背光曲线（映射）"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">创建背光曲线（映射）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#创建曲线示意图"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">创建曲线示意图</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#构造函数开始创建"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">构造函数开始创建</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#（1）-PhysicalMappingStrategy构造函数"><span class="post-toc-number">2.5.</span> <span class="post-toc-text">（1） PhysicalMappingStrategy构造函数</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#（1-1）-PhysicalMappingStrategy中的computeSpline"><span class="post-toc-number">2.6.</span> <span class="post-toc-text">（1.1） PhysicalMappingStrategy中的computeSpline</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Pair容器类"><span class="post-toc-number">2.6.1.</span> <span class="post-toc-text">Pair容器类</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#（2）-SimpleMappingStrategy构造函数"><span class="post-toc-number">2.7.</span> <span class="post-toc-text">（2） SimpleMappingStrategy构造函数</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#（2-1）-SimpleMappingStrategy中的computeSpline"><span class="post-toc-number">2.8.</span> <span class="post-toc-text">（2.1） SimpleMappingStrategy中的computeSpline</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#AutomaticBrightnessController初始化"><span class="post-toc-number">3.</span> <span class="post-toc-text">AutomaticBrightnessController初始化</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#configure方法配置AutomaticBrightnessController"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">*configure方法配置AutomaticBrightnessController</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-setBrightnessConfiguration"><span class="post-toc-number">3.1.1.</span> <span class="post-toc-text">1. setBrightnessConfiguration</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-setDisplayPolicy"><span class="post-toc-number">3.1.2.</span> <span class="post-toc-text">2. setDisplayPolicy</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-setAutoBrightnessAdjustment"><span class="post-toc-number">3.1.3.</span> <span class="post-toc-text">3. setAutoBrightnessAdjustment</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#4-setScreenBrightnessByUser"><span class="post-toc-number">3.1.4.</span> <span class="post-toc-text">4. setScreenBrightnessByUser</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#5-prepareBrightnessAdjustmentSample"><span class="post-toc-number">3.1.5.</span> <span class="post-toc-text">5. prepareBrightnessAdjustmentSample</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#6-setLightSensorEnabled"><span class="post-toc-number">3.1.6.</span> <span class="post-toc-text">6. setLightSensorEnabled</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#7-updateAutoBrightness自动背光获取"><span class="post-toc-number">3.1.7.</span> <span class="post-toc-text">7. *updateAutoBrightness自动背光获取</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#adjustment变量计算"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">adjustment变量计算</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#用户手动调节亮度条"><span class="post-toc-number">3.2.1.</span> <span class="post-toc-text">用户手动调节亮度条</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#debug调试"><span class="post-toc-number">4.</span> <span class="post-toc-text">debug调试</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>参考Android R源码，对背光手动调节、自动调节的流程作简单梳理。</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="SystemUI-settings手动背光调节"><a href="#SystemUI-settings手动背光调节" class="headerlink" title="SystemUI-settings手动背光调节"></a>SystemUI-settings手动背光调节</h2><h3 id="函数调用流程"><a href="#函数调用流程" class="headerlink" title="函数调用流程"></a>函数调用流程</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">frameworks&#x2F;base&#x2F;packages&#x2F;SystemUI&#x2F;src&#x2F;com&#x2F;android&#x2F;systemui&#x2F;settings&#x2F;BrightnessController.java - onChanged  ----&gt;</span><br><span class="line">setBrightness  ----&gt;</span><br><span class="line">frameworks&#x2F;base&#x2F;core&#x2F;java&#x2F;android&#x2F;hardware&#x2F;display&#x2F;DisplayManager.java - setTemporaryBrightness ----&gt;</span><br><span class="line">frameworks&#x2F;base&#x2F;core&#x2F;java&#x2F;android&#x2F;hardware&#x2F;display&#x2F;DisplayManagerGlobal.java - setTemporaryBrightness [调用IDisplayManager.aidl的setTemporaryBrightness]---&gt;</span><br><span class="line">frameworks&#x2F;base&#x2F;services&#x2F;core&#x2F;java&#x2F;com&#x2F;android&#x2F;server&#x2F;display&#x2F;DisplayManagerService.java - setTemporaryBrightness [binder call跨进程 APP进程到DMS进程]</span><br><span class="line">frameworks&#x2F;base&#x2F;services&#x2F;core&#x2F;java&#x2F;com&#x2F;android&#x2F;server&#x2F;display&#x2F;DisplayPowerController.java - setTemporaryBrightness [消息处理]  ----&gt;</span><br><span class="line">updatePowerState* [主要设置、实现背光函数]</span><br></pre></td></tr></table></figure>
+
+<p><img src="setBrightness.png" alt="调用流程图"></p>
+<h3 id="部分代码梳理"><a href="#部分代码梳理" class="headerlink" title="部分代码梳理"></a>部分代码梳理</h3><ol>
+<li>BrightnessController.java设置背光：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//frameworks/base/packages/SystemUI/src/com/android/systemui/settings/BrightnessController.java</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onChanged</span><span class="params">(ToggleSlider toggleSlider, <span class="keyword">boolean</span> tracking, <span class="keyword">boolean</span> automatic,</span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">int</span> value, <span class="keyword">boolean</span> stopTracking)</span> </span>&#123;</span><br><span class="line">        ....</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span> minBacklight;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span> maxBacklight;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> metric;</span><br><span class="line">        <span class="keyword">final</span> String settingToChange;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//获取背光值</span></span><br><span class="line">        <span class="comment">//value入参，Gamma转换成线性</span></span><br><span class="line">        <span class="comment">//valFloat:根据亮度条的拖动，计算出新的亮度值</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span> valFloat = MathUtils.min(convertGammaToLinearFloat(value,</span><br><span class="line">                minBacklight, maxBacklight),</span><br><span class="line">                <span class="number">1.0f</span>);</span><br><span class="line">        ....</span><br><span class="line">        <span class="comment">//设置背光值</span></span><br><span class="line">        setBrightness(valFloat);</span><br><span class="line">        <span class="keyword">if</span> (!tracking) &#123;</span><br><span class="line">            <span class="comment">//在异步任务中将新的亮度值保存在SettingsProvider中</span></span><br><span class="line">            AsyncTask.execute(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                        Settings.System.putFloatForUser(mContext.getContentResolver(),</span><br><span class="line">                                settingToChange, valFloat, UserHandle.USER_CURRENT);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">for</span> (BrightnessStateChangeCallback cb : mChangeCallbacks) &#123;</span><br><span class="line">            cb.onBrightnessLevelChanged();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//设置背光值</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">setBrightness</span><span class="params">(<span class="keyword">float</span> brightness)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//DisplayManagerService对象</span></span><br><span class="line">        mDisplayManager.setTemporaryBrightness(brightness);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//frameworks/base/packages/SettingsLib/src/com/android/settingslib/display/BrightnessUtils.java</span></span><br><span class="line">    <span class="comment">// Hybrid Log Gamma constant values</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">float</span> R = <span class="number">0.5f</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">float</span> A = <span class="number">0.17883277f</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">float</span> B = <span class="number">0.28466892f</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">float</span> C = <span class="number">0.55991073f</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">float</span> <span class="title">convertGammaToLinearFloat</span><span class="params">(<span class="keyword">int</span> val, <span class="keyword">float</span> min, <span class="keyword">float</span> max)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 计算 (val-GAMMA_SPACE_MIN) / (GAMMA_SPACE_MAX-GAMMA_SPACE_MAX) </span></span><br><span class="line">        <span class="comment">//最大值减去最小值评价一组数据的离散度，即极差</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span> normalizedVal = MathUtils.norm(GAMMA_SPACE_MIN, GAMMA_SPACE_MAX, val); <span class="comment">//min 0, max 65535</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span> ret;</span><br><span class="line">        <span class="comment">//对调用者自身的rgb值平方或开放</span></span><br><span class="line">        <span class="keyword">if</span> (normalizedVal &lt;= R) &#123;</span><br><span class="line">            ret = MathUtils.sq(normalizedVal / R); <span class="comment">//开方根</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            ret = MathUtils.exp((normalizedVal - C) / A) + B;  <span class="comment">//以自然常数e为底的指数函数</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// HLG is normalized to the range [0, 12], ensure that value is within that range,</span></span><br><span class="line">        <span class="comment">// it shouldn't be out of bounds.</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span> normalizedRet = MathUtils.constrain(ret, <span class="number">0</span>, <span class="number">12</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Re-normalize to the range [0, 1]</span></span><br><span class="line">        <span class="comment">// in order to derive the correct setting value.</span></span><br><span class="line">        <span class="keyword">return</span> MathUtils.lerp(min, max, normalizedRet / <span class="number">12</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>AIDL跨进程（bind call）到DMS.java</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//frameworks/base/services/core/java/com/android/server/display/DisplayManagerService.java</span></span><br><span class="line">    <span class="meta">@VisibleForTesting</span></span><br><span class="line">    <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">BinderService</span> <span class="keyword">extends</span> <span class="title">IDisplayManager</span>.<span class="title">Stub</span> </span>&#123;</span><br><span class="line">        .....</span><br><span class="line">        <span class="meta">@Override</span> <span class="comment">// Binder call</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTemporaryBrightness</span><span class="params">(<span class="keyword">float</span> brightness)</span> </span>&#123;</span><br><span class="line">            mContext.enforceCallingOrSelfPermission(</span><br><span class="line">                    Manifest.permission.CONTROL_DISPLAY_BRIGHTNESS,</span><br><span class="line">                    <span class="string">"Permission required to set the display's brightness"</span>);</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">long</span> token = Binder.clearCallingIdentity();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//同步执行代码块</span></span><br><span class="line">                <span class="comment">//保证在同一时刻最多只有一个线程执行该段代码</span></span><br><span class="line">                <span class="keyword">synchronized</span> (mSyncRoot) &#123;</span><br><span class="line">                    mDisplayPowerController.setTemporaryBrightness(brightness);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                Binder.restoreCallingIdentity(token);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//frameworks/base/services/core/java/com/android/server/display/DisplayPowerController.java</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setTemporaryBrightness</span><span class="params">(<span class="keyword">float</span> brightness)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//mHandler是DisplayControllerHandler类型</span></span><br><span class="line">        <span class="comment">//创建message（省去了创建对象申请内存的开销，相比new message）</span></span><br><span class="line">        Message msg = mHandler.obtainMessage(MSG_SET_TEMPORARY_BRIGHTNESS,</span><br><span class="line">                Float.floatToIntBits(brightness), <span class="number">0</span> <span class="comment">/*unused*/</span>);</span><br><span class="line">        <span class="comment">//内部调用sendMessage，即发送消息</span></span><br><span class="line">        msg.sendToTarget();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">DisplayControllerHandler</span> <span class="keyword">extends</span> <span class="title">Handler</span> </span>&#123;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">DisplayControllerHandler</span><span class="params">(Looper looper)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">super</span>(looper, <span class="keyword">null</span>, <span class="keyword">true</span> <span class="comment">/*async*/</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleMessage</span><span class="params">(Message msg)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">switch</span> (msg.what) &#123;</span><br><span class="line">                ...</span><br><span class="line">                <span class="comment">//消息处理</span></span><br><span class="line">                <span class="keyword">case</span> MSG_SET_TEMPORARY_BRIGHTNESS:</span><br><span class="line">                    <span class="comment">//入参int，返回float类型，赋值给mTemporaryScreenBrightness</span></span><br><span class="line">                    mTemporaryScreenBrightness = Float.intBitsToFloat(msg.arg1);</span><br><span class="line">                    updatePowerState();</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                ...</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//主要实现函数</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updatePowerState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// Update the power state request.</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">boolean</span> mustNotify;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> previousPolicy;</span><br><span class="line">        <span class="keyword">boolean</span> mustInitialize = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">int</span> brightnessAdjustmentFlags = <span class="number">0</span>;</span><br><span class="line">        mBrightnessReasonTemp.set(<span class="keyword">null</span>);</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">// 如果power状态变化，则第一时间初始化更新</span></span><br><span class="line">        <span class="keyword">if</span> (mustInitialize) &#123;</span><br><span class="line">            initialize();</span><br><span class="line">        &#125;</span><br><span class="line">        ...</span><br><span class="line">        <span class="comment">//获取p-sensor距离感应器（Apply the proximity sensor）</span></span><br><span class="line">        <span class="keyword">if</span> (mProximitySensor != <span class="keyword">null</span>) &#123;</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//1. 手动设置亮度是否改变</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">boolean</span> userSetBrightnessChanged = updateUserSetScreenBrightness();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果没有覆盖，则使用手动设置的临时背光</span></span><br><span class="line">        <span class="keyword">if</span> (isValidBrightnessValue(mTemporaryScreenBrightness)) &#123;</span><br><span class="line">            <span class="comment">//2. 将手动设置的背光值 赋值给 brightnessState</span></span><br><span class="line">            brightnessState = mTemporaryScreenBrightness;</span><br><span class="line">            mAppliedTemporaryBrightness = <span class="keyword">true</span>;</span><br><span class="line">            mBrightnessReasonTemp.setReason(BrightnessReason.REASON_TEMPORARY);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            mAppliedTemporaryBrightness = <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">boolean</span> autoBrightnessAdjustmentChanged = updateAutoBrightnessAdjustment();</span><br><span class="line">        <span class="keyword">if</span> (autoBrightnessAdjustmentChanged) &#123;</span><br><span class="line">            mTemporaryAutoBrightnessAdjustment = Float.NaN;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果设置了，则使用自动背光覆盖</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span> autoBrightnessAdjustment;</span><br><span class="line">        <span class="keyword">if</span> (!Float.isNaN(mTemporaryAutoBrightnessAdjustment)) &#123;</span><br><span class="line">            autoBrightnessAdjustment = mTemporaryAutoBrightnessAdjustment;</span><br><span class="line">            brightnessAdjustmentFlags = BrightnessReason.ADJUSTMENT_AUTO_TEMP;</span><br><span class="line">            mAppliedTemporaryAutoBrightnessAdjustment = <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            autoBrightnessAdjustment = mAutoBrightnessAdjustment;</span><br><span class="line">            brightnessAdjustmentFlags = BrightnessReason.ADJUSTMENT_AUTO;</span><br><span class="line">            mAppliedTemporaryAutoBrightnessAdjustment = <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ....</span><br><span class="line">        <span class="comment">// Apply auto-brightness.</span></span><br><span class="line">        <span class="keyword">boolean</span> slowChange = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">if</span> (Float.isNaN(brightnessState)) &#123;</span><br><span class="line">            <span class="keyword">float</span> newAutoBrightnessAdjustment = autoBrightnessAdjustment;</span><br><span class="line">            <span class="keyword">if</span> (autoBrightnessEnabled) &#123;</span><br><span class="line">                <span class="comment">//获取自动背光值</span></span><br><span class="line">                brightnessState = mAutomaticBrightnessController.getAutomaticScreenBrightness();</span><br><span class="line">                <span class="comment">//获取新的adjustment值</span></span><br><span class="line">                newAutoBrightnessAdjustment =</span><br><span class="line">                        mAutomaticBrightnessController.getAutomaticScreenBrightnessAdjustment();</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (isValidBrightnessValue(brightnessState)</span><br><span class="line">                    || brightnessState == PowerManager.BRIGHTNESS_OFF_FLOAT) &#123;</span><br><span class="line">                <span class="comment">// Use current auto-brightness value and slowly adjust to changes.</span></span><br><span class="line">                <span class="comment">//3. 使用当前的自动背光值，缓慢的变化</span></span><br><span class="line">                brightnessState = clampScreenBrightness(brightnessState);</span><br><span class="line">            .....</span><br><span class="line">                    &#125;</span><br><span class="line">            <span class="keyword">if</span> (autoBrightnessAdjustment != newAutoBrightnessAdjustment) &#123;</span><br><span class="line">                <span class="comment">//将adjustment值保存到SettingsProvider中</span></span><br><span class="line">                <span class="comment">//以确保Settings等其他进程对它的使用</span></span><br><span class="line">                putAutoBrightnessAdjustmentSetting(newAutoBrightnessAdjustment);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// Adjustment values resulted in no change</span></span><br><span class="line">                brightnessAdjustmentFlags = <span class="number">0</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        .....</span><br><span class="line">            <span class="keyword">float</span> animateValue = brightnessState == PowerManager.BRIGHTNESS_OFF_FLOAT</span><br><span class="line">                    ? PowerManager.BRIGHTNESS_MIN : brightnessState;</span><br><span class="line">            <span class="keyword">if</span> (isValidBrightnessValue(animateValue)) &#123;</span><br><span class="line">                <span class="keyword">if</span> (initialRampSkip || hasBrightnessBuckets</span><br><span class="line">                        || wasOrWillBeInVr || !isDisplayContentVisible || brightnessIsTemporary) &#123;</span><br><span class="line">                    <span class="comment">//4. 设置背光到底层LED驱动，调节背光值，不设置背光动画（并且防止非法值时，保证不黑屏，设置最小背光）</span></span><br><span class="line">                    animateScreenBrightness(animateValue, SCREEN_ANIMATION_RATE_MINIMUM);</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">//设置亮度值到底层驱动，调节背光值，根据slowChange设置快动画还是慢动画</span></span><br><span class="line">                    animateScreenBrightness(animateValue,</span><br><span class="line">                            slowChange ? mBrightnessRampRateSlow : mBrightnessRampRateFast);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//--------------------------------</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//1.手动设置的亮度</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">updateUserSetScreenBrightness</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//mPendingScreenBrightnessSetting是通过SettingsObserver监测Settings数据库中的值</span></span><br><span class="line">        <span class="comment">//在handleSettingsChange方法中通过getScreenBrightnessSetting()获取</span></span><br><span class="line">        <span class="keyword">if</span> ((Float.isNaN(mPendingScreenBrightnessSetting)</span><br><span class="line">                || mPendingScreenBrightnessSetting &lt; <span class="number">0.0f</span>)) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (mCurrentScreenBrightnessSetting == mPendingScreenBrightnessSetting) &#123;</span><br><span class="line">            mPendingScreenBrightnessSetting = PowerManager.BRIGHTNESS_INVALID_FLOAT;</span><br><span class="line">            <span class="comment">//手动设置的背光</span></span><br><span class="line">            mTemporaryScreenBrightness = PowerManager.BRIGHTNESS_INVALID_FLOAT;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        mCurrentScreenBrightnessSetting = mPendingScreenBrightnessSetting;</span><br><span class="line">        mLastUserSetScreenBrightness = mPendingScreenBrightnessSetting;</span><br><span class="line">        mPendingScreenBrightnessSetting = PowerManager.BRIGHTNESS_INVALID_FLOAT;</span><br><span class="line">        mTemporaryScreenBrightness = PowerManager.BRIGHTNESS_INVALID_FLOAT;  <span class="comment">//not a number， 0.0f / 0.0f</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">float</span> <span class="title">clampScreenBrightness</span><span class="params">(<span class="keyword">float</span> value)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//非法值则返回最小背光值</span></span><br><span class="line">        <span class="keyword">if</span> (Float.isNaN(value)) &#123;</span><br><span class="line">            <span class="keyword">return</span> mScreenBrightnessRangeMinimum;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//当前背光值在最小背光和最大背光之间进行百分比缩放</span></span><br><span class="line">        <span class="keyword">return</span> MathUtils.constrain(</span><br><span class="line">                value, mScreenBrightnessRangeMinimum, mScreenBrightnessRangeMaximum);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">animateScreenBrightness</span><span class="params">(<span class="keyword">float</span> target, <span class="keyword">float</span> rate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (DEBUG) &#123;</span><br><span class="line">            Slog.d(TAG, <span class="string">"Animating brightness: target="</span> + target +<span class="string">", rate="</span> + rate);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (mScreenBrightnessRampAnimator.animateTo(target, rate)) &#123;</span><br><span class="line">            Trace.traceCounter(Trace.TRACE_TAG_POWER, <span class="string">"TargetScreenBrightness"</span>, (<span class="keyword">int</span>) target);</span><br><span class="line">            <span class="comment">// TODO(b/153319140) remove when we can get this from the above trace invocation</span></span><br><span class="line">            SystemProperties.set(<span class="string">"debug.tracing.screen_brightness"</span>, String.valueOf(target));</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// TODO(brightnessfloat): change BatteryStats to use float</span></span><br><span class="line">                mBatteryStats.noteScreenBrightness(</span><br><span class="line">                        BrightnessSynchronizer.brightnessFloatToInt(</span><br><span class="line">                        mContext, target));</span><br><span class="line">            &#125; <span class="keyword">catch</span> (RemoteException ex) &#123;</span><br><span class="line">                <span class="comment">// same process</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="异步任务机制AsyncTask"><a href="#异步任务机制AsyncTask" class="headerlink" title="异步任务机制AsyncTask"></a>异步任务机制AsyncTask</h3><p>在Android中实现异步任务机制有两种方式：<code>Handler和AsyncTask</code></p>
+<p>相比于Handle模式需为每个文物创建新县城，发送消息接受消息过程精细，工具类android.os.AsyncTask使创建异步任务变得更加简单</p>
+<p>注意点：</p>
+<ol>
+<li>实例必须在UI线程中创建</li>
+<li>execute必须在UI线程中调用</li>
+<li>不要手动调用onPreExecute，doInBackground，onProgressUpdate，onPostExecute方法</li>
+<li>不能在doInBackground(Params… params)中更改UI组件的信</li>
+<li>一个任务实例只能执行一次，如果执行第二次将会抛出异常</li>
+</ol>
+<h4 id="异步任务主要方法"><a href="#异步任务主要方法" class="headerlink" title="异步任务主要方法"></a>异步任务主要方法</h4><p><strong>AsyncTask是一个泛型类，它的三个类型参数的含义如下：</strong></p>
+<ol>
+<li>Params：doInBackground方法的参数类型；</li>
+<li>Progress：AsyncTask所执行的后台任务的进度类型；</li>
+<li>Result：后台任务的返回结果类型。</li>
+</ol>
+<p><strong>方法：</strong></p>
+<ol>
+<li>execute(Params… params)，执行一个异步任务，需要在代码中调用此方法，触发异步任务的执行</li>
+<li>onPreExecute()，在execute(Params… params)被调用后立即执行，一般用来在执行后台任务前对UI做一些标记</li>
+<li>doInBackground(Params… params)，在onPreExecute()完成后立即执行，用于执行较为费时的操作，此方法将接收输入参数和返回计算结果。在执行过程中可以调用publishProgress(Progress… values)来更新进度信息</li>
+<li>onProgressUpdate(Progress… values)，在调用publishProgress(Progress… values)时，此方法被执行，直接将进度信息更新到UI组件上</li>
+<li>onPostExecute(Result result)，当后台操作结束时，此方法将会被调用，计算结果将做为参数传递到此方法中，直接将结果显示到UI组件</li>
+</ol>
+<hr>
+<h2 id="自动背光调节"><a href="#自动背光调节" class="headerlink" title="自动背光调节"></a>自动背光调节</h2><h3 id="主要变量"><a href="#主要变量" class="headerlink" title="主要变量"></a>主要变量</h3><p>代码主要在<code>frameworks/base/services/core/java/com/android/server/display</code>目录下的<code>DisplayPowerController.java</code>和<code>AutomaticBrightnessController.java</code></p>
+<ol>
+<li>在<code>AutomaticBrightnessController.java</code>中定义了一些自动背光的变量：</li>
+</ol>
+<ul>
+<li>mScreenAutoBrightness：屏幕亮度级别是由自动亮度算法决定的，实际的亮度应向这个值靠拢。我们保留这个值，即使我们停止使用光传感器，以便我们可以快速恢复到之前的自动亮度级别</li>
+<li>mResetAmbientLuxAfterWarmUpConfig：如果设置为true，屏幕点亮后，控制器根据当前传感器读到的值调整亮度；如果是false，控制器将收集更多的数据，然后决定是否改变亮度</li>
+<li>mAmbientLux：当前接收的环境光级别</li>
+<li>mAmbientLightRingBuffer：用来保存最近环境光传感器读值的环形传感器</li>
+<li>AMBIENT_LIGHT_PREDICTION_TIME_MILLIS=100：假定当前传感器读数超出当前时间的有效期，并且确保最后样本的权重非0，这反过来确保了总权重非0</li>
+<li>mLightSensorWarmUpTimeConfig：亮屏后在等待光传感器准备时自动亮度调整时间，以毫秒为单位。该值在创建AutomaticBrightnessController对象时被入参赋值</li>
+</ul>
+<ol start="2">
+<li><p><code>BrightnessMappingStrategy</code>类负责创建背光曲线（从BrightnessConfigure类中读取两个数组源:config_autoBrightnessLevels和config_autoBrightnessDisplayValuesNits），计算自动背光值</p>
+</li>
+<li><p>背光相关名词</p>
+</li>
+</ol>
+<ul>
+<li>光照度（照度）：从光源照射到单位面积上的光通量,以E表示,照度的单位为勒克斯(Lux)</li>
+</ul>
+<hr>
+<h3 id="DisplayPowerController初始化背光属性变量"><a href="#DisplayPowerController初始化背光属性变量" class="headerlink" title="DisplayPowerController初始化背光属性变量"></a>DisplayPowerController初始化背光属性变量</h3><ol>
+<li>首先通过initPowerManagement方法new一个DisplayPowerController对象</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">LocalService</span> <span class="keyword">extends</span> <span class="title">DisplayManagerInternal</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">initPowerManagement</span><span class="params">(<span class="keyword">final</span> DisplayPowerCallbacks callbacks, Handler handler,</span></span></span><br><span class="line"><span class="function"><span class="params">                SensorManager sensorManager)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (mSyncRoot) &#123;</span><br><span class="line">                DisplayBlanker blanker = <span class="keyword">new</span> DisplayBlanker() &#123;</span><br><span class="line">                    <span class="meta">@Override</span></span><br><span class="line">                    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">requestDisplayState</span><span class="params">(<span class="keyword">int</span> state, <span class="keyword">float</span> brightness)</span> </span>&#123;</span><br><span class="line">                        .......</span><br><span class="line">                &#125;;</span><br><span class="line">                <span class="comment">//创建DisplayPowerController对象</span></span><br><span class="line">                mDisplayPowerController = <span class="keyword">new</span> DisplayPowerController(</span><br><span class="line">                        mContext, callbacks, handler, sensorManager, blanker,</span><br><span class="line">                        mDisplayDevices.get(Display.DEFAULT_DISPLAY));</span><br><span class="line">                mSensorManager = sensorManager;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            mHandler.sendEmptyMessage(MSG_LOAD_BRIGHTNESS_CONFIGURATION);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>DisplayPowerController构造函数中初始化了很多和亮度相关的属性变量。</li>
+</ol>
+<ul>
+<li>mBatteryStats：获取电池信息service状态用于更新电池电量</li>
+<li>mSensorManager：获取SensorManager用于调节吧诶广</li>
+<li>mWindowManagerPolicy： 亮屏时调用到window绘制屏幕</li>
+<li>mBlanker：亮屏以及设置背光时调用到DisplayPowerState的中介类对象</li>
+<li>mScreenBrightnessDozeConfig：Doze状态配置亮度</li>
+<li>mScreenBrightnessDimConfig：暗屏状态配置亮度</li>
+<li>mScreenBrightnessRangeMaximum：屏幕最大亮度</li>
+<li>mScreenBrightnessRangeMinimum：屏幕最小亮度</li>
+<li>mUseSoftwareAutoBrightnessConfig：是否支持自动亮度</li>
+<li>lightSensorWarmUpTimeConfig：Light sensor启动时间</li>
+<li>lightSensorRate：sensor采集数据频率，配置在frameworks/base/core/res/res/values/config.xml，默认250</li>
+<li>brighteningLightDebounce：变亮防抖时间，同上，默认4000</li>
+<li>darkeningLightDebounce：变暗防抖时间，同上，默认8000</li>
+<li>autoBrightnessResetAmbientLuxAfterWarmUp：当sensor启动时重置环境光照值，同上，默认true</li>
+</ul>
+<hr>
+<h3 id="创建背光曲线（映射）"><a href="#创建背光曲线（映射）" class="headerlink" title="创建背光曲线（映射）"></a>创建背光曲线（映射）</h3><h4 id="创建曲线示意图"><a href="#创建曲线示意图" class="headerlink" title="创建曲线示意图"></a>创建曲线示意图</h4><p>整体来看，共创建了三条样条曲线，对Lux-Nit-Backlight进行映射。和8.1不同的是，并非直接由Lux和Baclight映射，而是将Nit作为Lux和Backlight的中间介质。</p>
+<ol>
+<li>mNitsToBacklightSpline</li>
+<li>mBacklightToNitsSpline</li>
+<li>mBrightnessSpline</li>
+</ol>
+<p><img src="CreateMappingSpline.png" alt="曲线"></p>
+<p>流程：</p>
+<p><img src="CreateMappingSplineCode.png" alt="流程"></p>
+<hr>
+<h3 id="构造函数开始创建"><a href="#构造函数开始创建" class="headerlink" title="构造函数开始创建"></a>构造函数开始创建</h3><p>在上面DisplayPowerController构造函数中会调用以下函数：<code>mBrightnessMapper = BrightnessMappingStrategy.create(resources);</code></p>
+<p>而BrightnessMappingStrategy.java的create函数中获取配置文件config.xml中的配置值（厂商会覆盖重新配置，一般路径会有overlay），然后根据这个配置值决定映射方式：</p>
+<ul>
+<li>config_autoBrightnessLevels：环境光lux值，等级和背光对应</li>
+<li>config_autoBrightnessLcdBacklightValues：背光等级</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Lux值数组--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">integer-array</span> <span class="attr">name</span>=<span class="string">"config_autoBrightnessLevels"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">integer-array</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- Lux值对应的背光值数组 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">integer-array</span> <span class="attr">name</span>=<span class="string">"config_autoBrightnessLcdBacklightValues"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">integer-array</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- ##### 以下三组是Android Q之后添加 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- Lux值对应的Nits值数组 --&gt;</span>  </span><br><span class="line"><span class="tag">&lt;<span class="name">array</span> <span class="attr">name</span>=<span class="string">"config_autoBrightnessDisplayValuesNits"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 描述屏幕发光强度的Nits值数组 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">array</span> <span class="attr">name</span>=<span class="string">"config_screenBrightnessNits"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">array</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 和发光强度Nits值对应的背光值数组 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">integer-array</span> <span class="attr">name</span>=<span class="string">"config_screenBrightnessBacklight"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">integer-array</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>创建函数：</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/display/BrightnessMappingStrategy.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Nullable</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> BrightnessMappingStrategy <span class="title">create</span><span class="params">(Resources resources)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//lux环境光数组</span></span><br><span class="line">    <span class="keyword">float</span>[] luxLevels = getLuxLevels(resources.getIntArray(</span><br><span class="line">            com.android.internal.R.array.config_autoBrightnessLevels));</span><br><span class="line">    <span class="comment">//Lux值对应的背光值</span></span><br><span class="line">    <span class="keyword">int</span>[] brightnessLevelsBacklight = resources.getIntArray(</span><br><span class="line">            com.android.internal.R.array.config_autoBrightnessLcdBacklightValues);</span><br><span class="line">    <span class="comment">//和Lux值对应的屏幕亮度的Nits值数组，长度比Lux值数组大1。如果配置了该值，则：</span></span><br><span class="line">    <span class="comment">//1.config_screenBrightnessNits必须配置</span></span><br><span class="line">    <span class="comment">//2.config_screenBrightnessBacklight必须配置</span></span><br><span class="line">    <span class="keyword">float</span>[] brightnessLevelsNits = getFloatArray(resources.obtainTypedArray(</span><br><span class="line">            com.android.internal.R.array.config_autoBrightnessDisplayValuesNits));</span><br><span class="line">    <span class="comment">//用户可调整的gamma最大值</span></span><br><span class="line">    <span class="keyword">float</span> autoBrightnessAdjustmentMaxGamma = resources.getFraction(</span><br><span class="line">            com.android.internal.R.fraction.config_autoBrightnessAdjustmentMaxGamma,</span><br><span class="line">            <span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">    <span class="comment">//描述屏幕亮度的nits值数组</span></span><br><span class="line">    <span class="keyword">float</span>[] nitsRange = getFloatArray(resources.obtainTypedArray(</span><br><span class="line">            com.android.internal.R.array.config_screenBrightnessNits));</span><br><span class="line">    <span class="comment">//与nitsRange数组中的亮度值(单位为Nits)相对应的屏幕背光值</span></span><br><span class="line">    <span class="keyword">int</span>[] backlightRange = resources.getIntArray(</span><br><span class="line">            com.android.internal.R.array.config_screenBrightnessBacklight);</span><br><span class="line">    <span class="keyword">long</span> shortTermModelTimeout = resources.getInteger(</span><br><span class="line">            com.android.internal.R.integer.config_autoBrightnessShortTermModelTimeout);</span><br><span class="line">    <span class="comment">//判断是否是有效映射:</span></span><br><span class="line">    <span class="comment">//1.非空</span></span><br><span class="line">    <span class="comment">//2.长度相同</span></span><br><span class="line">    <span class="comment">//3.元素&gt;=0;4.nitsRange/luxLevels必须递增,backlightRange/brightnessLevelsNits必须非递减</span></span><br><span class="line">    <span class="keyword">if</span> (isValidMapping(nitsRange, backlightRange)</span><br><span class="line">            &amp;&amp; isValidMapping(luxLevels, brightnessLevelsNits)) &#123;</span><br><span class="line">        <span class="comment">//最小背光值1</span></span><br><span class="line">        <span class="keyword">int</span> minimumBacklight = resources.getInteger(</span><br><span class="line">                com.android.internal.R.integer.config_screenBrightnessSettingMinimum);</span><br><span class="line">        <span class="comment">//最大背光值255</span></span><br><span class="line">        <span class="keyword">int</span> maximumBacklight = resources.getInteger(</span><br><span class="line">                com.android.internal.R.integer.config_screenBrightnessSettingMaximum);</span><br><span class="line">        <span class="comment">//创建BrightnessConfiguration.Builder实例对象</span></span><br><span class="line">        <span class="comment">//将luxLevels和nits值保存进去</span></span><br><span class="line">        BrightnessConfiguration.Builder builder = <span class="keyword">new</span> BrightnessConfiguration.Builder(</span><br><span class="line">                luxLevels, brightnessLevelsNits);</span><br><span class="line">        builder.setShortTermModelTimeoutMillis(shortTermModelTimeout);</span><br><span class="line">        builder.setShortTermModelLowerLuxMultiplier(SHORT_TERM_MODEL_THRESHOLD_RATIO);</span><br><span class="line">        builder.setShortTermModelUpperLuxMultiplier(SHORT_TERM_MODEL_THRESHOLD_RATIO);</span><br><span class="line">        <span class="comment">//（1） 映射Lux值和Nits值，而非Lux值和直接显示的背光值，物理映射</span></span><br><span class="line">        <span class="comment">//一般执行该流程创建曲线</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> PhysicalMappingStrategy(builder.build(), nitsRange, backlightRange,</span><br><span class="line">                autoBrightnessAdjustmentMaxGamma);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isValidMapping(luxLevels, brightnessLevelsBacklight)) &#123;</span><br><span class="line">        <span class="comment">//（2） 直接映射Lux值和背光值，简单映射</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> SimpleMappingStrategy(luxLevels, brightnessLevelsBacklight,</span><br><span class="line">                autoBrightnessAdjustmentMaxGamma, shortTermModelTimeout);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="（1）-PhysicalMappingStrategy构造函数"><a href="#（1）-PhysicalMappingStrategy构造函数" class="headerlink" title="（1） PhysicalMappingStrategy构造函数"></a>（1） PhysicalMappingStrategy构造函数</h3><p>一般执行此处流程：</p>
+<figure class="highlight java"><figcaption><span>BrightnessMappingStrategy.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//===================</span></span><br><span class="line">        <span class="comment">//（1） PhysicalMappingStrategy构造函数，创建两条映射曲线</span></span><br><span class="line">    <span class="meta">@VisibleForTesting</span></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">PhysicalMappingStrategy</span> <span class="keyword">extends</span> <span class="title">BrightnessMappingStrategy</span> </span>&#123;</span><br><span class="line">        ....</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">PhysicalMappingStrategy</span><span class="params">(BrightnessConfiguration config, <span class="keyword">float</span>[] nits,</span></span></span><br><span class="line"><span class="function"><span class="params">                                       <span class="keyword">int</span>[] backlight, <span class="keyword">float</span> maxGamma)</span> </span>&#123;</span><br><span class="line">            .....</span><br><span class="line">            mMaxGamma = maxGamma;</span><br><span class="line">            <span class="comment">//自动亮度调节</span></span><br><span class="line">            mAutoBrightnessAdjustment = <span class="number">0</span>;</span><br><span class="line">            <span class="comment">//自动亮度开启的情况下，用户手动调节亮度时的当前lux值</span></span><br><span class="line">            mUserLux = -<span class="number">1</span>;</span><br><span class="line">            <span class="comment">//自动亮度开启的情况下，用户手动调节亮度设置的亮度值</span></span><br><span class="line">            mUserBrightness = -<span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// Setup the backlight spline</span></span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> N = nits.length;</span><br><span class="line">            <span class="keyword">float</span>[] normalizedBacklight = <span class="keyword">new</span> <span class="keyword">float</span>[N];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">                normalizedBacklight[i] = normalizeAbsoluteBrightness(backlight[i]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//创建Nits-Backlight样条曲线</span></span><br><span class="line">            mNitsToBacklightSpline = Spline.createSpline(nits, normalizedBacklight);</span><br><span class="line">            <span class="comment">//创建Backlight-Nits样条曲线</span></span><br><span class="line">            mBacklightToNitsSpline = Spline.createSpline(normalizedBacklight, nits);</span><br><span class="line"></span><br><span class="line">            mDefaultConfig = config;</span><br><span class="line">            <span class="keyword">if</span> (mLoggingEnabled) &#123;</span><br><span class="line">                PLOG.start(<span class="string">"physical mapping strategy"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            mConfig = config;</span><br><span class="line">            <span class="comment">//根据不同的场景创建Lux-nits样条曲线</span></span><br><span class="line">            computeSpline();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="（1-1）-PhysicalMappingStrategy中的computeSpline"><a href="#（1-1）-PhysicalMappingStrategy中的computeSpline" class="headerlink" title="（1.1） PhysicalMappingStrategy中的computeSpline"></a>（1.1） PhysicalMappingStrategy中的computeSpline</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">computeSpline</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//获取BrightnessConfiguration中的Lux数组和Lux值对应的Nits数组，并放入Pair对象中</span></span><br><span class="line">        Pair&lt;<span class="keyword">float</span>[], <span class="keyword">float</span>[]&gt; defaultCurve = mConfig.getCurve();</span><br><span class="line">        <span class="keyword">float</span>[] defaultLux = defaultCurve.first;    <span class="comment">//lux数组</span></span><br><span class="line">        <span class="keyword">float</span>[] defaultNits = defaultCurve.second;  <span class="comment">//和lux对应的nits数组</span></span><br><span class="line">        <span class="comment">//创建一个和defaultNits等长的数组，用于存放对应的背光值（从曲线中获取）</span></span><br><span class="line">        <span class="keyword">float</span>[] defaultBacklight = <span class="keyword">new</span> <span class="keyword">float</span>[defaultNits.length];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; defaultBacklight.length; i++) &#123;</span><br><span class="line">            <span class="comment">//从mNitsToBacklightSpline中获取背光值，即根据config_autoBrightnessDisplayValuesNits值</span></span><br><span class="line">            <span class="comment">//从config_screenBrightnessNits与config_screenBrightnessBacklight的曲线中获取默认的背光值</span></span><br><span class="line">            defaultBacklight[i] = mNitsToBacklightSpline.interpolate(defaultNits[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//对上面获取的背光值进一步加工，如果用户设置过亮度，需将该亮度也加入曲线，</span></span><br><span class="line">        <span class="comment">//最终得到调整后的lux数组和brightness数组</span></span><br><span class="line">        Pair&lt;<span class="keyword">float</span>[], <span class="keyword">float</span>[]&gt; curve = getAdjustedCurve(defaultLux, defaultBacklight, mUserLux,</span><br><span class="line">                mUserBrightness, mAutoBrightnessAdjustment, mMaxGamma);</span><br><span class="line">        <span class="comment">//最终的lux数组和backlight数组</span></span><br><span class="line">        <span class="keyword">float</span>[] lux = curve.first;</span><br><span class="line">        <span class="keyword">float</span>[] backlight = curve.second;</span><br><span class="line">        <span class="keyword">float</span>[] nits = <span class="keyword">new</span> <span class="keyword">float</span>[backlight.length];</span><br><span class="line">        <span class="comment">//根据背光值，从config_screenBrightnessNits和onfig_screenBrightnessBacklight构建的mBacklightToNitsSpline曲线中获取Nit值</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; nits.length; i++) &#123;</span><br><span class="line">            nits[i] = mBacklightToNitsSpline.interpolate(backlight[i]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//完成创建Lux-nits样条曲线</span></span><br><span class="line">        <span class="comment">//最终的背光值从此曲线和mNitsToBacklightSpline曲线中获取</span></span><br><span class="line">        mBrightnessSpline = Spline.createSpline(lux, nits);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> Pair&lt;<span class="keyword">float</span>[], <span class="keyword">float</span>[]&gt; getCurve() &#123;</span><br><span class="line">    <span class="keyword">return</span> Pair.create(Arrays.copyOf(mLux, mLux.length), Arrays.copyOf(mNits, mNits.length));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Pair容器类"><a href="#Pair容器类" class="headerlink" title="Pair容器类"></a>Pair容器类</h4><p>Pair对两个对象组成的元素组进行传递。这个对象提供了一个合理的equals()方法，如果两个对象的first和second值相等则返回true</p>
+<p>特征：</p>
+<ol>
+<li>Pair(F first, S second)，一个Pair容器里面有2个元素，他们成组存在。</li>
+<li>Pair里面两个元素都是final的</li>
+<li>Pair的equals是值比较，不是地址比较</li>
+</ol>
+<p>示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">String PAIR = <span class="string">"PAIR"</span>;</span><br><span class="line">Pair p1 = <span class="keyword">new</span> Pair(<span class="number">18</span>, <span class="string">"张三"</span>); <span class="comment">// 通过 构造函数 实例化对象</span></span><br><span class="line">Pair p2 = Pair.create(<span class="number">20</span>, <span class="string">"李四"</span>);<span class="comment">//通过 create方法 实例化对象</span></span><br><span class="line"><span class="keyword">boolean</span> e1 = p1.equals(p2);</span><br><span class="line">Log.d(PAIR, <span class="string">"RESULT: "</span> + e1); <span class="comment">// false</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="（2）-SimpleMappingStrategy构造函数"><a href="#（2）-SimpleMappingStrategy构造函数" class="headerlink" title="（2） SimpleMappingStrategy构造函数"></a>（2） SimpleMappingStrategy构造函数</h3><figure class="highlight java"><figcaption><span>BrightnessMappingStrategy.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//===================</span></span><br><span class="line">        <span class="comment">//（2） 调用SimpleMappingStrategy构造函数</span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="title">SimpleMappingStrategy</span><span class="params">(<span class="keyword">float</span>[] lux, <span class="keyword">int</span>[] brightness, <span class="keyword">float</span> maxGamma,</span></span></span><br><span class="line"><span class="function"><span class="params">                <span class="keyword">long</span> timeout)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">final</span> <span class="keyword">int</span> N = brightness.length;</span><br><span class="line">            mLux = <span class="keyword">new</span> <span class="keyword">float</span>[N];</span><br><span class="line">            mBrightness = <span class="keyword">new</span> <span class="keyword">float</span>[N];</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; N; i++) &#123;</span><br><span class="line">                mLux[i] = lux[i];</span><br><span class="line">                mBrightness[i] = normalizeAbsoluteBrightness(brightness[i]);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            mMaxGamma = maxGamma;</span><br><span class="line">            mAutoBrightnessAdjustment = <span class="number">0</span>;</span><br><span class="line">            mUserLux = -<span class="number">1</span>;</span><br><span class="line">            mUserBrightness = -<span class="number">1</span>;</span><br><span class="line">            <span class="comment">//映射lux和brightness曲线</span></span><br><span class="line">            computeSpline();</span><br><span class="line">            mShortTermModelTimeout = timeout;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="（2-1）-SimpleMappingStrategy中的computeSpline"><a href="#（2-1）-SimpleMappingStrategy中的computeSpline" class="headerlink" title="（2.1） SimpleMappingStrategy中的computeSpline"></a>（2.1） SimpleMappingStrategy中的computeSpline</h3><figure class="highlight java"><figcaption><span>BrightnessMappingStrategy.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">computeSpline</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">//计算调整，得到调整后的Lux值数组和backlight值数组</span></span><br><span class="line">    Pair&lt;<span class="keyword">float</span>[], <span class="keyword">float</span>[]&gt; curve = getAdjustedCurve(mLux, mBrightness, mUserLux,</span><br><span class="line">            mUserBrightness, mAutoBrightnessAdjustment, mMaxGamma);</span><br><span class="line">    <span class="comment">//Lux-Nits曲线,最终的背光值从此曲线+mNitsToBacklightSpline曲线获取</span></span><br><span class="line">    mSpline = Spline.createSpline(curve.first, curve.second);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="AutomaticBrightnessController初始化"><a href="#AutomaticBrightnessController初始化" class="headerlink" title="AutomaticBrightnessController初始化"></a>AutomaticBrightnessController初始化</h2><p>在DisplayPowerController构造函数中创建了AutomaticBrightnessController对象</p>
+<figure class="highlight java"><figcaption><span>frameworks/base/services/core/java/com/android/server/display/DisplayPowerController.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">....</span><br><span class="line">mBrightnessMapper = BrightnessMappingStrategy.create(resources);</span><br><span class="line"><span class="comment">//背光曲线不为空</span></span><br><span class="line"><span class="keyword">if</span> (mBrightnessMapper != <span class="keyword">null</span>) &#123;</span><br><span class="line">    <span class="comment">//实例化</span></span><br><span class="line">    mAutomaticBrightnessController = <span class="keyword">new</span> AutomaticBrightnessController(<span class="keyword">this</span>,</span><br><span class="line">            handler.getLooper(), sensorManager, lightSensor, mBrightnessMapper,</span><br><span class="line">            lightSensorWarmUpTimeConfig, mScreenBrightnessRangeMinimum,</span><br><span class="line">            mScreenBrightnessRangeMaximum, dozeScaleFactor, lightSensorRate,</span><br><span class="line">            initialLightSensorRate, brighteningLightDebounce, darkeningLightDebounce,</span><br><span class="line">            autoBrightnessResetAmbientLuxAfterWarmUp, ambientBrightnessThresholds,</span><br><span class="line">            screenBrightnessThresholds, context, displayDeviceConfig);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    mUseSoftwareAutoBrightnessConfig = <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+
+<h3 id="configure方法配置AutomaticBrightnessController"><a href="#configure方法配置AutomaticBrightnessController" class="headerlink" title="*configure方法配置AutomaticBrightnessController"></a>*configure方法配置AutomaticBrightnessController</h3><ol>
+<li>在<code>updatePowerState()</code>中也会对mAutomaticBrightnessController对象进行配置：</li>
+</ol>
+<figure class="highlight java"><figcaption><span>DisplayPowerController.java</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updatePowerState</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        .......</span><br><span class="line">        <span class="comment">// If the brightness is already set then it's been overridden by something other than the</span></span><br><span class="line">        <span class="comment">// user, or is a temporary adjustment.</span></span><br><span class="line">        <span class="keyword">boolean</span> userInitiatedChange = (Float.isNaN(brightnessState))</span><br><span class="line">                &amp;&amp; (autoBrightnessAdjustmentChanged || userSetBrightnessChanged);</span><br><span class="line">        <span class="keyword">boolean</span> hadUserBrightnessPoint = <span class="keyword">false</span>;</span><br><span class="line">        <span class="comment">// Configure auto-brightness.</span></span><br><span class="line">        <span class="keyword">if</span> (mAutomaticBrightnessController != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//曲线中是否有用户设置的短期点</span></span><br><span class="line">            hadUserBrightnessPoint = mAutomaticBrightnessController.hasUserDataPoints();</span><br><span class="line">            mAutomaticBrightnessController.configure(autoBrightnessEnabled,</span><br><span class="line">                    mBrightnessConfiguration,</span><br><span class="line">                    mLastUserSetScreenBrightness,</span><br><span class="line">                    userSetBrightnessChanged, autoBrightnessAdjustment,</span><br><span class="line">                    autoBrightnessAdjustmentChanged, mPowerRequest.policy);</span><br><span class="line">        &#125;</span><br><span class="line">        ....</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//表示是否在自动背光打开的情况下拖动亮度条调节过亮度</span></span><br><span class="line"><span class="comment">//判断依据是BrightnessMappingStrategy中的mUserLux成员，它表示用户在开启自动背光后手动设置亮度时的Lux值</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">hasUserDataPoints</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> mUserLux != -<span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>配置的参数：</p>
+<ul>
+<li>autoBrightnessEnabled：表示自动背光是否可用</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> autoBrightnessEnabledInDoze =</span><br><span class="line">        mAllowAutoBrightnessWhileDozingConfig &amp;&amp; Display.isDozeState(state);</span><br><span class="line"><span class="comment">//打开了自动亮度调节&amp;&amp;(亮屏或Doze)&amp;&amp;局部变量brightness为0&amp;&amp;BrightnessMappingStrategy不为空</span></span><br><span class="line"><span class="keyword">final</span> <span class="keyword">boolean</span> autoBrightnessEnabled = mPowerRequest.useAutoBrightness</span><br><span class="line">            &amp;&amp; (state == Display.STATE_ON || autoBrightnessEnabledInDoze)</span><br><span class="line">            &amp;&amp; Float.isNaN(brightnessState)</span><br><span class="line">            &amp;&amp; mAutomaticBrightnessController != <span class="keyword">null</span>;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>mBrightnessConfiguration：BrightnessConfiguration对象，携带有用于创建曲线的Lux值数组和对应的Nit值数组。每一个用户可对应一个BrightnessConfiguration，由DisplayManagerService设置</li>
+<li>userSetBrightnessChanged：用户是否手动通过拖动亮度条设置过亮度</li>
+<li>autoBrightnessAdjustmentChanged：自动背光调整至adjustment是否发生变化（对应的即下面configure中的<code>userChangedAutoBrightnessAdjustment</code>）</li>
+<li>displayPolicy：当前请求的屏幕状态</li>
+</ul>
+<hr>
+<ol start="2">
+<li>configure()函数方法</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(<span class="keyword">boolean</span> enable, @Nullable BrightnessConfiguration configuration,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">float</span> brightness, <span class="keyword">boolean</span> userChangedBrightness, <span class="keyword">float</span> adjustment,</span></span></span><br><span class="line"><span class="function"><span class="params">        <span class="keyword">boolean</span> userChangedAutoBrightnessAdjustment, <span class="keyword">int</span> displayPolicy)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//是否要进入Doze状态</span></span><br><span class="line">    <span class="keyword">boolean</span> dozing = (displayPolicy == DisplayPowerRequest.POLICY_DOZE);</span><br><span class="line">    <span class="comment">//step 1: 设置BrightnessConfiguration对象，若发生变化返回true</span></span><br><span class="line">    <span class="keyword">boolean</span> changed = setBrightnessConfiguration(configuration);</span><br><span class="line">    <span class="comment">//step 2: 设置Display状态，若发生变化返回true</span></span><br><span class="line">    changed |= setDisplayPolicy(displayPolicy);</span><br><span class="line">    <span class="comment">//step 3: 如果用户改变自动背光调节值，设置自动背光调节值</span></span><br><span class="line">    <span class="keyword">if</span> (userChangedAutoBrightnessAdjustment) &#123;</span><br><span class="line">        changed |= setAutoBrightnessAdjustment(adjustment);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//step 4: 如果在自动亮度开启的情况下调节了亮度，需要将当前的Lux值和用户设置的亮度添加到曲线中</span></span><br><span class="line">    <span class="keyword">if</span> (userChangedBrightness &amp;&amp; enable) &#123;</span><br><span class="line">        <span class="comment">// Update the brightness curve with the new user control point. It's critical this</span></span><br><span class="line">        <span class="comment">// happens after we update the autobrightness adjustment since it may reset it.</span></span><br><span class="line">        changed |= setScreenBrightnessByUser(brightness);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">final</span> <span class="keyword">boolean</span> userInitiatedChange =</span><br><span class="line">            userChangedBrightness || userChangedAutoBrightnessAdjustment;</span><br><span class="line">    <span class="keyword">if</span> (userInitiatedChange &amp;&amp; enable &amp;&amp; !dozing) &#123;</span><br><span class="line">        <span class="comment">//step 5</span></span><br><span class="line">        prepareBrightnessAdjustmentSample();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//step 6: 注册LightSensor</span></span><br><span class="line">    changed |= setLightSensorEnabled(enable &amp;&amp; !dozing);</span><br><span class="line">    <span class="comment">//step 7: 如果changed为true，更新自动背光亮度值，但不会主动调用DPC更新背光</span></span><br><span class="line">    <span class="keyword">if</span> (changed) &#123;</span><br><span class="line">        updateAutoBrightness(<span class="keyword">false</span> <span class="comment">/*sendUpdate*/</span>, userInitiatedChange);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-setBrightnessConfiguration"><a href="#1-setBrightnessConfiguration" class="headerlink" title="1. setBrightnessConfiguration"></a>1. setBrightnessConfiguration</h4><ol>
+<li>针对每个用户，都会有一个BrightnessConfiguration和它映射，所以当切换用户后，设备的背光将可能发生改变</li>
+<li>当BrightnessConfiguration发生改变且在BrighnessMappingStragety中设置完成后，将会通过resetShortTermModel()清除原有用户的配置</li>
+</ol>
+<p>清除用户设置的亮度和对应Lux的三种情况：</p>
+<ol>
+<li>切换用户：handleSettingsChange</li>
+<li>BrightnessConfigure对象发生变化：setBrightnessConfiguration</li>
+<li>屏幕进入不可交互状态超过30s，且再次进入交互状态后环境光发生变化：setDisplayPolicy</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//display/AutomaticBrightnessController.java</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">setBrightnessConfiguration</span><span class="params">(BrightnessConfiguration configuration)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//Step 1</span></span><br><span class="line">        <span class="keyword">if</span> (mBrightnessMapper.setBrightnessConfiguration(configuration)) &#123;</span><br><span class="line">            <span class="comment">//Step 2</span></span><br><span class="line">            resetShortTermModel();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">resetShortTermModel</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//清楚用户添加的曲线Points</span></span><br><span class="line">        mBrightnessMapper.clearUserDataPoints();</span><br><span class="line">        <span class="comment">//表示短期模型仍有效</span></span><br><span class="line">        mShortTermModelValid = <span class="keyword">true</span>;</span><br><span class="line">        mShortTermModelAnchor = -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//display/BrightnessMappingStrategy.java</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">setBrightnessConfiguration</span><span class="params">(@Nullable BrightnessConfiguration config)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (config == <span class="keyword">null</span>) &#123;</span><br><span class="line">                config = mDefaultConfig;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (config.equals(mConfig)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (mLoggingEnabled) &#123;</span><br><span class="line">                PLOG.start(<span class="string">"brightness configuration"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//如果config对象发生改变，则替换后，会调用computeSpline重新创建Lux-Nits曲线</span></span><br><span class="line">            mConfig = config;</span><br><span class="line">            computeSpline();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">clearUserDataPoints</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (mUserLux != -<span class="number">1</span>) &#123;</span><br><span class="line">                <span class="comment">//重置变量</span></span><br><span class="line">                mAutoBrightnessAdjustment = <span class="number">0</span>;</span><br><span class="line">                mUserLux = -<span class="number">1</span>;</span><br><span class="line">                mUserBrightness = -<span class="number">1</span>;</span><br><span class="line">                <span class="comment">//重新创建曲线</span></span><br><span class="line">                computeSpline();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-setDisplayPolicy"><a href="#2-setDisplayPolicy" class="headerlink" title="2. setDisplayPolicy"></a>2. setDisplayPolicy</h4><p>该方法主要根据屏幕状态来设置mShortTermModelValid的值</p>
+<p>当屏幕状态进入Doze或者Asleep后，会发送一个定义Handler，并在到达时间后将mShortTermModelValid值置为false</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//display/AutomaticBrightnessController.java</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">setDisplayPolicy</span><span class="params">(<span class="keyword">int</span> policy)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mDisplayPolicy == policy) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> oldPolicy = mDisplayPolicy;</span><br><span class="line">        mDisplayPolicy = policy;</span><br><span class="line">        <span class="comment">//如果Display状态值由交互变为不可交互状态</span></span><br><span class="line">        <span class="keyword">if</span> (!isInteractivePolicy(policy) &amp;&amp; isInteractivePolicy(oldPolicy)) &#123;</span><br><span class="line">            <span class="comment">//发送一个30s的延迟消息，30s后将mShortTermModelValid置为false</span></span><br><span class="line">            mHandler.sendEmptyMessageDelayed(MSG_INVALIDATE_SHORT_TERM_MODEL,</span><br><span class="line">                    mBrightnessMapper.getShortTermModelTimeout());</span><br><span class="line">        <span class="comment">//如果Display状态值由不可交互变为交互状态，移除延时消息的发送</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (isInteractivePolicy(policy) &amp;&amp; !isInteractivePolicy(oldPolicy)) &#123;</span><br><span class="line">            mHandler.removeMessages(MSG_INVALIDATE_SHORT_TERM_MODEL);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-setAutoBrightnessAdjustment"><a href="#3-setAutoBrightnessAdjustment" class="headerlink" title="3. setAutoBrightnessAdjustment"></a>3. setAutoBrightnessAdjustment</h4><p>用于设置自动背光调整值，前提是自动背光调整值已经发生变化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//display/AutomaticBrightnessController.java</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">setAutoBrightnessAdjustment</span><span class="params">(<span class="keyword">float</span> adjustment)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mBrightnessMapper.setAutoBrightnessAdjustment(adjustment);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//display/BrightnessMappingStrategy.java</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">setAutoBrightnessAdjustment</span><span class="params">(<span class="keyword">float</span> adjustment)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//限制，取值范围为[-1,1]</span></span><br><span class="line">            adjustment = MathUtils.constrain(adjustment, -<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">            <span class="comment">//adjustment未发生变化</span></span><br><span class="line">            <span class="keyword">if</span> (adjustment == mAutoBrightnessAdjustment) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (mLoggingEnabled) &#123;</span><br><span class="line">                Slog.d(TAG, <span class="string">"setAutoBrightnessAdjustment: "</span> + mAutoBrightnessAdjustment + <span class="string">" =&gt; "</span> +</span><br><span class="line">                        adjustment);</span><br><span class="line">                PLOG.start(<span class="string">"auto-brightness adjustment"</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//adjustment发生变化，则重新创建曲线</span></span><br><span class="line">            mAutoBrightnessAdjustment = adjustment;</span><br><span class="line">            computeSpline();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-setScreenBrightnessByUser"><a href="#4-setScreenBrightnessByUser" class="headerlink" title="4. setScreenBrightnessByUser"></a>4. setScreenBrightnessByUser</h4><p>用于将用户拖动亮度条设置的亮度和当时的Lux值添加到用于创建曲线的数组中，并重新创建曲线</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AutomaticBrightnessController.java</span></span><br><span class="line"><span class="comment">//添加用户设置亮度</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">setScreenBrightnessByUser</span><span class="params">(<span class="keyword">float</span> brightness)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!mAmbientLuxValid) &#123;</span><br><span class="line">            <span class="comment">// If we don't have a valid ambient lux then we don't have a valid brightness anyway,</span></span><br><span class="line">            <span class="comment">// and we can't use this data to add a new control point to the short-term model.</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//将当前的Lux值和用户设置的背光值添加到曲线中</span></span><br><span class="line">        mBrightnessMapper.addUserDataPoint(mAmbientLux, brightness);</span><br><span class="line">        <span class="comment">//更新设置当前lux值</span></span><br><span class="line">        mShortTermModelValid = <span class="keyword">true</span>;</span><br><span class="line">        mShortTermModelAnchor = mAmbientLux;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-prepareBrightnessAdjustmentSample"><a href="#5-prepareBrightnessAdjustmentSample" class="headerlink" title="5. prepareBrightnessAdjustmentSample"></a>5. prepareBrightnessAdjustmentSample</h4><p>调用configure更新时，做一些标记记录</p>
+<h4 id="6-setLightSensorEnabled"><a href="#6-setLightSensorEnabled" class="headerlink" title="6. setLightSensorEnabled"></a>6. setLightSensorEnabled</h4><p>用于LightSensor的注册和解除注册，当设备处于亮屏状态且打开自动背光功能时，将注册一个LightSensor，以监听环境光的强度变化</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AutomaticBrightnessController.java</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">setLightSensorEnabled</span><span class="params">(<span class="keyword">boolean</span> enable)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (enable) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!mLightSensorEnabled) &#123;</span><br><span class="line">                ....</span><br><span class="line">                registerForegroundAppUpdater();</span><br><span class="line">                <span class="comment">//注册</span></span><br><span class="line">                mSensorManager.registerListener(mLightSensorListener, mLightSensor,</span><br><span class="line">                        mCurrentLightSensorRate * <span class="number">1000</span>, mHandler);</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (mLightSensorEnabled) &#123;</span><br><span class="line">            .....</span><br><span class="line">            mHandler.removeMessages(MSG_UPDATE_AMBIENT_LUX);</span><br><span class="line">            unregisterForegroundAppUpdater();</span><br><span class="line">            <span class="comment">//解除</span></span><br><span class="line">            mSensorManager.unregisterListener(mLightSensorListener);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-updateAutoBrightness自动背光获取"><a href="#7-updateAutoBrightness自动背光获取" class="headerlink" title="7. *updateAutoBrightness自动背光获取"></a>7. *updateAutoBrightness自动背光获取</h4><p>更新自动背光亮度值</p>
+<p>从这处流程可以看出自动背光获取的方式：</p>
+<ol>
+<li>首先会根据当前的Lux值，从mBrightnessSpline曲线中寻找对应的Nit值</li>
+<li>然后根据Nit值，从曲线mNitsToBacklightSpline中获取到最终的背光值</li>
+</ol>
+<p>其中mBrightnessSpline曲线是由Lux值数组和它对应的Nit值数组创建，mNitsToBacklightSpline是由配置文件中的config_screenBrightnessNits和config_screenBrightnessBacklight创建</p>
+<p>具体的创建在computeSline()方法中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//AutomaticBrightnessController.java</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">updateAutoBrightness</span><span class="params">(<span class="keyword">boolean</span> sendUpdate, <span class="keyword">boolean</span> isManuallySet)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (!mAmbientLuxValid) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//根据lux值从曲线中获取背光值（区间是[0, 1.0]的浮点数）</span></span><br><span class="line">        <span class="keyword">float</span> value = mBrightnessMapper.getBrightness(mAmbientLux, mForegroundAppPackageName,</span><br><span class="line">                mForegroundAppCategory);</span><br><span class="line">        <span class="comment">//得到最终的自动背光值</span></span><br><span class="line">        <span class="keyword">float</span> newScreenAutoBrightness = clampScreenBrightness(value);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (!BrightnessSynchronizer.floatEquals(mScreenAutoBrightness,</span><br><span class="line">                newScreenAutoBrightness)) &#123;</span><br><span class="line">            mScreenAutoBrightness = newScreenAutoBrightness;</span><br><span class="line">            mScreenBrighteningThreshold = clampScreenBrightness(</span><br><span class="line">                    mScreenBrightnessThresholds.getBrighteningThreshold(newScreenAutoBrightness));</span><br><span class="line">            mScreenDarkeningThreshold = clampScreenBrightness(</span><br><span class="line">                    mScreenBrightnessThresholds.getDarkeningThreshold(newScreenAutoBrightness));</span><br><span class="line">            <span class="comment">//背光更新</span></span><br><span class="line">            <span class="keyword">if</span> (sendUpdate) &#123;</span><br><span class="line">                mCallbacks.updateBrightness();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//BrightnessMappingStrategy.java</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">float</span> <span class="title">getBrightness</span><span class="params">(<span class="keyword">float</span> lux, String packageName,</span></span></span><br><span class="line"><span class="function"><span class="params">                @ApplicationInfo.Category <span class="keyword">int</span> category)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//根据lux从曲线中获取nits，然后获取背光</span></span><br><span class="line">            <span class="keyword">float</span> nits = mBrightnessSpline.interpolate(lux);</span><br><span class="line">            <span class="keyword">float</span> backlight = mNitsToBacklightSpline.interpolate(nits);</span><br><span class="line">            ...</span><br><span class="line">            <span class="keyword">return</span> backlight;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="adjustment变量计算"><a href="#adjustment变量计算" class="headerlink" title="adjustment变量计算"></a>adjustment变量计算</h3><p>例如dump我的一加六（Android 10）设备，<code>adb shell dumpsys display</code>信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;开启自动亮度调节后dump</span><br><span class="line">PhysicalMappingStrategy</span><br><span class="line">  mConfig&#x3D;BrightnessConfiguration&#123;[(0.0, 2.0487), (1.0, 4.848), (4.0, 17.2347), (12.0, 39.0867), (20.0, 50.671), (40.0, 92.3019), (65.0, 94.2512), (95.0, 98.372), (140.0, 100.297), (200.0, 105.297), (350.0, 120.385), (650.0, 142.064), (1300.0, 236.5179), (2000.0, 350.0267), (3300.0, 427.6287)], &#123;&#125;, &#39;&#39;&#125;</span><br><span class="line">  &#x2F;&#x2F;背光曲线</span><br><span class="line">  mBrightnessSpline&#x3D;MonotoneCubicSpline&#123;[(0.0, 2.0487: 2.7699974), (1.0, 4.8186975: 3.4543567), (4.0, 17.234846: 3.435018), (12.0, 39.085403: 2.089745), (20.0, 50.67077: 1.7645122), (40.0, 92.28784: 0.23451348), (65.0, 94.25191: 0.023499148), (95.0, 98.38648: 0.09019067), (140.0, 100.30178: 0.0627253), (200.0, 105.275085: 0.0918182), (350.0, 120.38728: 0.08650002), (650.0, 142.0629: 0.108782366), (1300.0, 236.51614: 0.15355834), (2000.0, 349.77896: 0.11084422), (3300.0, 427.6287: 0.05988441)]&#125;</span><br><span class="line">  &#x2F;&#x2F;nits对应背光的曲线</span><br><span class="line">  mNitsToBacklightSpline&#x3D;MonotoneCubicSpline&#123;[(2.0482, 0.0019550342: 0.00395116), (2.543, 0.0039100684: 0.004002362), (3.0253, 0.0058651026: 0.0040531447), (3.5077, 0.007820137: 0.0037272798), (4.0824, 0.009775171: 0.00419204), (4.4748, 0.011730205: 0.005721517), (5.08, 0.015640274: 0.004685791), (6.4233, 0.019550342: 0.002632065), (8.0848, 0.02346041: 0.0017233933), (11.6607, 0.027370479: 0.001788805), (13.2347, 0.031280547: 0.0023087142), (15.0676, 0.035190616: 0.0021758107), (16.8302, 0.039100684: 0.0023342122), (18.4261, 0.043010753: 0.002262629), (20.3103, 0.04692082: 0.0022641667), (21.9042, 0.05083089: 0.00241765), (23.5456, 0.054740958: 0.00236309), (25.2137, 0.058651026: 0.0021678535), (27.1769, 0.062561095: 0.0020940518), (28.9571, 0.06647117: 0.0023456002), (30.5244, 0.07038123: 0.0023162398), (32.3535, 0.074291304: 0.0021968414), (34.0867, 0.07820137: 0.0023086662), (42.366, 0.097751714: 0.0022959393), (51.1309, 0.11730205: 0.0022804863), (59.52, 0.1368524: 0.0023538377), (67.744, 0.15640274: 0.002376392), (75.9738, 0.17595308: 0.002316629), (84.6332, 0.19550343: 0.002155731), (94.1525, 0.21505377: 0.002238446), (102.2207, 0.2346041: 0.0023939852), (110.4878, 0.25415444: 0.0026741978), (117.0405, 0.2737048: 0.0028248527), (124.3733, 0.29325512: 0.0028097979), (130.9928, 0.31280547: 0.00251312), (140.4247, 0.33235583: 0.0021358524), (149.3156, 0.35190615: 0.0023393487), (157.1995, 0.3714565: 0.0024370078), (165.3651, 0.39100686: 0.0024333047), (173.2726, 0.41055718: 0.0024349196), (181.4272, 0.43010753: 0.0024660935), (189.1402, 0.44965786: 0.0024320162), (197.5334, 0.4692082: 0.0023719585), (205.6301, 0.48875856: 0.002383901), (213.9381, 0.5083089: 0.002348846), (222.2769, 0.5278592: 0.002423523), (230.0891, 0.5474096: 0.002398687), (238.6084, 0.5669599: 0.002379861), (246.5399, 0.58651024: 0.0023049354), (255.6544, 0.6060606: 0.0022993367), (263.6221, 0.62561095: 0.002403119), (271.9324, 0.6451613: 0.002531584), (279.1449, 0.66471165: 0.0023920578), (288.5736, 0.684262: 0.002112214), (297.6628, 0.7038123: 0.0022218374), (306.1899, 0.7233627: 0.0023296294), (314.4511, 0.742913: 0.0024545297), (322.1404, 0.76246333: 0.002378489), (330.969, 0.7820137: 0.002454385), (338.2251, 0.80156404: 0.0025690594), (346.2251, 0.82111436: 0.0023937116), (354.567, 0.8406647: 0.0017740328), (370.799, 0.86021507: 2.6955837E-4), (413.1738, 0.8797654: 0.0013575983), (415.6397, 0.8993157: 0.009982219), (417.264, 0.9188661: 0.010905683), (419.264, 0.9384164: 0.009775162), (421.264, 0.95796674: 0.007777949), (424.646, 0.9775171: 0.0066592516), (427.6287, 1.0: 0.0075377673)]&#125;</span><br><span class="line"></span><br><span class="line">  mMaxGamma&#x3D;3.0</span><br><span class="line">  mAutoBrightnessAdjustment&#x3D;0.0</span><br><span class="line">  mUserLux&#x3D;-1.0</span><br><span class="line">  mUserBrightness&#x3D;-1.0</span><br><span class="line">  mDefaultConfig&#x3D;BrightnessConfiguration&#123;[(0.0, 2.0487), (1.0, 4.848), (4.0, 17.2347), (12.0, 39.0867), (20.0, 50.671), (40.0, 92.3019), (65.0, 94.2512), (95.0, 98.372), (140.0, 100.297), (200.0, 105.297), (350.0, 120.385), (650.0, 142.064), (1300.0, 236.5179), (2000.0, 350.0267), (3300.0, 427.6287)], &#123;&#125;, &#39;&#39;&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="用户手动调节亮度条"><a href="#用户手动调节亮度条" class="headerlink" title="用户手动调节亮度条"></a>用户手动调节亮度条</h4><p>入参adjustment，范围是[-1.0, 1.0]</p>
+<p>DisplayManager的setTemporaryAutoBrightnessAdjustment接口供上层应用调用，作为入口</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">frameworks&#x2F;base&#x2F;core&#x2F;java&#x2F;android&#x2F;hardware&#x2F;display&#x2F;DisplayManager.java - setTemporaryAutoBrightnessAdjustment  ----&gt;</span><br><span class="line">frameworks&#x2F;base&#x2F;core&#x2F;java&#x2F;android&#x2F;hardware&#x2F;display&#x2F;DisplayManagerGlobal.java - setTemporaryAutoBrightnessAdjustment [入参adjustment]  ----&gt;</span><br><span class="line">IDisplayManager.aidl - setTemporaryAutoBrightnessAdjustment  [AIDL跨进程]  ----&gt;</span><br><span class="line">DisplayManagerService.java - setTemporaryAutoBrightnessAdjustment [Binder call] ---&gt;</span><br><span class="line">DisplayPowerController.java - setTemporaryAutoBrightnessAdjustment [消息处理]  -----&gt;</span><br><span class="line">updatePowerState   ----&gt;</span><br><span class="line">（1） updateUserSetScreenBrightness  [mLastUserSetScreenBrightness更新值，并返回true赋值给userSetBrightnessChanged] 详细代码参考上面小节</span><br><span class="line">（2） AutomaticBrightnessController.configure [会入参上面两个变量：mLastUserSetScreenBrightness和userSetBrightnessChanged]   ----&gt;</span><br><span class="line">setScreenBrightnessByUser   ----&gt;</span><br><span class="line">BrightnessMappingStrategy.java - addUserDataPoint   ----&gt;</span><br><span class="line">getUnadjustedBrightness</span><br></pre></td></tr></table></figure>
+
+<p>大致流程：<br><img src="userChangeBrightness.png" alt="流程"></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//DisplayPowerController.java - updatePowerState</span></span><br><span class="line">        ...</span><br><span class="line">        <span class="keyword">if</span> (mAutomaticBrightnessController != <span class="keyword">null</span>) &#123;</span><br><span class="line">            hadUserBrightnessPoint = mAutomaticBrightnessController.hasUserDataPoints();</span><br><span class="line">            mAutomaticBrightnessController.configure(autoBrightnessEnabled,</span><br><span class="line">                    mBrightnessConfiguration,</span><br><span class="line">                    mLastUserSetScreenBrightness,</span><br><span class="line">                    userSetBrightnessChanged, autoBrightnessAdjustment,</span><br><span class="line">                    autoBrightnessAdjustmentChanged, mPowerRequest.policy);</span><br><span class="line">        &#125;</span><br><span class="line"><span class="comment">//============================</span></span><br><span class="line"><span class="comment">//AutomaticBrightnessController.java</span></span><br><span class="line"><span class="comment">//mLastUserSetScreenBrightness对应brightness</span></span><br><span class="line"><span class="comment">//userSetBrightnessChanged对应userChangedBrightness</span></span><br><span class="line"><span class="comment">//autoBrightnessAdjustment对应adjustment</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">configure</span><span class="params">(<span class="keyword">boolean</span> enable, @Nullable BrightnessConfiguration configuration,</span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">float</span> brightness, <span class="keyword">boolean</span> userChangedBrightness, <span class="keyword">float</span> adjustment,</span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">boolean</span> userChangedAutoBrightnessAdjustment, <span class="keyword">int</span> displayPolicy)</span> </span>&#123;</span><br><span class="line">                ....</span><br><span class="line">        <span class="keyword">if</span> (userChangedBrightness &amp;&amp; enable) &#123;</span><br><span class="line">            <span class="comment">// Update the brightness curve with the new user control point. It's critical this</span></span><br><span class="line">            <span class="comment">// happens after we update the autobrightness adjustment since it may reset it.</span></span><br><span class="line">            changed |= setScreenBrightnessByUser(brightness);</span><br><span class="line">        &#125;</span><br><span class="line">        ....</span><br><span class="line"><span class="comment">//============================</span></span><br><span class="line"><span class="comment">//BrightnessMappingStrategy.java</span></span><br><span class="line"><span class="comment">//brightness即上面传参的用户手动设置的背光mLastUserSetScreenBrightness</span></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addUserDataPoint</span><span class="params">(<span class="keyword">float</span> lux, <span class="keyword">float</span> brightness)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//step 1： 获取默认配置值创建的曲线中Lux值对应的背光值</span></span><br><span class="line">            <span class="keyword">float</span> unadjustedBrightness = getUnadjustedBrightness(lux);</span><br><span class="line">            <span class="comment">//step 2： 通过传入的三个值计算调整 自动背光值</span></span><br><span class="line">            <span class="keyword">float</span> adjustment = inferAutoBrightnessAdjustment(mMaxGamma,</span><br><span class="line">                    brightness <span class="comment">/* desiredBrightness */</span>,</span><br><span class="line">                    unadjustedBrightness <span class="comment">/* currentBrightness */</span>);</span><br><span class="line">            <span class="comment">//更新自动背光调整值（浮点）</span></span><br><span class="line">            mAutoBrightnessAdjustment = adjustment;</span><br><span class="line">            <span class="comment">//表示用户在开启自动背光情况下拖动亮度条调节亮度时的当时Lux值</span></span><br><span class="line">            mUserLux = lux;</span><br><span class="line">            <span class="comment">//表示用户在开启自动背光情况下拖动亮度条调节亮度值</span></span><br><span class="line">            mUserBrightness = brightness;</span><br><span class="line">            <span class="comment">//step 3： 更新曲线图</span></span><br><span class="line">            computeSpline();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//step 1 获取曲线中的对应背光值</span></span><br><span class="line">        <span class="function"><span class="keyword">private</span> <span class="keyword">float</span> <span class="title">getUnadjustedBrightness</span><span class="params">(<span class="keyword">float</span> lux)</span> </span>&#123;</span><br><span class="line">            <span class="comment">//获取BrightnessConfiguration中的Lux-Nits映射</span></span><br><span class="line">            Pair&lt;<span class="keyword">float</span>[], <span class="keyword">float</span>[]&gt; curve = mConfig.getCurve();</span><br><span class="line">            <span class="comment">//创建一个lux-nits样条曲线</span></span><br><span class="line">            Spline spline = Spline.createSpline(curve.first, curve.second);</span><br><span class="line">            <span class="comment">//根据lux得到nits值，再根据nit值从mNitsToBacklightSpline中的到对应的背光 0-1的float浮点数</span></span><br><span class="line">            <span class="keyword">return</span> mNitsToBacklightSpline.interpolate(spline.interpolate(lux));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//step 2 推断adjustment值</span></span><br><span class="line">        <span class="function"><span class="keyword">protected</span> <span class="keyword">float</span> <span class="title">inferAutoBrightnessAdjustment</span><span class="params">(<span class="keyword">float</span> maxGamma, <span class="keyword">float</span> desiredBrightness,</span></span></span><br><span class="line"><span class="function"><span class="params">            <span class="keyword">float</span> currentBrightness)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">float</span> adjustment = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">float</span> gamma = Float.NaN;</span><br><span class="line">        <span class="comment">// 当前Lux值对应的默认配置亮度值 &lt;=25.5 || &gt;= 229.5  (0-255默认背光)</span></span><br><span class="line">        <span class="keyword">if</span> (currentBrightness &lt;= <span class="number">0.1f</span> || currentBrightness &gt;= <span class="number">0.9f</span>) &#123;</span><br><span class="line">            adjustment = (desiredBrightness - currentBrightness);</span><br><span class="line">        <span class="comment">//最暗的可能情况</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (desiredBrightness == <span class="number">0</span>) &#123;</span><br><span class="line">            adjustment = -<span class="number">1</span>;</span><br><span class="line">        <span class="comment">//最大亮度255</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (desiredBrightness == <span class="number">1</span>) &#123;</span><br><span class="line">            adjustment = +<span class="number">1</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// current^gamma = desired =&gt; gamma = log[current](desired)</span></span><br><span class="line">            <span class="comment">//根据换底公式，得到currentBrightness为底desiredBrightness的对数</span></span><br><span class="line">            gamma = MathUtils.log(desiredBrightness) / MathUtils.log(currentBrightness);</span><br><span class="line">            <span class="comment">// max^-adjustment = gamma =&gt; adjustment = -log[max](gamma)</span></span><br><span class="line">            <span class="comment">//maxGamma为底gamma的对数</span></span><br><span class="line">            adjustment = -MathUtils.log(gamma) / MathUtils.log(maxGamma);</span><br><span class="line">        &#125;</span><br><span class="line">        adjustment = MathUtils.constrain(adjustment, -<span class="number">1</span>, +<span class="number">1</span>);</span><br><span class="line">        <span class="comment">//返回计算后的adjustment</span></span><br><span class="line">        <span class="keyword">return</span> adjustment;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//step 3 在computeSpline方法重新创建样条曲线的时候，会调用getAdjustedCurve函数</span></span><br><span class="line">    <span class="keyword">protected</span> Pair&lt;<span class="keyword">float</span>[], <span class="keyword">float</span>[]&gt; getAdjustedCurve(<span class="keyword">float</span>[] lux, <span class="keyword">float</span>[] brightness,</span><br><span class="line">            <span class="keyword">float</span> userLux, <span class="keyword">float</span> userBrightness, <span class="keyword">float</span> adjustment, <span class="keyword">float</span> maxGamma) &#123;</span><br><span class="line">        <span class="keyword">float</span>[] newLux = lux;</span><br><span class="line">        <span class="keyword">float</span>[] newBrightness = Arrays.copyOf(brightness, brightness.length);</span><br><span class="line">        <span class="comment">//限定取值范围</span></span><br><span class="line">        adjustment = MathUtils.constrain(adjustment, -<span class="number">1</span>, <span class="number">1</span>);</span><br><span class="line">        <span class="comment">//maxGamma 的 -adjustment次方得到gamma值</span></span><br><span class="line">        <span class="keyword">float</span> gamma = MathUtils.pow(maxGamma, -adjustment);</span><br><span class="line">        <span class="comment">//gamma != 1说明adjustment不为0</span></span><br><span class="line">        <span class="keyword">if</span> (gamma != <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; newBrightness.length; i++) &#123;</span><br><span class="line">                <span class="comment">//重新设置亮度值，新的亮度值为就亮度值的gamma次方</span></span><br><span class="line">                newBrightness[i] = MathUtils.pow(newBrightness[i], gamma);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//用户在BrightnessController拖动条上手动调节了亮度</span></span><br><span class="line">        <span class="keyword">if</span> (userLux != -<span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">//插入一对新的lux和对应背光值</span></span><br><span class="line">            Pair&lt;<span class="keyword">float</span>[], <span class="keyword">float</span>[]&gt; curve = insertControlPoint(newLux, newBrightness, userLux,</span><br><span class="line">                    userBrightness);</span><br><span class="line">            newLux = curve.first;</span><br><span class="line">            newBrightness = curve.second;</span><br><span class="line">            <span class="keyword">if</span> (mLoggingEnabled) &#123;</span><br><span class="line">                <span class="comment">// This is done for comparison.</span></span><br><span class="line">                curve = insertControlPoint(lux, brightness, userLux, userBrightness);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//返回该Pair对象给到computeSpline()中</span></span><br><span class="line">        <span class="keyword">return</span> Pair.create(newLux, newBrightness);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Pair&lt;<span class="keyword">float</span>[], <span class="keyword">float</span>[]&gt; insertControlPoint(</span><br><span class="line">            <span class="keyword">float</span>[] luxLevels, <span class="keyword">float</span>[] brightnessLevels, <span class="keyword">float</span> lux, <span class="keyword">float</span> brightness) &#123;</span><br><span class="line">        <span class="comment">//找到插入点索引，以保持值的递增</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> idx = findInsertionPoint(luxLevels, lux);</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span>[] newLuxLevels;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">float</span>[] newBrightnessLevels;</span><br><span class="line">        <span class="comment">//1. 插入索引等于数组长度</span></span><br><span class="line">        <span class="keyword">if</span> (idx == luxLevels.length) &#123;</span><br><span class="line">            <span class="comment">//需要插入到末尾位置，且新Lux数组长度比原来大1</span></span><br><span class="line">            newLuxLevels = Arrays.copyOf(luxLevels, luxLevels.length + <span class="number">1</span>);</span><br><span class="line">            newBrightnessLevels  = Arrays.copyOf(brightnessLevels, brightnessLevels.length + <span class="number">1</span>);</span><br><span class="line">            newLuxLevels[idx] = lux;</span><br><span class="line">            newBrightnessLevels[idx] = brightness;</span><br><span class="line">        <span class="comment">//2. 用户lux值已处在lux值数组中</span></span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (luxLevels[idx] == lux) &#123;</span><br><span class="line">            newLuxLevels = Arrays.copyOf(luxLevels, luxLevels.length);</span><br><span class="line">            newBrightnessLevels = Arrays.copyOf(brightnessLevels, brightnessLevels.length);</span><br><span class="line">            newBrightnessLevels[idx] = brightness;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//初始化新的lux数组，长度比原数组大1</span></span><br><span class="line">            newLuxLevels = Arrays.copyOf(luxLevels, luxLevels.length + <span class="number">1</span>);</span><br><span class="line">            <span class="comment">//将原数组从idx位置起的元素，向后移动1位，将新的Lux值插入到idx位置</span></span><br><span class="line">            System.arraycopy(newLuxLevels, idx, newLuxLevels, idx+<span class="number">1</span>, luxLevels.length - idx);</span><br><span class="line">            newLuxLevels[idx] = lux;</span><br><span class="line">            <span class="comment">//初始化新亮度值数组，长度比原数组大1</span></span><br><span class="line">            newBrightnessLevels  = Arrays.copyOf(brightnessLevels, brightnessLevels.length + <span class="number">1</span>);</span><br><span class="line">            <span class="comment">//原数组从idx位置起的元素，向后移动1位，将新的亮度值值插入到idx位置</span></span><br><span class="line">            System.arraycopy(newBrightnessLevels, idx, newBrightnessLevels, idx+<span class="number">1</span>,</span><br><span class="line">                    brightnessLevels.length - idx);</span><br><span class="line">            newBrightnessLevels[idx] = brightness;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//平滑曲线</span></span><br><span class="line">        <span class="comment">//newLuxLevels之后的Lux对应的亮度值将全部为newBrightnessLevels</span></span><br><span class="line">        smoothCurve(newLuxLevels, newBrightnessLevels, idx);</span><br><span class="line">        <span class="comment">//返回一个携带有Lux和背光值的Pair对象给getAdjustedCurve()</span></span><br><span class="line">        <span class="keyword">return</span> Pair.create(newLuxLevels, newBrightnessLevels);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//返回arr数组（递增）中开始大于等于val值的 数组下标</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">findInsertionPoint</span><span class="params">(<span class="keyword">float</span>[] arr, <span class="keyword">float</span> val)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; arr.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (val &lt;= arr[i]) &#123;</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> arr.length;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<hr>
+<h2 id="debug调试"><a href="#debug调试" class="headerlink" title="debug调试"></a>debug调试</h2><ol>
+<li>dump power：执行命令<code>adb shell dumpsys power|grep &quot;Brightness&quot;</code>查看背光相关</li>
+<li>抓取log查看上层背光变化，背光节点，以及kernel中背光变化</li>
+<li>在DisplayPowerController.java中将Debug log开关打开</li>
+<li>使用dump查看自动亮度调节的变量值: <code>adb shell dumpsys display</code></li>
+</ol>
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
+<p><a href="http://aosp.opersys.com/xref/android-11.0.0_r26/" target="_blank" rel="noopener">Android R AOSP源码Opensys</a></p>
+<p><a href="https://blog.csdn.net/liuhe688/article/details/6532519" target="_blank" rel="noopener">详解Android中AsyncTask的使用</a></p>
+<p><a href="https://www.cnblogs.com/absfree/p/5357678.html" target="_blank" rel="noopener">深入理解AsyncTask的工作原理</a></p>
+<p><a href="https://blog.csdn.net/u012975705/article/details/48632587" target="_blank" rel="noopener">Android Message和obtainMessage的区别</a></p>
+<p><a href="https://www.cnblogs.com/android007/archive/2012/05/10/2494766.html" target="_blank" rel="noopener">Handler的sendMessage和obtainMessage和sendToTarget比较</a></p>
+<p><a href="https://blog.csdn.net/kitty_landon/article/details/64128140" target="_blank" rel="noopener">Android7.1 亮度自动调节</a></p>
+<p>*<a href="https://blog.csdn.net/FightFightFight/article/details/85797336" target="_blank" rel="noopener">Android 9.0 自动背光机制分析</a></p>
+</blockquote>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/">https://alonealive.github.io/Blog/2021/05/07/2021/210507_android_brightness/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2021-05-07");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2021-05-07T14:32:00.000Z" itemprop="datePublished">2021-05-07</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/android/'>android</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/android/" rel="tag">#&nbsp;android</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/display/" rel="tag">#&nbsp;display</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/graphics/" rel="tag">#&nbsp;graphics</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+        <li class="page-item page-prev">
+            <a href="/Blog/2021/05/14/2021/210514_cpp_DataStructure1/" rel="prev">
+                <div class="page-item-title"><i class="icon icon-back" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">数据结构之时间复杂度和线性表</div>
+            </a>
+        </li>
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2021/04/14/2021/210414_android_VsyncStudy/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android R Vsync相关梳理</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

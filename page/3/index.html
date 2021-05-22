@@ -336,6 +336,125 @@
             
                 <div class="column col-12">
                     
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/16/2019/190916_cpp_useclass/" rel="bookmark">C++ 运算符重载、友元、返回对象</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        运算符重载运算符重载将重载的概念扩展到运算符上，允许赋予C++运算符多种含义。
+例如* 用于地址，将获得存储在这个地址中的值；而用于两个数字之间，得到的是乘积。
+    <a href="/Blog/2019/09/16/2019/190916_cpp_useclass/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-16</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/10/2019/190910_android_zygote_systemserver/" rel="bookmark">Android zygote和SystemServer进程</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        zygote和system_server在Android中的Java层很重要。
+zygote分析
+zygote由init进程根据init.rc的配置项创建的。最初叫app_process，但是在运行过程中，通过Linux的pctrl系统调用将其换成了zygote。通过adb shell ps -ef|grep zygote查看到该进程。
+
+    <a href="/Blog/2019/09/10/2019/190910_android_zygote_systemserver/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-10</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/09/2019/190909_android_init_service/" rel="bookmark">Android init进程</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        概述
+init是Linux系统中用户空间的第一个进程。通过adb shell ps -rf查看我的一加手机进程信息。
+
+12UID            PID  PPID C STIME TTY          TIME CMDroot             1     0 0 12:43:34 ?     00:00:10 init
+
+
+init进程负责创建系统中的几个关键进程，例如zygote
+init提供了一个property service（属性服务）来管理Android系统的众多属性
+    <a href="/Blog/2019/09/09/2019/190909_android_init_service/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-09</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
     <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/04/2019/190904_cpp_class_object/" rel="bookmark">C++对象和类</a></h2>
 
 
@@ -966,131 +1085,6 @@ Ubuntu系统刚安装完成后，工作还只是进行了一小半，还有一�
         
             <span class="suka-devide-dot"></span>
             <a class="category-link" href="/Blog/categories/linux/">linux</a>
-        
-        
-    </div>
-
-                </div>
-            
-        </div>
-</article>
-
-                    
-                
-                    
-                        <article class="post-entry container px-0 card">
-        <div class="columns col-gapless">
-            
-                <div class="column col-12">
-                    
-    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/25/2019/190725_cpp_operator/" rel="bookmark">C++浮点常量表示、算术运算符、类型转换</a></h2>
-
-
-<p class="mb-0 card-body">
-    
-        浮点常量
-默认情况下，8.27和3.4E5这类浮点常量都属于double类型。如果希望常量是float类型，使用f或者F后缀对于long double的类型，使用l和L的后缀
-
-例如：
-12341.234f  //float2.2L    //long double2.34F   //float23.231E24  //double (defalut)
-    <a href="/Blog/2019/07/25/2019/190725_cpp_operator/">阅读全文</a>
-</p>
-
-
-
-
-    <!-- Date & Category -->
-    <div class="card-footer post-entry-info text-gray">
-        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
-        <time>2019-07-25</time>
-        
-            <span class="suka-devide-dot"></span>
-            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
-        
-        
-    </div>
-
-                </div>
-            
-        </div>
-</article>
-
-                    
-                
-                    
-                        <article class="post-entry container px-0 card">
-        <div class="columns col-gapless">
-            
-                <div class="column col-12">
-                    
-    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/25/2019/190724_ubuntu_install/" rel="bookmark">Ubuntu18系统安装（无需制作启动盘）</a></h2>
-
-
-<p class="mb-0 card-body">
-    
-        数据备份准备工具
-Ubuntu系统（官网选择版本下载ISO文件）
-U盘（之前有一个U盘是做了window10的启动盘）
-
-安装步骤
-移除备份好的机械硬盘
-
-制作一个启动盘(win10系统不需要用软碟通UltraISO作启动盘)
-    <a href="/Blog/2019/07/25/2019/190724_ubuntu_install/">阅读全文</a>
-</p>
-
-
-
-
-    <!-- Date & Category -->
-    <div class="card-footer post-entry-info text-gray">
-        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
-        <time>2019-07-25</time>
-        
-            <span class="suka-devide-dot"></span>
-            <a class="category-link" href="/Blog/categories/linux/">linux</a>
-        
-        
-    </div>
-
-                </div>
-            
-        </div>
-</article>
-
-                    
-                
-                    
-                        <article class="post-entry container px-0 card">
-        <div class="columns col-gapless">
-            
-                <div class="column col-12">
-                    
-    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/23/2019/190723_cpp_float/" rel="bookmark">C++多字节char、bool、字符常量、浮点数</a></h2>
-
-
-<p class="mb-0 card-body">
-    
-        wchar_t
-程序需要处理的字符集可能无法用一个8位的字节表示，比如日文、汉字等此时有两种处理方法：  
-
-编译器厂商将char定义16位的字节或者更长  
-char表示8位的字节，另一种wchar_t表示宽字符类型，可以扩展字符集
-
-
-    <a href="/Blog/2019/07/23/2019/190723_cpp_float/">阅读全文</a>
-</p>
-
-
-
-
-    <!-- Date & Category -->
-    <div class="card-footer post-entry-info text-gray">
-        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
-        <time>2019-07-23</time>
-        
-            <span class="suka-devide-dot"></span>
-            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
         
         
     </div>

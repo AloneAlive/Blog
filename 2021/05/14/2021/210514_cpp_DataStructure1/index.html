@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>数据结构之时间复杂度和线性表 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="数据结构之时间复杂度和线性表 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/"><meta property="og:locale" content="zh-CN"><meta name="description" content="《数据结构（C++语言版）》书，关于数据结构再读记录。主要包含数据结构的基本概念、算法概念、时间复杂度、线性表（顺序表&amp;amp;链表） - sunwengang - sunwengang blog"><meta name="keywords" content="cpp, datastructure"><meta property="og:image" content="https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/link_1.png"><meta property="article:published_time" content="2021-05-14T12:49:00.000Z"><meta property="article:modified_time" content="2021-05-22T11:29:40.821Z"><meta property="og:updated_time" content="2021-05-22T11:29:40.821Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="cpp, datastructure"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/"
+    },
+    "headline": "数据结构之时间复杂度和线性表 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2021-05-14T12:49:00.000Z",
+    "dateModified": "2021-05-22T11:29:40.821Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "cpp, datastructure",
+    "description": "《数据结构（C++语言版）》书，关于数据结构再读记录。主要包含数据结构的基本概念、算法概念、时间复杂度、线性表（顺序表&amp;amp;amp;链表） - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/Blog/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/Blog/tags" class="navbar-link">标签</a>
+    
+        <a href="/Blog/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/Blog/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=数据结构之时间复杂度和线性表" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=数据结构之时间复杂度和线性表&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=数据结构之时间复杂度和线性表" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACOElEQVR42u2aQW7DMAwE8/9Pt6deXIk7dF00FUeXBEEsjoNQXi75+vgH6yWkkEIK+QaQr2Jdv/P1fnfdas/O9d/2EXIs5PJPewm6Cn4FWO2XbraMK+RoyNWfvUqQVZDVTST4al8hhawg0wFcwe0STkgh70LuAq/22F1bfUdIITsCIwVOAiOJlkdUkJDHQVYH82++PlYtCnkUZDSNQuGfjIJqr8dcNSGPguwYUOnwJaZA58aEnAm5g63eE5BUeJGkEnImZCreU9FECjgqXLAKEnIMJDXyk6Gfko1cK6SQtPB/+qBvJY6QYyCpmUSELmlI4ThCjoQkwoEOg0SjPoiT7WEu5CjINLhRHc7JuCLiuXwICDkSsvPA7wgSOmSHBIaQIyHJgBExW1ODoEqW0lUTchxkZ5CuErPEJE1CRkghSSFFkqsrhlvKXMhxkMTsTAUVeRBUn+EGqJDHQ6YAVbFEk6YSIS0VJOQIyA7g7gCnYvfHTxwhj4ckxlJqKNHDPZoBd5pNQh4HmYz8boP0jhje/lhCjoTsBu6apJUgiQ1VIUdDpkEPkmhJqNChOiGFTIU7NbQ6Riv5QYScDUmDkmKKFGOkYSDkTMi0SJFFB+o6TX4h50KS4Tl6Awmm8yrkbMiOmUrEQRLMtxJHyHGQqZl+x+wng8wtFSSkkMGYqoz5ZO5X+wsp5J2GOhUQ6cAum6FCjoashplIEzQVY2mwDhtWQo6ApOZ7MgWSoUCG7IQU8p2XkEIKKeQfrk+N8nbVyVDNQQAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">数据结构之时间复杂度和线性表</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2021-05-14</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=数据结构之时间复杂度和线性表&url=https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=数据结构之时间复杂度和线性表&url=https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACOElEQVR42u2aQW7DMAwE8/9Pt6deXIk7dF00FUeXBEEsjoNQXi75+vgH6yWkkEIK+QaQr2Jdv/P1fnfdas/O9d/2EXIs5PJPewm6Cn4FWO2XbraMK+RoyNWfvUqQVZDVTST4al8hhawg0wFcwe0STkgh70LuAq/22F1bfUdIITsCIwVOAiOJlkdUkJDHQVYH82++PlYtCnkUZDSNQuGfjIJqr8dcNSGPguwYUOnwJaZA58aEnAm5g63eE5BUeJGkEnImZCreU9FECjgqXLAKEnIMJDXyk6Gfko1cK6SQtPB/+qBvJY6QYyCpmUSELmlI4ThCjoQkwoEOg0SjPoiT7WEu5CjINLhRHc7JuCLiuXwICDkSsvPA7wgSOmSHBIaQIyHJgBExW1ODoEqW0lUTchxkZ5CuErPEJE1CRkghSSFFkqsrhlvKXMhxkMTsTAUVeRBUn+EGqJDHQ6YAVbFEk6YSIS0VJOQIyA7g7gCnYvfHTxwhj4ckxlJqKNHDPZoBd5pNQh4HmYz8boP0jhje/lhCjoTsBu6apJUgiQ1VIUdDpkEPkmhJqNChOiGFTIU7NbQ6Riv5QYScDUmDkmKKFGOkYSDkTMi0SJFFB+o6TX4h50KS4Tl6Awmm8yrkbMiOmUrEQRLMtxJHyHGQqZl+x+wng8wtFSSkkMGYqoz5ZO5X+wsp5J2GOhUQ6cAum6FCjoashplIEzQVY2mwDhtWQo6ApOZ7MgWSoUCG7IQU8p2XkEIKKeQfrk+N8nbVyVDNQQAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#基本概念术语"><span class="post-toc-number">1.</span> <span class="post-toc-text">基本概念术语</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#数据的逻辑结构"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">数据的逻辑结构</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#数据的存储结构（物理实现方面）"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">数据的存储结构（物理实现方面）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#数据运算"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">数据运算</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#数据类型（Data-Type）"><span class="post-toc-number">2.</span> <span class="post-toc-text">数据类型（Data Type）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#抽象数据类型"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">抽象数据类型</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#算法"><span class="post-toc-number">3.</span> <span class="post-toc-text">算法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#算法的五个特性"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">算法的五个特性</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#算法的三种描述方法"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">算法的三种描述方法</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#算法的四个衡量指标"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">算法的四个衡量指标</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#算法性能分析和度量"><span class="post-toc-number">4.</span> <span class="post-toc-text">算法性能分析和度量</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#时间复杂度（Time-Complexity）（T-n-）"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">时间复杂度（Time Complexity）（T(n)）</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#常见的时间复杂度"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">常见的时间复杂度</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#简化时间复杂度计算"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">简化时间复杂度计算</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#平均时间复杂度"><span class="post-toc-number">4.4.</span> <span class="post-toc-text">平均时间复杂度</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#和输入数据有关的时间复杂度"><span class="post-toc-number">4.4.1.</span> <span class="post-toc-text">和输入数据有关的时间复杂度</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#递归算法的时间复杂度"><span class="post-toc-number">4.4.2.</span> <span class="post-toc-text">递归算法的时间复杂度</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#空间复杂度（Space-Complexity）（S-n-）"><span class="post-toc-number">4.5.</span> <span class="post-toc-text">空间复杂度（Space Complexity）（S(n)）</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#线性表"><span class="post-toc-number">5.</span> <span class="post-toc-text">线性表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#顺序存储结构-顺序表"><span class="post-toc-number">5.1.</span> <span class="post-toc-text">顺序存储结构-顺序表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#顺序表运算"><span class="post-toc-number">5.1.1.</span> <span class="post-toc-text">顺序表运算</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#顺序表存储空间的分配"><span class="post-toc-number">5.1.2.</span> <span class="post-toc-text">顺序表存储空间的分配</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#链式存储结构"><span class="post-toc-number">5.2.</span> <span class="post-toc-text">链式存储结构</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#1-单链表结构"><span class="post-toc-number">5.2.1.</span> <span class="post-toc-text">1.单链表结构</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#单链表运算-初始化"><span class="post-toc-number">5.2.2.</span> <span class="post-toc-text">单链表运算-初始化</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#单链表运算-建立单链表"><span class="post-toc-number">5.2.3.</span> <span class="post-toc-text">单链表运算-建立单链表</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#单链表运算-求表长"><span class="post-toc-number">5.2.4.</span> <span class="post-toc-text">单链表运算-求表长</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#单链表运算-查找操作"><span class="post-toc-number">5.2.5.</span> <span class="post-toc-text">单链表运算-查找操作</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#单链表运算-插入"><span class="post-toc-number">5.2.6.</span> <span class="post-toc-text">单链表运算-插入</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#单链表运算-删除"><span class="post-toc-number">5.2.7.</span> <span class="post-toc-text">单链表运算-删除</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#单链表运算-删除所有结点"><span class="post-toc-number">5.2.8.</span> <span class="post-toc-text">单链表运算-删除所有结点</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#2-循环链表结构"><span class="post-toc-number">5.2.9.</span> <span class="post-toc-text">2.循环链表结构</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#3-双向链表结构"><span class="post-toc-number">5.2.10.</span> <span class="post-toc-text">3.双向链表结构</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#顺序表和链式表对比"><span class="post-toc-number">5.3.</span> <span class="post-toc-text">顺序表和链式表对比</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">6.</span> <span class="post-toc-text">参考</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>《数据结构（C++语言版）》书，关于数据结构再读记录。主要包含数据结构的基本概念、算法概念、时间复杂度、线性表（顺序表&amp;链表）</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="基本概念术语"><a href="#基本概念术语" class="headerlink" title="基本概念术语"></a>基本概念术语</h2><ul>
+<li>数据（Data）：对客观事物的符号表示，它能被计算机识别、存储和加工处理。含义广泛，声音、图像、视频都属于数据的范畴。</li>
+<li>数据元素（Data Element）：数据的基本单位，有时也称为元素、结点、顶点、记录。</li>
+<li>数据项：一个数据元素可能由若干数据项（Data Item）组成。数据项是最小标识单位，有时也称为字段、域或属性。数据元素也可以仅有一个数据项。</li>
+<li><strong>数据结构（Data Structure）</strong>：指数据元素之间的相互关系，即数据的组织形式。一般包含三方面内容：</li>
+</ul>
+<ol>
+<li>数据元素之间的逻辑关系，也称为数据的逻辑结构（Logical Structure）</li>
+<li>数据元素及逻辑关系在计算机存储器内的表示方式，称为数据的存储结构（Storage Structure）</li>
+<li>数据运算，即对数据施加的操作。运算的定义直接依赖于逻辑结构，但运算的实现必须依赖于存储结构</li>
+</ol>
+<h3 id="数据的逻辑结构"><a href="#数据的逻辑结构" class="headerlink" title="数据的逻辑结构"></a>数据的逻辑结构</h3><p>数据中元素通常有下列四种形式的逻辑关系：</p>
+<ol>
+<li>集合：每个元素都是独立的，相互之间没有逻辑关系</li>
+<li>线性结构：结构中的元素之间存在一对一的关系，即所谓的线性关系</li>
+<li>树形结构：结构中的数据元素之间存在一对多的关系</li>
+<li>图状结构：结构中的元素之间存在多对多的关系</li>
+</ol>
+<p>通常将集合、树形结构、图状结构归纳为非线性结构。因此，数据的逻辑结构可分为两大类，即线性结构和非线性结构。</p>
+<h3 id="数据的存储结构（物理实现方面）"><a href="#数据的存储结构（物理实现方面）" class="headerlink" title="数据的存储结构（物理实现方面）"></a>数据的存储结构（物理实现方面）</h3><p>四种：</p>
+<ol>
+<li>顺序存储：将数据元素依次存储于一组地址连续的存储单元中，<strong>元素间的逻辑关系由存储单元的位置直接体现</strong>，由此得到的存储表示称为顺序存储结构（Sequential Storage Structure）。高级语言中，<strong>常用一维数组来实现顺序存储结构</strong>。该方法主要用于线性结构。非线性结构也可通过某种线性化的处理，实现顺序存储。</li>
+<li>链接存储：将数据元素存储在一组任意的存储单元中，<strong>用附加的指针域表示元素之间的逻辑关系</strong>，由此得到的存储表示称为链接存储（Linked StorageStructure）。使用这种存储结构时，往往把一个数据元素及附加的指针一起称作一个结点。高级语言中，常用指针变量实现链接存储。</li>
+<li>索引存储：该方法的特点是在存储数据元素的同时，还可以建立附加的索引表（通俗讲，相当于目录）。索引表中每一项称为索引项。索引项的一般形式是：（关键字，地址）。关键字是指能唯一标识数据元素的数据项。若每个数据元素在索引表中均有一个索引项，则该索引表称为稠密索引（Dense Index）。若一个索引项对应一组数据元素，则该索引表称为稀疏索引（Sparse Index）。</li>
+<li>散列存储：该方法是依据数据元素的关键字，用一个事先设计好的函数计算出该数据元素的存储地址，然后把它存入该地址中。这种函数称为散列函数（即Hash），由散列函数计算出的地址称为散列地址。</li>
+</ol>
+<h3 id="数据运算"><a href="#数据运算" class="headerlink" title="数据运算"></a>数据运算</h3><p>最常用的基本运算有检索（查找）、插入、删除、更新、排序等。</p>
+<p>综上，数据结构包含逻辑结构、存储结构和运算三方面的内容。<strong>同一逻辑结构采用不同存储结构，得到的是不同的数据结构，常用不同的数据结构名来标识它们（1）；而同一逻辑结构定义不同的运算也会导致不同的数据结构（2）</strong></p>
+<p>举几个例子：</p>
+<ol>
+<li>线性结构采用顺序存储时称为顺序表，采用链接存储时则称为链表</li>
+<li>若限制线性结构的插入、删除在一端进行，则该结构称为栈（先进后出）；若限制插入在一端进行，而删除在另一端进行，则称为队列（先进先出）</li>
+<li>若栈采用顺序存储结构，则称为顺序栈；若栈采用链式存储结构，则称为链栈。顺序栈与链栈也是两种不同的数据结构</li>
+</ol>
+<hr>
+<h2 id="数据类型（Data-Type）"><a href="#数据类型（Data-Type）" class="headerlink" title="数据类型（Data Type）"></a>数据类型（Data Type）</h2><blockquote>
+<p>数据类型是一个值的集合和在这个集合上定义的一组操作的总称。例如，C++中的整型变量，其值集为某个区间上的整数（区间大小依赖于不同的机器），定义在其上的操作为加、减、乘、除和取模等运算</p>
+</blockquote>
+<p>按“值”可否分解，可把数据类型分为两类:</p>
+<ol>
+<li>原子类型：其值不可分解，如C++的基本类型（整型、字符型、实型、枚举型）、指针类型和空类型</li>
+<li>结构类型：其值可分解成若干成分（或称分量），如C++的数组类型、结构类型等。结构类型的成分可以是原子类型，也可以是某种结构类型。可以把数据类型看作程序设计语言已实现的数据结构</li>
+</ol>
+<h3 id="抽象数据类型"><a href="#抽象数据类型" class="headerlink" title="抽象数据类型"></a>抽象数据类型</h3><p>抽象数据类型（Abstract Data Type, ADT）是指一个数学模型，以及定义在该模型上的一组操作。抽象数据类型的定义取决于它的一组逻辑特性，而与其在计算机内部如何表示和实现无关。</p>
+<p>抽象数据类型的定义可以由一种数据结构和定义在其上的一组操作组成，而数据结构又包括数据元素间的关系，因此抽象数据类型一般可以由元素、关系及操作三种要素来定义。</p>
+<hr>
+<h2 id="算法"><a href="#算法" class="headerlink" title="算法"></a>算法</h2><blockquote>
+<p>沃斯（N.Wirth）的公式<strong>数据结构+算法=程序</strong></p>
+<p>数据运算是通过算法来描述的。算法（Algorithm）是对特定问题求解步骤的描述，是指令的有限序列，其中每条指令表示一个或多个操作</p>
+</blockquote>
+<h3 id="算法的五个特性"><a href="#算法的五个特性" class="headerlink" title="算法的五个特性"></a>算法的五个特性</h3><p>算法必须具备五个特性：</p>
+<ol>
+<li>有穷性：一个算法对于任何合法的输入必须在执行有穷步骤之后结束，且每步都可在有限时间内完成</li>
+<li>确定性：算法的每条指令必须有确切含义，不能有二义性。在任何条件下，算法只有唯一的一条执行路径，即对相同的输入只能得出相同的结果</li>
+<li>可行性：算法是可行的，即算法中描述的操作均可通过已经实现的基本运算的有限次执行来实现</li>
+<li>输入：一个算法有零个或多个输入，这些输入取自算法加工对象的集合</li>
+<li>输出：一个算法有一个或多个输出，这些输出应是算法对输入加工后合乎逻辑的结果</li>
+</ol>
+<p>Tips：程序和算法十分相似，但是程序不一定要满足有穷性，例如操作系统启动后，如果没有作业处理也仍会循环等待。</p>
+<h3 id="算法的三种描述方法"><a href="#算法的三种描述方法" class="headerlink" title="算法的三种描述方法"></a>算法的三种描述方法</h3><ol>
+<li>自然语言：不够严谨</li>
+<li>程序流程图、N-S图等算法描述工具：简洁明了</li>
+<li><strong>伪码语言描述</strong>：伪码语言介于高级程序设计语言和自然语言之间，它忽略高级程序设计语言中一些严格的语法规则与描述细节，因此它比程序设计语言更容易描述和被人理解，而比自然语言更接近程序设计语言</li>
+</ol>
+<h3 id="算法的四个衡量指标"><a href="#算法的四个衡量指标" class="headerlink" title="算法的四个衡量指标"></a>算法的四个衡量指标</h3><ol>
+<li>正确性（硬性指标）：算法的正确性主要有4个层次的要求，第一层次是指算法没有语法错误，第二层次是指算法对于几组输入数据能够得出满足规格说明要求的结果，第三层次是指算法对于精心选择的苛刻并带有刁难性的几组输入数据能够得出满足规格说明要求的结果，第四层次是指算法对于一切合法的输入数据都能得出满足规格说明要求的结果</li>
+<li>可读性：提高可读性的方法包含：注释、变量命名、程序缩排（代码规范）、段落（不同目的的代码块之间插入一个空白行）</li>
+<li>健壮性：算法中应对输入数据和参数进行合法性检查，例如三角形三条边的长度</li>
+<li>时空效率：算法的执行时间尽可能短，占用的存储空间尽可能少。但这两者往往相互矛盾，节省了时间可能牺牲空间，反之亦然。设计者应在时间与空间两方面有所平衡</li>
+</ol>
+<hr>
+<h2 id="算法性能分析和度量"><a href="#算法性能分析和度量" class="headerlink" title="算法性能分析和度量"></a>算法性能分析和度量</h2><blockquote>
+<p>可以用算法的时间复杂度与空间复杂度来评价算法的优劣</p>
+</blockquote>
+<h3 id="时间复杂度（Time-Complexity）（T-n-）"><a href="#时间复杂度（Time-Complexity）（T-n-）" class="headerlink" title="时间复杂度（Time Complexity）（T(n)）"></a>时间复杂度（Time Complexity）（T(n)）</h3><p>一个算法的时间复杂度是指算法运行从开始到结束所需要的时间。</p>
+<p>这个时间就是该算法中每条语句的执行时间之和，而<code>每条语句的执行时间 = 该语句执行次数（也称为频度） * 执行该语句所需时间</code></p>
+<p>但是，当算法转换为程序之后，一条语句执行一次所需的时间与机器的性能及编译程序生成目标代码的质量有关，是很难确定的。</p>
+<p>为此，<strong>假设执行每条语句所需的时间均为单位时间</strong>。在这一假设下，一个算法所花费的时间就等于算法中所有语句的频度之和。这样就可以脱离机器的硬、软件环境而独立地分析算法所消耗的时间。</p>
+<p>例如：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> N 100  <span class="comment">//问题规模</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">matrixMultiply</span><span class="params">(<span class="keyword">int</span> A[N][N], <span class="keyword">int</span> B[N][N], <span class="keyword">int</span> C[N][N])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">for</span>( i=<span class="number">0</span>; i&lt;N; i=i+<span class="number">1</span>)   <span class="comment">//本身执行n+1次，但是内部的循环体是执行n次</span></span><br><span class="line">        <span class="keyword">for</span>( j=<span class="number">0</span>; j&lt;N; j=j+<span class="number">1</span>)  <span class="comment">//执行n(n+1)次，因为本身执行n+1次</span></span><br><span class="line">        &#123;</span><br><span class="line">            C[i][j] = <span class="number">0</span>;   <span class="comment">//执行n^2次</span></span><br><span class="line">            <span class="keyword">for</span>(k=<span class="number">0</span>; k&lt;N; k=k+<span class="number">1</span>)    <span class="comment">//执行(n^2)*(n+1)次</span></span><br><span class="line">                C[i][j] += A[i][k] * B[k][j];  <span class="comment">//执行n^3次</span></span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>总计执行$n+1+n(n+1)+n^2+(n^2)*(n+1)+n^3，即T(n)=2n^3+3n^2+2n+1$</p>
+<hr>
+<p>一般而言，<strong>一个算法的执行时间是求解问题的规模n（如矩阵的阶数、线性表的长度）的函数</strong>，这是因为问题的规模往往决定了算法工作量的大小。</p>
+<p>但是，我们不关心它是个怎样的函数，只关心它的数量级量度，即它与什么简单函数f(n)是同一数量级的，即T(n)=O(f(n))。其中“O”是数学符号，其数学定义如下:</p>
+<p>如果存在正的常数C和n0，使得当n≥n0时都满足0≤T(n)≤C<em>f(n)，则称T(n)与f(n)是同一数量级的，并记作T(n)=O(f(n))，即最高幂次方。*</em>算法的执行时间T(n)=O(f(n))为该算法的时间复杂度。**</p>
+<p><code>它表示随着问题规模n的增大，该算法执行时间的增长率和f(n)的增长率相同。</code></p>
+<p>1.对于上面的例子，当n→∞时，</p>
+<p>$$T(n)/n^3= (2n^3+3n^2+2n+1)/ n^3→2$$</p>
+<p>根据“O”的定义可知T(n)=O(n^3)，所以上面例子的算法的时间复杂度是<strong>O(n^3)</strong></p>
+<p>2.例如，用两个算法A1和A2求解同一问题，它们的时间耗费分别是$T_1(n)=100n^2+5000n+3,T_2(n)=2n^3$。如果问题规模n不太大，则二者的时间花费也相差不大；若问题规模n很大，如n=10000，则二者的时间花费相差很大。二者的差别从时间复杂度上一目了然，因为$T_1(n)=O(n^2), T_2(n)=O(n^3)$，所以算法A1的时间性能优于算法A2</p>
+<hr>
+<p>如果一个算法的所有语句的频度之和是问题规模n的多项式，</p>
+<p>即</p>
+<p>$$T(n)=C_kn^k+C_{k-1}n^{k-1}+…+C_1n+C_0C_k≠0$$</p>
+<p>则按“O”的定义可知，该算法为k次方阶算法：</p>
+<p>$$T(n)=O(n^k)$$</p>
+<p>特殊情况，如果T(n)=C，其中C为常数，即算法耗费的时间与问题规模n无关，则记<code>T(n)=O(1)</code>，称该算法为常数阶算法。</p>
+<hr>
+<h3 id="常见的时间复杂度"><a href="#常见的时间复杂度" class="headerlink" title="常见的时间复杂度"></a>常见的时间复杂度</h3><p>按数量级递增排序有：</p>
+<ul>
+<li>常数阶$O(1)$</li>
+<li>对数阶$O(log_2n)$</li>
+<li>线性阶$O(n)$</li>
+<li>平方阶$O(n^2)$</li>
+<li>立方阶$O(n^3)$</li>
+<li>指数阶$O(2^n)$</li>
+</ul>
+<p>指数阶算法的执行时间随n的增大而迅速放大，所以其时间性能极差，当n稍大时我们就无法忍受，如汉诺塔问题。</p>
+<p>常见的时间复杂度有：</p>
+<p>$O(1)&lt;O(log_2n)&lt;O(n)&lt;O(nlog_2n)&lt;O(n^2)&lt;O(n^3)&lt;O(2^n)$</p>
+<h3 id="简化时间复杂度计算"><a href="#简化时间复杂度计算" class="headerlink" title="简化时间复杂度计算"></a>简化时间复杂度计算</h3><p>由于算法的时间复杂度仅刻画了算法执行时间的数量级，为了简化对算法时间性能的分析，通常的做法是，从算法中选取一种对于所研究的问题来说是最基本的操作，并以该基本操作执行的次数作为算法的时间度量</p>
+<p>被选用的基本操作应是其重复执行次数与算法的执行时间成正比例的</p>
+<p>例如上面的代码例子，只需获取最大阶乘的时间复杂度，即$n^3$即可，$O(n)=n^3$。</p>
+<hr>
+<h3 id="平均时间复杂度"><a href="#平均时间复杂度" class="headerlink" title="平均时间复杂度"></a>平均时间复杂度</h3><h4 id="和输入数据有关的时间复杂度"><a href="#和输入数据有关的时间复杂度" class="headerlink" title="和输入数据有关的时间复杂度"></a>和输入数据有关的时间复杂度</h4><p>有些情况下，算法的时间复杂度不仅与问题的规模有关，还与输入数据有关。例如，在数组A[n]中查找给定值k的算法如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">i = n<span class="number">-1</span>;</span><br><span class="line"><span class="keyword">while</span>(i&gt;=<span class="number">0</span> &amp;&amp; A[i] != k)  =i<span class="number">-1</span>;</span><br><span class="line"><span class="keyword">return</span> i;</span><br></pre></td></tr></table></figure>
+
+<p>这个操作的执行次数取决于数组A中有没有值为k的元素。若有，这个值为k的元素又在数组中哪个位置。</p>
+<ul>
+<li>若数组中无值为k的元素，则操作“A[i]! =k”的执行次数为n；</li>
+<li>若A[n-1]等于k，则该操作的执行次数为1。</li>
+</ul>
+<p>所以，该算法在最坏情况下的时间复杂度为O(n)，最好情况下的时间复杂度是O(1)。</p>
+<p>因此，有时我们会对算法的平均（或称期望）时间复杂度感兴趣。所谓<strong>平均时间复杂度，是指所有可能的输入数据在等概率出现的情况下算法的平均执行时间。</strong></p>
+<p><strong>当算法的平均时间复杂度难以确定时，就以算法的最坏时间复杂度作为算法的时间复杂度</strong>。因为它是算法执行时间的一个上界，保证了算法的执行时间不会比它更长。</p>
+<h4 id="递归算法的时间复杂度"><a href="#递归算法的时间复杂度" class="headerlink" title="递归算法的时间复杂度"></a>递归算法的时间复杂度</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">fact(<span class="keyword">int</span> n)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span>(n&lt;=<span class="number">1</span>)    <span class="keyword">return</span> <span class="number">1</span>;   <span class="comment">//(1)</span></span><br><span class="line">    <span class="keyword">else</span>    <span class="keyword">return</span> (n*fact(n<span class="number">-1</span>));   <span class="comment">//(2)</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>设fact(n)的运行时间复杂度函数是T(n)，该函数中语句（1）的运行时间是$O(1)$，语句（2）的运行时间是T(n-1)+O(1)，其中O(1)为基本运行时间，</p>
+<p>因此：<br>如果n≤1，则$T(n) = O(1)$</p>
+<p>如果n&gt;1，则$T(n) = T(n-1)+O(1)$</p>
+<p>则$T(n) = T(n-1)+O(1)= T(n-2)+2<em>O(1)= T(n-3)+3</em>O(1)=…= T(1)+(n-1)<em>O(1)=n</em>O(1)=O(n)$</p>
+<p>即fact(n)的时间复杂度为$O(n)$</p>
+<hr>
+<h3 id="空间复杂度（Space-Complexity）（S-n-）"><a href="#空间复杂度（Space-Complexity）（S-n-）" class="headerlink" title="空间复杂度（Space Complexity）（S(n)）"></a>空间复杂度（Space Complexity）（S(n)）</h3><p>空间复杂度作为算法所需存储空间的量度，记作$S(n)=O(f(n))$<br>（n为问题的规模）</p>
+<p>度量和时间复杂度一样。</p>
+<p>在大多数算法设计中，时间效率和空间效率很难兼得，设计者往往要根据具体问题进行取舍。</p>
+<hr>
+<h2 id="线性表"><a href="#线性表" class="headerlink" title="线性表"></a>线性表</h2><blockquote>
+<p>线性表是最简单、最基本也是最常用的一种线性结构。它有两种存储方式：<strong>顺序存储方式和链式存储方式</strong>。它的主要操作是插入、删除和检索等</p>
+</blockquote>
+<p>逻辑结构表示为：</p>
+<p>$LinearList = {D, R}$</p>
+<p>其中，</p>
+<p>$D={a_i | 1&lt;=i&lt;=n, n&gt;=0, a_i∈DataType} (DataType为数据元素类型)$</p>
+<p>$R={r}$</p>
+<p>$r={&lt;a_i, a_{i+1}&gt; | 1&lt;=i&lt;=n-1}$</p>
+<p>线性表的基本运算方法如下：</p>
+<table>
+<thead>
+<tr>
+<th align="center">作用</th>
+<th align="center">函数</th>
+<th align="center">初始条件</th>
+<th align="center">操作结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">线性表初始化</td>
+<td align="center">void Initiate()</td>
+<td align="center">线性表不存在</td>
+<td align="center">构造一个空的线性表</td>
+</tr>
+<tr>
+<td align="center">求线性表的长度</td>
+<td align="center">int Length()</td>
+<td align="center">线性表已存在</td>
+<td align="center">返回线性表所含数据元素的个数</td>
+</tr>
+<tr>
+<td align="center">取表元</td>
+<td align="center">DataType Get(int i)</td>
+<td align="center">表存在且1≤i≤Length()</td>
+<td align="center">返回线性表的第i个数据元素的值</td>
+</tr>
+<tr>
+<td align="center">按值查找</td>
+<td align="center">int Locate(DataType x)</td>
+<td align="center">线性表已存在，x是给定的一个数据元素</td>
+<td align="center">查找值为x的数据元素，返回首次出现的值为x的那个数据元素的序号，称为查找成功；如果未找到值为x的数据元素，返回0表示查找失败</td>
+</tr>
+<tr>
+<td align="center">插入操作</td>
+<td align="center">int Insert(DataType x, int i)</td>
+<td align="center">线性表已存在</td>
+<td align="center">在线性表的第i个位置上插入一个值为x的新元素，使原序号为i,i+1, …,n的数据元素的序号变为i+1,i+2, …,n+1，插入后表长=原表长+1，返回1表示插入成功；若线性表L中数据元素个数少于i-1个，则返回0表示插入失败</td>
+</tr>
+<tr>
+<td align="center">删除操作</td>
+<td align="center">int Deleted(int i)</td>
+<td align="center">线性表已存在</td>
+<td align="center">在线性表L中删除序号为i的数据元素，删除后使序号为i+1, i+2, …, n的元素变为序号i, i+1, …, n-1，新表长=原表长-1，返回1；若线性表中数据元素个数少于i，则返回0表示删除失败</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="顺序存储结构-顺序表"><a href="#顺序存储结构-顺序表" class="headerlink" title="顺序存储结构-顺序表"></a>顺序存储结构-顺序表</h3><p>内存中的地址空间是线性的，顺序表存储数据时，会提前申请一整块足够大小的物理空间，然后将数据依次存储起来，存储时做到数据元素之间不留一丝缝隙</p>
+<p>设数据元素a1的存储地址为Loc(a1)，每个数据元素占用d个存储地址，则第i个数据元素的地址为：</p>
+<p>$Loc(a_i)=Loc(a_1)+(i-1)*d (其中1≤i≤n)$</p>
+<p><font color=green><strong>特点</strong>：只要知道顺序表的首地址和每个数据元素所占用地址单元的个数，就可以求出第i个数据元素的地址。这也是顺序表具有按数据元素的序号随机存取的特点。</font></p>
+<hr>
+<p>因为线性表的运算经常会导致长度发生变化，所以数组容量需要设计的足够大</p>
+<p>假设用$data[MAXSIZE]$来表示，其中MAXSIZE是一个根据实际问题定义的足够大的整数，线性表中的数据元素从data[0]开始依次存放，但当前线性表中的实际元素个数可能未达到MAXSIZE，因此需要用一个<strong>变量len</strong>记录当前线性表中数据元素个数，使得len起到一个数字指针的作用，始终指向线性表中最后一个元素的下一个位置，其值为最后一个数据元素的位置值，若该表为空表，则len=0。</p>
+<h4 id="顺序表运算"><a href="#顺序表运算" class="headerlink" title="顺序表运算"></a>顺序表运算</h4><ol>
+<li>初始化</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//初始化</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">SequenList::Initiate</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  len=<span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  SequenList L;</span><br><span class="line">  L.Initiate();</span><br><span class="line">  ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>插入</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在线性表的第i个元素之前插入一个新的数据元素x</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">SequenList::Insert</span><span class="params">(DataType x, <span class="keyword">int</span> i)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">//做插入i位置的判断，是否溢出(MAXSIZE)或者不合法(len)</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> j=len; j&gt;=i; j--)</span><br><span class="line">      data[j]=data[j<span class="number">-1</span>];   <span class="comment">//元素后移</span></span><br><span class="line"></span><br><span class="line">  data[i<span class="number">-1</span>]=x; <span class="comment">//插入元素</span></span><br><span class="line">  len++;  <span class="comment">//表长度+1</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>插入算法的时间性能分析</strong>：顺序表上的插入运算，时间主要消耗在数据元素的移动上。在第i个位置上插入x，从第i个到第n个元素都要向后移动一个位置，共需要移动n-(i-1)，即n-i+1个数据元素。而i的取值范围为1≤i≤n+1，即有n+1个位置可以插入</p>
+<p><font color=green>在顺序表上做插入操作需移动表中一半数据元素。时间复杂度为O(n)</font></p>
+<ol start="3">
+<li>删除</li>
+</ol>
+<p>在顺序表上完成删除运算的步骤如下：</p>
+<p>（1）将数据元素ai+1～an依次向前移动一个位置</p>
+<p>（2）修改len值，使之仍指向最后一个数据元素的下一个位置</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//删除第i个元素</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">SequenList::Delete</span><span class="params">(<span class="keyword">int</span> i)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">//做插入i位置的判断，是否溢出(MAXSIZE)或者不合法(len)</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">for</span>(<span class="keyword">int</span> j=i; j&lt;len; j++)</span><br><span class="line">      data[j<span class="number">-1</span>]=data[j];   <span class="comment">//元素前移</span></span><br><span class="line"></span><br><span class="line">  len--;  <span class="comment">//表长度-1</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>删除算法的时间性能分析</strong>：与插入运算相同，其时间主要消耗在移动表中元素上。删除第i个元素时，其后面的元素$a_{i+1}-a_n$都要向前移动一个位置，共移动n-i个元素</p>
+<p><font color=green>在顺序表上做删除运算时大约需要移动表中一半元素。该算法的时间复杂度为O(n)</font></p>
+<ol start="4">
+<li>按值查找</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">SequenList::Locate</span><span class="params">(DataType x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="comment">//返回值为x的元素的位序值</span></span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">int</span> j=<span class="number">0</span>;</span><br><span class="line">  <span class="keyword">while</span>((j&lt;len)&amp;&amp;(data[j] != x)) j++;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(j&lt;len) <span class="keyword">return</span> j+<span class="number">1</span>;</span><br><span class="line">  <span class="keyword">else</span> <span class="keyword">return</span> <span class="number">0</span>;  <span class="comment">//没有查找到</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>比较的次数与x在表中的位置有关，也与表长有关。当a1=x时，比较一次成功；当an=x时，比较n次成功。</p>
+<p><font color=green>在查找成功的情况下，平均比较次数为（n+1）/2，时间复杂度为O(n)</font></p>
+<ol start="5">
+<li>读取第i个数据元素的值</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">SequenList::Get</span><span class="params">(<span class="keyword">int</span> i)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  ...</span><br><span class="line">  <span class="keyword">if</span>((i&lt;<span class="number">1</span>) || (i&gt;len))</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt;<span class="string">"not correct input"</span>&lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="keyword">return</span> data[i<span class="number">-1</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ol start="6">
+<li>取得元素个数</li>
+</ol>
+<p>直接return len值</p>
+<hr>
+<h4 id="顺序表存储空间的分配"><a href="#顺序表存储空间的分配" class="headerlink" title="顺序表存储空间的分配"></a>顺序表存储空间的分配</h4><p>线性表顺序存储结构，是预先给定大小为MAXSIZE的存储空间，程序在编译阶段就已经知道该类型变量的大小，在程序开始运行前会为它分配好存储空间，因此是一种<strong>存储空间的静态分配</strong></p>
+<p>而动态分配是在定义线性表的存储类型时，不是定义好一个存储空间，而是只定义一个指针，待程序运行后再申请一个用于存放线性表数据元素的存储空间，并把该存储空间的起始地址赋给这个指针。访问动态存储分配的线性表中的元素和访问静态存储分配的线性表中的元素的情况完全相同，既可以采用指针方式，也可以采用数组下标方式。</p>
+<p>关于数据内存存储的方式可参考<a href="https://wizzie.top/Blog/2019/08/13/2019/190813_cpp_typeTemplete/#%E7%AE%A1%E7%90%86%E6%95%B0%E6%8D%AE%E5%86%85%E5%AD%98%E7%9A%84%E5%9B%9B%E7%A7%8D%E6%96%B9%E5%BC%8F" target="_blank" rel="noopener">C++内存分配方式-管理数据内存的四种方式</a></p>
+<hr>
+<h3 id="链式存储结构"><a href="#链式存储结构" class="headerlink" title="链式存储结构"></a>链式存储结构</h3><p>顺序表的存储特点是用物理位置上的相邻实现了逻辑关系上的相邻，它要求用连续的存储单元顺序存储线性表中的各元素，因此，对顺序表插入、删除操作时需要通过移动数据元素来实现，严重影响了运行效率</p>
+<p>而链式存储结构不需要用地址连续的存储单元来实现，因为它不要求逻辑关系上相邻的两个数据元素物理位置上也相邻。它通过“链”建立起数据元素之间的逻辑关系。因此对线性表的插入、删除不需要移动数据元素</p>
+<h4 id="1-单链表结构"><a href="#1-单链表结构" class="headerlink" title="1.单链表结构"></a>1.单链表结构</h4><blockquote>
+<p>链表是通过一组任意的存储单元来存储线性表中的数据元素</p>
+</blockquote>
+<p><font color=green>为建立起数据元素之间的线性关系，对每个数据元素ai，除了存放数据元素自身的数据信息ai之外，还需要存放其后继ai+1所在的存储单元的地址，这两部分信息组成一个“结点”。</p>
+<p>存放数据元素信息的域称为数据域，存放其后继数据元素地址的域称为指针域</p>
+<p>n个数据元素的线性表通过每个结点的指针域形成了一个“链”，称为链表。</p>
+<p>由于每个结点中只有一个指向后继的指针，所以称其为单链表</font></p>
+<p>结点结构：</p>
+<p><img src="link_1.png" alt="结点结构"></p>
+<ul>
+<li>头指针：一个指向第一个节点地址的指针变量，头指针具有标识单链表的作用，所以经常用头指针代表单链表的名字</li>
+<li>头结点：在单链表的第一个结点之前附设一个结点，它没有直接前驱，称之为头结点<br>可不存信息，也可以作为监视哨，或用于存放线性表的长度等附加信息<br>指针域中存放首元结点的地址</li>
+<li>首元结点：存储第一个元素的节点</li>
+</ul>
+<p>定义及基本运算函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> DataType;</span><br><span class="line">clasee Item</span><br><span class="line">&#123;</span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">    DataType data;</span><br><span class="line">    Item *next;</span><br><span class="line">    Item() &#123;next=<span class="literal">NULL</span>&#125;;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Link</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">  <span class="keyword">public</span>:</span><br><span class="line">  Item *head; <span class="comment">//链表头指针</span></span><br><span class="line">  Link() &#123;head=<span class="literal">NULL</span>;&#125;  <span class="comment">//构造函数</span></span><br><span class="line">  ~Link() &#123;DeleteAll(); &#125; <span class="comment">//析构函数</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">Initiate</span><span class="params">()</span></span>; <span class="comment">//初始化</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">DeleteAll</span><span class="params">()</span></span>;   <span class="comment">//删除所有结点</span></span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">HeadCreate</span><span class="params">(<span class="keyword">int</span> n)</span></span>;  <span class="comment">//从头建链表</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">TailCreate</span><span class="params">(<span class="keyword">int</span> n)</span></span>; <span class="comment">//从尾建链表</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">HeadCreateWithHead</span><span class="params">(<span class="keyword">int</span> n)</span></span>; <span class="comment">//建立带表头的链表（从头）</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">TailreateWithHead</span><span class="params">(<span class="keyword">int</span> n)</span></span>; <span class="comment">//建立带表头的链表（从尾）</span></span><br><span class="line">  <span class="function"><span class="keyword">int</span> <span class="title">Length</span><span class="params">()</span></span>;  <span class="comment">//链表长度</span></span><br><span class="line"></span><br><span class="line">  <span class="function">Item *<span class="title">Locatex</span><span class="params">(DataType x)</span></span>;  <span class="comment">//查找值为x的数据元素</span></span><br><span class="line">  <span class="function">Item *<span class="title">Locatei</span><span class="params">(<span class="keyword">int</span> i)</span></span>;   <span class="comment">//查找第i个元素</span></span><br><span class="line">  <span class="function">DataType <span class="title">Get</span><span class="params">(<span class="keyword">int</span> i)</span></span>;    <span class="comment">//获取第i个元素的值</span></span><br><span class="line">  <span class="function"><span class="keyword">bool</span> <span class="title">Insert</span><span class="params">(DataType x, <span class="keyword">int</span> i)</span></span>;  <span class="comment">//在链表第i个结点之前插入x</span></span><br><span class="line">  <span class="function"><span class="keyword">bool</span> <span class="title">Deleted</span><span class="params">(<span class="keyword">int</span> i)</span></span>;  <span class="comment">//删除链表中第i个结点</span></span><br><span class="line">  <span class="function"><span class="keyword">void</span> <span class="title">Print</span><span class="params">()</span></span>;   <span class="comment">//打印链表</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="单链表运算-初始化"><a href="#单链表运算-初始化" class="headerlink" title="单链表运算-初始化"></a>单链表运算-初始化</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Initiate</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  DeleteAll();</span><br><span class="line">  head=<span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="单链表运算-建立单链表"><a href="#单链表运算-建立单链表" class="headerlink" title="单链表运算-建立单链表"></a>单链表运算-建立单链表</h4><p>链表与顺序表不同，它是一种动态管理的存储结构，链表中的每个结点占用的存储空间不是预先分配的，而是在运行时系统根据需求动态生成的，因此建立单链表应该从空表开始。</p>
+<p><font color=red>(1)从表尾到表头建立单链表（不带有空白头结点）</font></p>
+<p>可以在每读入一个数据元素后申请一个结点，然后插在链表的头部（从表尾到表头建立单链表）</p>
+<p>因为是在链表的头部插入，读入数据的顺序和线性表中的逻辑顺序是相反的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Link::HeadCreate</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  DeleteAll();</span><br><span class="line">  Item *s, *p;</span><br><span class="line">  <span class="keyword">int</span> i;</span><br><span class="line">  p=<span class="literal">NULL</span>;</span><br><span class="line">  <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n; i++)</span><br><span class="line">  &#123;</span><br><span class="line">    s=<span class="keyword">new</span> Item();</span><br><span class="line">    <span class="built_in">cin</span>&gt;&gt; s-&gt;data;   <span class="comment">//输入</span></span><br><span class="line">    s-&gt;next = p;</span><br><span class="line">    p = s;</span><br><span class="line">  &#125;</span><br><span class="line">  head = p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><font color=red>(2)从表头到表尾建立单链表（不带有空白头结点）</font></p>
+<p>从表尾到表头插入结点建立单链表比较简单，但读入的数据元素的顺序与生成的单链表中元素的顺序是相反的。</p>
+<p>若希望次序一致，则用从表头到表尾建立单链表的方法。</p>
+<p>因为每次是将新结点插入链表的尾部，所以需加入一个指针r用来始终指向链表中的尾结点，以便能够将新结点插入链表的尾部</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Link::TailCreate</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  DeleteAll();</span><br><span class="line">  Item *s, *r, *p;</span><br><span class="line">  <span class="keyword">int</span> i;</span><br><span class="line">  p=<span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n; i++)</span><br><span class="line">  &#123;</span><br><span class="line">    s=<span class="keyword">new</span> Item();</span><br><span class="line">    <span class="built_in">cin</span>&gt;&gt; s-&gt;data;   <span class="comment">//输入</span></span><br><span class="line">    s-&gt;next = <span class="literal">NULL</span>;   <span class="comment">//不带有空白头结点</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//第一个结点加入前链表为空，它没有直接前驱结点</span></span><br><span class="line">    <span class="comment">//它的地址就是整个链表的指针，需要放在链表的头指针变量p中</span></span><br><span class="line">    <span class="keyword">if</span>(p==<span class="literal">NULL</span>) p=r=s;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">      r-&gt;next=s;  <span class="comment">//此处的顺序和上面那种方式相反</span></span><br><span class="line">      r=s;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  head = p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><font color=red>(3)从表尾到表头建立单链表（带有空白头结点）</font></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Link::TailCreate</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  DeleteAll();</span><br><span class="line">  Item *s, *p;</span><br><span class="line">  <span class="keyword">int</span> i;</span><br><span class="line">  p=<span class="keyword">new</span> Item();</span><br><span class="line">  p-&gt;next=<span class="literal">NULL</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n; i++)</span><br><span class="line">  &#123;</span><br><span class="line">    s=<span class="keyword">new</span> Item();</span><br><span class="line">    <span class="built_in">cin</span>&gt;&gt; s-&gt;data;   <span class="comment">//输入</span></span><br><span class="line">    s-&gt;next = p-&gt;next;  <span class="comment">//带有空白头结点</span></span><br><span class="line">    p-&gt;next = s;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  head = p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><font color=red>(4)从表头到表尾建立单链表（带有空白头结点）</font></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Link::TailCreate</span><span class="params">(<span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  DeleteAll();</span><br><span class="line">  Item *s, *r, *p;</span><br><span class="line">  <span class="keyword">int</span> i;</span><br><span class="line">  p=<span class="keyword">new</span> Item();</span><br><span class="line">  p-&gt;next=<span class="literal">NULL</span>;</span><br><span class="line">  r=p;   <span class="comment">//带有空白头结点</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">for</span>(i=<span class="number">1</span>;i&lt;=n; i++)</span><br><span class="line">  &#123;</span><br><span class="line">    s=<span class="keyword">new</span> Item();</span><br><span class="line">    <span class="built_in">cin</span>&gt;&gt; s-&gt;data;   <span class="comment">//输入</span></span><br><span class="line">    r-&gt;next=s;</span><br><span class="line">    r=s;</span><br><span class="line">  &#125;</span><br><span class="line">  r-&gt;next=<span class="literal">NULL</span>;</span><br><span class="line">  head = p;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上面4个算法可以看出，对于不带空白头结点的单链表，空表情况下需要单独处理，而带上空白头结点之后则不用了，<strong>算法的时间复杂度均为O(n)</strong></p>
+<hr>
+<h4 id="单链表运算-求表长"><a href="#单链表运算-求表长" class="headerlink" title="单链表运算-求表长"></a>单链表运算-求表长</h4><p>设有一个移动指针p和计数器j，初始化后，p所指结点后面若还有结点，p向后移动，计数器加1。算法如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Link::Length</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> j=<span class="number">1</span>;</span><br><span class="line">  Item *p;</span><br><span class="line">  p=head-&gt;next;</span><br><span class="line">  <span class="keyword">while</span>(p!=<span class="literal">NULL</span>)</span><br><span class="line">  &#123;</span><br><span class="line">    j++;</span><br><span class="line">    p=p-&gt;next;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> --j;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>此算法的时间复杂度为O(n)</strong></p>
+<hr>
+<h4 id="单链表运算-查找操作"><a href="#单链表运算-查找操作" class="headerlink" title="单链表运算-查找操作"></a>单链表运算-查找操作</h4><p>(1)按序号查找</p>
+<p>从单链表的第一个元素结点起，判断当前结点是否是第i个，若是，则返回该结点的指针；否则继续下一个结点的查找，直到表结束为止。</p>
+<p>若没有第i个结点，则返回空；如果i=0，则返回头指针。算法如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Item *<span class="title">Locatei</span><span class="params">(<span class="keyword">int</span> i)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> j=<span class="number">1</span>;</span><br><span class="line">  Item *p;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(i=<span class="number">1</span>) <span class="keyword">return</span> head;</span><br><span class="line"></span><br><span class="line">  p=head-&gt;next;</span><br><span class="line">  <span class="keyword">while</span>((p!=<span class="literal">NULL</span>) &amp;&amp; (j&lt;i))</span><br><span class="line">  &#123;</span><br><span class="line">    j++;</span><br><span class="line">    p=p-&gt;next;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(j==i) <span class="keyword">return</span> p;</span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt;<span class="string">"not correct input!"</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>时间复杂度均为O(n)</strong></p>
+<p>(2)按值查找即定位</p>
+<p>从链表的第一个元素结点起，判断当前结点值是否等于x，若是，返回该结点的指针，否则继续下一个结点的查找，直到表结束为止。若找不到，则返回空。算法如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Item *<span class="title">Locatex</span><span class="params">(DataType x)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  Item *p;</span><br><span class="line">  p=head-&gt;next;</span><br><span class="line">  <span class="keyword">while</span>((p!=<span class="literal">NULL</span>) &amp;&amp; (p-&gt;data != x))  p=p-&gt;next;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(p)   <span class="keyword">return</span> p;   <span class="comment">//即p不为空</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">cout</span>&lt;&lt; x &lt;&lt; <span class="string">" is not exist"</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>时间复杂度均为O(n)</strong></p>
+<p>(3) 读取第i个位置上的元素值</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">DataType <span class="title">Link::Get</span><span class="params">(<span class="keyword">int</span> i)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">int</span> j;</span><br><span class="line">  Item *p;</span><br><span class="line">  j=<span class="number">1</span>;</span><br><span class="line">  p=head-&gt;next;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">while</span>((j&lt;i) &amp;&amp; (p != <span class="literal">NULL</span>))</span><br><span class="line">  &#123;</span><br><span class="line">    j++;</span><br><span class="line">    p=p-&gt;next;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>((p==<span class="literal">NULL</span>) || (j&gt;i))</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt;<span class="string">"not correct"</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">  &#125; <span class="keyword">else</span></span><br><span class="line">  &#123;</span><br><span class="line">    <span class="keyword">return</span> p-&gt;data;  </span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>时间复杂度均为O(n)</strong></p>
+<hr>
+<h4 id="单链表运算-插入"><a href="#单链表运算-插入" class="headerlink" title="单链表运算-插入"></a>单链表运算-插入</h4><p>(1)后插结点</p>
+<p>设p指向单链表中某结点，s指向待插入的值为x的新结点，将*s插入 *p的后面</p>
+<p>操作如下：（两个指针的操作顺序不能交换）</p>
+<p>① s-&gt;next=p-&gt;next;</p>
+<p>② p-&gt;next=s;</p>
+<p><strong>时间复杂度为O(1)</strong></p>
+<hr>
+<p>(2)前插结点</p>
+<p>设p指向链表中某结点，s指向待插入的值为x的新结点，将*s插入 *p的前面</p>
+<p>与后插不同的是，首先要找到＊p的前驱＊q，再完成在<em>q之后插入</em>s。设单链表头指针为L，操作如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">q=L;</span><br><span class="line"><span class="keyword">while</span>(q-&gt;next != p)</span><br><span class="line">  q=q-&gt;next;  <span class="comment">//找到*p的直接前驱</span></span><br><span class="line"></span><br><span class="line">s-&gt;next = q-&gt;next;</span><br><span class="line">q-&gt;next = s;</span><br></pre></td></tr></table></figure>
+
+<p><strong>时间复杂度为O(n)</strong></p>
+<p>如果将*s直接插入 *p的后面，然后将p-&gt;data与s-&gt;data交换。这样既满足了逻辑关系，也能使得时间复杂度为O(1)。</p>
+<hr>
+<p>(3)插入算法</p>
+<p>步骤：</p>
+<p>① 找到第i-1个结点；若存在，继续步骤②，否则结束</p>
+<p>② 申请新结点，将数据填入新结点的数据域</p>
+<p>③ 将新结点插入</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">Link::Insert</span><span class="params">(DataType x, <span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">  Item *p, *s;</span><br><span class="line">  p = Locatei(i<span class="number">-1</span>);  <span class="comment">//查找i-1的结点</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span>(p == <span class="literal">NULL</span>) &#123;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"not correct"</span> &lt;&lt;<span class="built_in">endl</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  s = <span class="keyword">new</span> Item();</span><br><span class="line">  s-&gt;data = x;</span><br><span class="line">  s-&gt;next = p-&gt;next;</span><br><span class="line">  p-&gt;next = s;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="单链表运算-删除"><a href="#单链表运算-删除" class="headerlink" title="单链表运算-删除"></a>单链表运算-删除</h4><p>(1)删除结点</p>
+<p>设p指向单链表中某结点，删除*p</p>
+<p>要实现对结点*p的删除，</p>
+<p>首先要找到*p的前驱结点 *q，然后完成指针的删除操作即可</p>
+<p>指针的操作，由下列语句实现：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">q-&gt;next = p-&gt;next;</span><br><span class="line"><span class="keyword">delete</span> p;</span><br></pre></td></tr></table></figure>
+
+<p>PS:找前驱结点*q的时间复杂度是$O(n)$</p>
+<p>删除：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">s = p-&gt;next;</span><br><span class="line">p-&gt;next = s-&gt;next;</span><br><span class="line"><span class="keyword">delete</span> s;</span><br></pre></td></tr></table></figure>
+
+<p>PS:该操作时间复杂度$O(1)$</p>
+<hr>
+<p>(2)删除运算</p>
+<p>① 找到第i-1个结点，若存在，继续步骤②，否则结束</p>
+<p>② 若存在第i个结点，则继续步骤③，否则结束</p>
+<p>③ 删除第i个结点，结束</p>
+<hr>
+<h4 id="单链表运算-删除所有结点"><a href="#单链表运算-删除所有结点" class="headerlink" title="单链表运算-删除所有结点"></a>单链表运算-删除所有结点</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">Link::DeleteAll</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Item *p = head, *q;</span><br><span class="line">  <span class="keyword">while</span>(p != <span class="literal">NULL</span>) &#123;</span><br><span class="line">    q = p-&gt;next;</span><br><span class="line">    <span class="keyword">delete</span> p;</span><br><span class="line">    p = q;</span><br><span class="line">  &#125;</span><br><span class="line">  head = <span class="literal">NULL</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过上面的基本操作可知：</p>
+<ol>
+<li>在单链表上插入、删除一个结点，必须知道其前驱结点的指针；</li>
+<li>单链表不具有按序号随机访问的特点，只能从头指针开始一个个顺次进行。</li>
+</ol>
+<hr>
+<h4 id="2-循环链表结构"><a href="#2-循环链表结构" class="headerlink" title="2.循环链表结构"></a>2.循环链表结构</h4><p>对于单链表而言，最后一个结点的指针域是空指针。</p>
+<p>如果将该链表头指针置入该指针域，则使得链表头尾结点相连，就构成了循环单链表</p>
+<p><strong>对于单链表，只能从头结点开始遍历整个链表；而对于循环单链表，则可以从表中任意结点开始遍历整个链表。</strong>不仅如此，有时对链表常做的操作是在表尾、表头之间进行。</p>
+<p><strong>此时可以改变链表的标识方法，不用头指针而用一个指向尾结点的指针R来标识，可以使操作效率得以提高</strong></p>
+<hr>
+<h4 id="3-双向链表结构"><a href="#3-双向链表结构" class="headerlink" title="3.双向链表结构"></a>3.双向链表结构</h4><p>单链表的结点中只有一个指向其后继结点的指针域next，因此若已知某结点的指针为p，其后继结点的指针则为p-&gt;next，而找其前驱则只能从该链表的头指针开始，顺着各结点的next域进行。</p>
+<p>也就是说，找后继的时间复杂度是O(1)，找前驱的时间复杂度是O(n)。</p>
+<p><strong>如果也希望找前驱的时间复杂度达到O(1)，则只能付出空间的代价：每个结点再加一个指向前驱的指针域，用这种结点组成的链表称为双向链表</strong></p>
+<hr>
+<h3 id="顺序表和链式表对比"><a href="#顺序表和链式表对比" class="headerlink" title="顺序表和链式表对比"></a>顺序表和链式表对比</h3><p>顺序存储有以下3个优点：</p>
+<ol>
+<li>方法简单，各种高级语言中都有数组，容易实现</li>
+<li>不用为表示结点间的逻辑关系而增加额外的存储开销</li>
+<li>可以按元素序号随机访问表中结点</li>
+</ol>
+<p>缺点：</p>
+<ol>
+<li>在顺序表中做插入、删除操作时，平均约需移动表中一半元素。因此对数据元素较多的顺序表来说，运算效率比较低</li>
+<li>需要预先分配足够大的存储空间，估计得过大，可能会导致顺序表空间大量闲置；<strong>预先分配过小，容易会造成溢出</strong></li>
+</ol>
+<p>链式表优点：</p>
+<ol>
+<li>基于存储的考虑，顺序表的存储空间是静态分配的，在程序执行之前必须明确规定它的存储规模。对线性表的长度或存储规模难以估计时，不宜采用顺序表。<strong>链式表不用事先估计存储规模，但链式表的存储密度较低</strong></li>
+<li>基于运算的考虑，在顺序表中按序号访问ai的时间复杂度是O(1)，而在链式表中按序号访问ai的时间复杂度是O(n)，所以<strong>如果经常做的操作是按序号访问数据元素，显然顺序表优于链式表</strong>。在顺序表中做插入、删除时，平均约需移动表中一半元素，当数据元素的信息量较大且表较长时；在链式表中做插入、删除时，虽然也要找插入位置，但主要是比较操作。从这个角度考虑，显然后者优于前者</li>
+<li>基于难易的考虑，顺序表容易实现，任何高级语言中都有数组类型；链式表的操作是基于指针的</li>
+</ol>
+<p>PS：存储密度，是指一个结点中数据元素所占的存储单元和整个结点所占的存储单元之比。显然，链式存储结构的存储密度小于1。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://blog.csdn.net/syzdev/article/details/77888024" target="_blank" rel="noopener">C语言-链表的创建头插法和尾插法（有无头节点）</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/84950700" target="_blank" rel="noopener">如何使用C++实现单链表</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/83617598" target="_blank" rel="noopener">C语言之单链表操作</a></li>
+</ul>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/">https://alonealive.github.io/Blog/2021/05/14/2021/210514_cpp_DataStructure1/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2021-05-22");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2021-05-14T12:49:00.000Z" itemprop="datePublished">2021-05-14</time>
+
+    , 最后修改于&nbsp;<time datetime="2021-05-22T11:29:40.821Z" itemprop="dateModified">2021-05-22</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/cpp/'>cpp</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/cpp/" rel="tag">#&nbsp;cpp</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/datastructure/" rel="tag">#&nbsp;datastructure</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2021/05/07/2021/210507_android_brightness/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">Android R背光调节流程梳理</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>
