@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>数据结构之栈和队列 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="数据结构之栈和队列 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/"><meta property="og:locale" content="zh-CN"><meta name="description" content="栈和队列以及相关代码实现（阅读《数据结构（C++语言版）》及leetcode课题） - sunwengang - sunwengang blog"><meta name="keywords" content="cpp, datastructure"><meta property="article:published_time" content="2021-05-19T11:49:00.000Z"><meta property="article:modified_time" content="2021-05-27T14:33:06.866Z"><meta property="og:updated_time" content="2021-05-27T14:33:06.866Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="cpp, datastructure"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/"
+    },
+    "headline": "数据结构之栈和队列 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2021-05-19T11:49:00.000Z",
+    "dateModified": "2021-05-27T14:33:06.866Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "cpp, datastructure",
+    "description": "栈和队列以及相关代码实现（阅读《数据结构（C++语言版）》及leetcode课题） - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/Blog/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/Blog/tags" class="navbar-link">标签</a>
+    
+        <a href="/Blog/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/Blog/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=数据结构之栈和队列" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=数据结构之栈和队列&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=数据结构之栈和队列" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACKUlEQVR42u3aS26DQBBFUfa/aWccRNe71SayQ10mxBKGY4nu1O94/YPjEClSpMgvQB7FcXXNr5vA689/4+eKHIu8fGlPDz0Dzg9c3S99t3yuyNHIq5d99YJXwKsFVuFX9xUpMiHTRl3hVhu+SJF3IFfw6pyuESmyE2CQF74KMEjQ8nYUJPJxyCoh+svzbdmiyEchY9GosblXgcbqu7dU1UQ+CpkSLopPG/fODxM5E5kCiirQ7X7u3F/kXORu0X51TSpk0YRMpEhSyCeFrE4wEpsIIkcjU4GpQq4wZKNvLRyRY5DkZadJW2py0uKWyNnIVQDQGR5BhXrQpMJVNZEjkJ3mUoKnfxApoBYpMhXe6VDTTjN/ufGLHIlMgS3ZkGnzsypEXDpEjkZ2A4PdImwriBE5FrkzmJQSuc5gXgx6RY5Ekg22KlaRwlYqWOEGqMhHI2kzif4g0niiDX6RM5HdADU1BNK9tgpWIkchUxG+01CnTf6qESpSZGfgjRT7d4Lh5cYvciQyDSKlF50UUWmAgrq0Isch6RBcGhwm18YCgsjRSLI40rBTp9BKhkdEiqRDHSmZIsEzGgYQORJJhuSqhdUZqKMFVZGzkTTBIgX+hOmcRc5GVguGDCWRBlU3YBEpstMoogsjJWPtKEikSJDcd5Ixeg+RIunC6QyWVHjacBU5G5kSMJKo0abS9sIROQZJi+9kaCQFF9VAXblwRI5BfvMhUqRIkR88fgAlLzcV5QzFRQAAAABJRU5ErkJggg==" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">数据结构之栈和队列</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2021-05-19</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=数据结构之栈和队列&url=https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=数据结构之栈和队列&url=https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACKUlEQVR42u3aS26DQBBFUfa/aWccRNe71SayQ10mxBKGY4nu1O94/YPjEClSpMgvQB7FcXXNr5vA689/4+eKHIu8fGlPDz0Dzg9c3S99t3yuyNHIq5d99YJXwKsFVuFX9xUpMiHTRl3hVhu+SJF3IFfw6pyuESmyE2CQF74KMEjQ8nYUJPJxyCoh+svzbdmiyEchY9GosblXgcbqu7dU1UQ+CpkSLopPG/fODxM5E5kCiirQ7X7u3F/kXORu0X51TSpk0YRMpEhSyCeFrE4wEpsIIkcjU4GpQq4wZKNvLRyRY5DkZadJW2py0uKWyNnIVQDQGR5BhXrQpMJVNZEjkJ3mUoKnfxApoBYpMhXe6VDTTjN/ufGLHIlMgS3ZkGnzsypEXDpEjkZ2A4PdImwriBE5FrkzmJQSuc5gXgx6RY5Ekg22KlaRwlYqWOEGqMhHI2kzif4g0niiDX6RM5HdADU1BNK9tgpWIkchUxG+01CnTf6qESpSZGfgjRT7d4Lh5cYvciQyDSKlF50UUWmAgrq0Isch6RBcGhwm18YCgsjRSLI40rBTp9BKhkdEiqRDHSmZIsEzGgYQORJJhuSqhdUZqKMFVZGzkTTBIgX+hOmcRc5GVguGDCWRBlU3YBEpstMoogsjJWPtKEikSJDcd5Ixeg+RIunC6QyWVHjacBU5G5kSMJKo0abS9sIROQZJi+9kaCQFF9VAXblwRI5BfvMhUqRIkR88fgAlLzcV5QzFRQAAAABJRU5ErkJggg==" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#FIFO（先入先出数据结构）"><span class="post-toc-number">1.</span> <span class="post-toc-text">FIFO（先入先出数据结构）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#队列实现"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">队列实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#cpp"><span class="post-toc-number">1.1.1.</span> <span class="post-toc-text">cpp</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#java"><span class="post-toc-number">1.1.2.</span> <span class="post-toc-text">java</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#循环队列"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">循环队列</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#定义和接口"><span class="post-toc-number">1.2.1.</span> <span class="post-toc-text">定义和接口</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#cpp实现"><span class="post-toc-number">1.2.2.</span> <span class="post-toc-text">cpp实现</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Leetcode实现方式-C"><span class="post-toc-number">1.2.3.</span> <span class="post-toc-text">Leetcode实现方式-C++</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#Leetcode实现方式-Java"><span class="post-toc-number">1.2.4.</span> <span class="post-toc-text">Leetcode实现方式-Java</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#☆内置队列库"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">☆内置队列库</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#cpp-1"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">cpp</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#java-1"><span class="post-toc-number">1.3.2.</span> <span class="post-toc-text">java</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#LIFO（后入先出数据结构）"><span class="post-toc-number">2.</span> <span class="post-toc-text">LIFO（后入先出数据结构）</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#栈定义和实现"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">栈定义和实现</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#cpp-2"><span class="post-toc-number">2.1.1.</span> <span class="post-toc-text">cpp</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#java-2"><span class="post-toc-number">2.1.2.</span> <span class="post-toc-text">java</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#☆内置栈库"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">☆内置栈库</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#cpp-3"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">cpp</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#java-3"><span class="post-toc-number">2.2.2.</span> <span class="post-toc-text">java</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#顺序栈"><span class="post-toc-number">3.</span> <span class="post-toc-text">顺序栈</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#基本运算"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">基本运算</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#判断栈是否为空"><span class="post-toc-number">3.1.1.</span> <span class="post-toc-text">判断栈是否为空</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#入栈"><span class="post-toc-number">3.1.2.</span> <span class="post-toc-text">入栈</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#出栈"><span class="post-toc-number">3.1.3.</span> <span class="post-toc-text">出栈</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#取栈顶元素操作"><span class="post-toc-number">3.1.4.</span> <span class="post-toc-text">取栈顶元素操作</span></a></li></ol></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#链栈"><span class="post-toc-number">4.</span> <span class="post-toc-text">链栈</span></a></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>栈和队列以及相关代码实现（阅读《数据结构（C++语言版）》及leetcode课题）</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="FIFO（先入先出数据结构）"><a href="#FIFO（先入先出数据结构）" class="headerlink" title="FIFO（先入先出数据结构）"></a>FIFO（先入先出数据结构）</h2><blockquote>
+<p>FIFO数据结构中，将首先处理添加到队列中的第一个元素。</p>
+</blockquote>
+<blockquote>
+<p>队列是典型的FIFO数据结构。插入（insert）操作也称作入队（enqueue），新元素始终被添加在队列的末尾。删除（delete）操作也被称为出队（dequeue)。你只能移除第一个元素。</p>
+</blockquote>
+<h3 id="队列实现"><a href="#队列实现" class="headerlink" title="队列实现"></a>队列实现</h3><p>为了实现队列，可以使用<strong>动态数组和指向队列头部的索引</strong>。</p>
+<p>队列应支持两种操作：入队和出队。入队会向队列追加一个新元素，而出队会删除第一个元素。 所以我们需要一个索引来指出起点</p>
+<p>以下是简单的代码实现，但是某些场景效率会很低。随着起始指针的移动，会造成更多的空间浪费。</p>
+<h4 id="cpp"><a href="#cpp" class="headerlink" title="cpp"></a>cpp</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyQueue</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="comment">// store elements</span></span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; data;       </span><br><span class="line">        <span class="comment">// a pointer to indicate the start position</span></span><br><span class="line">        <span class="keyword">int</span> p_start;            </span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        MyQueue() &#123;p_start = <span class="number">0</span>;&#125;</span><br><span class="line">        <span class="comment">/** Insert an element into the queue. Return true if the operation is successful. */</span></span><br><span class="line">        <span class="comment">//入队增加元素</span></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">enQueue</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">            data.push_back(x);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/** Delete an element from the queue. Return true if the operation is successful. */</span></span><br><span class="line">        <span class="comment">//出队删除一个元素</span></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">deQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (isEmpty()) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            p_start++;  <span class="comment">//队列头部索引后移</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">/** Get the front item from the queue. */</span></span><br><span class="line">        <span class="comment">//队列第一个元素</span></span><br><span class="line">        <span class="function"><span class="keyword">int</span> <span class="title">Front</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> data[p_start];</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="comment">/** Checks whether the queue is empty or not. */</span></span><br><span class="line">        <span class="comment">//判断是否为空</span></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">isEmpty</span><span class="params">()</span>  </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> p_start &gt;= data.size();</span><br><span class="line">        &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    MyQueue q;</span><br><span class="line">    q.enQueue(<span class="number">5</span>);</span><br><span class="line">    q.enQueue(<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">if</span> (!q.isEmpty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; q.Front() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    q.deQueue();</span><br><span class="line">    <span class="keyword">if</span> (!q.isEmpty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; q.Front() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    q.deQueue();</span><br><span class="line">    <span class="keyword">if</span> (!q.isEmpty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; q.Front() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="java"><a href="#java" class="headerlink" title="java"></a>java</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// "static void main" must be defined in a public class.</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyQueue</span> </span>&#123;</span><br><span class="line">    <span class="comment">// store elements</span></span><br><span class="line">    <span class="keyword">private</span> List&lt;Integer&gt; data;         </span><br><span class="line">    <span class="comment">// a pointer to indicate the start position</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> p_start;            </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        data = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">        p_start = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/** Insert an element into the queue. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">enQueue</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        data.add(x);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;;    </span><br><span class="line">    <span class="comment">/** Delete an element from the queue. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">deQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty() == <span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        p_start++;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/** Get the front item from the queue. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">Front</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> data.get(p_start);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/** Checks whether the queue is empty or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> p_start &gt;= data.size();</span><br><span class="line">    &#125;     </span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        MyQueue q = <span class="keyword">new</span> MyQueue();</span><br><span class="line">        q.enQueue(<span class="number">5</span>);</span><br><span class="line">        q.enQueue(<span class="number">3</span>);</span><br><span class="line">        <span class="keyword">if</span> (q.isEmpty() == <span class="keyword">false</span>) &#123;</span><br><span class="line">            System.out.println(q.Front());</span><br><span class="line">        &#125;</span><br><span class="line">        q.deQueue();</span><br><span class="line">        <span class="keyword">if</span> (q.isEmpty() == <span class="keyword">false</span>) &#123;</span><br><span class="line">            System.out.println(q.Front());</span><br><span class="line">        &#125;</span><br><span class="line">        q.deQueue();</span><br><span class="line">        <span class="keyword">if</span> (q.isEmpty() == <span class="keyword">false</span>) &#123;</span><br><span class="line">            System.out.println(q.Front());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="循环队列"><a href="#循环队列" class="headerlink" title="循环队列"></a>循环队列</h3><p>上面的方式简单但是低效。</p>
+<p><strong>更有效的方法是使用循环队列</strong>。具体来说，就是<strong>使用固定大小的数组和两个指针来指示起始位置和结束位置</strong></p>
+<p>目的是重用我们之前提到的被浪费的存储。</p>
+<h4 id="定义和接口"><a href="#定义和接口" class="headerlink" title="定义和接口"></a>定义和接口</h4><blockquote>
+<p>循环队列是一种线性数据结构，其操作表现基于 FIFO（先进先出）原则并且队尾被连接在队首之后以形成一个循环。它也被称为“环形缓冲器”。</p>
+</blockquote>
+<blockquote>
+<p>循环队列的一个好处是我们可以利用这个队列之前用过的空间。在一个普通队列里，一旦一个队列满了，我们就不能插入下一个元素，即使在队列前面仍有空间。但是使用循环队列，我们能使用这些空间去存储新的值。</p>
+</blockquote>
+<p>你的实现应该支持如下操作：</p>
+<ul>
+<li>MyCircularQueue(k): 构造器，设置队列长度为 k</li>
+<li>Front: 从队首获取元素。如果队列为空，返回 -1</li>
+<li>Rear: 获取队尾元素。如果队列为空，返回 -1</li>
+<li>enQueue(value): 向循环队列插入一个元素。如果成功插入则返回真</li>
+<li>deQueue(): 从循环队列中删除一个元素。如果成功删除则返回真</li>
+<li>isEmpty(): 检查循环队列是否为空</li>
+<li>isFull(): 检查循环队列是否已满</li>
+</ul>
+<h4 id="cpp实现"><a href="#cpp实现" class="headerlink" title="cpp实现"></a>cpp实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCircularQueue</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="keyword">int</span> <span class="built_in">queue</span>[<span class="number">1000</span>] = &#123;<span class="number">0</span>&#125;;  <span class="comment">//假设值范围在0-1000内</span></span><br><span class="line">    <span class="keyword">int</span> k = <span class="number">0</span>;      <span class="comment">//队列长度</span></span><br><span class="line">    <span class="keyword">int</span> head = <span class="number">0</span>;   <span class="comment">//头指针</span></span><br><span class="line">    <span class="keyword">int</span> end = <span class="number">-1</span>;   <span class="comment">//尾指针</span></span><br><span class="line">    <span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    MyCircularQueue(<span class="keyword">int</span> k) &#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;k = k;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//入队</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">enQueue</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (count &lt; k) &#123;</span><br><span class="line">            count++;    <span class="comment">//当前入队元素数量，判断队列是否已满</span></span><br><span class="line">            end = (end + <span class="number">1</span>) % k; <span class="comment">//取余，注意end初始化是-1</span></span><br><span class="line">            <span class="built_in">queue</span>[end] = value;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//出队</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">deQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (count == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        count--;  <span class="comment">//队列元素减一</span></span><br><span class="line">        head = (head + <span class="number">1</span>) % k;  <span class="comment">//队列元素后移，即第一次更新是1（移除了下标为0的元素）</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Front</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (count == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">queue</span>[head]; <span class="comment">//队首元素</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Rear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (count == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">queue</span>[end]; <span class="comment">//获取队尾元素</span></span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (count == <span class="number">0</span>) &#123;  <span class="comment">//队列元素是0，即空队列</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isFull</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (count == k) &#123; <span class="comment">//队列已满</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Your MyCircularQueue object will be instantiated and called as such:</span></span><br><span class="line"><span class="comment"> * MyCircularQueue* obj = new MyCircularQueue(k);</span></span><br><span class="line"><span class="comment"> * bool param_1 = obj-&gt;enQueue(value);</span></span><br><span class="line"><span class="comment"> * bool param_2 = obj-&gt;deQueue();</span></span><br><span class="line"><span class="comment"> * int param_3 = obj-&gt;Front();</span></span><br><span class="line"><span class="comment"> * int param_4 = obj-&gt;Rear();</span></span><br><span class="line"><span class="comment"> * bool param_5 = obj-&gt;isEmpty();</span></span><br><span class="line"><span class="comment"> * bool param_6 = obj-&gt;isFull();</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    MyCircularQueue circularQueue = <span class="keyword">new</span> MyCircularQueue(<span class="number">3</span>); <span class="comment">// 设置长度为 3</span></span><br><span class="line">    circularQueue.enQueue(<span class="number">1</span>);  <span class="comment">// 返回 true</span></span><br><span class="line">    circularQueue.enQueue(<span class="number">2</span>);  <span class="comment">// 返回 true</span></span><br><span class="line">    circularQueue.enQueue(<span class="number">3</span>);  <span class="comment">// 返回 true</span></span><br><span class="line">    circularQueue.enQueue(<span class="number">4</span>);  <span class="comment">// 返回 false，队列已满</span></span><br><span class="line">    circularQueue.Rear();  <span class="comment">// 返回 3</span></span><br><span class="line">    circularQueue.isFull();  <span class="comment">// 返回 true</span></span><br><span class="line">    circularQueue.deQueue();  <span class="comment">// 返回 true</span></span><br><span class="line">    circularQueue.enQueue(<span class="number">4</span>);  <span class="comment">// 返回 true</span></span><br><span class="line">    circularQueue.Rear();  <span class="comment">// 返回 4</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Leetcode实现方式-C"><a href="#Leetcode实现方式-C" class="headerlink" title="Leetcode实现方式-C++"></a>Leetcode实现方式-C++</h4><blockquote>
+<p>在循环队列中，我们使用一个数组和两个指针（head 和 tail）。 head 表示队列的起始位置，tail 表示队列的结束位置。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCircularQueue</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; data;</span><br><span class="line">    <span class="keyword">int</span> head;</span><br><span class="line">    <span class="keyword">int</span> tail;</span><br><span class="line">    <span class="keyword">int</span> size;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">/** Initialize your data structure here. Set the size of the queue to be k. */</span></span><br><span class="line">    MyCircularQueue(<span class="keyword">int</span> k) &#123;</span><br><span class="line">        data.resize(k);  <span class="comment">//重置size</span></span><br><span class="line">        head = <span class="number">-1</span>;</span><br><span class="line">        tail = <span class="number">-1</span>;</span><br><span class="line">        size = k;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Insert an element into the circular queue. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">enQueue</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isFull()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty()) &#123;</span><br><span class="line">            head = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        tail = (tail + <span class="number">1</span>) % size;</span><br><span class="line">        data[tail] = value;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Delete an element from the circular queue. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">deQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (head == tail) &#123;</span><br><span class="line">            head = <span class="number">-1</span>;</span><br><span class="line">            tail = <span class="number">-1</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        head = (head + <span class="number">1</span>) % size;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Get the front item from the queue. */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Front</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> data[head];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Get the last item from the queue. */</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Rear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> data[tail];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Checks whether the circular queue is empty or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> head == <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Checks whether the circular queue is full or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">bool</span> <span class="title">isFull</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ((tail + <span class="number">1</span>) % size) == head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Your MyCircularQueue object will be instantiated and called as such:</span></span><br><span class="line"><span class="comment"> * MyCircularQueue obj = new MyCircularQueue(k);</span></span><br><span class="line"><span class="comment"> * bool param_1 = obj.enQueue(value);</span></span><br><span class="line"><span class="comment"> * bool param_2 = obj.deQueue();</span></span><br><span class="line"><span class="comment"> * int param_3 = obj.Front();</span></span><br><span class="line"><span class="comment"> * int param_4 = obj.Rear();</span></span><br><span class="line"><span class="comment"> * bool param_5 = obj.isEmpty();</span></span><br><span class="line"><span class="comment"> * bool param_6 = obj.isFull();</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="Leetcode实现方式-Java"><a href="#Leetcode实现方式-Java" class="headerlink" title="Leetcode实现方式-Java"></a>Leetcode实现方式-Java</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyCircularQueue</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] data;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> head;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> tail;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> size;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/** Initialize your data structure here. Set the size of the queue to be k. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyCircularQueue</span><span class="params">(<span class="keyword">int</span> k)</span> </span>&#123;</span><br><span class="line">        data = <span class="keyword">new</span> <span class="keyword">int</span>[k];</span><br><span class="line">        head = -<span class="number">1</span>;</span><br><span class="line">        tail = -<span class="number">1</span>;</span><br><span class="line">        size = k;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Insert an element into the circular queue. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">enQueue</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isFull() == <span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty() == <span class="keyword">true</span>) &#123;</span><br><span class="line">            head = <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        tail = (tail + <span class="number">1</span>) % size;</span><br><span class="line">        data[tail] = value;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Delete an element from the circular queue. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">deQueue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty() == <span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (head == tail) &#123;</span><br><span class="line">            head = -<span class="number">1</span>;</span><br><span class="line">            tail = -<span class="number">1</span>;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        head = (head + <span class="number">1</span>) % size;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Get the front item from the queue. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">Front</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty() == <span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> data[head];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Get the last item from the queue. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">Rear</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty() == <span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> data[tail];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Checks whether the circular queue is empty or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> head == -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/** Checks whether the circular queue is full or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isFull</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> ((tail + <span class="number">1</span>) % size) == head;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Your MyCircularQueue object will be instantiated and called as such:</span></span><br><span class="line"><span class="comment"> * MyCircularQueue obj = new MyCircularQueue(k);</span></span><br><span class="line"><span class="comment"> * boolean param_1 = obj.enQueue(value);</span></span><br><span class="line"><span class="comment"> * boolean param_2 = obj.deQueue();</span></span><br><span class="line"><span class="comment"> * int param_3 = obj.Front();</span></span><br><span class="line"><span class="comment"> * int param_4 = obj.Rear();</span></span><br><span class="line"><span class="comment"> * boolean param_5 = obj.isEmpty();</span></span><br><span class="line"><span class="comment"> * boolean param_6 = obj.isFull();</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="☆内置队列库"><a href="#☆内置队列库" class="headerlink" title="☆内置队列库"></a>☆内置队列库</h3><p>大多数流行语言都提供内置的队列库，因此您无需重新发明轮子。</p>
+<p>队列有两个重要的操作，入队 enqueue 和出队 dequeue。 此外，我们应该能够获得队列中的第一个元素，因为应该首先处理它。</p>
+<h4 id="cpp-1"><a href="#cpp-1" class="headerlink" title="cpp"></a>cpp</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. Initialize a queue.</span></span><br><span class="line">    <span class="built_in">queue</span>&lt;<span class="keyword">int</span>&gt; q;</span><br><span class="line">    <span class="comment">// 2. Push new element.</span></span><br><span class="line">    q.push(<span class="number">5</span>);</span><br><span class="line">    q.push(<span class="number">13</span>);</span><br><span class="line">    q.push(<span class="number">8</span>);</span><br><span class="line">    q.push(<span class="number">6</span>);</span><br><span class="line">    <span class="comment">// 3. Check if queue is empty.</span></span><br><span class="line">    <span class="keyword">if</span> (q.empty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Queue is empty!"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 4. Pop an element.移除一个元素</span></span><br><span class="line">    q.pop();</span><br><span class="line">    <span class="comment">// 5. Get the first element.获取第一个元素</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"The first element is: "</span> &lt;&lt; q.front() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="comment">// 6. Get the last element.获取最后一个元素</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"The last element is: "</span> &lt;&lt; q.back() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="comment">// 7. Get the size of the queue.长度</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"The size is: "</span> &lt;&lt; q.size() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="java-1"><a href="#java-1" class="headerlink" title="java"></a>java</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// "static void main" must be defined in a public class.</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 1. Initialize a queue.</span></span><br><span class="line">        Queue&lt;Integer&gt; q = <span class="keyword">new</span> LinkedList();</span><br><span class="line">        <span class="comment">// 2. Get the first element - return null if queue is empty.</span></span><br><span class="line">        System.out.println(<span class="string">"The first element is: "</span> + q.peek());</span><br><span class="line">        <span class="comment">// 3. Push new element.</span></span><br><span class="line">        q.offer(<span class="number">5</span>);</span><br><span class="line">        q.offer(<span class="number">13</span>);</span><br><span class="line">        q.offer(<span class="number">8</span>);</span><br><span class="line">        q.offer(<span class="number">6</span>);</span><br><span class="line">        <span class="comment">// 4. Pop an element.</span></span><br><span class="line">        q.poll();</span><br><span class="line">        <span class="comment">// 5. Get the first element.</span></span><br><span class="line">        System.out.println(<span class="string">"The first element is: "</span> + q.peek());</span><br><span class="line">        <span class="comment">// 7. Get the size of the queue.</span></span><br><span class="line">        System.out.println(<span class="string">"The size is: "</span> + q.size());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="LIFO（后入先出数据结构）"><a href="#LIFO（后入先出数据结构）" class="headerlink" title="LIFO（后入先出数据结构）"></a>LIFO（后入先出数据结构）</h2><blockquote>
+<p>参考：<a href="https://leetcode-cn.com/leetbook/read/queue-stack/ghqur/" target="_blank" rel="noopener">leetcode-后入先出的数据结构</a></p>
+<p>在LIFO数据结构中，<strong>将首先处理添加到队列中的最新元素</strong>。</p>
+</blockquote>
+<blockquote>
+<p>与队列不同，栈是一个LIFO数据结构。通常，插入操作在栈中被称作入栈push。与队列类似，总是在堆栈的末尾添加一个新元素。<strong>但是，删除操作，退栈pop，将始终删除队列中相对于它的最后一个元素</strong></p>
+</blockquote>
+<hr>
+<h3 id="栈定义和实现"><a href="#栈定义和实现" class="headerlink" title="栈定义和实现"></a>栈定义和实现</h3><blockquote>
+<p>栈是限制在表的一端进行插入和删除的线性表。表中允许插入、删除的这一端称为栈顶，栈顶的当前位置是动态变化的；不允许插入和删除的另一端称为栈底，栈底是固定不变的。当表中没有元素时称为空栈。栈的插入运算称为进栈、压栈或入栈，栈的删除运算称为退栈或出栈。</p>
+</blockquote>
+<h4 id="cpp-2"><a href="#cpp-2" class="headerlink" title="cpp"></a>cpp</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyStack</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt; data;               <span class="comment">// store elements</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        <span class="comment">/** Insert an element into the stack. */</span></span><br><span class="line">        <span class="function"><span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">            data.push_back(x);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/** Checks whether the queue is empty or not. */</span></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> data.empty();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/** Get the top item from the queue. */</span></span><br><span class="line">        <span class="function"><span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> data.back();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">/** Delete an element from the queue. Return true if the operation is successful. */</span></span><br><span class="line">        <span class="function"><span class="keyword">bool</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (isEmpty()) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            data.pop_back();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    MyStack s;</span><br><span class="line">    s.push(<span class="number">1</span>);</span><br><span class="line">    s.push(<span class="number">2</span>);</span><br><span class="line">    s.push(<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!s.isEmpty()) &#123;</span><br><span class="line">            <span class="built_in">cout</span> &lt;&lt; s.top() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; (s.pop() ? <span class="string">"true"</span> : <span class="string">"false"</span>) &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="java-2"><a href="#java-2" class="headerlink" title="java"></a>java</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// "static void main" must be defined in a public class.</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">MyStack</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> List&lt;Integer&gt; data;               <span class="comment">// store elements</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        data = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/** Insert an element into the stack. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> x)</span> </span>&#123;</span><br><span class="line">        data.add(x);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/** Checks whether the queue is empty or not. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> data.isEmpty();</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/** Get the top item from the queue. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">top</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> data.get(data.size() - <span class="number">1</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/** Delete an element from the queue. Return true if the operation is successful. */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        data.remove(data.size() - <span class="number">1</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        MyStack s = <span class="keyword">new</span> MyStack();</span><br><span class="line">        s.push(<span class="number">1</span>);</span><br><span class="line">        s.push(<span class="number">2</span>);</span><br><span class="line">        s.push(<span class="number">3</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">4</span>; ++i) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!s.isEmpty()) &#123;</span><br><span class="line">                System.out.println(s.top());</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(s.pop());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="☆内置栈库"><a href="#☆内置栈库" class="headerlink" title="☆内置栈库"></a>☆内置栈库</h3><h4 id="cpp-3"><a href="#cpp-3" class="headerlink" title="cpp"></a>cpp</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. Initialize a stack.</span></span><br><span class="line">    <span class="built_in">stack</span>&lt;<span class="keyword">int</span>&gt; s;</span><br><span class="line">    <span class="comment">// 2. Push new element.</span></span><br><span class="line">    s.push(<span class="number">5</span>);</span><br><span class="line">    s.push(<span class="number">13</span>);</span><br><span class="line">    s.push(<span class="number">8</span>);</span><br><span class="line">    s.push(<span class="number">6</span>);</span><br><span class="line">    <span class="comment">// 3. Check if stack is empty.</span></span><br><span class="line">    <span class="keyword">if</span> (s.empty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Stack is empty!"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 4. Pop an element.</span></span><br><span class="line">    s.pop();</span><br><span class="line">    <span class="comment">// 5. Get the top element.</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"The top element is: "</span> &lt;&lt; s.top() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="comment">// 6. Get the size of the stack.</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"The size is: "</span> &lt;&lt; s.size() &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="java-3"><a href="#java-3" class="headerlink" title="java"></a>java</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// "static void main" must be defined in a public class.</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 1. Initialize a stack.</span></span><br><span class="line">        Stack&lt;Integer&gt; s = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line">        <span class="comment">// 2. Push new element.</span></span><br><span class="line">        s.push(<span class="number">5</span>);</span><br><span class="line">        s.push(<span class="number">13</span>);</span><br><span class="line">        s.push(<span class="number">8</span>);</span><br><span class="line">        s.push(<span class="number">6</span>);</span><br><span class="line">        <span class="comment">// 3. Check if stack is empty.</span></span><br><span class="line">        <span class="keyword">if</span> (s.empty() == <span class="keyword">true</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Stack is empty!"</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 4. Pop an element.</span></span><br><span class="line">        s.pop();</span><br><span class="line">        <span class="comment">// 5. Get the top element.</span></span><br><span class="line">        System.out.println(<span class="string">"The top element is: "</span> + s.peek());</span><br><span class="line">        <span class="comment">// 6. Get the size of the stack.</span></span><br><span class="line">        System.out.println(<span class="string">"The size is: "</span> + s.size());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>栈的存储与一般的线性表的存储类似，主要有两种存储方式：顺序存储和链式存储。</p>
+<h2 id="顺序栈"><a href="#顺序栈" class="headerlink" title="顺序栈"></a>顺序栈</h2><blockquote>
+<p>利用顺序存储方式实现的栈称为顺序栈。<br>类似于顺序表的定义，要分配一块连续的存储空间存放栈中的元素，栈底位置可以固定地设置在数组的任何一端（一般在下标为0的一端），而栈顶是随着插入和删除而变化的，再用一个变量指明当前栈顶的位置（实际上是栈顶元素的下一个位置）</p>
+</blockquote>
+<p>类描述：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="keyword">int</span> DataType;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SeqStack</span> &#123;</span></span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">    DataType *base; <span class="comment">//栈底指针</span></span><br><span class="line">    DataType *top;  <span class="comment">//栈顶指针，始终指向栈顶元素的后一个位置</span></span><br><span class="line">    <span class="keyword">int</span> size;       <span class="comment">//栈大小</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="comment">//构造一个空栈</span></span><br><span class="line">    SeqStack(<span class="keyword">int</span> stacksize=<span class="number">100</span>) &#123;</span><br><span class="line">        base = <span class="keyword">new</span> DataType[stacksize];</span><br><span class="line">        top=base;   <span class="comment">//只想栈顶元素的后一个位置</span></span><br><span class="line">        size=stacksize;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//销毁一个已存在的栈</span></span><br><span class="line">    ~SeqStack() &#123;</span><br><span class="line">        <span class="keyword">delete</span>[] base;</span><br><span class="line">        top=<span class="literal">NULL</span>;</span><br><span class="line">        base=<span class="literal">NULL</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Empty_Stack</span><span class="params">()</span></span>;   <span class="comment">//判断栈是否为空</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Push_Stack</span><span class="params">(DataType e)</span></span>;   <span class="comment">//将元素e插入栈顶</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Pop_Stack</span><span class="params">(DataType &amp;e)</span></span>;   <span class="comment">//从栈顶删除一个元素到e中返回</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetTop_Stack</span><span class="params">(DataType &amp;e)</span></span>; <span class="comment">//从栈顶取出一个元素到e中返回</span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h3 id="基本运算"><a href="#基本运算" class="headerlink" title="基本运算"></a>基本运算</h3><h4 id="判断栈是否为空"><a href="#判断栈是否为空" class="headerlink" title="判断栈是否为空"></a>判断栈是否为空</h4><p>算法思想：判断top是否小于等于base，小于等于则为空栈，返回1，否则返回0</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">SeqStack::Empty_Stack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span>((top &lt;= base));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="入栈"><a href="#入栈" class="headerlink" title="入栈"></a>入栈</h4><p>入栈操作是在栈的顶部进行插入操作，相当于在顺序表的表尾进行插入，因而无须移动元素。</p>
+<p>算法思想：首先判断栈是否已满，若满则失败，返回0；否则，由于栈的top 指向栈顶元素的后一个位置，将入栈元素赋到top的位置，再将top+1指向新的位置，成功返回1</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">SeqStack::Push_Stack</span><span class="params">(DataType e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((top-base) &lt; size) &#123;  <span class="comment">//是否栈满</span></span><br><span class="line">        *top = e;</span><br><span class="line">        top++;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="出栈"><a href="#出栈" class="headerlink" title="出栈"></a>出栈</h4><p>出栈操作是在栈的顶部进行删除操作，相当于在顺序表的表尾进行删除，因而也无须移动元素。</p>
+<p>算法思想：首先判断栈是否为空，若空则失败，返回0；否则，由于栈的top 指向栈顶元素的后一位置，要先修改top为top-1，再将其所指向的元素以引用参数e返回，成功返回1。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">SeqStack::Pop_Stack</span><span class="params">(DataType &amp;e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (top &gt; base) &#123;  <span class="comment">//是否栈为空</span></span><br><span class="line">        top--;</span><br><span class="line">        e = *top;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="取栈顶元素操作"><a href="#取栈顶元素操作" class="headerlink" title="取栈顶元素操作"></a>取栈顶元素操作</h4><p>取栈顶元素是获取出栈顶元素的值，而不改变栈。</p>
+<p>算法思想：首先判断栈是否为空，若空则失败，返回0；否则，由于栈的top 指向栈顶元素的后一位置，返回top-1所指单元的值，栈不发生变化。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">SeqStack::Get_Stack</span><span class="params">(DataType &amp;e)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (top &gt; base) &#123;  <span class="comment">//是否栈为空</span></span><br><span class="line">        e = *(top<span class="number">-1</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="链栈"><a href="#链栈" class="headerlink" title="链栈"></a>链栈</h2><blockquote>
+<p>用链式存储结构的栈，节点结构和单链表相同</p>
+</blockquote>
+<p>因为栈中的主要运算是在栈顶进行插入和删除操作，显然在单链表的表头插入和删除都比较方便</p>
+<p>因此以其作为栈顶，而且没有必要像单链表那样为了运算方便而附加一个头结点</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">typedf <span class="keyword">int</span> DataType;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StackNode</span> &#123;</span></span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        DataType data;</span><br><span class="line">        StackNode *next;</span><br><span class="line">        StackNode() &#123;</span><br><span class="line">            next = <span class="literal">NULL</span>;</span><br><span class="line">        &#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">LinkStack</span> &#123;</span></span><br><span class="line">    <span class="keyword">private</span>:</span><br><span class="line">        StackNode *top;</span><br><span class="line">    <span class="keyword">public</span>:</span><br><span class="line">        LinkStack() &#123;</span><br><span class="line">            top = <span class="literal">NULL</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        ~LinkStack() &#123;</span><br><span class="line">            <span class="keyword">while</span>(top) &#123;</span><br><span class="line">                p = top;</span><br><span class="line">                top = top-&gt;next;</span><br><span class="line">                <span class="keyword">delete</span> p;</span><br><span class="line">            &#125;</span><br><span class="line">            top = <span class="literal">NULL</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Empty_Stack</span><span class="params">()</span></span>;              <span class="comment">//判空</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Push_Stack</span><span class="params">(DataType e)</span></span>;     <span class="comment">//将元素e插入栈顶</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">Pop_Satck</span><span class="params">(DataType &amp;e)</span></span>;     <span class="comment">//从栈顶删除一个元素到e中返回</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">GetTop_Stack</span><span class="params">(DataType &amp;e)</span></span>;  <span class="comment">//从栈顶去除元素到e中返回</span></span><br><span class="line">&#125;；</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><blockquote>
+<p><a href="https://leetcode-cn.com/leetbook/detail/queue-stack/c" target="_blank" rel="noopener">Leetcode-队列&amp;栈</a></p>
+</blockquote>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/">https://alonealive.github.io/Blog/2021/05/19/2021/210519_cpp_DataStructure3/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2021-05-27");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2021-05-19T11:49:00.000Z" itemprop="datePublished">2021-05-19</time>
+
+    , 最后修改于&nbsp;<time datetime="2021-05-27T14:33:06.866Z" itemprop="dateModified">2021-05-27</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/cpp/'>cpp</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/cpp/" rel="tag">#&nbsp;cpp</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/datastructure/" rel="tag">#&nbsp;datastructure</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2021/05/16/2021/210516_cpp_DataStructure2/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">数据结构之链表</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>

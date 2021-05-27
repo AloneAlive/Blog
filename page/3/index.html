@@ -336,6 +336,89 @@
             
                 <div class="column col-12">
                     
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/22/2019/190922-android-handler-cpp/" rel="bookmark">Android Handler消息循环处理机制(例ActivityThread)</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        整体流程
+关键词：Handler、Looper、MessageQueue、handleMessage
+
+消息被存放于消息队列，应用程序的主线程会围绕这个消息队列进入一个无限循环，知道应用程序退出。（消息循环过程是由Looper实现的）
+
+如果队列中有消息，应用程序的主线程会把它取出来，分发给相应的Handler进行处理；
+如果队列中没有消息，应用程序的主县城就会进入空闲等待状态，等待下一个消息的到来；
+    <a href="/Blog/2019/09/22/2019/190922-android-handler-cpp/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-22</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
+    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/21/2019/190921-android-wms-view-cpp/" rel="bookmark">Android WMS和View基本理解</a></h2>
+
+
+<p class="mb-0 card-body">
+    
+        概述
+Window 可以看做是Surface的一个包装，本质上，Window的本体就是一片Surface。将操作对象Surface，对象关联属性集以及操作方法等组合在一起便是 Window。Surface 其实是一块画布，应用可以随心所欲地通过 Canvas 或者 OpenGL 在其上作画，然后通过 SurfaceFlinger 将多块 Surface 的内容按照特定的顺序(ZOrder)进行混合并输出到 FrameBuffer，从而将 Android 漂亮的脸蛋显示给用户。既然每个窗口都有一块 Surface 供自己涂鸦，所以必然需要一个角色对所有窗口的 Surface 进行协调管理。于是,WMS 应运而生。
+
+
+代码： http://aosp.opersys.com/xref/android-10.0.0_r2/xref/frameworks/base/core/java/android/view/
+
+    <a href="/Blog/2019/09/21/2019/190921-android-wms-view-cpp/">阅读全文</a>
+</p>
+
+
+
+
+    <!-- Date & Category -->
+    <div class="card-footer post-entry-info text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <time>2019-09-21</time>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/android/">android</a>
+        
+        
+    </div>
+
+                </div>
+            
+        </div>
+</article>
+
+                    
+                
+                    
+                        <article class="post-entry container px-0 card">
+        <div class="columns col-gapless">
+            
+                <div class="column col-12">
+                    
     <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/09/16/2019/190916_cpp_useclass/" rel="bookmark">C++ 运算符重载、友元、返回对象</a></h2>
 
 
@@ -1006,82 +1089,6 @@ C++的enum工具提供了另一种创建符号常量的方式，可以代替cons
     <div class="card-footer post-entry-info text-gray">
         <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
         <time>2019-07-27</time>
-        
-            <span class="suka-devide-dot"></span>
-            <a class="category-link" href="/Blog/categories/linux/">linux</a>
-        
-        
-    </div>
-
-                </div>
-            
-        </div>
-</article>
-
-                    
-                
-                    
-                        <article class="post-entry container px-0 card">
-        <div class="columns col-gapless">
-            
-                <div class="column col-12">
-                    
-    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/27/2019/190726-next-addmusic/" rel="bookmark">hexo文章中使用iframe插件插入网易云音乐</a></h2>
-
-
-<p class="mb-0 card-body">
-    
-        
-为了收藏一些喜欢的音乐分享在博客上，使用iframe插件生成网易云音乐的控件。
-
-    <a href="/Blog/2019/07/27/2019/190726-next-addmusic/">阅读全文</a>
-</p>
-
-
-
-
-    <!-- Date & Category -->
-    <div class="card-footer post-entry-info text-gray">
-        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
-        <time>2019-07-27</time>
-        
-            <span class="suka-devide-dot"></span>
-            <a class="category-link" href="/Blog/categories/web/">web</a>
-        
-        
-    </div>
-
-                </div>
-            
-        </div>
-</article>
-
-                    
-                
-                    
-                        <article class="post-entry container px-0 card">
-        <div class="columns col-gapless">
-            
-                <div class="column col-12">
-                    
-    <h2 class="h5 mb-0 card-header"><a class="card-title" href="/Blog/2019/07/26/2019/190725_linux_linuxEnv/" rel="bookmark">Ubuntu安装后的环境配置注意点</a></h2>
-
-
-<p class="mb-0 card-body">
-    
-        
-Ubuntu系统刚安装完成后，工作还只是进行了一小半，还有一大堆的环境需要配置搭建。比如说JDK, nodejs, python, vs code编译器 …
-
-    <a href="/Blog/2019/07/26/2019/190725_linux_linuxEnv/">阅读全文</a>
-</p>
-
-
-
-
-    <!-- Date & Category -->
-    <div class="card-footer post-entry-info text-gray">
-        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
-        <time>2019-07-26</time>
         
             <span class="suka-devide-dot"></span>
             <a class="category-link" href="/Blog/categories/linux/">linux</a>
