@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+    <head>
+    <meta charset="utf-8">
+    <!--
+        hexo-theme-suka © SukkaW
+        GitHub: https://github.com/SukkaW/hexo-theme-suka
+    -->
+
+    <!-- ### Resource Hint ### -->
+
+    <!-- ## DNS Prefetch ## -->
+    <meta http-equiv="x-dns-prefetch-control" content="on">
+
+<!-- busuanzi -->
+
+    <link rel="dns-prefetch" href="//busuanzi.ibruce.info">
+
+
+<!-- comment -->
+
+
+
+
+
+
+    <link rel="dns-prefetch" href="//cdn1.lncld.net">
+
+
+<!-- analytics -->
+
+
+
+
+
+
+
+    <!-- ## Preload ## -->
+    
+    <!-- Busuanzi -->
+    
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" as="script">
+
+
+
+
+
+
+
+    <!-- ### Meta & Title & Info ### -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, maximum-scale=5, viewport-fit=cover">
+    <meta name="renderer" content="webkit">
+
+    <!-- Title -->
+    <title>数据结构之二叉树 | sunwengang blog</title>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image&#x2F;ico" href="/Blog/img/favicon.ico">
+
+    <!-- ### Import File ### -->
+    <link rel="stylesheet" href="/Blog/lib/spectre/spectre.min.css"><style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    a, a:visited {
+        color: #8E354A;
+    }
+
+    a:active, a:focus, a:hover {
+        color: #8E354A;
+        opacity: .75;
+    }
+
+    #post-content a,
+    #post-content a:hover,
+    #post-content a:focus,
+    #post-content a:visited {
+        color: #005eb9;
+        opacity: 1;
+    }
+
+    
+
+    .post-entry .card-body a {
+        color: #8E354A;
+    }
+
+    .avatar {
+        background: #444;
+    }
+
+    .navbar-link,
+    .navbar-link:visited,
+    .timeline .timeline-item .timeline-icon.icon-lg {
+        color: #8E354A;
+    }
+
+    .navbar-link:hover {
+        color: #8E354A;
+        opacity: .8;
+    }
+
+    #search-input .btn,
+    #disqus_click_btn,
+    #disqus-switch-to-direct,
+    #disqus-loadmore-button {
+        background: #727e96;
+        border-color: #727e96;
+        color: #fff;
+    }
+
+    #post-toc a.post-toc-link,
+    #post-toc a.post-toc-link:visited,
+    .share-menu.menu .menu-item>a {
+        color: #727e96;
+    }
+
+    .share-menu.menu .menu-item>a:hover,
+    .share-menu.menu .menu-item>a:focus,
+    .share-menu.menu .menu-item>a:visited {
+        color: #50596c;
+        background: #f8f9fa;
+        opacity: .85;
+    }
+</style><link rel="stylesheet" href="/Blog/css/style.min.css">
+
+
+
+
+
+
+
+
+    <!-- Prettify Theme -->
+    
+    <link rel="preload" href="/Blog/css/highlight/arduino-light.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'"><noscript><link rel="stylesheet" href="/Blog/css/highlight/arduino-light.min.css"></noscript>
+
+
+
+
+
+<script>
+/*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+!function(t){"use strict";t.loadCSS||(t.loadCSS=function(){});var e=loadCSS.relpreload={};if(e.support=function(){var e;try{e=t.document.createElement("link").relList.supports("preload")}catch(t){e=!1}return function(){return e}}(),e.bindMediaToggle=function(t){var e=t.media||"all";function a(){t.addEventListener?t.removeEventListener("load",a):t.attachEvent&&t.detachEvent("onload",a),t.setAttribute("onload",null),t.media=e}t.addEventListener?t.addEventListener("load",a):t.attachEvent&&t.attachEvent("onload",a),setTimeout(function(){t.rel="stylesheet",t.media="only x"}),setTimeout(a,3e3)},e.poly=function(){if(!e.support())for(var a=t.document.getElementsByTagName("link"),n=0;n<a.length;n++){var o=a[n];"preload"!==o.rel||"style"!==o.getAttribute("as")||o.getAttribute("data-loadcss")||(o.setAttribute("data-loadcss",!0),e.bindMediaToggle(o))}},!e.support()){e.poly();var a=t.setInterval(e.poly,500);t.addEventListener?t.addEventListener("load",function(){e.poly(),t.clearInterval(a)}):t.attachEvent&&t.attachEvent("onload",function(){e.poly(),t.clearInterval(a)})}"undefined"!=typeof exports?exports.loadCSS=loadCSS:t.loadCSS=loadCSS}("undefined"!=typeof global?global:this);
+</script>
+
+    <!-- ### Site Verification ### -->
+    
+
+
+    <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <!-- ### The Open Graph & Twitter Card Protocol ### -->
+    <meta property="og:title" content="数据结构之二叉树 | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/"><meta property="og:locale" content="zh-CN"><meta name="description" content="包含树、二叉树、哈希表、二分查找的定义和实现 - sunwengang - sunwengang blog"><meta name="keywords" content="cpp, datastructure"><meta property="og:image" content="https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/tree_order1.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/tree_order1.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/tree_order1.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/forest1.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/binaryTree1.png"><meta property="og:image" content="https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/tree2.png"><meta property="article:published_time" content="2021-05-28T14:05:00.000Z"><meta property="article:modified_time" content="2021-05-28T12:16:51.908Z"><meta property="og:updated_time" content="2021-05-28T12:16:51.908Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="cpp, datastructure"><meta name="twitter:card" content="summary">
+
+    
+
+    <!-- ### Canonical link ### -->
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/">
+
+    <meta name="generator" content="Hexo 4.2.0">
+
+    <!-- ### Analytics ### -->
+    
+
+
+
+
+
+
+
+    <!-- ### Structured Data ### -->
+    
+
+
+
+<script type="application/ld+json">
+{
+    "@context": "http://schema.org",
+    "url": "https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/",
+    "@type": "BlogPosting",
+    "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/"
+    },
+    "headline": "数据结构之二叉树 | sunwengang blog",
+    
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+    },
+    
+    "datePublished": "2021-05-28T14:05:00.000Z",
+    "dateModified": "2021-05-28T12:16:51.908Z",
+    "author": {
+        "@type": "Person",
+        "name": "sunwengang",
+        "image": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/head.jpg"
+        },
+        "description": "developer | android display/graphics"
+    },
+    "publisher": {
+        "@type": "Organization",
+        "name": "sunwengang blog",
+        "logo": {
+            "@type": "ImageObject",
+            "url": "https://alonealive.github.io/Blog/img/favicon.ico"
+        }
+    },
+    
+    "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://alonealive.github.io/Blog/Blog/search?s={search_term_string}",
+        "query-input": "required name=search_term_string"
+    },
+    
+    "keywords": "cpp, datastructure",
+    "description": "包含树、二叉树、哈希表、二分查找的定义和实现 - sunwengang - sunwengang blog"
+}
+</script>
+
+
+
+    <!-- ### Custom Head ### -->
+    
+</head>
+
+    <body>
+            
+
+            <!-- ### Main content ### -->
+            <!-- ## Header ##-->
+<header>
+    <h1 class="header-title text-center"><a href="/Blog/">sunwengang blog</a></h1>
+
+    <p class="text-center header-slogan">
+        
+            
+                developer | android display/graphics
+            
+        
+    </p>
+
+    <nav class="navbar-section text-center">
+    
+        <a href="/Blog/" class="navbar-link">首页</a>
+    
+    
+        <a href="/Blog/archives/" class="navbar-link">归档</a>
+    
+    
+        <a href="/Blog/search" class="navbar-link">搜索</a>
+    
+    
+        <a href="/Blog/tags" class="navbar-link">标签</a>
+    
+        <a href="/Blog/html/nav.html" class="navbar-link">导航</a>
+    
+        <a href="/Blog/links" class="navbar-link">友链</a>
+    
+    
+        <div class="dropdown dropdown-right">
+    <a class="navbar-link dropdown-toggle" tabindex="0">分享</a>
+    <ul class="menu share-menu">
+
+        <!-- Share Weibo -->
+        
+        <li class="menu-item">
+            <a href="http://service.weibo.com/share/share.php?appkey=&title=sunwengang blog&url=https://alonealive.github.io/Blog&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        </li>
+        
+
+        <!-- Share Twitter -->
+        
+        <li class="menu-item">
+            <a href="https://twitter.com/intent/tweet?text=sunwengang blog&url=https://alonealive.github.io/Blog&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        </li>
+        
+
+        <!-- Share Facebook -->
+        
+        <li class="menu-item">
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        </li>
+        
+
+        <!-- Share Google+ -->
+        
+        <li class="menu-item">
+            <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        </li>
+        
+
+        <!-- Share LinkedIn -->
+        
+        <li class="menu-item">
+            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog&title=数据结构之二叉树" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        </li>
+        
+
+        <!-- Share QQ -->
+        
+        <li class="menu-item">
+            <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=数据结构之二叉树&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        </li>
+        
+
+        <!-- Share Telegram -->
+        
+        <li class="menu-item">
+            <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog&text=数据结构之二叉树" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        </li>
+        
+
+        <!-- QRCode -->
+        
+        <li class="menu-item">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACN0lEQVR42u2awXICMQxD+f+fbq8Mk0hy2A509fYCLVnywsRZWfbj5x9cDyCBBBLIL4B8iOt5zOt7N/75f6/v43mBrIVcbtoNmHpdfd8KPp4XyGrI1WZfbXC1uNU4B7+bF0ggHeQOeLeI3cMCSCCvgHz3sHdjgARyIjCSQ9gd8mphl6ggIG8HqRKiv3y9LFsE8laQ1jQait2d0Fh912WuGpC3gkwMKJVspQJk9VCwghnISsiJWNgZo+nfKniWCwGyEnJi5idmgbrHCZdYBQFZB6lunASGO8TtDwJkNaTa7O4wTwNHzRkFDpA1kKmZlCZtShBP5gGyE9Jt7rTAFBn1gTiRhhWQdZDTZN8tLG18ssY+kPWQzkyaNtGpz+XBD2QtZGpUqSaSpPjpgiVy1YCsgZwkWkrMJmZCGqRA9kImweCaNyeNeZeIXiBvDzkRwUooJItLG/eA7IVMEvjd+DRo0gcBkEAeNamHzSKqIWR0mANZBXkqfN09STLnGuyA7IScGPdJgfREDG8PfiBrIafF84lJqgSJM7qA7IZ0jcFONCRCOAmauFEEyArIk+Zj19jkiqkqUQMSSNdsnCZTSTLmBAyQvZBpk1ySPDnTIDVUgeyGdBt6WqhPjIS3s0Ugbw/pik2pgZoY+ceBA2QdZNJInEzujNVLVBCQQIbNI0khIDFngQTypKCeCgh3YMvgBLIaUplKJ4LBGaVHgQNkDaR78KfNIM5QUIUoGzhA1kB+8wUkkEAC+cHrF1j9NiRR9jmoAAAAAElFTkSuQmCC" alr="QRCode">
+        </li>
+        
+
+    </ul>
+</div>
+    
+    
+</nav>
+</header>
+
+            
+    <!-- ## Post ## -->
+    <div class="post-container">
+    <div id="post-card" class="card">
+        
+        <div class="card-item-container">
+            <div class="card-inner-cell">
+                <!-- # Post Header Info # -->
+                <div class="card-header">
+                    
+    <h1 class="card-title h3 mb-2">数据结构之二叉树</h1>
+
+
+
+
+<div class="post-header-info">
+    <p class="post-header-info-left text-gray">
+        <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
+        <span>2021-05-28</span>
+        
+            <span class="suka-devide-dot"></span>
+            <a class="category-link" href="/Blog/categories/cpp/">cpp</a>
+        
+        
+            <!-- Busuanzi Post Views -->
+<span id="busuanzi_container_page_pv" hidden>
+    <span class="suka-devide-dot"></span>
+    <span></span>
+    <span id="busuanzi_value_page_pv"></span>
+    <span>Views</span>
+</span>
+        
+        
+    </p>
+    <div class="post-header-info-right">
+        
+            <div class="dropdown dropdown-right">
+<a class="dropdown-toggle" tabindex="0">分享本文</a>
+<ul class="menu share-menu">
+    <!-- Share Weibo -->
+    
+    <li class="menu-item">
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=数据结构之二叉树&url=https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+    </li>
+    
+
+    <!-- Share Twitter -->
+    
+    <li class="menu-item">
+        <a href="https://twitter.com/intent/tweet?text=数据结构之二叉树&url=https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+    </li>
+    
+
+    <!-- Share Facebook -->
+    
+    <li class="menu-item">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+    </li>
+    
+
+    <!-- Share Google+ -->
+    
+    <li class="menu-item">
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+    </li>
+    
+
+    <!-- Share LinkedIn -->
+    
+    <li class="menu-item">
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+    </li>
+    
+
+    <!-- Share QQ -->
+    
+    <li class="menu-item">
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+    </li>
+    
+
+    <!-- Share Telegram -->
+    
+    <li class="menu-item">
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+    </li>
+    
+
+    <!-- QRCode -->
+    
+    <li class="menu-item">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACN0lEQVR42u2awXICMQxD+f+fbq8Mk0hy2A509fYCLVnywsRZWfbj5x9cDyCBBBLIL4B8iOt5zOt7N/75f6/v43mBrIVcbtoNmHpdfd8KPp4XyGrI1WZfbXC1uNU4B7+bF0ggHeQOeLeI3cMCSCCvgHz3sHdjgARyIjCSQ9gd8mphl6ggIG8HqRKiv3y9LFsE8laQ1jQait2d0Fh912WuGpC3gkwMKJVspQJk9VCwghnISsiJWNgZo+nfKniWCwGyEnJi5idmgbrHCZdYBQFZB6lunASGO8TtDwJkNaTa7O4wTwNHzRkFDpA1kKmZlCZtShBP5gGyE9Jt7rTAFBn1gTiRhhWQdZDTZN8tLG18ssY+kPWQzkyaNtGpz+XBD2QtZGpUqSaSpPjpgiVy1YCsgZwkWkrMJmZCGqRA9kImweCaNyeNeZeIXiBvDzkRwUooJItLG/eA7IVMEvjd+DRo0gcBkEAeNamHzSKqIWR0mANZBXkqfN09STLnGuyA7IScGPdJgfREDG8PfiBrIafF84lJqgSJM7qA7IZ0jcFONCRCOAmauFEEyArIk+Zj19jkiqkqUQMSSNdsnCZTSTLmBAyQvZBpk1ySPDnTIDVUgeyGdBt6WqhPjIS3s0Ugbw/pik2pgZoY+ceBA2QdZNJInEzujNVLVBCQQIbNI0khIDFngQTypKCeCgh3YMvgBLIaUplKJ4LBGaVHgQNkDaR78KfNIM5QUIUoGzhA1kB+8wUkkEAC+cHrF1j9NiRR9jmoAAAAAElFTkSuQmCC" alt="QRCode">
+    </li>
+    
+
+</ul>
+</div>
+        
+    </div>
+</div>
+                </div>
+                <div class="card-body">
+                    
+                        
+                        
+                            <div id="post-toc"><ol class="post-toc"><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#树"><span class="post-toc-number">1.</span> <span class="post-toc-text">树</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#定义"><span class="post-toc-number">1.1.</span> <span class="post-toc-text">定义</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#基本术语"><span class="post-toc-number">1.2.</span> <span class="post-toc-text">基本术语</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#树的遍历"><span class="post-toc-number">1.3.</span> <span class="post-toc-text">树的遍历</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#先序遍历"><span class="post-toc-number">1.3.1.</span> <span class="post-toc-text">先序遍历</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#中序遍历"><span class="post-toc-number">1.3.2.</span> <span class="post-toc-text">中序遍历</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#后序遍历"><span class="post-toc-number">1.3.3.</span> <span class="post-toc-text">后序遍历</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#森林遍历"><span class="post-toc-number">1.4.</span> <span class="post-toc-text">森林遍历</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二叉树"><span class="post-toc-number">2.</span> <span class="post-toc-text">二叉树</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#定义-1"><span class="post-toc-number">2.1.</span> <span class="post-toc-text">定义</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#性质"><span class="post-toc-number">2.2.</span> <span class="post-toc-text">性质</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#满二叉树和完全二叉树"><span class="post-toc-number">2.2.1.</span> <span class="post-toc-text">满二叉树和完全二叉树</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#层序遍历"><span class="post-toc-number">2.3.</span> <span class="post-toc-text">层序遍历</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#二叉树的层序遍历实现"><span class="post-toc-number">2.3.1.</span> <span class="post-toc-text">二叉树的层序遍历实现</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#二叉搜索树"><span class="post-toc-number">2.4.</span> <span class="post-toc-text">二叉搜索树</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#哈希表"><span class="post-toc-number">3.</span> <span class="post-toc-text">哈希表</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#原理"><span class="post-toc-number">3.1.</span> <span class="post-toc-text">原理</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#哈希集用法"><span class="post-toc-number">3.2.</span> <span class="post-toc-text">哈希集用法</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#使用哈希集查重"><span class="post-toc-number">3.2.1.</span> <span class="post-toc-text">使用哈希集查重</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#哈希映射用法"><span class="post-toc-number">3.3.</span> <span class="post-toc-text">哈希映射用法</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#二分查找"><span class="post-toc-number">4.</span> <span class="post-toc-text">二分查找</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#三步骤"><span class="post-toc-number">4.1.</span> <span class="post-toc-text">三步骤</span></a></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#二分查找代码模板"><span class="post-toc-number">4.2.</span> <span class="post-toc-text">二分查找代码模板</span></a><ol class="post-toc-child"><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#查找单个索引"><span class="post-toc-number">4.2.1.</span> <span class="post-toc-text">查找单个索引</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#查找索引及其右邻居索引"><span class="post-toc-number">4.2.2.</span> <span class="post-toc-text">查找索引及其右邻居索引</span></a></li><li class="post-toc-item post-toc-level-4"><a class="post-toc-link" href="#查找索引及其左右邻居索引"><span class="post-toc-number">4.2.3.</span> <span class="post-toc-text">查找索引及其左右邻居索引</span></a></li></ol></li><li class="post-toc-item post-toc-level-3"><a class="post-toc-link" href="#例子"><span class="post-toc-number">4.3.</span> <span class="post-toc-text">例子</span></a></li></ol></li><li class="post-toc-item post-toc-level-2"><a class="post-toc-link" href="#参考"><span class="post-toc-number">5.</span> <span class="post-toc-text">参考</span></a></li></ol></div>
+                        
+                    
+                    <article id="post-content">
+                        <blockquote>
+<p>包含树、二叉树、哈希表、二分查找的定义和实现</p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="树"><a href="#树" class="headerlink" title="树"></a>树</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>树（Tree）是 n（n≥0）个结点的有限集 T，当 T 为空时称为空树，否则它满足以下两个条件：</p>
+<ol>
+<li>有且仅有一个特定的数据元素称为根（root）的结点，根结点没有前驱结点</li>
+<li>其余的结点可分为m（m＞0）个互不相交的子集Tl, T2,…, Tm，其中每个集合Ti（1≤i≤m）本身又是一棵树，并称其为根的子树（subtree）</li>
+</ol>
+<p>树的递归定义刻画了树的固有特性：一棵非空树是由若干棵子树构成的，而子树又可由若干棵更小的子树构成。因此，树结构的很多算法都使用了递归方法</p>
+<h3 id="基本术语"><a href="#基本术语" class="headerlink" title="基本术语"></a>基本术语</h3><ol>
+<li>结点的度（degree）：结点拥有的子树数</li>
+<li>叶子（终端结点）：度为0的结点</li>
+<li>非终端结点：度不为0的结点</li>
+<li>结点的层次：树中根结点的层次为1，其子树的根为第2层，其余类推</li>
+<li>树的度：树中所有结点的最大度数</li>
+<li>树的深度：树中所有结点层次的最大值</li>
+<li>有序树、无序树：如果树中每棵子树从左向右的排列拥有一定的顺序，不得互换，则称为有序树；否则称为无序树</li>
+<li><strong>森林：m（m≥0）棵互不相交的树的集合</strong></li>
+</ol>
+<p>在树结构中，结点之间的关系又可用家族关系描述，定义如下：</p>
+<ul>
+<li>孩子、双亲：结点子树的根称为这个结点的孩子，而这个结点又被称为孩子的双亲（父结点、子结点）</li>
+<li>子孙：以某结点为根的子树中的所有结点都被称为是该结点的子孙</li>
+<li>祖先：从根结点到该结点路径上的所有结点</li>
+<li>兄弟：同一个双亲的孩子之间互为兄弟</li>
+<li>堂兄弟：双亲在同一层的结点互为堂兄弟</li>
+</ul>
+<h3 id="树的遍历"><a href="#树的遍历" class="headerlink" title="树的遍历"></a>树的遍历</h3><blockquote>
+<p>之所以叫前序、中序、后序遍历，是因为根节点在前、中、后</p>
+</blockquote>
+<blockquote>
+<p>前序：根左右；中序：左根右；后序：左右根；</p>
+</blockquote>
+<p>中序常用来在二叉搜索数中得到递增的有序序列；</p>
+<p>后序可用于数学中的后缀表示法，结合栈处理表达式，每遇到一个操作符，就可以从栈中弹出栈顶的两个元素，计算并将结果返回到栈中；</p>
+<h4 id="先序遍历"><a href="#先序遍历" class="headerlink" title="先序遍历"></a>先序遍历</h4><p>首先访问根节点，然后遍历左子树，最后遍历右子树</p>
+<p><img src="tree_order1.png" alt="先序遍历"></p>
+<h4 id="中序遍历"><a href="#中序遍历" class="headerlink" title="中序遍历"></a>中序遍历</h4><p>先遍历左子树，然后<strong>访问根节点</strong>，然后遍历右子树。</p>
+<p><img src="tree_order1.png" alt="中序遍历"></p>
+<h4 id="后序遍历"><a href="#后序遍历" class="headerlink" title="后序遍历"></a>后序遍历</h4><p>先遍历左子树，然后遍历右子树，最后访问树的根节点</p>
+<p><img src="tree_order1.png" alt="后序遍历"></p>
+<hr>
+<h3 id="森林遍历"><a href="#森林遍历" class="headerlink" title="森林遍历"></a>森林遍历</h3><p>根据森林和树相互递归的定义，可推出森林的两种遍历方法：</p>
+<p><strong>先序遍历森林：</strong></p>
+<ol>
+<li>访问森林中第一棵树的根结点；</li>
+<li>先序遍历第一棵树中根结点的子树森林；</li>
+<li>先序遍历除去第一棵树之后剩余的树构成的森林</li>
+</ol>
+<p><strong>后序遍历森林：</strong></p>
+<ol>
+<li>后序遍历森林中第一棵树的根结点的子树森林；</li>
+<li>访问第一棵树的根结点；</li>
+<li>后序遍历除去第一棵树之后剩余的树构成的森林。</li>
+</ol>
+<p><img src="forest1.png" alt="森林"></p>
+<p>上面的森林进行先序遍历和后序遍历，分别得到森林的先序序列为<code>1 23 4 5 6 7 8 9 10 11 12</code>，后序序列为<code>5 2 3 4 1 8 9 7 6 12 11 10</code></p>
+<hr>
+<h2 id="二叉树"><a href="#二叉树" class="headerlink" title="二叉树"></a>二叉树</h2><h3 id="定义-1"><a href="#定义-1" class="headerlink" title="定义"></a>定义</h3><p>一棵二叉树（binary tree）是结点的一个有限集合，该集合或者为空，或者由一个根结点加上两棵分别称为左子树和右子树的、互不相交的二叉树组成。</p>
+<p>五种基本形态：</p>
+<p><img src="binaryTree1.png" alt="二叉树的五种基本形态"></p>
+<h3 id="性质"><a href="#性质" class="headerlink" title="性质"></a>性质</h3><ol>
+<li>在二叉树的第i层上至多有$2^{i-1}$个结点（i≥1）</li>
+<li>深度为k的二叉树至多有$2^{k-1}$个结点（k≥1）</li>
+<li>对任意一棵非空二叉树T，若其叶结点数为$n_0$，度为2的结点数为$n_2$，则$n_0=n_2+1$（根节点加上其他度为2的结点树）</li>
+<li>具有n个结点的完全二叉树的深度为$[log_2n]+1$</li>
+</ol>
+<p>证明：设完全二叉树的深度为k，由它的定义和性质可知2k-1-1＜n≤2k-1 或2k-l≤n＜2k，取对数后有k-1≤log2n＜k，因为k是整数，所以k = log2n || +1（或者）</p>
+<ol start="5">
+<li>如果将一棵有 n个结点的完全二叉树（其深度为log n||2+）自顶向下、同一1层自左向右编号为1, 2, 3,…, n，则对任意一个结点i（1≤i≤n）有：① 如果i = 1，则此结点为二叉树的根，无双亲；如果 i＞1，则其双亲结点是floor(i/2)。② 如果2i＞n，则结点 i无左孩子（结点 i 为叶子结点）；否则其左孩子是结点2i。③ 如果2i+1＞n，则结点 i 无右孩子；否则其右孩子是结点2i+1</li>
+</ol>
+<h4 id="满二叉树和完全二叉树"><a href="#满二叉树和完全二叉树" class="headerlink" title="满二叉树和完全二叉树"></a>满二叉树和完全二叉树</h4><ul>
+<li><p>满二叉树（full binarytree）是指深度为k，且有2k-1个结点的二叉树。特点是，每一层上结点数都是最大结点数，即不存在度为1的结点</p>
+</li>
+<li><p>完全二叉树（completed binary tree）是指深度为k，有n个结点的二叉树，<strong>除最后一层外，其余层均是满的，且最下面一层的结点都集中在最左边的位置上</strong></p>
+</li>
+</ul>
+<p><img src="tree2.png" alt="二叉树"></p>
+<hr>
+<h3 id="层序遍历"><a href="#层序遍历" class="headerlink" title="层序遍历"></a>层序遍历</h3><p>层序遍历就是逐层遍历树结构。</p>
+<p>广度优先搜索是一种广泛运用在树或图这类数据结构中，遍历或搜索的算法。</p>
+<p>该算法从一个根节点开始，首先访问节点本身。 然后遍历它的相邻节点，其次遍历它的二级邻节点、三级邻节点，以此类推。</p>
+<p>当我们在树中进行广度优先搜索时，我们访问的节点的顺序是按照层序遍历顺序的。</p>
+<h4 id="二叉树的层序遍历实现"><a href="#二叉树的层序遍历实现" class="headerlink" title="二叉树的层序遍历实现"></a>二叉树的层序遍历实现</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Definition for a binary tree node.</span></span><br><span class="line"><span class="comment"> * struct TreeNode &#123;</span></span><br><span class="line"><span class="comment"> *     int val;</span></span><br><span class="line"><span class="comment"> *     TreeNode *left;</span></span><br><span class="line"><span class="comment"> *     TreeNode *right;</span></span><br><span class="line"><span class="comment"> *     TreeNode() : val(0), left(nullptr), right(nullptr) &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) &#123;&#125;</span></span><br><span class="line"><span class="comment"> *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) &#123;&#125;</span></span><br><span class="line"><span class="comment"> * &#125;;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; <span class="title">levelOrder</span><span class="params">(TreeNode* root)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//创建返回数组</span></span><br><span class="line">        <span class="built_in">vector</span>&lt;<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&gt; ans;</span><br><span class="line">        <span class="comment">//创建队列</span></span><br><span class="line">        <span class="built_in">queue</span>&lt;TreeNode*&gt; que;</span><br><span class="line">        <span class="comment">//若空</span></span><br><span class="line">        <span class="keyword">if</span>(root == <span class="literal">nullptr</span>) <span class="keyword">return</span> ans;</span><br><span class="line">        <span class="comment">//根节点压入队列</span></span><br><span class="line">        que.push(root);</span><br><span class="line">        <span class="comment">//若队列不为空，循环</span></span><br><span class="line">        <span class="keyword">while</span>(!que.empty())&#123;</span><br><span class="line">            <span class="comment">//当前队列长度</span></span><br><span class="line">            <span class="keyword">int</span> queLen = que.size();</span><br><span class="line">            ans.push_back(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;());</span><br><span class="line">            <span class="comment">//循环遍历当前层所有节点</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; queLen; ++i)&#123;</span><br><span class="line">                <span class="comment">//选择节点</span></span><br><span class="line">                <span class="keyword">auto</span> node = que.front();</span><br><span class="line">                <span class="comment">//选择的当前节点弹出队列</span></span><br><span class="line">                que.pop();</span><br><span class="line">                <span class="comment">//将选择的当前节点的值压入数组</span></span><br><span class="line">                ans.back().push_back(node-&gt;val);</span><br><span class="line">                <span class="comment">//寻找当前节点的下一层节点压入队列</span></span><br><span class="line">                <span class="keyword">if</span>(node-&gt;left) que.push(node-&gt;left);</span><br><span class="line">                <span class="keyword">if</span>(node-&gt;right) que.push(node-&gt;right);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ans;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="二叉搜索树"><a href="#二叉搜索树" class="headerlink" title="二叉搜索树"></a>二叉搜索树</h3><p>二叉搜索树（BST）是二叉树的一种特殊表示形式，它满足如下特性：</p>
+<ul>
+<li>每个节点中的值必须大于（或等于）存储在其左侧子树中的任何值</li>
+<li>每个节点中的值必须小于（或等于）存储在其右子树中的任何值</li>
+</ul>
+<hr>
+<h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><p>哈希表是一种数据结构，它使用哈希函数组织数据，以支持<strong>快速插入和搜索</strong></p>
+<ul>
+<li>哈希函数：将结点的关键字与它的存储位置之间建立一种对应关系的函数称为哈希函数。</li>
+<li>哈希表：根据设定的哈希函数h(key)和处理冲突的方法将一组关键字映射到一个有限的连续地址区间上，这样的表称为哈希表，<strong>这一映射过程称为哈希造表或散列，所得的存储位置称为哈希地址或散列地址</strong></li>
+<li>冲突（collision）：不同的关键字映射到同一哈希地址的现象称为冲突</li>
+<li>同义词（synonym）：在一个哈希函数中，具有相同函数值的关键字，互称为同义词。</li>
+</ul>
+<p>有两种不同类型的哈希表：哈希集合和哈希映射。</p>
+<ul>
+<li>哈希集合是集合数据结构的实现之一，用于存储非重复值。</li>
+<li>哈希映射是映射 数据结构的实现之一，用于存储(key, value)键值对。</li>
+</ul>
+<p>在标准模板库的帮助下，哈希表是易于使用的</p>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><p>哈希表的关键思想是使用哈希函数将键映射到存储桶。更确切地说，</p>
+<ul>
+<li>当我们插入一个新的键时，哈希函数将决定该键应该分配到哪个桶中，并将该键存储在相应的桶中；</li>
+<li>当我们想要搜索一个键时，哈希表将使用相同的哈希函数来查找对应的桶，并只在特定的桶中进行搜索。</li>
+</ul>
+<p>例如我们使用$y = x ％ 5$作为哈希函数，然后完成插入和搜索策略：</p>
+<ul>
+<li>插入：我们通过哈希函数解析键，将它们映射到相应的桶中。例如，1987分配给桶2，而24分配给桶4</li>
+<li>搜索：我们通过相同的哈希函数解析键，并仅在特定存储桶中搜索。如果我们搜索 1987，我们将使用相同的哈希函数将1987 映射到 2。因此我们在桶 2 中搜索，我们在那个桶中成功找到了 1987。例如，如果我们搜索23，将映射23到3，并在桶3中搜索。我们发现23不在桶3中，这意味着23不在哈希表中。</li>
+</ul>
+<h3 id="哈希集用法"><a href="#哈希集用法" class="headerlink" title="哈希集用法"></a>哈希集用法</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_set&gt;                // 0. include the library</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. initialize a hash set</span></span><br><span class="line">    <span class="built_in">unordered_set</span>&lt;<span class="keyword">int</span>&gt; hashset;   </span><br><span class="line">    <span class="comment">// 2. insert a new key</span></span><br><span class="line">    hashset.insert(<span class="number">3</span>);</span><br><span class="line">    hashset.insert(<span class="number">2</span>);</span><br><span class="line">    hashset.insert(<span class="number">1</span>);</span><br><span class="line">    <span class="comment">// 3. delete a key</span></span><br><span class="line">    hashset.erase(<span class="number">2</span>);</span><br><span class="line">    <span class="comment">// 4. check if the key is in the hash set</span></span><br><span class="line">    <span class="keyword">if</span> (hashset.count(<span class="number">2</span>) &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Key 2 is not in the hash set."</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 5. get the size of the hash set</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"The size of hash set is: "</span> &lt;&lt; hashset.size() &lt;&lt; <span class="built_in">endl</span>; </span><br><span class="line">    <span class="comment">// 6. iterate the hash set</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = hashset.begin(); it != hashset.end(); ++it) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; (*it) &lt;&lt; <span class="string">" "</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"are in the hash set."</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="comment">// 7. clear the hash set</span></span><br><span class="line">    hashset.clear();</span><br><span class="line">    <span class="comment">// 8. check if the hash set is empty</span></span><br><span class="line">    <span class="keyword">if</span> (hashset.empty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"hash set is empty now!"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="使用哈希集查重"><a href="#使用哈希集查重" class="headerlink" title="使用哈希集查重"></a>使用哈希集查重</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Template for using hash set to find duplicates.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">findDuplicates</span><span class="params">(<span class="built_in">vector</span>&lt;Type&gt;&amp; keys)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Replace Type with actual type of your key</span></span><br><span class="line">    <span class="built_in">unordered_set</span>&lt;Type&gt; hashset;</span><br><span class="line">    <span class="keyword">for</span> (Type key : keys) &#123;</span><br><span class="line">        <span class="keyword">if</span> (hashset.count(key) &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        hashset.insert(key);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="哈希映射用法"><a href="#哈希映射用法" class="headerlink" title="哈希映射用法"></a>哈希映射用法</h3><blockquote>
+<p>哈希集合只能存储值。另一方面，哈希映射是映射的一种实现，它能够存储 (key,value) 键值对</p>
+<p>由于能够存储更多信息，哈希映射可以帮助我们解决更复杂的问题。 例如，我们可以使用哈希映射按键聚合所有信息，并在平均为常量的时间内查找与特定键相关的信息。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;unordered_map&gt;                // 0. include the library</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 1. initialize a hash map</span></span><br><span class="line">    <span class="built_in">unordered_map</span>&lt;<span class="keyword">int</span>, <span class="keyword">int</span>&gt; hashmap;</span><br><span class="line">    <span class="comment">// 2. insert a new (key, value) pair</span></span><br><span class="line">    hashmap.insert(make_pair(<span class="number">0</span>, <span class="number">0</span>));  <span class="comment">//make_pair无需标明类型即可生成一个pair对象</span></span><br><span class="line">    hashmap.insert(make_pair(<span class="number">2</span>, <span class="number">3</span>));</span><br><span class="line">    <span class="comment">// 3. insert a new (key, value) pair or update the value of existed key</span></span><br><span class="line">    hashmap[<span class="number">1</span>] = <span class="number">1</span>;</span><br><span class="line">    hashmap[<span class="number">1</span>] = <span class="number">2</span>;</span><br><span class="line">    <span class="comment">// 4. get the value of a specific key</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"The value of key 1 is: "</span> &lt;&lt; hashmap[<span class="number">1</span>] &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="comment">// 5. delete a key</span></span><br><span class="line">    hashmap.erase(<span class="number">2</span>);</span><br><span class="line">    <span class="comment">// 6. check if a key is in the hash map</span></span><br><span class="line">    <span class="keyword">if</span> (hashmap.count(<span class="number">2</span>) &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"Key 2 is not in the hash map."</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 7. get the size of the hash map</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"the size of hash map is: "</span> &lt;&lt; hashmap.size() &lt;&lt; <span class="built_in">endl</span>; </span><br><span class="line">    <span class="comment">// 8. iterate the hash map</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">auto</span> it = hashmap.begin(); it != hashmap.end(); ++it) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"("</span> &lt;&lt; it-&gt;first &lt;&lt; <span class="string">","</span> &lt;&lt; it-&gt;second &lt;&lt; <span class="string">") "</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; <span class="string">"are in the hash map."</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    <span class="comment">// 9. clear the hash map</span></span><br><span class="line">    hashmap.clear();</span><br><span class="line">    <span class="comment">// 10. check if the hash map is empty</span></span><br><span class="line">    <span class="keyword">if</span> (hashmap.empty()) &#123;</span><br><span class="line">        <span class="built_in">cout</span> &lt;&lt; <span class="string">"hash map is empty now!"</span> &lt;&lt; <span class="built_in">endl</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="二分查找"><a href="#二分查找" class="headerlink" title="二分查找"></a>二分查找</h2><p>它描述了在有序集合中搜索特定值的过程。</p>
+<p>二分查找中使用的术语：</p>
+<ul>
+<li>目标 Target —— 你要查找的值</li>
+<li>索引 Index —— 你要查找的当前位置</li>
+<li>左、右指示符 Left，Right —— 我们用来维持查找空间的指标</li>
+<li>中间指示符 Mid —— 我们用来应用条件来确定我们应该向左查找还是向右查找的索引</li>
+</ul>
+<h3 id="三步骤"><a href="#三步骤" class="headerlink" title="三步骤"></a>三步骤</h3><p>二分查找一般由三个主要部分组成：</p>
+<ol>
+<li>预处理 —— 如果集合未排序，则进行排序</li>
+<li>二分查找 —— 使用循环或递归在每次比较后将查找空间划分为两半</li>
+<li>后处理 —— 在剩余空间中确定可行的候选者</li>
+</ol>
+<h3 id="二分查找代码模板"><a href="#二分查找代码模板" class="headerlink" title="二分查找代码模板"></a>二分查找代码模板</h3><h4 id="查找单个索引"><a href="#查找单个索引" class="headerlink" title="查找单个索引"></a>查找单个索引</h4><blockquote>
+<p>二分查找的最基础和最基本的形式</p>
+<p>用于查找可以通过访问数组中的单个索引来确定的元素或条件</p>
+</blockquote>
+<p>二分查找的最基础和最基本的形式。</p>
+<p>查找条件可以在不与元素的两侧进行比较的情况下确定（或使用它周围的特定元素）。</p>
+<p>不需要后处理，因为每一步中，你都在检查是否找到了元素。如果到达末尾，则知道未找到该元素。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(nums.size() == <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> left = <span class="number">0</span>, right = nums.size() - <span class="number">1</span>;</span><br><span class="line">  <span class="keyword">while</span>(left &lt;= right)&#123;</span><br><span class="line">    <span class="comment">// Prevent (left + right) overflow</span></span><br><span class="line">    <span class="keyword">int</span> mid = left + (right - left) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span>(nums[mid] == target)&#123; <span class="keyword">return</span> mid; &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] &lt; target) &#123; left = mid + <span class="number">1</span>; &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123; right = mid - <span class="number">1</span>; &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// End Condition: left &gt; right</span></span><br><span class="line">  <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="查找索引及其右邻居索引"><a href="#查找索引及其右邻居索引" class="headerlink" title="查找索引及其右邻居索引"></a>查找索引及其右邻居索引</h4><blockquote>
+<p>用于查找需要访问数组中当前索引及其直接右邻居索引的元素或条件</p>
+</blockquote>
+<p>一种实现二分查找的高级方法。</p>
+<p>查找条件需要访问元素的直接右邻居。</p>
+<p>使用元素的右邻居来确定是否满足条件，并决定是向左还是向右。</p>
+<p>保证查找空间在每一步中至少有2个元素。</p>
+<p>需要进行后处理。当你剩下1个元素时，循环/递归结束。需要评估剩余元素是否符合条件。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(nums.size() == <span class="number">0</span>)</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">int</span> left = <span class="number">0</span>, right = nums.size();</span><br><span class="line">  <span class="keyword">while</span>(left &lt; right)&#123;</span><br><span class="line">    <span class="comment">// Prevent (left + right) overflow</span></span><br><span class="line">    <span class="keyword">int</span> mid = left + (right - left) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">if</span>(nums[mid] == target)&#123; <span class="keyword">return</span> mid; &#125;</span><br><span class="line">    <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid] &lt; target) &#123; left = mid + <span class="number">1</span>; &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123; right = mid; &#125;  <span class="comment">//右邻居</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Post-processing:</span></span><br><span class="line">  <span class="comment">// End Condition: left == right</span></span><br><span class="line">  <span class="keyword">if</span>(left != nums.size() &amp;&amp; nums[left] == target) <span class="keyword">return</span> left;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="查找索引及其左右邻居索引"><a href="#查找索引及其左右邻居索引" class="headerlink" title="查找索引及其左右邻居索引"></a>查找索引及其左右邻居索引</h4><blockquote>
+<p>用于搜索需要访问当前索引及其在数组中的直接左右邻居索引的元素或条件。</p>
+</blockquote>
+<p>实现二分查找的另一种方法。</p>
+<p>搜索条件需要访问元素的直接左右邻居。</p>
+<p>使用元素的邻居来确定它是向右还是向左。</p>
+<p>保证查找空间在每个步骤中至少有 3 个元素。</p>
+<p>需要进行后处理。当剩下2个元素时，循环/递归结束。需要评估其余元素是否符合条件。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target)</span></span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (nums.size() == <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">int</span> left = <span class="number">0</span>, right = nums.size() - <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span> (left + <span class="number">1</span> &lt; right)&#123;</span><br><span class="line">        <span class="comment">// Prevent (left + right) overflow</span></span><br><span class="line">        <span class="keyword">int</span> mid = left + (right - left) / <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">if</span> (nums[mid] == target) &#123;</span><br><span class="line">            <span class="keyword">return</span> mid;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> (nums[mid] &lt; target) &#123;</span><br><span class="line">            left = mid;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            right = mid;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Post-processing:</span></span><br><span class="line">    <span class="comment">// End Condition: left + 1 == right</span></span><br><span class="line">    <span class="keyword">if</span>(nums[left] == target) <span class="keyword">return</span> left;</span><br><span class="line">    <span class="keyword">if</span>(nums[right] == target) <span class="keyword">return</span> right;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h3><p>给定一个n个元素有序的（升序）整型数组nums和一个目标值target，写一个函数搜索nums中的target，如果目标值存在返回下标，否则返回-1</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">search</span><span class="params">(<span class="built_in">vector</span>&lt;<span class="keyword">int</span>&gt;&amp; nums, <span class="keyword">int</span> target)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(nums.empty()) <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">int</span> left=<span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> right=nums.size()<span class="number">-1</span>;</span><br><span class="line">        <span class="keyword">while</span>(left&lt;=right)&#123;</span><br><span class="line">            <span class="keyword">int</span> mid = left + (right-left)/<span class="number">2</span>; <span class="comment">//中间值</span></span><br><span class="line">            <span class="keyword">if</span>(nums[mid]&gt;target)&#123;</span><br><span class="line">                right=mid<span class="number">-1</span>;  <span class="comment">//右边界重新赋值</span></span><br><span class="line">            &#125; <span class="keyword">else</span> <span class="keyword">if</span>(nums[mid]&lt;target)&#123;</span><br><span class="line">                left=mid+<span class="number">1</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span>&#123;</span><br><span class="line">                <span class="keyword">return</span> mid;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a href="https://leetcode-cn.com/leetbook/detail/data-structure-binary-tree/" target="_blank" rel="noopener">leetcode-二叉树</a></li>
+<li><a href="https://www.jianshu.com/p/bce71b2bdbc8" target="_blank" rel="noopener">数据结构：图（Graph）</a></li>
+<li><a href="https://leetcode-cn.com/leetbook/detail/hash-table/" target="_blank" rel="noopener">leetcode-哈希表</a></li>
+<li><a href="https://leetcode-cn.com/leetbook/read/binary-search/xewjg7/" target="_blank" rel="noopener">leetcode-二分查找</a></li>
+<li><a href="https://leetcode-cn.com/leetbook/read/introduction-to-data-structure-binary-search-tree/x6l2am/" target="_blank" rel="noopener">leetcode-二叉搜索树</a></li>
+<li><a href="https://weread.qq.com/web/reader/6ad320e05a04296ad3517d0ke3632bd0222e369853df322" target="_blank" rel="noopener">《数据结构（C++语言版）》</a></li>
+</ul>
+
+                    </article>
+                    
+    <blockquote class="post-license">
+        <p>
+            <strong>本文作者&nbsp;:&nbsp;sunwengang</strong>
+            <br>
+            <strong>
+            
+                本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
+            </strong>
+            <br>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/">https://alonealive.github.io/Blog/2021/05/28/2021/210528_cpp_DataStructure4/</a>
+        </p>
+    </blockquote>
+
+
+
+    <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
+    <script>
+    (function() {
+        var dateUpdate = Date.parse("2021-05-28");
+        var nowDate = new Date();
+        var a = nowDate.getTime();
+        var b = a - dateUpdate;
+        var daysUpdateExpire = Math.floor(b/(24*3600*1000));
+        if (daysUpdateExpire >= 120) {
+            document.getElementById('date-expire-num').innerHTML = daysUpdateExpire;
+        } else {
+            document.getElementById('date-expire-notification').style.display = 'none';
+        }
+    })();
+    </script>
+
+
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2021-05-28T14:05:00.000Z" itemprop="datePublished">2021-05-28</time>
+
+</p>
+<p class="post-footer-info mb-0 pt-2">
+
+<span class="post-categories-list mt-2">
+
+<a class="post-categories-list-item" href='/Blog/categories/cpp/'>cpp</a>
+
+</span>
+
+
+
+<span class="post-tags-list mt-2">
+
+<a class="post-tags-list-item" href="/Blog/tags/cpp/" rel="tag">#&nbsp;cpp</a>
+
+<a class="post-tags-list-item" href="/Blog/tags/datastructure/" rel="tag">#&nbsp;datastructure</a>
+
+</span>
+
+
+</p>
+
+                </div>
+                <div class="post-nav px-2 bg-gray">
+<ul class="pagination">
+    <!-- Prev Nav -->
+    
+
+    <!-- Next Nav -->
+    
+        <li class="page-item page-next">
+            <a href="/Blog/2021/05/19/2021/210519_cpp_DataStructure3/" rel="next">
+                <div class="page-item-title"><i class="icon icon-forward" aria-hidden="true"></i></div>
+                <div class="page-item-subtitle">数据结构之栈和队列</div>
+            </a>
+        </li>
+    
+</ul>
+</div>
+
+                
+                    <!-- # Comment # -->
+                    
+                        <div class="card-footer post-comment">
+                            <div id="vcomments"></div>
+
+<script src="https://cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/valine@latest/dist/Valine.min.js"></script>
+<script>
+    var GUEST_INFO = ['nick','mail','link'];
+    var guest_info = 'nick,mail,link'.split(',').filter(function(item){
+        return GUEST_INFO.indexOf(item) > -1
+    });
+    var notify = '' === 'true';
+    var verify = '' === 'true';
+    new Valine({
+        el: '#vcomments',
+        notify: notify,
+        verify: verify,
+        appId: "vhY87VAxwU991O4b7vDREoC7-gzGzoHsz",
+        appKey: "CftrDkclI3ylGGjiQeD8C2xz",
+        placeholder: "Just go go",
+        meta: guest_info,
+        pageSize:'10',
+        avatar:'identicon',
+        lang:'zh-cn',
+        guest_info: guest_info,
+        visitor: false
+    });
+</script>
+
+                        </div>
+                    
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+            <!-- ### Footer ### -->
+            <footer class="text-center">
+    <!-- footer copyright -->
+    
+        <p class="footer-copyright mb-0">Copyright&nbsp;©&nbsp;<span id="copyright-year"></span>
+            <a class="footer-copyright-a" href="https://alonealive.github.io/Blog">sunwengang blog</a>
+        </p>
+
+    <!-- footer custom text -->
+    <p class="footer-text mb-0">
+    
+    </p>
+    <!-- footer develop info -->
+    <p class="footer-develop mb-0">
+        
+    <!-- Busuanzi User Views -->
+    <span id="busuanzi_container_site_uv" hidden>
+        <span></span>
+        <span id="busuanzi_value_site_uv"></span>
+        <span>Viewers</span>
+        
+            <span>|</span>
+        
+    </span>
+
+
+
+
+        
+        Powered by&nbsp;<!--
+         --><a href="https://hexo.io" target="_blank" class="footer-develop-a" rel="external nofollow noopener noreferrer">Hexo</a><span class="footer-develop-divider"></span>Theme&nbsp;-&nbsp;<!--
+         --><a href="https://github.com/SukkaW/hexo-theme-suka" target="_blank" class="footer-develop-a" rel="external noopener">Suka</a>
+    </p>
+</footer>
+
+
+        <!-- ### Import File ### -->
+        <!-- ### Footer JS Import ### -->
+
+<script>
+
+    
+window.lazyLoadOptions = {
+    elements_selector: ".lazyload",
+    threshold: 50
+};
+
+(function() {
+    var copyrightNow = new Date().getFullYear();
+    var copyrightContent = document.getElementById('copyright-year');
+    var copyrightSince = 2019;
+    if (copyrightSince === copyrightNow) {
+        copyrightContent.textContent = copyrightNow;
+    } else {
+        copyrightContent.textContent = copyrightSince + ' - ' + copyrightNow;
+    }
+})();
+console.log('\n %c Suka Theme (hexo-theme-suka) | © SukkaW | Verision 1.3.3 %c https://github.com/SukkaW/hexo-theme-suka \n', 'color: #fff; background: #444; padding:5px 0;', 'background: #bbb; padding:5px 0;');
+
+</script>
+
+<script src="/Blog/lib/vanilla-lazyload/lazyload.min.js" async></script>
+    <script src="https://cdn.jsdelivr.net/npm/busuanzi@2.3.0/bsz.pure.mini.js" async></script>
+
+
+<!-- Offset -->
+
+
+
+
+<!-- Comment -->
+
+    
+        
+    
+
+
+<!-- ### Custom Footer ### -->
+
+    </body>
+
+</html>
