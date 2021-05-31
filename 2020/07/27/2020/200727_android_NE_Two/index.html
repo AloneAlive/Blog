@@ -154,12 +154,12 @@
     <link rel="alternate" type="application/atom+xml" href="/Blog/atom.xml"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="sunwengang blog"><meta name="msapplication-starturl" content="https://alonealive.github.io/Blog"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="sunwengang blog"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <!-- ### The Open Graph & Twitter Card Protocol ### -->
-    <meta property="og:title" content="Android NE分析（二） | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/"><meta property="og:locale" content="zh-CN"><meta name="description" content="了解gcc将*.c&#x2F;cpp编译成*.o，再将其链接为可执行程序或&#x2F;lib库的过程，有助于我们将native从编译&#x2F;加载&#x2F;执行到崩溃一条路贯通起来。Android的Makefile只需要将source file填入LOCAL_SRC_FILES，然后include $(BUILD_SHARED_LIBRARY)或$(BUILD_EXECUTABLE)就可以将*.c&#x2F;cpp&#x2F;s编译为动态库或可执行程序 - sunwengang - sunwengang blog"><meta name="keywords" content="android debug, android"><meta property="article:published_time" content="2020-07-28T13:52:00.000Z"><meta property="article:modified_time" content="2020-07-29T11:59:50.283Z"><meta property="og:updated_time" content="2020-07-29T11:59:50.283Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android debug, android"><meta name="twitter:card" content="summary">
+    <meta property="og:title" content="Android NE分析（二） | sunwengang blog"><meta property="og:site_name" content="sunwengang blog"><meta property="og:type" content="article"><meta property="og:url" content="https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/"><meta property="og:locale" content="zh-CN"><meta name="description" content="了解gcc将*.c&#x2F;cpp编译成*.o，再将其链接为可执行程序或&#x2F;lib库的过程，有助于我们将native从编译&#x2F;加载&#x2F;执行到崩溃一条路贯通起来。Android的Makefile只需要将source file填入LOCAL_SRC_FILES，然后include $(BUILD_SHARED_LIBRARY)或$(BUILD_EXECUTABLE)就可以将*.c&#x2F;cpp&#x2F;s编译为动态库或可执行程序 - sunwengang - sunwengang blog"><meta name="keywords" content="android debug, android"><meta property="article:published_time" content="2020-07-27T13:52:00.000Z"><meta property="article:modified_time" content="2021-05-31T12:52:03.454Z"><meta property="og:updated_time" content="2021-05-31T12:52:03.454Z"><meta property="article:author" content="sunwengang"><meta property="article:tag" content="android debug, android"><meta name="twitter:card" content="summary">
 
     
 
     <!-- ### Canonical link ### -->
-    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/">
+    <link rel="canonical" href="https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/">
 
     <meta name="generator" content="Hexo 4.2.0">
 
@@ -180,12 +180,12 @@
 <script type="application/ld+json">
 {
     "@context": "http://schema.org",
-    "url": "https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/",
+    "url": "https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/",
     "@type": "BlogPosting",
     "logo": "https://alonealive.github.io/Blog/img/favicon.ico",
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/"
+        "@id": "https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/"
     },
     "headline": "Android NE分析（二） | sunwengang blog",
     
@@ -194,8 +194,8 @@
         "url": "https://alonealive.github.io/Blog/img/favicon.ico"
     },
     
-    "datePublished": "2020-07-28T13:52:00.000Z",
-    "dateModified": "2020-07-29T11:59:50.283Z",
+    "datePublished": "2020-07-27T13:52:00.000Z",
+    "dateModified": "2021-05-31T12:52:03.454Z",
     "author": {
         "@type": "Person",
         "name": "sunwengang",
@@ -321,7 +321,7 @@
         <!-- QRCode -->
         
         <li class="menu-item">
-            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMklEQVR42u2aQW7DMAwE8/9Pt6cemlrcoewgqTm6FKgtaRxY9HLJx9c/GA8hhRRSyA+AfBTj5/qviQf3HF17npvWOVpTyLmQhy9tsdHRhul6uueIR8jZkKuXvnOwnudUhy3tK6SQJIhXQbtapzp8Qgq5e3BWoKugXT2gkEISyLRwEhVJTLxUBQl5O0giIF7x9/JsUchbQCLjKDxEdbCqD8KlrpqQt4GsEqaVYF1tRgyFSgQjw0rI20Oml7sCTWDd9f+sLeRIyCpAVwcjBfV0D3pYIUdCkpd9ZYquPgAp2Kfik5CzIdOHn4gCkvSn/VrFJiFvDdkVtOl/NPgn41XIuZBkchKxJPDTBCyqICHHQFZJ1a5JRUzUMkkTciwkNaxSUZ6IECKkhZwNSZMkKpA7JlYUMEKOhCQG0hXmVacBQMjZkLuJFjVRk5mwbQ4IOQZyp/hJE38qYIScDYnEZwj0tHBKPgpCCkkKlbvNImSUYlrI0ZBEJHSaP5OIIIFdyLmQ1UJJ5JaJFPwILPcUcjRkp2nzbHEqGQ9CCnnmAMTCejC2yuRPyLGQybRPCRc6BKA4HwugQo6DJEk/nVP9ALTZWciZkGkQ4XrWgMVVWiFHQFIziRaaOoZWNF6FHAtJxSotMKWAjxtUhBwNSUzSjuglxYLYBCWkkKAJudNAUokM1IQnpJChwE6LAOmgpQMmpJA0AUuBvmoO6RgHQgpJmzg6m5EgnhpLhZwJ+clDSCGFFPKN4xtbi7WkIehGFgAAAABJRU5ErkJggg==" alr="QRCode">
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACK0lEQVR42u2awZLCMAxD+/8/zV6XTiPJme7AVi8XIJTklakzsuzj9Q/GASSQQAL5BZCHGG8/OM0n1/7+fH6f7AtkL+TlQ7tYeHVzbr0zfLQvkNWQV4GhgkBttppzAQQkkFNIF0AqWIAE8k7IVWC4a5MbBRLIqcBQ4lVd44LrVhUE5OMgVUL0l6+3ZYtAPgrSmkYXhkByg4nwvc1VA/JRkOpBTgSsg0kMsOV+QFZCqh+sFt81DVTwXO4FZCVkkryn5n5q4CcJGZC9kKqglBSKdg96tweQvZBJIqaCyEErsbwd3UA+GtIZmkq0uqBwhSiXlAHZCemCYrWgK04l8/ZgBxLIDeNqYuBPzX4gOyFVI4d6yJXonQiXUSIGZBXkjjh1DSJJw4gs6gNZCTkVAsoETUzSydpAdkK6hVVT0k5jyJboBbIS0hmdE1PUmapx4x6QlZDOkJ8Gz8SwGgkMIGsg1cYTMyoRHNuGFZB1kFNTyRWkkmYQl8gB2Q2ZmqTbxfWwUcRGN5AVkEpUuKQ/ESJOnMg/AshqSCcAEhMqaahTkNZVA7IOcnoop99NAglIICeiQAG5wlNSEI0PcyAfDenGBCg185XYBhLIKcRUNDgjP07EgKyCVCIgaYR3xqkrEMSNIkBWQU6KlYmQTYSFatADEsgU0i2cFvtVsyiQQCaQarHdw98lfUB2Q6amVdIk4gTGduAAWQOZGklu3jUUJ0IZSCC/eQAJJJBAfnD8AAWudtW2u73tAAAAAElFTkSuQmCC" alr="QRCode">
         </li>
         
 
@@ -350,7 +350,7 @@
 <div class="post-header-info">
     <p class="post-header-info-left text-gray">
         <img class="author-thumb lazyload" data-src="/Blog/img/head.jpg" src="/Blog/img/suka-lazyload.gif" alt="sunwengang's Avatar">
-        <span>2020-07-28</span>
+        <span>2020-07-27</span>
         
             <span class="suka-devide-dot"></span>
             <a class="category-link" href="/Blog/categories/android/">android</a>
@@ -374,56 +374,56 @@
     <!-- Share Weibo -->
     
     <li class="menu-item">
-        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android NE分析（二）&url=https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
+        <a href="http://service.weibo.com/share/share.php?appkey=&title=Android NE分析（二）&url=https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/&pic=https://alonealive.github.io/Blog/img/favicon.ico&searchPic=false&style=simple" target="_blank" rel="external noopener noreferrer nofollow">分享到微博</a>
     </li>
     
 
     <!-- Share Twitter -->
     
     <li class="menu-item">
-        <a href="https://twitter.com/intent/tweet?text=Android NE分析（二）&url=https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
+        <a href="https://twitter.com/intent/tweet?text=Android NE分析（二）&url=https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/&via=sunwengang" target="_blank" rel="external noopener noreferrer nofollow">分享到 Twitter</a>
     </li>
     
 
     <!-- Share Facebook -->
     
     <li class="menu-item">
-        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
+        <a href="https://www.facebook.com/sharer/sharer.php?u=https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Facebook</a>
     </li>
     
 
     <!-- Share Google+ -->
     
     <li class="menu-item">
-        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
+        <a href="https://plus.google.com/share?url=https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/" target="_blank" rel="external noopener noreferrer nofollow">分享到 Google+</a>
     </li>
     
 
     <!-- Share LinkedIn -->
     
     <li class="menu-item">
-        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
+        <a href="https://www.linkedin.com/shareArticle?mini=true&url=https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/&title=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 LinkedIn</a>
     </li>
     
 
     <!-- Share QQ -->
     
     <li class="menu-item">
-        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
+        <a href="http://connect.qq.com/widget/shareqq/index.html?site=sunwengang blog&title=sunwengang blog&summary=&pics=https://alonealive.github.io/Blog/img/favicon.ico&url=https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/" target="_blank" rel="external noopener noreferrer nofollow"> 分享到 QQ</a>
     </li>
     
 
     <!-- Share Telegram -->
     
     <li class="menu-item">
-        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
+        <a href="https://t.me/share/url?url=https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/&text=sunwengang blog" target="_blank" rel="external noopener noreferrer nofollow">分享到 Telegram</a>
     </li>
     
 
     <!-- QRCode -->
     
     <li class="menu-item">
-        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACMklEQVR42u2aQW7DMAwE8/9Pt6cemlrcoewgqTm6FKgtaRxY9HLJx9c/GA8hhRRSyA+AfBTj5/qviQf3HF17npvWOVpTyLmQhy9tsdHRhul6uueIR8jZkKuXvnOwnudUhy3tK6SQJIhXQbtapzp8Qgq5e3BWoKugXT2gkEISyLRwEhVJTLxUBQl5O0giIF7x9/JsUchbQCLjKDxEdbCqD8KlrpqQt4GsEqaVYF1tRgyFSgQjw0rI20Oml7sCTWDd9f+sLeRIyCpAVwcjBfV0D3pYIUdCkpd9ZYquPgAp2Kfik5CzIdOHn4gCkvSn/VrFJiFvDdkVtOl/NPgn41XIuZBkchKxJPDTBCyqICHHQFZJ1a5JRUzUMkkTciwkNaxSUZ6IECKkhZwNSZMkKpA7JlYUMEKOhCQG0hXmVacBQMjZkLuJFjVRk5mwbQ4IOQZyp/hJE38qYIScDYnEZwj0tHBKPgpCCkkKlbvNImSUYlrI0ZBEJHSaP5OIIIFdyLmQ1UJJ5JaJFPwILPcUcjRkp2nzbHEqGQ9CCnnmAMTCejC2yuRPyLGQybRPCRc6BKA4HwugQo6DJEk/nVP9ALTZWciZkGkQ4XrWgMVVWiFHQFIziRaaOoZWNF6FHAtJxSotMKWAjxtUhBwNSUzSjuglxYLYBCWkkKAJudNAUokM1IQnpJChwE6LAOmgpQMmpJA0AUuBvmoO6RgHQgpJmzg6m5EgnhpLhZwJ+clDSCGFFPKN4xtbi7WkIehGFgAAAABJRU5ErkJggg==" alt="QRCode">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKQAAACkCAAAAAA83tqdAAACK0lEQVR42u2awZLCMAxD+/8/zV6XTiPJme7AVi8XIJTklakzsuzj9Q/GASSQQAL5BZCHGG8/OM0n1/7+fH6f7AtkL+TlQ7tYeHVzbr0zfLQvkNWQV4GhgkBttppzAQQkkFNIF0AqWIAE8k7IVWC4a5MbBRLIqcBQ4lVd44LrVhUE5OMgVUL0l6+3ZYtAPgrSmkYXhkByg4nwvc1VA/JRkOpBTgSsg0kMsOV+QFZCqh+sFt81DVTwXO4FZCVkkryn5n5q4CcJGZC9kKqglBSKdg96tweQvZBJIqaCyEErsbwd3UA+GtIZmkq0uqBwhSiXlAHZCemCYrWgK04l8/ZgBxLIDeNqYuBPzX4gOyFVI4d6yJXonQiXUSIGZBXkjjh1DSJJw4gs6gNZCTkVAsoETUzSydpAdkK6hVVT0k5jyJboBbIS0hmdE1PUmapx4x6QlZDOkJ8Gz8SwGgkMIGsg1cYTMyoRHNuGFZB1kFNTyRWkkmYQl8gB2Q2ZmqTbxfWwUcRGN5AVkEpUuKQ/ESJOnMg/AshqSCcAEhMqaahTkNZVA7IOcnoop99NAglIICeiQAG5wlNSEI0PcyAfDenGBCg185XYBhLIKcRUNDgjP07EgKyCVCIgaYR3xqkrEMSNIkBWQU6KlYmQTYSFatADEsgU0i2cFvtVsyiQQCaQarHdw98lfUB2Q6amVdIk4gTGduAAWQOZGklu3jUUJ0IZSCC/eQAJJJBAfnD8AAWudtW2u73tAAAAAElFTkSuQmCC" alt="QRCode">
     </li>
     
 
@@ -467,7 +467,7 @@
 <p>链接器用的是arm-linux-androideabi-g++</p>
 <h3 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h3><p><code>build/core/combo/TARGET_linux-arm.mk</code>里有定义<code>transform-o-to-executable-inner</code>和<code>transform-o-to-shared-lib-inner</code>，分别将*.o链接为动态可执行程序和共享库。动态可执行程序需要linker才能进一步运行的。</p>
 <p>链接器也是用arm-linux-androideabi-g++</p>
-<h2 id="tombstone定位错误方法"><a href="#tombstone定位错误方法" class="headerlink" title="tombstone定位错误方法"></a>tombstone定位错误方法</h2><h3 id="signum"><a href="#signum" class="headerlink" title="signum"></a>signum</h3><p>一般debuggerd关注的是SIGILL，SIGBUS，SIGABRT，SIGFPE，SIGSEGV，SIGPIPE等。而这里，估计九成都是SIGSEGV (即signal 11)，段错误，和非法内存访问等价。</p>
+<h2 id="tombstone定位错误方法"><a href="#tombstone定位错误方法" class="headerlink" title="tombstone定位错误方法"></a>tombstone定位错误方法</h2><h3 id="signum"><a href="#signum" class="headerlink" title="signum"></a>signum</h3><p>一般debuggerd关注的是SIGILL，SIGBUS，SIGABRT，SIGFPE，SIGSEGV，SIGPIPE等。而这里，估计九成都是SIGSEGV (即signal 11)，段错误，和非法内存访问等。</p>
 <h3 id="sigcode"><a href="#sigcode" class="headerlink" title="*sigcode"></a>*sigcode</h3><ul>
 <li>SEGV_MAPERR：访问一个没有映射到任何内容的地址，这种情况通常就是野指针，或者越界访问，访问空指针也是属于这类</li>
 <li>SEGV_ACCERR：试图访问您无权访问的地址。说明访问出错地址，被map到地址空间来了，但是没访问权限。基本上是指针越界或野指针，比如写只读map的内存地址</li>
@@ -497,7 +497,7 @@
                 本文使用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">署名-非商业性使用-相同方式共享 4.0 国际 (CC BY-NC-SA 4.0)</a> 协议
             </strong>
             <br>
-            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/">https://alonealive.github.io/Blog/2020/07/28/2020/200727_android_NE_Two/</a>
+            <strong>本文链接&nbsp;:&nbsp;</strong><a href="https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/">https://alonealive.github.io/Blog/2020/07/27/2020/200727_android_NE_Two/</a>
         </p>
     </blockquote>
 
@@ -506,7 +506,7 @@
     <blockquote id="date-expire-notification" class="post-expired-notify">本文最后更新于 <span id="date-expire-num"></span> 天前，文中所描述的信息可能已发生改变</blockquote>
     <script>
     (function() {
-        var dateUpdate = Date.parse("2020-07-29");
+        var dateUpdate = Date.parse("2021-05-31");
         var nowDate = new Date();
         var a = nowDate.getTime();
         var b = a - dateUpdate;
@@ -520,9 +520,9 @@
     </script>
 
 
-<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-07-28T13:52:00.000Z" itemprop="datePublished">2020-07-28</time>
+<p class="post-footer-info mb-0 pt-0">本文发表于&nbsp;<time datetime="2020-07-27T13:52:00.000Z" itemprop="datePublished">2020-07-27</time>
 
-    , 最后修改于&nbsp;<time datetime="2020-07-29T11:59:50.283Z" itemprop="dateModified">2020-07-29</time>
+    , 最后修改于&nbsp;<time datetime="2021-05-31T12:52:03.454Z" itemprop="dateModified">2021-05-31</time>
 
 </p>
 <p class="post-footer-info mb-0 pt-2">
